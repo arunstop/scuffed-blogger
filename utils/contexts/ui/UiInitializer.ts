@@ -1,2 +1,2 @@
-import { UiState } from "./../../helpers/data/types/UiTypes";
+import { UiState } from "../../data/types/UiTypes";
 export const UI_INIT: UiState = { darkMode: false };

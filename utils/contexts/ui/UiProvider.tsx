@@ -1,5 +1,9 @@
-import { ReactNode, useReducer } from "react";
-import { UiAction, UiContextProps } from "../../helpers/data/types/UiTypes";
+import { ReactNode, useEffect, useReducer } from "react";
+import { UiAction, UiContextProps } from "../../data/types/UiTypes";
+import {
+  initClientDarkMode,
+  toggleClientDarkMode
+} from "../../helpers/Helpers";
 import { UiContext } from "./UiContext";
 import { UI_INIT } from "./UiInitializer";
 import { UI_REDUCER } from "./UiReducer";
@@ -10,6 +14,7 @@ export const UiProvider = ({ children }: { children: ReactNode }) => {
   const action: UiAction = {
     toggleDarkMode: (newVal) => {
       dispatch({ type: "TOGGLE_DARK_MODE", payload: { newVal } });
+      toggleClientDarkMode(newVal);
     },
   };
 
@@ -17,6 +22,10 @@ export const UiProvider = ({ children }: { children: ReactNode }) => {
     state: state,
     action: action,
   };
+
+  useEffect(() => {
+    initClientDarkMode(action.toggleDarkMode);
+  }, []);
 
   return <UiContext.Provider value={value}>{children}</UiContext.Provider>;
 };

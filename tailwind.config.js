@@ -2,9 +2,9 @@ module.exports = {
   content: ["./pages/**/*.tsx", "./components/**/*.tsx"],
   theme: {
     extend: {
-      // fontFamily: {
-      //   poppins: ["Poppins", "sans-serif"],
-      // },
+      fontFamily: {
+        nunito: ["Nunito", "sans-serif"],
+      },
     },
   },
   plugins: [require("daisyui")],
@@ -12,7 +12,7 @@ module.exports = {
   // DAISY UI CONFIG
   daisyui: {
     styled: true,
-    themes: ["emerald", "night"],
+    themes: ["cupcake", "forest"],
     // themes: true,
     base: true,
     utils: true,
