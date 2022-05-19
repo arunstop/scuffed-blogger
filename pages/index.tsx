@@ -13,7 +13,6 @@ const Home: NextPage = () => {
       </Head>
       <Header />
       <div className="h-screen bg-base-300 p-4 sm:p-8">
-
       </div>
     </>
   );
