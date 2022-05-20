@@ -1,7 +1,7 @@
 import React from "react";
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
-import { APP_NAME } from "../utils/helpers/Constants";
+import { APP_NAME } from "../utils/helpers/Constants1";
 
 function Header() {
   const { uiStt:{darkMode}, uiAct } = useUiCtx();

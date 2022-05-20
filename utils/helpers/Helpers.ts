@@ -1,4 +1,4 @@
-import { KEY_CLIENT_DARK_MODE } from "./Constants";
+import { KEY_CLIENT_DARK_MODE } from "./Constants1";
 import { storageFind, storageSave } from "./LocalStorage";
 
 export const toggleClientDarkMode = (newVal: boolean) => {
