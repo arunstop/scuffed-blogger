@@ -1,22 +1,53 @@
+import Link from "next/link";
 import React from "react";
 
-function MainPost() {
+interface Post {
+  id: string;
+}
+
+function MainPost({ post }: { post: Post }) {
   return (
-    <div className="card card-compact bg-base-100 shadow-xl w-auto">
-      <figure>
-        <img
-          src="https://api.lorem.space/image/shoes?w=400&h=225"
-          alt="Shoes"
-        />
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title">Shoes!</h2>
-        <p>If a dog chews shoes whose shoes does he choose?</p>
-        <div className="card-actions justify-end">
-          <button className="btn btn-primary">Buy Now</button>
+    <Link href={"/read"} passHref>
+      <a
+        className="bg-primary bg-opacity-10 flex flex-col sm:flex-row w-full shadow-lg
+        hover:bg-opacity-40 transition-all group rounded-xl overflow-hidden
+        "
+      >
+        <figure className="w-full h-60 sm:w-72 aspect-square sm:h-auto overflow-hidden">
+          <img
+            className="w-full h-full max-w-none group-hover:scale-110 transition-transform object-cover"
+            src={`https://picsum.photos/id/${post.id}/500/300`}
+            alt="Image"
+            width={240}
+            height={240}
+          />
+        </figure>
+        <div className="flex flex-col gap-4 p-4 flex-1">
+          <h1 className="text-xl sm:text-3xl font-bold group-hover:underline">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+          </h1>
+          <span className="text-sm sm:text-base">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
+            commodi? Suscipit illum maxime, repellat inventore et distinctio
+            porro.
+          </span>
+          <div className="flex flex-wrap gap-4 font-extralight">
+            <span className="">2d ago</span>
+            <span className="">2mins read</span>
+            <span className="">Technology</span>
+          </div>
+          <div className="flex flex-row justify-between items-center">
+            <button
+              className="ml-auto btn btn-neutral font-bold
+            text-lg normal-case bg-opacity-50 btn-outline
+            group-hover:opacity-100 opacity-80"
+            >
+              Read more
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      </a>
+    </Link>
   );
 }
 

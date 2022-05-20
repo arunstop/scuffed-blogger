@@ -14,12 +14,14 @@ const Home: NextPage = () => {
       </Head>
       <Header />
       <div
-        className="min-h-screen bg-base-300 p-4 sm:p-8 
-        grid justify-center gap-4 grid grid-cols-4 sm:bg-red-500 md:bg-blue-500"
+        className="min-h-screen bg-base-100 p-4 sm:p-8 
+        justify-center gap-4 sm:gap-8 flex flex-col
+        max-w-[60rem] mx-auto
+        "
         id="main-content"
       >
         {[...Array(10)].map((e) => (
-          <MainPost key={Math.random()} />
+          <MainPost key={Math.random()} post={{id:Math.round(Math.random()*100)+""}} />
         ))}
       </div>
     </>
