@@ -47,10 +47,6 @@ function MainSectionStatus() {
           onClick={changeActiveTab}
         />
       ))}
-      <button 
-          onClick={() => setActiveTab("Favorites")}
-        
-        >BTN</button>
     </div>
   );
 }
