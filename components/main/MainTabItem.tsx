@@ -18,7 +18,7 @@ function MainTabItem({ icon, title, active, onClick }: MainTabItemProps) {
           ? `tab-active !rounded-xl z-[1] 
           sm:-mx-3 sm:first:-mr-3 sm:last:-ml-3 
           -my-2 first:pt-6 last:pb-6
-          sm:my-0 sm:first:mb-0 sm:last:mt-0`
+          sm:my-0 sm:first:pt-4 sm:last:pb-4`
           : "hover:bg-primary-focus/30 !rounded-none"
       }`}
       onClick={() => !active && onClick?.(title)}

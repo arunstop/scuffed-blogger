@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Header from "../components/Header";
 import MainPost from "../components/main/MainPost";
-import MainSectionStatus from "../components/main/MainSectionStatus";
+import MainSectionStatus from "../components/main/MainSectionFilterTab";
 import { APP_NAME } from "../utils/helpers/Constants1";
 
 const Home: NextPage = () => {

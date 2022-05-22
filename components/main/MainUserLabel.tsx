@@ -4,7 +4,7 @@ import React from "react";
 function MainUserLabel({ id }: { id: string }) {
   return (
     <Link href={`/blogger/${id}`} passHref>
-    <a className="flex flex-row items-center gap-4 opacity-80 group-hover:opacity-100 hover:underline">
+    <a className="flex flex-row items-center gap-4 hover:underline">
       <div className="avatar">
         <div
           className="w-10 rounded-lg ring-1 ring-base-content 

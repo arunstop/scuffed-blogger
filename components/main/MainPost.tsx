@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { MdBookmarkAdd, MdForum, MdStar, MdTrendingUp } from "react-icons/md";
-import MainPostStatusChip from "./MainPostStatusChip";
+import MainPostStatusChip from "./MainPostFilterChip";
 import MainUserPopup from "./MainPostUserPopup";
 import MainUserLabel from "./MainUserLabel";
 
