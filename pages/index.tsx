@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Header from "../components/Header";
 import MainPost from "../components/main/MainPost";
+import MainSectionStatus from "../components/main/MainSectionStatus";
 import { APP_NAME } from "../utils/helpers/Constants1";
 
 const Home: NextPage = () => {
@@ -16,13 +17,21 @@ const Home: NextPage = () => {
       <div
         className="min-h-screen bg-base-100 p-4 sm:p-8 
         justify-center gap-4 sm:gap-8 flex flex-col
-        max-w-[60rem] mx-auto
-        "
-        id="main-content"
+        max-w-[60rem] mx-auto"
       >
-        {[...Array(10)].map((e) => (
-          <MainPost key={Math.random()} post={{id:Math.round(Math.random()*100)+""}} />
-        ))}
+        <MainSectionStatus />
+        <div
+          className="flex flex-col gap-4 sm:gap-8
+        "
+          id="main-content"
+        >
+          {[...Array(10)].map((e) => (
+            <MainPost
+              key={Math.random()}
+              post={{ id: Math.round(Math.random() * 100) + "" }}
+            />
+          ))}
+        </div>
       </div>
     </>
   );

@@ -6,42 +6,49 @@
   font-family: "Nunito";
   font-weight: 200;
   src: url("../public/fonts/Nunito/static/Nunito-ExtraLight.ttf");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "Nunito";
   font-weight: 300;
   src: url("../public/fonts/Nunito/static/Nunito-Light.ttf");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "Nunito";
   font-weight: 400;
   src: url("../public/fonts/Nunito/static/Nunito-Regular.ttf");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "Nunito";
   font-weight: 500;
   src: url("../public/fonts/Nunito/static/Nunito-Medium.ttf");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "Nunito";
   font-weight: 600;
   src: url("../public/fonts/Nunito/static/Nunito-SemiBold.ttf");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "Nunito";
   font-weight: 700;
   src: url("../public/fonts/Nunito/static/Nunito-Bold.ttf");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "Nunito";
   font-weight: 900;
   src: url("../public/fonts/Nunito/static/Nunito-Black.ttf");
+  font-display: swap;
 }
 
 
