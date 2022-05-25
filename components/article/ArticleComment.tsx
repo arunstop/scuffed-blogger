@@ -1,34 +1,107 @@
 import React from "react";
-import { MdClose } from "react-icons/md";
+import { FaArrowDown, FaArrowUp, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
+import { MdDelete, MdFlag, MdMoreHoriz, MdPersonOff, MdReport } from "react-icons/md";
 
 function ArticleComment({ id }: { id: string }) {
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-row gap-4 items-start">
-        <div className="avatar">
-          <div
-            className="w-10 rounded-lg ring-1 ring-base-content 
-            group-hover:rounded-[50%] sm:w-12 sm:ring-2 z-0 transition-all"
-          >
-            <img src={`https://api.lorem.space/image/face?hash=${id}`} />
+    <div className="flex flex-row items-start gap-4">
+      <div className="avatar">
+        <div
+          className="z-0 w-10 rounded-lg border-[1px] 
+      border-base-content transition-all group-hover:rounded-[50%] sm:w-12 sm:border-2"
+        >
+          <img
+            src={`https://api.lorem.space/image/face?hash=${id}`}
+            alt={`User ${id}`}
+          />
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col gap-2">
+        <div className="inline-flex gap-4">
+          <div className="flex flex-col">
+            <span className="text-base font-bold !leading-[1.2] sm:text-lg">
+              Firstname Lastn
+            </span>
+            <span className="text-base font-semibold !leading-[1.2] opacity-50 sm:text-lg">
+              @FirstnameLastname
+            </span>
+          </div>
+          <div className="dropdown dropdown-end ml-auto">
+            <label
+              className="btn btn-ghost aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
+              title="Upvote"
+              tabIndex={0}
+            >
+              <MdMoreHoriz className="text-2xl sm:text-3xl" />
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu p-2 shadow-xl ring-2 ring-base-content/20 bg-base-100 rounded-xl max-w-[15rem] w-max"
+            >
+              <li>
+                <a className="">
+                  <MdReport className="text-xl sm:text-2xl" />{" "}
+                  <span className="text-base sm:text-lg font-bold">Report comment</span>
+                </a>
+              </li>
+              <li>
+                <a className="">
+                  <MdDelete className="text-xl sm:text-2xl" />{" "}
+                  <span className="text-base sm:text-lg font-bold">Delete comment</span>
+                </a>
+              </li>
+              <li>
+                <a className="">
+                  <FaVolumeMute className="text-xl sm:text-2xl" />{" "}
+                  <span className="text-base sm:text-lg font-bold">Mute user</span>
+                </a>
+              </li>
+              <li>
+                <a className="">
+                  <FaVolumeUp className="text-xl sm:text-2xl" />{" "}
+                  <span className="text-base sm:text-lg font-bold">Unmute user</span>
+                </a>
+              </li>
+               <li>
+                <a className="">
+                  <MdPersonOff className="text-xl sm:text-2xl" />{" "}
+                  <span className="text-base sm:text-lg font-bold">Block user</span>
+                </a>
+              </li>
+              <li>
+                <a className="">
+                  <MdFlag className="text-xl sm:text-2xl" />{" "}
+                  <span className="text-base sm:text-lg font-bold">Report user</span>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div className="form-control flex-1 rounded-xl gap-4">
-          <textarea
-            className="textarea textarea-bordered rounded-xl h-24 text-base min-h-[12rem]"
-            placeholder="Add a comment..."
-          ></textarea>
-          <div className="flex justify-end w-full gap-4">
-            <button
-              className="btn sm:w-32 btn-error btn-outline border-2"
-              title="Reset"
-            >
-              <MdClose className="text-2xl" />
-            </button>
-            <button className="flex-1 sm:flex-none font-bold btn btn-primary normal-case text-xl sm:w-72">
-              Comment
-            </button>
-          </div>
+        <span className="text-sm sm:text-base">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatibus
+          quo praesentium temporibus quod rerum labore officiis animi provident
+          natus minus dolorem corrupti quos dolor unde vero vel, saepe tempora
+          obcaecati! Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          Voluptatibus quo praesentium temporibus quod rerum labore officiis
+          animi provident natus minus dolorem corrupti quos dolor unde vero vel,
+          saepe tempora obcaecati!
+        </span>
+        <div className="inline-flex gap-2 sm:gap-4">
+          <a
+            className="btn btn-ghost aspect-square rounded-xl p-0 text-success opacity-80 hover:opacity-100"
+            title="Upvote"
+          >
+            <FaArrowUp className="text-2xl sm:text-3xl" />
+          </a>
+          <a
+            className="btn btn-ghost aspect-square rounded-xl p-0 text-error opacity-80 hover:opacity-100"
+            title="Downvote"
+          >
+            <FaArrowDown className="text-2xl sm:text-3xl" />
+          </a>
+          <button className="btn-outline btn ml-auto text-base font-bold normal-case opacity-80 hover:opacity-100 sm:w-36 border-2 sm:text-lg">
+            Reply
+          </button>
         </div>
       </div>
     </div>

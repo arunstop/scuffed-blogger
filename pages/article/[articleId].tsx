@@ -1,17 +1,17 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
-import {
-  MdForum, MdStar, MdTrendingUp
-} from "react-icons/md";
+import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleAction from "../../components/article/ArticleActions";
-import ArticleComment from "../../components/article/ArticleComment";
+import ArticleSectionComments from "../../components/article/ArticleSectionComments";
 import ArticleContent from "../../components/article/ArticleContent";
 import Header from "../../components/Header";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../components/main/MainUserLabel";
 import { APP_NAME } from "../../utils/helpers/Constants1";
+import ArticleSectionSuggestions from "../../components/article/ArticleSectionSuggestions";
+import Footer from "../../components/Footer";
 
 function Article() {
   const router = useRouter();
@@ -29,7 +29,7 @@ function Article() {
         flex-col justify-start gap-4 bg-base-100 p-4
         sm:gap-8 sm:p-8"
       >
-        <div className="inline-flex justify-start rounded-xl bg-base-300 p-2 sm:p-4">
+        <div className="inline-flex justify-start">
           <div className="dropdown-hover dropdown self-start">
             <MainUserLabel id={articleId + ""} />
 
@@ -67,11 +67,13 @@ function Article() {
 
         <ArticleContent id={articleId + ""} />
 
-        <ArticleAction id={articleId + ""}/>
+        <ArticleAction id={articleId + ""} />
 
-        <ArticleComment id={articleId + ""}/>
+        <ArticleSectionComments id={articleId + ""} />
 
+        <ArticleSectionSuggestions id={articleId + ""} />
       </div>
+      <Footer />
     </>
   );
 }

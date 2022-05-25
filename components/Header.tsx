@@ -1,10 +1,14 @@
+import Link from "next/link";
 import React from "react";
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
 import { APP_NAME } from "../utils/helpers/Constants1";
 
 function Header() {
-  const { uiStt:{darkMode}, uiAct } = useUiCtx();
+  const {
+    uiStt: { darkMode },
+    uiAct,
+  } = useUiCtx();
   return (
     <div
       className={`sticky flex flex-row gap-4 top-0 z-10 h-12 
@@ -13,10 +17,10 @@ function Header() {
       `}
       id="header"
     >
-      <span className="text-2xl font-black">
-        {APP_NAME}
-      </span>
-      <label className="swap swap-rotate text-2xl sm:text-3xl">
+      <Link href="/" passHref>
+        <a className="text-lg sm:text-xl md:text-2xl font-black">{APP_NAME}</a>
+      </Link>
+      <label className="swap swap-rotate">
         <input
           type="checkbox"
           checked={darkMode}
@@ -24,8 +28,8 @@ function Header() {
             uiAct.toggleDarkMode(ev.target.checked);
           }}
         />
-        <MdOutlineLightMode className="swap-on" />
-        <MdOutlineDarkMode className="swap-off" />
+        <MdOutlineLightMode className="swap-on text-2xl sm:text-3xl" />
+        <MdOutlineDarkMode className="swap-off text-2xl sm:text-3xl" />
       </label>
     </div>
   );

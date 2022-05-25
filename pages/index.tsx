@@ -1,9 +1,10 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import MainPost from "../components/main/MainPost";
 import MainSectionStatus from "../components/main/MainSectionFilterTab";
-import { APP_NAME } from "../utils/helpers/Constants1";
+import { APP_NAME,APP_DESC } from "../utils/helpers/Constants1";
 
 const Home: NextPage = () => {
   return (
@@ -11,7 +12,7 @@ const Home: NextPage = () => {
       <Head>
         <title>{APP_NAME}</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta name="description" content="Scuffed blogs, for scuffed people" />
+        <meta name="description" content={APP_DESC} />
       </Head>
       <Header />
       <div
@@ -33,6 +34,7 @@ const Home: NextPage = () => {
           ))}
         </div>
       </div>
+      <Footer/>
     </>
   );
 };
