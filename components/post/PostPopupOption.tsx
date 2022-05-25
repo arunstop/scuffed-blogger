@@ -16,7 +16,7 @@ function PostPopupOption() {
     >
       <li>
         <a className="">
-          <MdHideSource className="text-xl sm:text-2xl" />{" "}
+          <MdHideSource className="text-xl sm:text-2xl" />
           <span className="text-base sm:text-lg font-bold">
             Show less like this
           </span>
@@ -24,37 +24,37 @@ function PostPopupOption() {
       </li>
       <li>
         <a className="">
-          <MdShare className="text-xl sm:text-2xl" />{" "}
+          <MdShare className="text-xl sm:text-2xl" />
           <span className="text-base sm:text-lg font-bold">Share article</span>
         </a>
       </li>
       <li>
         <a className="">
-          <MdReport className="text-xl sm:text-2xl" />{" "}
+          <MdReport className="text-xl sm:text-2xl" />
           <span className="text-base sm:text-lg font-bold">Report article</span>
         </a>
       </li>
       <li>
         <a className="">
-          <FaVolumeMute className="text-xl sm:text-2xl" />{" "}
+          <FaVolumeMute className="text-xl sm:text-2xl" />
           <span className="text-base sm:text-lg font-bold">Mute author</span>
         </a>
       </li>
       <li>
         <a className="">
-          <FaVolumeUp className="text-xl sm:text-2xl" />{" "}
+          <FaVolumeUp className="text-xl sm:text-2xl" />
           <span className="text-base sm:text-lg font-bold">Unmute author</span>
         </a>
       </li>
       <li>
         <a className="">
-          <MdFlag className="text-xl sm:text-2xl" />{" "}
+          <MdFlag className="text-xl sm:text-2xl" />
           <span className="text-base sm:text-lg font-bold">Report author</span>
         </a>
       </li>
       <li>
         <a className="">
-          <MdPersonOff className="text-xl sm:text-2xl" />{" "}
+          <MdPersonOff className="text-xl sm:text-2xl" />
           <span className="text-base sm:text-lg font-bold">Block author</span>
         </a>
       </li>

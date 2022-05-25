@@ -3,19 +3,21 @@ import { useRouter } from "next/router";
 import React from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleAction from "../../components/article/ArticleActions";
-import ArticleSectionComments from "../../components/article/ArticleSectionComments";
 import ArticleContent from "../../components/article/ArticleContent";
+import ArticleSectionComments from "../../components/article/ArticleSectionComments";
+import ArticleSectionSuggestions from "../../components/article/ArticleSectionSuggestions";
+import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../components/main/MainUserLabel";
 import { APP_NAME } from "../../utils/helpers/Constants1";
-import ArticleSectionSuggestions from "../../components/article/ArticleSectionSuggestions";
-import Footer from "../../components/Footer";
 
 function Article() {
   const router = useRouter();
   const { articleId } = router.query;
+
+  console.log("render [articleId]");
   return (
     <>
       <Head>

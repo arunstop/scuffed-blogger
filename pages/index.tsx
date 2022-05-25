@@ -3,7 +3,7 @@ import Head from "next/head";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import MainPost from "../components/main/MainPost";
-import MainSectionStatus from "../components/main/MainSectionFilterTab";
+import MainSectionFilter from "../components/main/MainSectionFilterTab";
 import { APP_NAME,APP_DESC } from "../utils/helpers/Constants1";
 
 const Home: NextPage = () => {
@@ -20,7 +20,7 @@ const Home: NextPage = () => {
         justify-center gap-4 sm:gap-8 flex flex-col
         max-w-[60rem] mx-auto"
       >
-        <MainSectionStatus />
+        <MainSectionFilter />
         <div
           className="flex flex-col gap-4 sm:gap-8
         "

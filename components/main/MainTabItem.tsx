@@ -3,14 +3,14 @@ export interface MainTabItemProps {
   icon: ReactNode;
   title: string;
   active: boolean;
-  onClick?: (title:string) => void;
+  onClick?: (title: string) => void;
 }
 
 function MainTabItem({ icon, title, active, onClick }: MainTabItemProps) {
-    console.log(title);
+  console.log(title);
   return (
     <a
-      className={`w-full sm:flex-1 tab text-sm sm:text-base btn btn-ghost border-0
+      className={`w-full sm:flex-1 tab text-base sm:text-lg btn btn-ghost border-0
       flex flex-col h-auto p-4 transition-all gap-1 sm:gap-2
       sm:first:!rounded-l-xl sm:last:!rounded-r-xl
       ${

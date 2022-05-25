@@ -25,7 +25,7 @@ const tabs: MainTabItemProps[] = [
   },
 ];
 
-function MainSectionStatus() {
+function MainSectionFilter() {
   const [activeTab, setActiveTab] = useState<string>("");
   const changeActiveTab = useCallback(
     (title:string) => {
@@ -51,4 +51,4 @@ function MainSectionStatus() {
   );
 }
 
-export default React.memo(MainSectionStatus);
+export default React.memo(MainSectionFilter);

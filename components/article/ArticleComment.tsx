@@ -1,21 +1,23 @@
 import React from "react";
-import { FaArrowDown, FaArrowUp, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
-import { MdDelete, MdFlag, MdMoreHoriz, MdPersonOff, MdReport } from "react-icons/md";
+import {
+  FaArrowDown,
+  FaArrowUp,
+  FaVolumeMute,
+  FaVolumeUp,
+} from "react-icons/fa";
+import {
+  MdDelete,
+  MdFlag,
+  MdMoreHoriz,
+  MdPersonOff,
+  MdReport,
+} from "react-icons/md";
+import UserAvatar from "../user/UserAvatar";
 
 function ArticleComment({ id }: { id: string }) {
   return (
     <div className="flex flex-row items-start gap-4">
-      <div className="avatar">
-        <div
-          className="z-0 w-10 rounded-lg border-[1px] 
-      border-base-content transition-all group-hover:rounded-[50%] sm:w-12 sm:border-2"
-        >
-          <img
-            src={`https://api.lorem.space/image/face?hash=${id}`}
-            alt={`User ${id}`}
-          />
-        </div>
-      </div>
+      <UserAvatar id={id} />
       <div className="flex flex-1 flex-col gap-2">
         <div className="inline-flex gap-4">
           <div className="flex flex-col">
@@ -41,37 +43,49 @@ function ArticleComment({ id }: { id: string }) {
               <li>
                 <a className="">
                   <MdReport className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">Report comment</span>
+                  <span className="text-base sm:text-lg font-bold">
+                    Report comment
+                  </span>
                 </a>
               </li>
               <li>
                 <a className="">
                   <MdDelete className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">Delete comment</span>
+                  <span className="text-base sm:text-lg font-bold">
+                    Delete comment
+                  </span>
                 </a>
               </li>
               <li>
                 <a className="">
                   <FaVolumeMute className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">Mute user</span>
+                  <span className="text-base sm:text-lg font-bold">
+                    Mute user
+                  </span>
                 </a>
               </li>
               <li>
                 <a className="">
                   <FaVolumeUp className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">Unmute user</span>
+                  <span className="text-base sm:text-lg font-bold">
+                    Unmute user
+                  </span>
                 </a>
               </li>
-               <li>
+              <li>
                 <a className="">
                   <MdPersonOff className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">Block user</span>
+                  <span className="text-base sm:text-lg font-bold">
+                    Block user
+                  </span>
                 </a>
               </li>
               <li>
                 <a className="">
                   <MdFlag className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">Report user</span>
+                  <span className="text-base sm:text-lg font-bold">
+                    Report user
+                  </span>
                 </a>
               </li>
             </ul>

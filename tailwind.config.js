@@ -12,7 +12,20 @@ module.exports = {
   // DAISY UI CONFIG
   daisyui: {
     styled: true,
-    themes: ["cupcake", "forest"],
+    themes: [
+      {
+        cupcake:{
+          ...require("daisyui/src/colors/themes")["[data-theme=cupcake]"],
+          "--btn-text-case": "none", // set default text transform for buttons
+        }
+      },
+      {
+        forest:{
+          ...require("daisyui/src/colors/themes")["[data-theme=forest]"],
+          "--btn-text-case": "none", // set default text transform for buttons
+        }
+      },
+    ],
     // themes: true,
     base: true,
     utils: true,

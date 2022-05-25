@@ -3,9 +3,11 @@ import type { AppProps } from "next/app";
 import { UiProvider } from "../utils/contexts/ui/UiProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <UiProvider>
-  <Component {...pageProps} />
-  </UiProvider>;
+  return (
+    <UiProvider>
+      <Component {...pageProps} />
+    </UiProvider>
+  );
 }
 
 export default MyApp;

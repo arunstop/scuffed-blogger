@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import ArticleComment from "./ArticleComment";
+import ArticleComments from "./ArticleComments";
 
 function ArticleSectionComments({ id }: { id: string }) {
+  const [comment, setComment] = useState("");
+
+  console.log("render ArticleSectionComments");
   return (
     <div className="flex flex-col gap-4 sm:gap-8">
       <div className="flex flex-row gap-4 items-start">
@@ -21,24 +24,29 @@ function ArticleSectionComments({ id }: { id: string }) {
           <textarea
             className="textarea textarea-bordered rounded-xl h-24 text-base min-h-[12rem]"
             placeholder="Add a comment..."
-          ></textarea>
+            value={comment}
+            onChange={(ev) => setComment(ev.target.value)}
+          />
           <div className="flex justify-end w-full gap-4">
-          <button
-              className="btn btn-error btn-outline border-2 opacity-80"
-              title="Reset"
+            {comment.length !== 0 && (
+              <button
+                className="btn btn-error btn-outline border-2 opacity-80"
+                title="Reset"
+                onClick={() => setComment("")}
+              >
+                <FaTimes className="text-2xl" />
+              </button>
+            )}
+            <button
+              className={`flex-1 sm:flex-none font-bold btn btn-primary 
+              normal-case text-xl sm:w-48 ${comment.length !== 0 ? "" : "btn-disabled"}`}
             >
-              <FaTimes className="text-2xl" />
-            </button>
-            <button className="flex-1 sm:flex-none font-bold btn btn-primary normal-case text-xl sm:w-48">
               Comment
             </button>
           </div>
         </div>
       </div>
-      {[...Array(10)].map((e) => (
-        <ArticleComment key={Math.random()} id={id} />
-      ))}
-      
+      <ArticleComments />
     </div>
   );
 }
