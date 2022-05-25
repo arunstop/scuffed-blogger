@@ -4,7 +4,7 @@ import {
   MdForum,
   MdMoreHoriz,
   MdStar,
-  MdTrendingUp
+  MdTrendingUp,
 } from "react-icons/md";
 import PostLinker from "../post/PostLinker";
 import PostPopupOption from "../post/PostPopupOption";
@@ -25,7 +25,7 @@ function MainPost({ post }: { post: Post }) {
     >
       <PostLinker
         href={`/article/${post.id}`}
-        className="aspect-square h-60 w-full overflow-hidden sm:h-auto sm:w-72 relative bg-base-content rounded-l-xl"
+        className="aspect-square h-60 w-full overflow-hidden sm:h-auto sm:w-72 relative bg-base-content rounded-t-xl sm:rounded-l-xl"
       >
         <img
           className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2]"

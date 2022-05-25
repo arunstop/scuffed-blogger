@@ -36,7 +36,7 @@ export const UserContentTabs = React.memo(function UserContentTabs({
         return (
           <a
             key={idx}
-            className={`tab tab-lg tab-lifted flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl font-bold transition-colors ${
+            className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl font-bold transition-colors ${
               activeTab === e.title ? "tab-active" : ""
             }`}
             onClick={() => onClick(e.title)}
