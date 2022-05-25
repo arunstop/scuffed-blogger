@@ -25,7 +25,7 @@ function MainPost({ post }: { post: Post }) {
     >
       <PostLinker
         href={`/article/${post.id}`}
-        className="aspect-square h-60 w-full overflow-hidden sm:h-auto sm:w-72 relative bg-base-content rounded-t-xl sm:rounded-l-xl"
+        className="aspect-square h-60 w-full overflow-hidden sm:h-auto sm:w-72 relative bg-base-content rounded-t-xl rounded-bl-none sm:rounded-l-xl sm:rounded-tl-none"
       >
         <img
           className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2]"
