@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
+import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import MainContainer from "../../components/main/MainContainer";
 import UserContent from "../../components/user/UserContent";
@@ -23,7 +24,7 @@ function Author() {
       </Head>
       <Header />
       <MainContainer>
-        <div className="relative">
+        <div className="w-full flex flex-col h-auto relative">
           <img
             className="h-[10rem] sm:h-[15rem] w-full max-w-none object-cover absolute rounded-xl"
             src={`https://picsum.photos/id/${50}/1000/600`}
@@ -31,8 +32,7 @@ function Author() {
             width={240}
             height={300}
           />
-        </div>
-        <div className="inline-flex gap-4 sm:gap-8 relative mt-[5rem] sm:mt-[7.5rem]">
+        <div className="inline-flex gap-4 sm:gap-8 relative mt-[5rem] sm:mt-[7.5rem] justify-between items-center h-[10rem] sm:h-[15rem]">
           <div className="avatar">
             <div
               className="z-0 w-24 hover:rounded-xl border-2 border-base-100 
@@ -44,6 +44,14 @@ function Author() {
               />
             </div>
           </div>
+          <div className="flex flex-col gap-2 sm:gap-4 justify-end">
+            <button className="btn btn-primary sm:btn-lg text-xl sm:text-2xl font-bold border-base-100 border-2 sm:border-4 mt-[24px] sm:mt-[44px]">
+              Follow
+            </button>
+            <span className="text-base sm:text-lg">2.4K followers</span>
+          </div>
+        </div>
+        <div></div>
         </div>
         <div className="inline-flex gap-4 sm:gap-8 justify-between">
           <div className="flex flex-col flex-1">
@@ -54,16 +62,12 @@ function Author() {
               @Deallezh
             </span>
           </div>
-          <div className="flex flex-col gap-2 sm:gap-4 justify-end">
-            <button className="btn btn-primary sm:btn-lg text-xl sm:text-2xl font-bold">
-              Follow
-            </button>
-            <span className="text-base sm:text-lg">2.4K followers</span>
-          </div>
         </div>
 
         <UserContent />
       </MainContainer>
+      <Footer/>
+
     </>
   );
 }

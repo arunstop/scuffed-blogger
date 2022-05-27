@@ -1,12 +1,16 @@
 import React, { useCallback, useState } from "react";
+import { UserAbout } from "./UserAbout";
 import { UserContentTabs } from "./UserContentTabs";
 import { UserPosts } from "./UserPosts";
 
 const RENDER_SECTIONS = (title: string) => {
   if (title === "Posts") {
     return <UserPosts id={"2"} />;
-  } else {
+  } else if(title==="Lists"){
     return "-";
+  }
+  else {
+    return <UserAbout id={"1"}/>;
   }
 };
 
@@ -17,7 +21,7 @@ const UserContent = () => {
   }, []);
   console.log("Render : UserContent");
   return (
-    <div className="flex flex-col gap-4 sm:gap-8">
+    <div className="flex flex-col gap-4 sm:gap-8 min-h-screen">
       <UserContentTabs activeTab={activeTab + ""} onClick={changeActiveTab} />
       {RENDER_SECTIONS(activeTab)}
     </div>

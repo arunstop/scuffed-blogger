@@ -20,12 +20,13 @@ function MainPost({ post }: { post: Post }) {
   return (
     <div
       className="group flex w-full flex-col rounded-xl bg-primary
-        bg-opacity-10 shadow-lg transition-all hover:bg-opacity-40 sm:flex-row
-        "
+      bg-opacity-10 shadow-lg transition-all hover:bg-opacity-40 sm:flex-row
+      "
     >
       <PostLinker
         href={`/article/${post.id}`}
-        className="aspect-square h-60 w-full overflow-hidden sm:h-auto sm:w-72 relative bg-base-content rounded-t-xl rounded-bl-none sm:rounded-l-xl sm:rounded-tl-none"
+        className="relative aspect-square h-60 w-full overflow-hidden 
+        bg-base-content sm:h-auto sm:w-72 rounded-t-xl rounded-bl-none sm:rounded-l-xl sm:rounded-tr-none"
       >
         <img
           className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2]"
@@ -55,7 +56,7 @@ function MainPost({ post }: { post: Post }) {
 
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="inline-flex items-center gap-4">
-          <div className="dropdown dropdown-hover sm:dropdown-end self-start">
+          <div className="dropdown-hover dropdown self-start sm:dropdown-end">
             <MainUserLabel id={post.id} />
 
             <div tabIndex={0} className="dropdown-content pt-2">
@@ -63,7 +64,7 @@ function MainPost({ post }: { post: Post }) {
             </div>
           </div>
 
-          <div className="dropdown dropdown-end ml-auto">
+          <div className="dropdown-end dropdown ml-auto">
             <label
               className="btn btn-ghost aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
               title="Upvote"
