@@ -51,14 +51,14 @@ export const UserAbout = ({ id }: { id: string }) => {
                 href={e.href}
                 newTab
                 className="btn text-base sm:text-lg border-none h-auto py-2 px-4 sm:py-3 sm:px-6 decoration-2
-                btn-primary bg-opacity-10 text-primary hover:text-base-content gap-2 sm:gap-4 hover:underline"
+                btn-primary bg-opacity-10 text-primary-content hover:text-base-content gap-2 sm:gap-4 hover:underline"
               >
                 {e.title}
               </MainLink>
             ))}
           </div>
         </div>
-      <p className="gap-2 opacity-75 sm:gap-4">
+      <p className="gap-2 opacity-75 sm:gap-4 text-base sm:text-lg">
         <span>Joined since January 2022</span>
         <span className="mx-2 font-black sm:mx-4">&middot;</span>
         <span>

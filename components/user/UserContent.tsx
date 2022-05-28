@@ -1,13 +1,14 @@
 import React, { useCallback, useState } from "react";
 import { UserAbout } from "./UserAbout";
 import { UserContentTabs } from "./UserContentTabs";
+import { UserLists } from "./UserLists";
 import { UserPosts } from "./UserPosts";
 
 const RENDER_SECTIONS = (title: string) => {
   if (title === "Posts") {
     return <UserPosts id={"2"} />;
   } else if(title==="Lists"){
-    return "-";
+    return <UserLists/>;
   }
   else {
     return <UserAbout id={"1"}/>;

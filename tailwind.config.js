@@ -14,16 +14,17 @@ module.exports = {
     styled: true,
     themes: [
       {
-        cupcake:{
+        cupcake: {
           ...require("daisyui/src/colors/themes")["[data-theme=cupcake]"],
           "--btn-text-case": "none", // set default text transform for buttons
-        }
+        },
       },
       {
-        forest:{
+        forest: {
           ...require("daisyui/src/colors/themes")["[data-theme=forest]"],
           "--btn-text-case": "none", // set default text transform for buttons
-        }
+          primary: "#312e81",
+        },
       },
     ],
     // themes: true,
