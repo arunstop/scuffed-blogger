@@ -12,12 +12,14 @@ import {
   MdPersonOff,
   MdReport,
 } from "react-icons/md";
+import { Comment } from "../../utils/data/comment";
+import { LOREM } from "../../utils/helpers/Constants";
 import UserAvatar from "../user/UserAvatar";
 
-function ArticleComment({ id }: { id: string }) {
+function ArticleComment({ id, text }: Comment) {
   return (
     <div className="flex flex-row items-start gap-4">
-      <UserAvatar id={id} />
+      <UserAvatar id={id + ""} />
       <div className="flex flex-1 flex-col gap-2">
         <div className="inline-flex gap-4">
           <div className="flex flex-col">
@@ -92,13 +94,7 @@ function ArticleComment({ id }: { id: string }) {
           </div>
         </div>
         <span className="text-sm sm:text-base">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatibus
-          quo praesentium temporibus quod rerum labore officiis animi provident
-          natus minus dolorem corrupti quos dolor unde vero vel, saepe tempora
-          obcaecati! Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-          Voluptatibus quo praesentium temporibus quod rerum labore officiis
-          animi provident natus minus dolorem corrupti quos dolor unde vero vel,
-          saepe tempora obcaecati!
+          {text.length !== 0 ? text : LOREM}
         </span>
         <div className="inline-flex gap-2 sm:gap-4">
           <a

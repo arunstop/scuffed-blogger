@@ -1,6 +1,6 @@
 import React from "react";
 import { FaBloggerB, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
-import { APP_DESC, APP_NAME } from "../utils/helpers/Constants1";
+import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
 function Footer() {
   return (

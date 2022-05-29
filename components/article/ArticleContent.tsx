@@ -14,7 +14,7 @@ function ArticleContent({ id }: { id: string }) {
       <div className="flex flex-col gap-2 sm:gap-4">
         <figure className="relative aspect-video w-full w-full overflow-hidden rounded-xl">
           <img
-            className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2]"
+            className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2] bg-primary"
             src={`https://picsum.photos/id/${id}/500/300`}
             alt="Image"
             width={240}

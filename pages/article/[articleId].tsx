@@ -11,7 +11,7 @@ import Header from "../../components/Header";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../components/main/MainUserLabel";
-import { APP_NAME } from "../../utils/helpers/Constants1";
+import { APP_NAME } from "../../utils/helpers/Constants";
 
 function Article() {
   const router = useRouter();

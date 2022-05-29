@@ -1,11 +1,19 @@
 import React from "react";
+import { Comment } from "../../utils/data/comment";
 import ArticleComment from "./ArticleComment";
 
-function ArticleComments() {
+function ArticleComments({
+  comments,
+}: // addComment,
+{
+  comments: Comment[];
+  // addComment: (comments:Comment[]) => void;
+}) {
+  console.log("render: Article Comments");
   return (
     <>
-      {[...Array(10)].map((e, idx) => (
-        <ArticleComment key={Math.random()} id={idx + ""} />
+      {comments.map((e, idx) => (
+        <ArticleComment key={Math.random()} id={e.id} text={e.text} />
       ))}
     </>
   );

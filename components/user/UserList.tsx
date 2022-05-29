@@ -10,33 +10,34 @@ const UserList = ({ id }: { id: string }) => {
   "
     >
       <PostLinker
-        href={`/article/${id}`}
+        href={`/list/${id}`}
         className="relative aspect-video h-60 w-full overflow-hidden 
-        bg-base-content sm:h-auto sm:w-96 rounded-t-xl rounded-bl-none 
+        rounded-t-xl rounded-bl-none bg-base-content sm:h-auto sm:w-96 
         sm:rounded-l-xl sm:rounded-tr-none "
       >
-        <div className="flex gap-0.5 sm:gap-1 justify-end h-full">
+        <div className="flex h-full justify-end gap-0.5 sm:gap-1 relative">
           {[...Array((parseInt(id) || 0) % 2 === 0 ? 4 : 3)].map((e, idx) => (
-            <div key={idx} className="bg-base-content flex-1 overflow-hidden">
+            <div key={idx} className="flex-1 overflow-hidden bg-base-content">
               <img
-                className="flex-1 h-full object-cover group-hover:scale-[1.2] transition-transform"
+                className="h-full flex-1 object-cover transition-transform group-hover:scale-[1.2]"
                 src={`https://picsum.photos/id/${idx + ""}/500/300`}
                 alt="Image"
               />
             </div>
           ))}
+          <div
+            className="bg-base-100/80 flex max-h-32 absolute bottom-0 w-full p-4 
+            flex-wrap gap-2 text-base sm:text-lg justify-center font-bold "
+          >
+            <span className="">7 Articles</span>
+            <span className="font-black">&middot;</span>
+            <span className="">12 mins read</span>
+          </div>
         </div>
       </PostLinker>
 
       <div className="flex flex-1 flex-col gap-4 p-4">
-        <div className="flex flex-wrap gap-2 text-sm font-light sm:text-base">
-          <span className="">2d ago</span>
-          <span className="font-black">&middot;</span>
-          <span className="">Total 12 mins read</span>
-          <span className="font-black">&middot;</span>
-          <span className="">7 articles</span>
-        </div>
-        <PostLinker href={`/article/${id}`}>
+        <PostLinker href={`/list/${id}`}>
           <h1 className="text-2xl font-black group-hover:underline sm:text-3xl">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit.
           </h1>
@@ -47,7 +48,11 @@ const UserList = ({ id }: { id: string }) => {
           porro.
         </span>
 
-        <div className="flex flex-row items-center justify-end gap-2 sm:gap-4 mt-auto">
+        <div className="flex flex-wrap gap-2 text-sm font-light sm:text-base">
+          <span className="">Updated 2d ago</span>
+        </div>
+
+        <div className="mt-auto flex flex-row items-center justify-end gap-2 sm:gap-4">
           <button
             className="btn-neutral btn-outline btn btn-sm btn-circle 
             bg-opacity-50 text-xl font-bold normal-case opacity-80

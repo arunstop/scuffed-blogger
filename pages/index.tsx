@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import MainPost from "../components/main/MainPost";
 import MainSectionFilter from "../components/main/MainSectionFilterTab";
-import { APP_NAME,APP_DESC } from "../utils/helpers/Constants1";
+import { APP_NAME,APP_DESC } from "../utils/helpers/Constants";
 
 const Home: NextPage = () => {
   return (

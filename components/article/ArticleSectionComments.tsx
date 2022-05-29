@@ -1,9 +1,20 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
+import { Comment } from "../../utils/data/comment";
 import ArticleComments from "./ArticleComments";
+
+const egComments: Comment[] = [
+  { id: 1,text:"" },
+  { id: 2,text:"" },
+  { id: 3,text:"" },
+  { id: 4,text:"" },
+  { id: 5,text:"" },
+  { id: 6,text:"" },
+];
 
 function ArticleSectionComments({ id }: { id: string }) {
   const [comment, setComment] = useState("");
+  const [comments, setComments] = useState<Comment[]>(egComments);
 
   console.log("render ArticleSectionComments");
   return (
@@ -39,14 +50,25 @@ function ArticleSectionComments({ id }: { id: string }) {
             )}
             <button
               className={`flex-1 sm:flex-none font-bold btn btn-primary 
-              normal-case text-xl sm:w-48 ${comment.length !== 0 ? "" : "btn-disabled"}`}
+              normal-case text-xl sm:w-48 ${
+                comment.length !== 0 ? "" : "btn-disabled"
+              }`}
+              onClick={() => {
+                setComments([
+                  ...comments,
+                  { id: Math.floor(Math.random() * 30),text:comment },
+                ]);
+                setComment("");
+              }}
             >
               Comment
             </button>
           </div>
         </div>
       </div>
-      <ArticleComments />
+      <div className="flex flex-col-reverse">
+        <ArticleComments comments={comments} />
+      </div>
     </div>
   );
 }
