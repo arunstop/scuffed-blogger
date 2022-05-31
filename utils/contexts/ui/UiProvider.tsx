@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useReducer } from "react";
 import { UiAction, UiContextProps } from "../../data/types/UiTypes";
 import {
   initClientDarkMode,
-  toggleClientDarkMode
+  toggleClientDarkMode,
 } from "../../helpers/Helpers";
 import { UiContext } from "./UiContext";
 import { UI_INIT } from "./UiInitializer";
@@ -15,6 +15,9 @@ export const UiProvider = ({ children }: { children: ReactNode }) => {
     toggleDarkMode: (newVal) => {
       dispatch({ type: "TOGGLE_DARK_MODE", payload: { newVal } });
       toggleClientDarkMode(newVal);
+    },
+    setReplyingCommentId: (id) => {
+      dispatch({ type: "SET_REPLYING_COMMENT_ID", payload: { id } });
     },
   };
 

@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { FaTimes } from "react-icons/fa";
 import { Comment } from "../../utils/data/comment";
 import ArticleComments from "./ArticleComments";
 
 const egComments: Comment[] = [
-  { id: 1,text:"" },
-  { id: 2,text:"" },
-  { id: 3,text:"" },
-  { id: 4,text:"" },
-  { id: 5,text:"" },
-  { id: 6,text:"" },
+  { id: 1, text: "" },
+  { id: 2, text: "" },
+  { id: 3, text: "" },
+  { id: 4, text: "" },
+  { id: 5, text: "" },
+  { id: 6, text: "" },
 ];
 
 function ArticleSectionComments({ id }: { id: string }) {
@@ -41,11 +40,13 @@ function ArticleSectionComments({ id }: { id: string }) {
           <div className="flex justify-end w-full gap-4">
             {comment.length !== 0 && (
               <button
-                className="btn btn-error btn-outline border-2 opacity-80"
-                title="Reset"
-                onClick={() => setComment("")}
+                className="btn-outline btn ml-auto text-lg font-bold normal-case 
+                opacity-80 hover:opacity-100 w-24 sm:w-36 border-2 sm:text-xl"
+                onClick={() => {
+                  setComment("");
+                }}
               >
-                <FaTimes className="text-2xl" />
+                Cancel
               </button>
             )}
             <button
@@ -56,7 +57,7 @@ function ArticleSectionComments({ id }: { id: string }) {
               onClick={() => {
                 setComments([
                   ...comments,
-                  { id: Math.floor(Math.random() * 30),text:comment },
+                  { id: Math.floor(Math.random() * 30), text: comment },
                 ]);
                 setComment("");
               }}
@@ -66,7 +67,7 @@ function ArticleSectionComments({ id }: { id: string }) {
           </div>
         </div>
       </div>
-      <div className="flex flex-col-reverse">
+      <div className="flex flex-col-reverse gap-4 sm:gap-8">
         <ArticleComments comments={comments} />
       </div>
     </div>

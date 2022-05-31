@@ -11,6 +11,7 @@ import Header from "../../components/Header";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../components/main/MainUserLabel";
+import ModalContainer from "../../components/modal/ModalContainer";
 import { APP_NAME } from "../../utils/helpers/Constants";
 
 function Article() {
@@ -75,6 +76,7 @@ function Article() {
 
         <ArticleSectionSuggestions id={articleId + ""} />
       </div>
+      <ModalContainer />
       <Footer />
     </>
   );

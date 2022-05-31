@@ -12,11 +12,14 @@ import {
   MdPersonOff,
   MdReport,
 } from "react-icons/md";
+import { useUiCtx } from "../../utils/contexts/ui/UiHook";
 import { Comment } from "../../utils/data/comment";
 import { LOREM } from "../../utils/helpers/Constants";
 import UserAvatar from "../user/UserAvatar";
 
 function ArticleComment({ id, text }: Comment) {
+  const { uiAct } = useUiCtx();
+  console.log("render: ArticleComment "+id);
   return (
     <div className="flex flex-row items-start gap-4">
       <UserAvatar id={id + ""} />
@@ -24,7 +27,7 @@ function ArticleComment({ id, text }: Comment) {
         <div className="inline-flex gap-4">
           <div className="flex flex-col">
             <span className="text-base font-bold !leading-[1.2] sm:text-lg">
-              Firstname Lastn
+              Firstname Lastn 
             </span>
             <span className="text-base font-semibold !leading-[1.2] opacity-50 sm:text-lg">
               @FirstnameLastname
@@ -109,7 +112,13 @@ function ArticleComment({ id, text }: Comment) {
           >
             <FaArrowDown className="text-2xl sm:text-3xl" />
           </a>
-          <button className="btn-outline btn ml-auto text-base font-bold normal-case opacity-80 hover:opacity-100 sm:w-36 border-2 sm:text-lg">
+          <button
+            className="btn-outline btn ml-auto font-bold normal-case 
+            opacity-80 hover:opacity-100 w-24 sm:w-36 text-lg sm:text-xl"
+            onClick={() => {
+              uiAct.setReplyingCommentId(id);
+            }}
+          >
             Reply
           </button>
         </div>
