@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleAction from "../../components/article/ArticleActions";
+import ArticleCommentReplyModal from "../../components/article/ArticleCommentReplyModal";
 import ArticleContent from "../../components/article/ArticleContent";
 import ArticleSectionComments from "../../components/article/ArticleSectionComments";
 import ArticleSectionSuggestions from "../../components/article/ArticleSectionSuggestions";
@@ -11,7 +12,6 @@ import Header from "../../components/Header";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../components/main/MainUserLabel";
-import ModalContainer from "../../components/modal/ModalContainer";
 import { APP_NAME } from "../../utils/helpers/Constants";
 
 function Article() {
@@ -26,6 +26,7 @@ function Article() {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content="Scuffed blogs, for scuffed people" />
       </Head>
+      {/* <ModalContainer /> */}
       <Header />
       <div
         className="mx-auto flex min-h-screen max-w-[60rem] 
@@ -76,8 +77,9 @@ function Article() {
 
         <ArticleSectionSuggestions id={articleId + ""} />
       </div>
-      <ModalContainer />
       <Footer />
+      <ArticleCommentReplyModal />
+      {/* <ArticleComment */}
     </>
   );
 }

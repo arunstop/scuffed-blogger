@@ -2,13 +2,14 @@ import { KEY_CLIENT_DARK_MODE } from "./Constants";
 import { storageFind, storageSave } from "./LocalStorage";
 
 export const toggleClientDarkMode = (newVal: boolean) => {
-  const html = document.documentElement;
+  // const html = document.documentElement;
+  const body = document.getElementsByTagName("BODY")[0];
   if (newVal === true) {
-    html.classList.add("dark");
-    html.setAttribute("data-theme", "forest");
+    body.classList.add("dark");
+    body.setAttribute("data-theme", "forest");
   } else {
-    html.classList.remove("dark");
-    html.setAttribute("data-theme", "cupcake");
+    body.classList.remove("dark");
+    body.setAttribute("data-theme", "cupcake");
   }
   storageSave(KEY_CLIENT_DARK_MODE, JSON.stringify(newVal));
 };

@@ -1,10 +1,10 @@
 import React from "react";
-import ArticleCommentModalReply from "../article/ArticleCommentModalReply";
+import ArticleCommentReplyModal from "../article/ArticleCommentReplyModal";
 
 const ModalContainer = React.memo(function ModalContainer() {
   return (
     <>
-      <ArticleCommentModalReply />
+      <ArticleCommentReplyModal />
     </>
   );
 });

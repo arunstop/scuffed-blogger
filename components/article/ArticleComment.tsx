@@ -1,25 +1,18 @@
 import React from "react";
-import {
-  FaArrowDown,
-  FaArrowUp,
-  FaVolumeMute,
-  FaVolumeUp,
-} from "react-icons/fa";
-import {
-  MdDelete,
-  MdFlag,
-  MdMoreHoriz,
-  MdPersonOff,
-  MdReport,
-} from "react-icons/md";
+import { FaArrowDown, FaArrowUp } from "react-icons/fa";
+import { MdMoreHoriz } from "react-icons/md";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
 import { Comment } from "../../utils/data/comment";
 import { LOREM } from "../../utils/helpers/Constants";
 import UserAvatar from "../user/UserAvatar";
 
-function ArticleComment({ id, text }: Comment) {
+function ArticleComment({
+  id,
+  text,
+  openOptionModal,
+}: Comment & { openOptionModal: (id: string) => void }) {
   const { uiAct } = useUiCtx();
-  console.log("render: ArticleComment "+id);
+  console.log("render: ArticleComment " + id);
   return (
     <div className="flex flex-row items-start gap-4">
       <UserAvatar id={id + ""} />
@@ -27,21 +20,22 @@ function ArticleComment({ id, text }: Comment) {
         <div className="inline-flex gap-4">
           <div className="flex flex-col">
             <span className="text-base font-bold !leading-[1.2] sm:text-lg">
-              Firstname Lastn 
+              Firstname Lastn
             </span>
             <span className="text-base font-semibold !leading-[1.2] opacity-50 sm:text-lg">
               @FirstnameLastname
             </span>
           </div>
-          <div className="dropdown dropdown-end ml-auto">
+          {/* <div className="dropdown dropdown-end ml-auto"> */}
             <label
-              className="btn btn-ghost aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
+              className="btn btn-ghost ml-auto aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
               title="Upvote"
               tabIndex={0}
+              onClick={() => openOptionModal(id+"")}
             >
               <MdMoreHoriz className="text-2xl sm:text-3xl" />
             </label>
-            <ul
+            {/* <ul
               tabIndex={0}
               className="dropdown-content menu p-2 shadow-xl ring-2 ring-base-content/20 bg-base-100 rounded-xl max-w-[15rem] w-max"
             >
@@ -93,8 +87,8 @@ function ArticleComment({ id, text }: Comment) {
                   </span>
                 </a>
               </li>
-            </ul>
-          </div>
+            </ul> */}
+          {/* </div> */}
         </div>
         <span className="text-sm sm:text-base">
           {text.length !== 0 ? text : LOREM}
@@ -127,4 +121,4 @@ function ArticleComment({ id, text }: Comment) {
   );
 }
 
-export default ArticleComment;
+export default React.memo(ArticleComment);
