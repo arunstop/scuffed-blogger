@@ -10,16 +10,12 @@ function MainTabItem({ icon, title, active, onClick }: MainTabItemProps) {
   console.log(title);
   return (
     <a
-      className={`w-full sm:flex-1 tab text-base sm:text-lg btn btn-ghost border-0
-      flex flex-col h-auto p-4 transition-all gap-1 sm:gap-2
-      sm:first:!rounded-l-xl sm:last:!rounded-r-xl
+      className={`tab tab-lg  text-lg sm:text-xl !rounded-xl font-bold transition-colors
+      gap-2 sm:gap-4 text-ellipsis overflow-hidden text-opacity-100 border-1 btn
       ${
         active
-          ? `tab-active !rounded-xl z-[1] 
-          sm:-mx-3 sm:first:-mr-3 sm:last:-ml-3 
-          -my-2 first:pt-6 last:pb-6
-          sm:my-0 sm:first:pt-4 sm:last:pb-4`
-          : "hover:bg-primary-focus/30 !rounded-none"
+          ? `tab-active !border-primary`
+          : "!border-base-content/80 btn-outline"
       }`}
       onClick={() => !active && onClick?.(title)}
     >

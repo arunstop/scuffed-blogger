@@ -26,7 +26,7 @@ const tabs: MainTabItemProps[] = [
 ];
 
 function MainSectionFilter() {
-  const [activeTab, setActiveTab] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string>("Trending");
   const changeActiveTab = useCallback(
     (title:string) => {
       setActiveTab(title);
@@ -36,8 +36,7 @@ function MainSectionFilter() {
 
   return (
     <div
-      className="tabs tabs-boxed items-stretch bg-base-300
-      !rounded-xl shadow-xl ring-2 ring-base-content/20 p-0 overflow-hidden"
+      className="tabs tabs-boxed rounded-xl w-full p-0 bg-transparent gap-4"
     >
       {tabs.map((e, idx) => (
         <MainTabItem

@@ -16,9 +16,8 @@ const Home: NextPage = () => {
       </Head>
       <Header />
       <div
-        className="min-h-screen bg-base-100 p-4 sm:p-8 
-        justify-center gap-4 sm:gap-8 flex flex-col
-        max-w-[60rem] mx-auto"
+        className="min-h-screen bg-base-100 p-4 sm:p-8 justify-center 
+        gap-4 sm:gap-8 flex flex-col max-w-[60rem] mx-auto"
       >
         <MainSectionFilter />
         <div

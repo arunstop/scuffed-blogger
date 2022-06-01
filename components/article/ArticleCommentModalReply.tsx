@@ -30,7 +30,7 @@ const ArticleCommentModalReply = React.memo(
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-base-content bg-opacity-25" />
+            <div className="fixed inset-0 bg-base-content/20" />
           </Transition.Child>
 
           <Transition.Child
@@ -43,25 +43,25 @@ const ArticleCommentModalReply = React.memo(
             leaveTo="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-[0.75]"
           >
             <Dialog.Panel className="w-full sm:w-auto">
-              <div className="modal-box flex w-full !translate-y-0 !scale-[1] flex-col gap-4 sm:w-[48rem] sm:gap-8 relative">
-              <div className="absolute ">
-              </div>
+              <div className="modal-box relative flex w-full !translate-y-0 !scale-[1] flex-col gap-4 sm:w-[48rem] sm:gap-8">
+                <div className="absolute "></div>
                 <Dialog.Title as="div" className="">
                   <div className="flex flex-row items-center justify-between">
                     <span className="text-2xl font-bold">Replying...</span>
-                    <span
-                      className="btn-outline btn border-2"
-                      title="Cancel"
+                    <a
+                      className="btn btn-outline aspect-square rounded-xl 
+                      p-0 opacity-80 hover:opacity-100"
+                      title="Back"
                       onClick={closeModal}
                     >
-                      <FaTimes className="text-2xl" />
-                    </span>
+                      <FaTimes className="text-2xl sm:text-3xl" />
+                    </a>
                   </div>
                 </Dialog.Title>
                 <div className="form-control flex-1 gap-4 rounded-xl sm:gap-8">
                   <textarea
                     className="textarea-bordered textarea h-24 max-h-[18rem] min-h-[12rem] rounded-xl text-base"
-                    placeholder="Add a comment..."
+                    placeholder="Add a reply..."
                     value={reply}
                     onChange={(ev) => setReply(ev.target.value)}
                   />
@@ -82,6 +82,7 @@ const ArticleCommentModalReply = React.memo(
                         normal-case text-xl sm:w-48 ${
                           reply.length !== 0 ? "" : "btn-disabled"
                         }`}
+                        onClick={closeModal}
                     >
                       Reply
                     </button>
