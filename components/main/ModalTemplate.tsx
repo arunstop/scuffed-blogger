@@ -32,7 +32,7 @@ const ModalTemplate = ({
           leaveFrom="opacity-100 "
           leaveTo="opacity-0 "
         >
-          <div className="fixed inset-0 bg-base-content/20" />
+          <div className="fixed inset-0 bg-base-content/20 backdrop-blur-lg" />
         </Transition.Child>
 
         <Transition.Child
@@ -44,8 +44,12 @@ const ModalTemplate = ({
           leaveFrom="opacity-100 translate-y-0 sm:translate-y-0 sm:scale-[1.00]"
           leaveTo="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-[0.75]"
         >
-          <Dialog.Panel className="flex w-full justify-center sm:p-8">
-            <div className="modal-box relative flex w-full flex-1 !translate-y-0 !scale-[1] flex-col gap-4 ring-2 ring-base-content/20 sm:!max-w-[48rem]">
+          <Dialog.Panel className="flex w-full justify-center sm:p-8 !pointer-events-none">
+            <div
+              className="modal-box relative flex w-full flex-1 !translate-y-0 
+              !scale-[1] flex-col gap-4 ring-2 ring-base-content/20 !pointer-events-auto
+              sm:!max-w-[24rem] md:!max-w-[32rem] lg:!max-w-[40rem]"
+            >
               {/* gradient background */}
               <div className="absolute inset-0 z-[-1] h-[75%] bg-gradient-to-b from-primary-focus/75 via-primary/50 to-transparent"></div>
               <Dialog.Title as="div" className="">
