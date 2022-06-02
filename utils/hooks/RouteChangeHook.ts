@@ -3,8 +3,9 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 export const useRouteChange = () => {
   const router = useRouter();
-  const body = getBodyEl() as Element;
   useEffect(() => {
+    const body = getBodyEl() as Element;
+
     body.scrollTop = 0;
     return () => {};
   }, [router.pathname]);
