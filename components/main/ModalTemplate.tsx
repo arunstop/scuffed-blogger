@@ -1,7 +1,8 @@
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, ReactNode } from "react";
 import { FaTimes } from "react-icons/fa";
-import { MainModalProps } from "../../utils/data/main";
+import { MainModalProps } from "../../utils/data/Main";
+import GradientBackground from "./GradientBackground";
 
 interface ModalTemplateProps {
   title: string;
@@ -51,7 +52,7 @@ const ModalTemplate = ({
               sm:!max-w-[24rem] md:!max-w-[32rem] lg:!max-w-[40rem]"
             >
               {/* gradient background */}
-              <div className="absolute inset-0 z-[-1] h-[75%] bg-gradient-to-b from-primary-focus/75 via-primary/50 to-transparent"></div>
+              <GradientBackground/>
               <Dialog.Title as="div" className="">
                 <div className="flex flex-row items-center justify-between">
                   <span className="text-2xl font-bold">{title}</span>

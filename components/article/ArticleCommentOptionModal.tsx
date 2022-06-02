@@ -3,7 +3,7 @@ import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import {
   MdDelete, MdFlag, MdPersonOff, MdReport
 } from "react-icons/md";
-import { MainModalProps } from "../../utils/data/main";
+import { MainModalProps } from "../../utils/data/Main";
 import ModalTemplate from "../main/ModalTemplate";
 import ArticleCommentOptionItem, {
   OptionItem

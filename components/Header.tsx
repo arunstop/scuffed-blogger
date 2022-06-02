@@ -20,8 +20,8 @@ function Header() {
       <Link href="/" passHref>
         <a className="text-lg sm:text-xl md:text-2xl font-black">{APP_NAME}</a>
       </Link>
-      <button className="">
-      </button>
+      <div className="inline-flex items-center gap-2 sm:gap-4">
+      <button className="btn btn-sm btn-outline font-bold">Write</button>
       <label className="swap swap-rotate">
         <input
           type="checkbox"
@@ -33,6 +33,7 @@ function Header() {
         <MdOutlineLightMode className="swap-on text-2xl sm:text-3xl" />
         <MdOutlineDarkMode className="swap-off text-2xl sm:text-3xl" />
       </label>
+      </div>
     </div>
   );
 }

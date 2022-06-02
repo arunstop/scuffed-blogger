@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MainModalProps } from "../../utils/data/main";
+import { MainModalProps } from "../../utils/data/Main";
 import ModalTemplate from "../main/ModalTemplate";
 
 const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
