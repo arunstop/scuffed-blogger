@@ -1,9 +1,12 @@
 import { KEY_CLIENT_DARK_MODE } from "./Constants";
 import { storageFind, storageSave } from "./LocalStorage";
 
+export const getBodyEl= ()=> document.getElementsByTagName("BODY")[0];
+export const getHeaderEl= ()=> document.getElementById("header");
+
 export const toggleClientDarkMode = (newVal: boolean) => {
   // const html = document.documentElement;
-  const body = document.getElementsByTagName("BODY")[0];
+  const body = getBodyEl();
   if (newVal === true) {
     body.classList.add("dark");
     body.setAttribute("data-theme", "forest");

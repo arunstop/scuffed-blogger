@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React from "react";
 import AuthPanel from "../components/auth/AuthPanel";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import MainContainer from "../components/main/MainContainer";
 import { APP_NAME } from "../utils/helpers/Constants";
@@ -19,6 +20,7 @@ function Auth() {
       <MainContainer>
         <AuthPanel />
       </MainContainer>
+      <Footer/>
     </>
   );
 }
