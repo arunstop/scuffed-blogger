@@ -3,15 +3,12 @@ import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import {
   MdDelete, MdFlag, MdPersonOff, MdReport
 } from "react-icons/md";
+import { MainModalProps } from "../../utils/data/main";
 import ModalTemplate from "../main/ModalTemplate";
 import ArticleCommentOptionItem, {
   OptionItem
 } from "./ArticleCommentOptionItem";
 
-interface ArticleCommentOptionModalProps {
-  value: boolean;
-  onClose: () => void;
-}
 
 const options: OptionItem[] = [
   { icon: <MdReport />, label: "Report comment", action: () => {} },
@@ -25,7 +22,7 @@ const options: OptionItem[] = [
 function ArticleCommentOptionModal({
   value,
   onClose,
-}: ArticleCommentOptionModalProps) {
+}: MainModalProps) {
   return (
     <ModalTemplate value={value} onClose={onClose} title="Options">
       <ul className="menu p-2 rounded-xl">

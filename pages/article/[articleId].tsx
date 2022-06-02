@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import React from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleAction from "../../components/article/ArticleActions";
-import ArticleCommentReplyModal from "../../components/article/ArticleCommentReplyModal";
 import ArticleContent from "../../components/article/ArticleContent";
 import ArticleSectionComments from "../../components/article/ArticleSectionComments";
 import ArticleSectionSuggestions from "../../components/article/ArticleSectionSuggestions";
@@ -78,7 +77,6 @@ function Article() {
         <ArticleSectionSuggestions id={articleId + ""} />
       </div>
       <Footer />
-      <ArticleCommentReplyModal />
       {/* <ArticleComment */}
     </>
   );

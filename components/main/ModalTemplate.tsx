@@ -1,10 +1,9 @@
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, ReactNode } from "react";
 import { FaTimes } from "react-icons/fa";
+import { MainModalProps } from "../../utils/data/main";
 
 interface ModalTemplateProps {
-  value: boolean;
-  onClose: () => void;
   title: string;
   children: ReactNode;
 }
@@ -14,15 +13,15 @@ const ModalTemplate = ({
   onClose,
   title,
   children,
-}: ModalTemplateProps) => {
+}: MainModalProps &ModalTemplateProps) => {
   return (
     <Transition appear show={value} as={Fragment}>
       <Dialog
         as="div"
-        className="modal modal-bottom !pointer-events-auto !visible !bg-opacity-0 !opacity-100 sm:modal-middle overflow-hidden"
+        className="modal modal-bottom !pointer-events-auto !visible overflow-hidden !bg-opacity-0 !opacity-100 sm:modal-middle"
         onClose={onClose}
       >
-        {/*  */}
+        {/* OVERLAY */}
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -32,7 +31,8 @@ const ModalTemplate = ({
           leaveFrom="opacity-100 "
           leaveTo="opacity-0 "
         >
-          <div className="fixed inset-0 bg-base-content/20 backdrop-blur-lg" />
+          {/* <div className="fixed inset-0 bg-base-content/20 backdrop-blur-md" /> */}
+          <div className="fixed inset-0 bg-base-content/20" />
         </Transition.Child>
 
         <Transition.Child
@@ -44,10 +44,10 @@ const ModalTemplate = ({
           leaveFrom="opacity-100 translate-y-0 sm:translate-y-0 sm:scale-[1.00]"
           leaveTo="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-[0.75]"
         >
-          <Dialog.Panel className="flex w-full justify-center sm:p-8 !pointer-events-none">
+          <Dialog.Panel className="!pointer-events-none flex w-full justify-center sm:p-8">
             <div
-              className="modal-box relative flex w-full flex-1 !translate-y-0 
-              !scale-[1] flex-col gap-4 ring-2 ring-base-content/20 !pointer-events-auto
+              className="modal-box !pointer-events-auto relative flex w-full flex-1 
+              !translate-y-0 !scale-[1] flex-col gap-4 ring-2 ring-base-content/20
               sm:!max-w-[24rem] md:!max-w-[32rem] lg:!max-w-[40rem]"
             >
               {/* gradient background */}
