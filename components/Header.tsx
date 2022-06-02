@@ -20,6 +20,8 @@ function Header() {
       <Link href="/" passHref>
         <a className="text-lg sm:text-xl md:text-2xl font-black">{APP_NAME}</a>
       </Link>
+      <button className="">
+      </button>
       <label className="swap swap-rotate">
         <input
           type="checkbox"

@@ -10,15 +10,14 @@ export interface UiState {
 
 export interface UiAction {
   toggleDarkMode: (newVal: boolean) => void;
-  setReplyingCommentId: (id: string | number|null) => void;
+  // setReplyingCommentId: (id: string | number|null) => void;
 }
 
-export type UiActionTypes =
-  | {
-      type: "TOGGLE_DARK_MODE";
-      payload: { newVal: boolean };
-    }
-  | {
-      type: "SET_REPLYING_COMMENT_ID";
-      payload: { id: string | number|null };
-    };
+export type UiActionTypes = {
+  type: "TOGGLE_DARK_MODE";
+  payload: { newVal: boolean };
+};
+// | {
+//     type: "SET_REPLYING_COMMENT_ID";
+//     payload: { id: string | number | null };
+//   };

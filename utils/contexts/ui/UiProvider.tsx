@@ -16,9 +16,9 @@ export const UiProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: "TOGGLE_DARK_MODE", payload: { newVal } });
       toggleClientDarkMode(newVal);
     },
-    setReplyingCommentId: (id) => {
-      dispatch({ type: "SET_REPLYING_COMMENT_ID", payload: { id } });
-    },
+    // setReplyingCommentId: (id) => {
+    //   dispatch({ type: "SET_REPLYING_COMMENT_ID", payload: { id } });
+    // },
   };
 
   const value: UiContextProps = {

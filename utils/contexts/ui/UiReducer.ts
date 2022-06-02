@@ -6,9 +6,9 @@ export const UI_REDUCER = (state: UiState, action: UiActionTypes): UiState => {
     case "TOGGLE_DARK_MODE": {
       return { ...state, darkMode: action.payload.newVal };
     }
-    case "SET_REPLYING_COMMENT_ID": {
-      return { ...state, replyingCommentId: action.payload.id };
-    }
+    // case "SET_REPLYING_COMMENT_ID": {
+    //   return { ...state, replyingCommentId: action.payload.id };
+    // }
     default:
       return state;
   }
