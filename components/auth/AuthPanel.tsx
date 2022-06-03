@@ -31,7 +31,7 @@ function AuthPanel() {
       case "REGISTER":
         return (
           <>
-            <span className="">Create </span>
+            <span className="">Create a </span>
             <span className="text-base-content">{APP_NAME} </span>
             <span className="">account</span>
           </>

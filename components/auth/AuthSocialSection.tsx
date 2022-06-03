@@ -1,5 +1,12 @@
 import React from "react";
-import { FaGoogle, FaApple, FaFacebook } from "react-icons/fa";
+import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
+import AuthSocialButton, { SocialButtonProps } from "./AuthSocialButton";
+
+const socialButtons: SocialButtonProps[] = [
+  { icon: <FaGoogle />, label: "Google" },
+  { icon: <FaApple />, label: "Apple" },
+  { icon: <FaFacebook />, label: "Facebook" },
+];
 
 function AuthSocialSection() {
   return (
@@ -9,33 +16,9 @@ function AuthSocialSection() {
       </span>
 
       <div className="flex flex-col flex-wrap gap-2 sm:flex-row sm:gap-4">
-        <button
-          className="btn btn-primary flex-1 flex-nowrap gap-x-2
-    text-clip text-lg font-bold sm:gap-x-4 sm:text-lg"
-        >
-          <span className="text-xl sm:text-2xl">
-            <FaGoogle />
-          </span>
-          Google
-        </button>
-        <button
-          className="btn btn-primary flex-1 flex-nowrap gap-x-2
-    text-clip text-lg font-bold sm:gap-x-4 sm:text-lg"
-        >
-          <span className="text-xl sm:text-2xl">
-            <FaApple />
-          </span>
-          Apple
-        </button>
-        <button
-          className="btn btn-primary flex-1 flex-nowrap gap-x-2
-    text-clip text-lg font-bold sm:gap-x-4 sm:text-lg"
-        >
-          <span className="text-xl sm:text-2xl">
-            <FaFacebook />
-          </span>
-          Facebook
-        </button>
+        {socialButtons.map((e, idx) => (
+          <AuthSocialButton key={idx} {...e} />
+        ))}
       </div>
     </>
   );

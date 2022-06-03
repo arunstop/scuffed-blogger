@@ -5,10 +5,6 @@ import ArticleComment from "./ArticleComment";
 import ArticleCommentOptionModal from "./ArticleCommentOptionModal";
 import ArticleCommentReplyModal from "./ArticleCommentReplyModal";
 
-export type ArticleModals = "REPLY" | "OPTIONS";
-
-
-
 function ArticleComments({
   comments,
 }: // addComment,
