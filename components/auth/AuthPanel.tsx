@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { APP_NAME } from "../../utils/helpers/Constants";
+import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import GradientBackground from "../main/GradientBackground";
 import AuthLoginForm from "./AuthLoginForm";
 import AuthRegisterForm from "./AuthRegisterForm";
@@ -14,6 +15,7 @@ function AuthPanel() {
   const [form, setForm] = useState<AuthFormTypes>("LOGIN");
 
   const changeForm = useCallback((form: AuthFormTypes) => {
+    scrollToTop(true);
     setForm(form);
   }, []);
 

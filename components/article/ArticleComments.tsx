@@ -1,8 +1,13 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { Comment } from "../../utils/data/comment";
+import { useArticleModalsBehaviorHook } from "../../utils/hooks/ArticleModalsBehaviorHook";
 import ArticleComment from "./ArticleComment";
 import ArticleCommentOptionModal from "./ArticleCommentOptionModal";
 import ArticleCommentReplyModal from "./ArticleCommentReplyModal";
+
+export type ArticleModals = "REPLY" | "OPTIONS";
+
+
 
 function ArticleComments({
   comments,
@@ -11,26 +16,9 @@ function ArticleComments({
   comments: Comment[];
   // addComment: (comments:Comment[]) => void;
 }) {
-  const [optionModal, setOptionModal] = useState<string | number | null>(null);
-  const [replyModal, setReplyModal] = useState<string | number | null>(null);
+  const { optionModal, closeOptionModal, replyModal, closeReplyModal } =
+    useArticleModalsBehaviorHook();
 
-  const openOptionModal = useCallback((id: string | number | null) => {
-    setOptionModal(id);
-  }, []);
-
-  const closeOptionModal = useCallback(() => {
-    setOptionModal(null);
-  }, []);
-
-  const openReplyModal = useCallback((id: string | number | null) => {
-    setReplyModal(id);
-  }, []);
-
-  const closeReplyModal = useCallback(() => {
-    setReplyModal(null);
-  }, []);
-
-  console.log("render: Article Comments");
   return (
     <>
       {comments.map((e, idx) => (
@@ -38,8 +26,8 @@ function ArticleComments({
           key={idx}
           id={e.id}
           text={e.text}
-          openOptionModal={openOptionModal}
-          openReplyModal={openReplyModal}
+          // openOptionModal={openOptionModal}
+          // openReplyModal={openReplyModal}
         />
       ))}
       <ArticleCommentOptionModal
