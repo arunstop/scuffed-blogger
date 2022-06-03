@@ -98,9 +98,7 @@ function Article() {
   console.log("render [articleId]");
   return (
     <>
-      {/* <ModalContainer /> */}
       {mzPage}
-      {/* <ArticleComment */}
     </>
   );
 }
