@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
 import { APP_NAME } from "../utils/helpers/Constants";
@@ -24,22 +24,38 @@ function Header() {
   } = useUiCtx();
 
   const router = useRouter();
-  useHeaderBehavior();
+  const [maxTop, setMaxTop] = useState(false);
+
+  const scrollToTopCallback = useCallback(() => {
+    setMaxTop(true);
+  }, []);
+
+  useHeaderBehavior(scrollToTopCallback);
   return (
     <div
       className={`sticky flex flex-row gap-4 top-0 z-10 h-12
       w-full items-center px-4 justify-between transition-all duration-[600ms]
+      text-primary-content
       `}
       id="header"
     >
       <Link href="/" passHref>
-        <a className="text-lg sm:text-xl md:text-2xl font-black">{APP_NAME}</a>
+        <a className={`text-lg sm:text-xl md:text-2xl font-black`}>
+          {APP_NAME}
+        </a>
       </Link>
       <div className="inline-flex items-center gap-2 sm:gap-4">
         {router.pathname !== "/auth" && (
           <Link href="/auth" passHref>
             <a>
-              <button className="btn btn-sm btn-outline font-bold">
+              <button
+                className="btn btn-sm btn-outline font-bold hover:bg-primary-content 
+                hover:!text-base-100"
+                style={{
+                  borderColor: "hsl(var(--pc))",
+                  color: "hsl(var(--pc))",
+                }}
+              >
                 Write
               </button>
             </a>
