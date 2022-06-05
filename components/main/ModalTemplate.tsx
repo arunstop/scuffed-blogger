@@ -19,7 +19,8 @@ const ModalTemplate = ({
     <Transition appear show={value} as={Fragment}>
       <Dialog
         as="div"
-        className="modal modal-bottom !pointer-events-auto !visible overflow-hidden !bg-opacity-0 !opacity-100 sm:modal-middle"
+        className="modal modal-bottom !pointer-events-auto !visible overflow-hidden 
+        !bg-opacity-0 !opacity-100 sm:modal-middle "
         onClose={onClose}
       >
         {/* OVERLAY */}
@@ -49,7 +50,7 @@ const ModalTemplate = ({
             <div
               className="modal-box !pointer-events-auto relative flex w-full flex-1 
               !translate-y-0 !scale-[1] flex-col gap-4 ring-2 ring-base-content/20
-              sm:!max-w-[24rem] md:!max-w-[32rem] lg:!max-w-[40rem]"
+              sm:!max-w-md md:!max-w-lg lg:!max-w-xl"
             >
               {/* gradient background */}
               <GradientBackground/>

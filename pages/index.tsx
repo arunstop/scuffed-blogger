@@ -3,8 +3,11 @@ import Head from "next/head";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import MainPost from "../components/main/MainPost";
+import MainSearchBar from "../components/main/MainSearchBar";
+
 import MainSectionFilter from "../components/main/MainSectionFilterTab";
-import { APP_NAME,APP_DESC } from "../utils/helpers/Constants";
+import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
+
 
 const Home: NextPage = () => {
   return (
@@ -19,6 +22,7 @@ const Home: NextPage = () => {
         className="min-h-screen bg-base-100 p-4 sm:p-8 justify-center 
         gap-4 sm:gap-8 flex flex-col max-w-[60rem] mx-auto"
       >
+        <MainSearchBar />
         <MainSectionFilter />
         <div
           className="flex flex-col gap-4 sm:gap-8
@@ -33,7 +37,7 @@ const Home: NextPage = () => {
           ))}
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

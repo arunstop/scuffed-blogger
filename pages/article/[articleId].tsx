@@ -21,9 +21,7 @@ function Article() {
   useEffect(() => {
     scrollToTop(true);
 
-    return () => {
-      
-    };
+    return () => {};
   }, [articleId]);
 
   const mzPage = useMemo(() => {
@@ -43,8 +41,8 @@ function Article() {
         <Header />
         <div
           className="mx-auto flex min-h-screen max-w-[60rem] 
-      flex-col justify-start gap-4 bg-base-100 p-4
-      sm:gap-8 sm:p-8"
+          flex-col justify-start gap-4 bg-base-100 p-4
+          sm:gap-8 sm:p-8"
         >
           <div className="inline-flex justify-start">
             <div className="dropdown-hover dropdown self-start">
@@ -96,11 +94,7 @@ function Article() {
   }, [articleId]);
 
   console.log("render [articleId]");
-  return (
-    <>
-      {mzPage}
-    </>
-  );
+  return <>{mzPage}</>;
 }
 
 export default Article;
