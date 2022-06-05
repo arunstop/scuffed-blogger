@@ -1,13 +1,13 @@
 import React from "react";
 import { MdEmail, MdLock } from "react-icons/md";
-import MainInput from "../input/MainInput";
+import MainTextInput from "../input/MainTextInput";
 import { AuthFormProps } from "./AuthPanel";
 
 function AuthRegisterForm({ changeForm }: AuthFormProps) {
   return (
     <>
-      <MainInput type="text" placeholder="Email..." icon={<MdEmail />} />
-      <MainInput type="password" placeholder="Password..." icon={<MdLock />} />
+      <MainTextInput type="text" placeholder="Email..." icon={<MdEmail />} />
+      <MainTextInput type="password" placeholder="Password..." icon={<MdLock />} />
 
       <button className="btn btn-primary text-lg font-bold sm:text-xl">
         Register

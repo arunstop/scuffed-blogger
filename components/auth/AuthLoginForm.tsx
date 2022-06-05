@@ -1,14 +1,19 @@
 import React from "react";
 import { MdEmail, MdLock } from "react-icons/md";
 import { APP_NAME } from "../../utils/helpers/Constants";
-import MainInput from "../input/MainInput";
+import MainTextInput from "../input/MainTextInput";
 import { AuthFormProps } from "./AuthPanel";
 
 function AuthLoginForm({ changeForm }: AuthFormProps) {
   return (
     <>
-      <MainInput type="text" placeholder="Email..." icon={<MdEmail />} />
-      <MainInput type="password" placeholder="Password..." icon={<MdLock />} />
+      <MainTextInput type="email" placeholder="Email..." icon={<MdEmail />} />
+      <MainTextInput
+        type="password"
+        placeholder="Password..."
+        icon={<MdLock />}
+        minLength={8}
+      />
       <div className="inline-flex flex-wrap justify-end gap-4 sm:gap-8">
         {/* <button className="btn btn-link p-0 text-lg font-bold sm:text-xl">
     Create Account
