@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import MainContainer from "../../components/main/MainContainer";
@@ -44,10 +44,8 @@ function Author() {
                 />
               </div>
             </div>
-            <div className="flex flex-col gap-2 sm:gap-4 justify-end">
-              <button className="btn btn-primary sm:btn-lg text-xl sm:text-2xl font-bold border-base-100 border-2 sm:border-4 mt-[24px] sm:mt-[44px]">
-                Follow
-              </button>
+            <div className="flex flex-col gap-2 sm:gap-4 items-end">
+              <FollowButton />
               <span className="text-base sm:text-lg">2.4K followers</span>
             </div>
           </div>
@@ -63,10 +61,10 @@ function Author() {
             </span>
           </div>
           <div>
-          <p className="text-base sm:text-lg">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-          </p>
-        </div>
+            <p className="text-base sm:text-lg">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+            </p>
+          </div>
         </div>
 
         <UserContent />
@@ -75,5 +73,31 @@ function Author() {
     </>
   );
 }
+
+const FollowButton = React.memo(function FollowButton() {
+  const [following, setFollowing] = useState(false);
+
+  return (
+    <div
+      className={`
+    border-base-100 border-2 sm:border-4 mt-[24px] sm:mt-[44px] bg-base-100
+    rounded-full
+    `}
+    >
+      <button
+        className={`
+        btn sm:btn-lg text-xl sm:text-2xl font-bold 
+        !border-2 sm:!border-4 !outline-none group
+        transition-all w-32 sm:w-40
+        ${following?'btn-outline btn-neutral':'btn-primary'}
+      `}
+        onClick={() => setFollowing(!following)}
+      >
+        <span className="block group-hover:hidden">{following ? "Following" : "Follow"}</span>
+        <span className="hidden group-hover:block">{following ? "Unfollow" : "Follow"}</span>
+      </button>
+    </div>
+  );
+});
 
 export default Author;
