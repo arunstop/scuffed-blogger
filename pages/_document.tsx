@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang="en" className="!overflow-auto !pr-0">
       <Head />
-      <body className="dark max-h-screen overflow-auto overflow-x-hidden font-nunito">
+      <body className="max-h-screen overflow-auto overflow-x-hidden font-nunito">
         <Main />
         <NextScript />
       </body>
