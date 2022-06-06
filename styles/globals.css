@@ -57,3 +57,7 @@
     color-scheme: dark;
   }
 }
+
+#nprogress .spinner {
+    display: none !important;
+  }
