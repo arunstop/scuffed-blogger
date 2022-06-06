@@ -7,14 +7,13 @@ import MainContainer from "../components/main/MainContainer";
 import MainSearchBar from "../components/main/MainSearchBar";
 
 import MainSectionFilter from "../components/main/MainSectionFilterTab";
+import MainSectionSkeleton from "../components/main/MainSectionSkeleton";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
 const LazyMainPostSection = dynamic(
   () => import("../components/main/MainPostSection"),
   {
-    loading: () => (
-      <p className="mx-auto text-lg sm:text-xl font-bold">Loading posts...</p>
-    ),
+    loading: () => <MainSectionSkeleton text="Loading posts..." />,
     ssr: false,
   },
 );

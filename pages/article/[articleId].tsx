@@ -1,15 +1,15 @@
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo } from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleSectionAction from "../../components/article/ArticleActions";
 import ArticleContent from "../../components/article/ArticleContent";
-import ArticleSectionComments from "../../components/article/ArticleSectionComments";
-import ArticleSectionSuggestions from "../../components/article/ArticleSectionSuggestions";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
+import MainSectionSkeleton from "../../components/main/MainSectionSkeleton";
 import MainUserLabel from "../../components/main/MainUserLabel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
@@ -84,9 +84,9 @@ function Article() {
 
           <ArticleSectionAction id={articleId + ""} />
 
-          <ArticleSectionComments id={articleId + ""} />
+          <LazyArticleSectionComments id={articleId + ""} />
 
-          <ArticleSectionSuggestions id={articleId + ""} />
+          <LazyArticleSectionSuggestions id={articleId + ""} />
         </div>
         <Footer />
       </>
@@ -96,5 +96,21 @@ function Article() {
   console.log("render [articleId]");
   return <>{mzPage}</>;
 }
+
+const LazyArticleSectionComments = dynamic(
+  () => import("../../components/article/ArticleSectionComments"),
+  {
+    loading: () => <MainSectionSkeleton text="Loading comments..." />,
+    ssr: false,
+  },
+);
+
+const LazyArticleSectionSuggestions = dynamic(
+  () => import("../../components/article/ArticleSectionSuggestions"),
+  {
+    loading: () => <MainSectionSkeleton text="Loading more posts..." />,
+    ssr: false,
+  },
+);
 
 export default Article;
