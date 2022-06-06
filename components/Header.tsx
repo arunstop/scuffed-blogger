@@ -18,6 +18,7 @@ import { useHeaderBehavior } from "../utils/hooks/HeaderBehaviorHook";
 // }
 
 function Header() {
+  console.log("header");
   const {
     uiStt: { darkMode },
     uiAct,
@@ -26,11 +27,12 @@ function Header() {
   const router = useRouter();
   const [maxTop, setMaxTop] = useState(false);
 
-  const scrollToTopCallback = useCallback(() => {
-    setMaxTop(true);
+  const scrollToTopCallback = useCallback((value: boolean) => {
+    if (value !== maxTop) setMaxTop(value);
   }, []);
 
   useHeaderBehavior(scrollToTopCallback);
+  
   return (
     <div
       className={`sticky flex flex-row gap-4 top-0 z-10 h-12
@@ -52,8 +54,8 @@ function Header() {
                 className="btn btn-sm btn-outline font-bold hover:bg-primary-content 
                 hover:!text-base-100"
                 style={{
-                  borderColor: "hsl(var(--pc))",
-                  color: "hsl(var(--pc))",
+                  borderColor: maxTop ? "hsl(var(--pc))" : "",
+                  color: maxTop ? "hsl(var(--pc))" : "",
                 }}
               >
                 Write
