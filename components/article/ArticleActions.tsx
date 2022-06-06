@@ -8,31 +8,46 @@ import {
 } from "react-icons/md";
 import ArticleReactionButton from "./ArticleReactionButton";
 
-function ArticleSectionAction({ id }: { id: string }) {
+const LikeButton = React.memo(function LikeButton() {
   const [like, setLike] = useState(false);
-  const [dislike, setDislike] = useState(false);
 
   const toggleLike = useCallback((value: boolean) => setLike(value), []);
+
+  return (
+    <ArticleReactionButton
+      value={like}
+      icon={<MdThumbUp />}
+      color="success"
+      outlined
+      title="Like"
+      onChange={toggleLike}
+    />
+  );
+});
+
+const DislikeButton = React.memo(function DislikeButton() {
+  const [dislike, setDislike] = useState(false);
+
   const toggleDislike = useCallback((value: boolean) => setDislike(value), []);
+
+  return (
+    <ArticleReactionButton
+      value={dislike}
+      icon={<MdThumbDown />}
+      color="error"
+      outlined
+      title="Disike"
+      onChange={toggleDislike}
+    />
+  );
+});
+
+function ArticleSectionAction({ id }: { id: string }) {
   return (
     <div className="flex flex-wrap gap-4 sm:justify-end">
       <div className="inline-flex w-full gap-4 sm:w-auto">
-        <ArticleReactionButton
-          value={like}
-          icon={<MdThumbUp />}
-          color="success"
-          outlined
-          title="Like"
-          onChange={toggleLike}
-        />
-        <ArticleReactionButton
-          value={dislike}
-          icon={<MdThumbDown />}
-          color="error"
-          outlined
-          title="Disike"
-          onChange={toggleDislike}
-        />
+        {<LikeButton/>}
+        {<DislikeButton/>}
       </div>
       {/* <button
         className="btn border-yellow-500 hover:border-yellow-600 w-full gap-2 text-xl 

@@ -49,7 +49,7 @@ const ModalTemplate = ({
           <Dialog.Panel className="!pointer-events-none flex w-full justify-center sm:p-8">
             <div
               className="modal-box !pointer-events-auto relative flex w-full flex-1 
-              !translate-y-0 !scale-[1] flex-col gap-4 ring-2 ring-base-content/20
+              !translate-y-0 !scale-[1] flex-col gap-4 ring-1 ring-base-content/20
               sm:!max-w-md md:!max-w-lg lg:!max-w-xl"
             >
               {/* gradient background */}

@@ -1,13 +1,23 @@
 import type { NextPage } from "next";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import MainPost from "../components/main/MainPost";
+import MainContainer from "../components/main/MainContainer";
 import MainSearchBar from "../components/main/MainSearchBar";
 
 import MainSectionFilter from "../components/main/MainSectionFilterTab";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
+const LazyMainPostSection = dynamic(
+  () => import("../components/main/MainPostSection"),
+  {
+    loading: () => (
+      <p className="mx-auto text-lg sm:text-xl font-bold">Loading posts...</p>
+    ),
+    ssr: false,
+  },
+);
 
 const Home: NextPage = () => {
   return (
@@ -18,25 +28,11 @@ const Home: NextPage = () => {
         <meta name="description" content={APP_DESC} />
       </Head>
       <Header />
-      <div
-        className="min-h-screen bg-base-100 p-4 sm:p-8 justify-center 
-        gap-4 sm:gap-8 flex flex-col max-w-[60rem] mx-auto"
-      >
+      <MainContainer>
         <MainSearchBar />
         <MainSectionFilter />
-        <div
-          className="flex flex-col gap-4 sm:gap-8
-        "
-          id="main-content"
-        >
-          {[...Array(10)].map((e) => (
-            <MainPost
-              key={Math.random()}
-              post={{ id: Math.round(Math.random() * 100) + "" }}
-            />
-          ))}
-        </div>
-      </div>
+        <LazyMainPostSection />
+      </MainContainer>
       <Footer />
     </>
   );

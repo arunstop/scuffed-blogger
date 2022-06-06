@@ -6,8 +6,13 @@ import { AuthFormProps } from "./AuthPanel";
 function AuthRegisterForm({ changeForm }: AuthFormProps) {
   return (
     <>
-      <MainTextInput type="text" placeholder="Email..." icon={<MdEmail />} />
-      <MainTextInput type="password" placeholder="Password..." icon={<MdLock />} />
+      <MainTextInput type="email" placeholder="Email..." icon={<MdEmail />} />
+      <MainTextInput
+        type="password"
+        placeholder="Password..."
+        icon={<MdLock />}
+        minLength={8}
+      />
 
       <button className="btn btn-primary text-lg font-bold sm:text-xl">
         Register

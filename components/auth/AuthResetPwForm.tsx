@@ -7,7 +7,8 @@ import { AuthFormProps } from "./AuthPanel";
 function AuthResetPwForm({ changeForm }: AuthFormProps) {
   return (
     <>
-      <MainTextInput type="text" placeholder="Email..." icon={<MdEmail />} />
+      <MainTextInput type="email" placeholder="Email..." icon={<MdEmail />} />
+     
 
       <button className="btn btn-primary text-lg font-bold sm:text-xl">
         Login
