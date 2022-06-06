@@ -17,7 +17,7 @@ const MainSearchBar = React.memo(function MainSearchBar() {
   return (
     <>
       <div className="form-control">
-        <div className="inline-flex gap-2">
+        <div className="inline-flex gap-2 sm:gap-4">
           <MainTextInput
             value={search}
             onChange={onChange}
@@ -28,7 +28,7 @@ const MainSearchBar = React.memo(function MainSearchBar() {
             clearAction={clear}
           />
           <button
-            className="rounded-xl btn btn-primary text-lg 
+            className="btn btn-primary text-lg 
             font-bold sm:text-xl"
           >
             Search

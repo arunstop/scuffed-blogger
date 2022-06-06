@@ -8,7 +8,7 @@ function scrollCallback(event: Event, callback: (value:boolean)  => void) {
   callback(scrolledToTop);
   if (scrolledToTop) {
     header!.classList.remove("bg-primary/50", "shadow-lg");
-    header!.classList.add("text-primary-content");
+    header!.classList.add("text-primary");
   } else {
     // if already has the classes
     if (
@@ -17,8 +17,9 @@ function scrollCallback(event: Event, callback: (value:boolean)  => void) {
     )
       return;
     header!.classList.add("bg-primary/50", "shadow-lg");
-    header!.classList.remove("text-primary-content");
+    header!.classList.remove("text-primary");
   }
+  console.log("top" + Math.random());
 }
 
 export function useHeaderBehavior(callback: (value:boolean) => void) {
@@ -33,5 +34,5 @@ export function useHeaderBehavior(callback: (value:boolean) => void) {
     return () => {
       body.removeEventListener("scroll", scrollListener);
     };
-  }, []);
+  }, [callback]);
 }

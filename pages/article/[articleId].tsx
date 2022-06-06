@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo } from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
-import ArticleAction from "../../components/article/ArticleActions";
+import ArticleSectionAction from "../../components/article/ArticleActions";
 import ArticleContent from "../../components/article/ArticleContent";
 import ArticleSectionComments from "../../components/article/ArticleSectionComments";
 import ArticleSectionSuggestions from "../../components/article/ArticleSectionSuggestions";
@@ -82,7 +82,7 @@ function Article() {
 
           <ArticleContent id={articleId + ""} />
 
-          <ArticleAction id={articleId + ""} />
+          <ArticleSectionAction id={articleId + ""} />
 
           <ArticleSectionComments id={articleId + ""} />
 

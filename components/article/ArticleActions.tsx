@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   MdBookmarkAdd,
   MdOutlinePlaylistAdd,
@@ -6,23 +6,33 @@ import {
   MdThumbDown,
   MdThumbUp,
 } from "react-icons/md";
+import ArticleReactionButton from "./ArticleReactionButton";
 
-function ArticleAction({ id }: { id: string }) {
+function ArticleSectionAction({ id }: { id: string }) {
+  const [like, setLike] = useState(false);
+  const [dislike, setDislike] = useState(false);
+
+  const toggleLike = useCallback((value: boolean) => setLike(value), []);
+  const toggleDislike = useCallback((value: boolean) => setDislike(value), []);
   return (
     <div className="flex flex-wrap gap-4 sm:justify-end">
       <div className="inline-flex w-full gap-4 sm:w-auto">
-        <button
-          className="btn-outline btn btn-success flex-1 !border-[2px] sm:border-2 sm:w-32 sm:flex-none"
+        <ArticleReactionButton
+          value={like}
+          icon={<MdThumbUp />}
+          color="success"
+          outlined
           title="Like"
-        >
-          <MdThumbUp className="text-2xl" />
-        </button>
-        <button
-          className="btn-outline btn btn-error flex-1 !border-[2px] sm:border-2 sm:w-32 sm:flex-none"
-          title="Dislike"
-        >
-          <MdThumbDown className="text-2xl" />
-        </button>
+          onChange={toggleLike}
+        />
+        <ArticleReactionButton
+          value={dislike}
+          icon={<MdThumbDown />}
+          color="error"
+          outlined
+          title="Disike"
+          onChange={toggleDislike}
+        />
       </div>
       {/* <button
         className="btn border-yellow-500 hover:border-yellow-600 w-full gap-2 text-xl 
@@ -53,4 +63,4 @@ function ArticleAction({ id }: { id: string }) {
   );
 }
 
-export default ArticleAction;
+export default ArticleSectionAction;

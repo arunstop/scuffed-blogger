@@ -21,6 +21,7 @@ function MainPost({ post }: { post: Post }) {
     <div
       className="group flex w-full flex-col rounded-xl bg-primary
       bg-opacity-10 shadow-lg transition-all hover:bg-opacity-40 sm:flex-row
+      ring-2 ring-base-content/10
       "
     >
       <PostLinker

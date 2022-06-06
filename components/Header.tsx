@@ -25,24 +25,31 @@ function Header() {
   } = useUiCtx();
 
   const router = useRouter();
-  const [maxTop, setMaxTop] = useState(false);
+  const [scrolledToTop, setScrolledToTop] = useState(true);
 
-  const scrollToTopCallback = useCallback((value: boolean) => {
-    if (value !== maxTop) setMaxTop(value);
-  }, []);
+  const scrollToTopCallback = useCallback(
+    (value: boolean) => {
+      if (value !== scrolledToTop) setScrolledToTop(value);
+    },
+    [scrolledToTop],
+  );
 
   useHeaderBehavior(scrollToTopCallback);
-  
+
   return (
     <div
-      className={`sticky flex flex-row gap-4 top-0 z-10 h-12
-      w-full items-center px-4 justify-between transition-all duration-[600ms]
-      text-primary-content
+      className={`sticky flex flex-row gap-4 top-0 z-10 h-12 sm:h-16
+      w-full items-center px-2 sm:px-4 justify-between transition-all duration-[600ms]
+      text-primary 
       `}
       id="header"
     >
       <Link href="/" passHref>
-        <a className={`text-lg sm:text-xl md:text-2xl font-black`}>
+        <a
+          className={`text-lg sm:text-xl md:text-2xl font-black
+          
+          `}
+        >
           {APP_NAME}
         </a>
       </Link>
@@ -51,14 +58,18 @@ function Header() {
           <Link href="/auth" passHref>
             <a>
               <button
-                className="btn btn-sm btn-outline font-bold hover:bg-primary-content 
-                hover:!text-base-100"
-                style={{
-                  borderColor: maxTop ? "hsl(var(--pc))" : "",
-                  color: maxTop ? "hsl(var(--pc))" : "",
-                }}
+                className={`btn btn-sm sm:btn-md font-bold transition-all duration-[600ms] truncate
+                text-lg sm:text-xl h-8 sm:h-10 !min-h-0
+                ${scrolledToTop ? "btn-primary" : "btn-outline"}
+                `}
+                style={
+                  {
+                    // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
+                    // color: scrolledToTop ? "hsl(var(--p))" : "",
+                  }
+                }
               >
-                Write
+                Join now
               </button>
             </a>
           </Link>
@@ -71,8 +82,12 @@ function Header() {
               uiAct.toggleDarkMode(ev.target.checked);
             }}
           />
-          <MdOutlineLightMode className="swap-on text-2xl sm:text-3xl" />
-          <MdOutlineDarkMode className="swap-off text-2xl sm:text-3xl" />
+          <span className="swap-on text-2xl sm:text-3xl text-yellow-500" title="Turn on Dark Mode">
+            <MdOutlineLightMode />
+          </span>
+          <span className="swap-off text-2xl sm:text-3xl text-blue-500" title="Turn on Light Mode">
+            <MdOutlineDarkMode />
+          </span>
         </label>
       </div>
     </div>

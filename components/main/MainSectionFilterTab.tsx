@@ -36,7 +36,7 @@ function MainSectionFilter() {
 
   return (
     <div
-      className="tabs tabs-boxed rounded-xl w-full p-0 bg-transparent gap-4"
+      className="tabs tabs-boxed rounded-xl w-full p-0 bg-transparent gap-2 sm:gap-4"
     >
       {tabs.map((e, idx) => (
         <MainTabItem

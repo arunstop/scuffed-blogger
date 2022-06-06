@@ -10,8 +10,8 @@ function MainTabItem({ icon, title, active, onClick }: MainTabItemProps) {
   console.log(title);
   return (
     <a
-      className={`tab tab-lg  text-lg sm:text-xl !rounded-xl font-bold transition-colors
-      gap-2 sm:gap-4 text-ellipsis overflow-hidden text-opacity-100 border-1 btn
+      className={`tab h-9 sm:h-12 tab-lg !min-h-0 btn text-lg sm:text-xl font-bold
+      gap-2 sm:gap-4 text-ellipsis overflow-hidden text-opacity-100 border-1 !rounded-xl
       ${
         active
           ? `tab-active !border-primary`

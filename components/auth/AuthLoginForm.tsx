@@ -22,6 +22,7 @@ function AuthLoginForm({ changeForm }: AuthFormProps) {
         <button
           className="btn btn-link p-0 text-lg font-bold text-primary-content sm:text-xl"
           onClick={() => changeForm("RESET_PW")}
+          tabIndex={-1}
         >
           Forget Password?
         </button>

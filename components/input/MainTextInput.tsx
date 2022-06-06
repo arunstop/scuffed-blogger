@@ -24,7 +24,7 @@ function MainTextInput({
         className={`peer input input-md w-full !rounded-xl
         !outline !outline-base-content/100 !outline-1 !outline-offset-0
         focus:!outline-[3px] focus:z-[2] focus:border-transparent 
-        focus:valid:!outline-base-content transition-all duration-300 ease-in-out
+        focus:valid:!outline-base-content transition-all duration-300 
         font-semibold invalid:text-error focus:invalid:!outline-error
         placeholder-shown:!outline-base-content/20 invalid:!outline-error
         ${icon ? "pl-9 sm:pl-12" : ""}
