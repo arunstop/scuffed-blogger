@@ -12,8 +12,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     <UiProvider>
       <NextNProgress
         color="hsl(var(--pc))"
-        startPosition={0.3}
-        stopDelayMs={600}
+        startPosition={0.4}
+        stopDelayMs={200}
         height={6}
         showOnShallow={false}
       />

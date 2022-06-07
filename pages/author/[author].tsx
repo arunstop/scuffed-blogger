@@ -79,9 +79,8 @@ const FollowButton = React.memo(function FollowButton() {
 
   return (
     <div
-      className={`
-    border-base-100 border-2 sm:border-4 mt-[24px] sm:mt-[44px] bg-base-100
-    rounded-full
+      className={`border-base-100 border-2 sm:border-4 mt-[24px] sm:mt-[44px] bg-base-100
+      rounded-full
     `}
     >
       <button

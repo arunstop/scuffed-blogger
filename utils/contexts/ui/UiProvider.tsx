@@ -3,7 +3,7 @@ import { UiAction, UiContextProps } from "../../data/types/UiTypes";
 import {
   initClientDarkMode,
   toggleClientDarkMode,
-} from "../../helpers/Helpers";
+} from "../../helpers/UiHelpers";
 import { UiContext } from "./UiContext";
 import { UI_INIT } from "./UiInitializer";
 import { UI_REDUCER } from "./UiReducer";

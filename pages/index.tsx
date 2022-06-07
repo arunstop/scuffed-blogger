@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import React from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import MainContainer from "../components/main/MainContainer";
@@ -28,7 +29,7 @@ const Home: NextPage = () => {
       </Head>
       <Header />
       <MainContainer>
-        <MainSearchBar />
+        <div className="hidden sm:block"><MainSearchBar /></div>
         <MainSectionFilter />
         <LazyMainPostSection />
       </MainContainer>
@@ -37,4 +38,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default React.memo(Home);

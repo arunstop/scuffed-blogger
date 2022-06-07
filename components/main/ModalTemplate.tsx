@@ -7,6 +7,7 @@ import GradientBackground from "./GradientBackground";
 interface ModalTemplateProps {
   title: string;
   children: ReactNode;
+  fullscreen?: boolean;
 }
 
 const ModalTemplate = ({
@@ -14,7 +15,8 @@ const ModalTemplate = ({
   onClose,
   title,
   children,
-}: MainModalProps &ModalTemplateProps) => {
+  fullscreen = false,
+}: MainModalProps & ModalTemplateProps) => {
   return (
     <Transition appear show={value} as={Fragment}>
       <Dialog
@@ -46,14 +48,21 @@ const ModalTemplate = ({
           leaveFrom="opacity-100 translate-y-0 sm:translate-y-0 sm:scale-[1.00]"
           leaveTo="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-[0.75]"
         >
-          <Dialog.Panel className="!pointer-events-none flex w-full justify-center sm:p-8">
+          <Dialog.Panel
+            className={`!pointer-events-none flex w-full justify-center 
+            ${fullscreen ? "" : "sm:p-8"}`}
+          >
             <div
-              className="modal-box !pointer-events-auto relative flex w-full flex-1 
+              className={`modal-box !pointer-events-auto relative flex w-full flex-1 
               !translate-y-0 !scale-[1] flex-col gap-4 ring-1 ring-base-content/20
-              sm:!max-w-md md:!max-w-lg lg:!max-w-xl"
+              ${
+                fullscreen
+                  ? "!rounded-none !h-screen !max-w-[100vw] !w-screen !max-h-screen"
+                  : "!rounded-xl sm:!max-w-md md:!max-w-lg lg:!max-w-xl !max-h-[95vh] "
+              }`}
             >
               {/* gradient background */}
-              <GradientBackground/>
+              <GradientBackground />
               <Dialog.Title as="div" className="">
                 <div className="flex flex-row items-center justify-between">
                   <span className="text-2xl font-bold">{title}</span>

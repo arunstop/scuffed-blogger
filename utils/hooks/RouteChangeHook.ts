@@ -1,4 +1,4 @@
-import { getBodyEl } from "./../helpers/Helpers";
+import { getBodyEl } from "../helpers/UiHelpers";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 export const useRouteChange = () => {

@@ -33,8 +33,8 @@ Comment & {
           {/* <div className="dropdown dropdown-end ml-auto"> */}
           <Link
             href={{
+              pathname: router.asPath,
               query: {
-                articleId: router.query.articleId,
                 option: id,
               },
             }}
@@ -123,8 +123,8 @@ Comment & {
           </a>
           <Link
             href={{
+              pathname: router.asPath,
               query: {
-                articleId: router.query.articleId,
                 reply: id,
               },
             }}

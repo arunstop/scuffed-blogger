@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
-import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
+import {
+  MdOutlineDarkMode,
+  MdOutlineLightMode,
+  MdSearch,
+} from "react-icons/md";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
 import { APP_NAME } from "../utils/helpers/Constants";
+import { routeTrimQuery } from "../utils/helpers/RouteHelpers";
 import { useHeaderBehavior } from "../utils/hooks/HeaderBehaviorHook";
+import { useSearchModalBehavior } from "../utils/hooks/SearchModalBehaviorHook";
+import SearchModal from "./main/SearchModal";
 
 // function scrollListener(event: Event) {
 //   const element = event.target as Element;
@@ -25,8 +32,8 @@ function Header() {
   } = useUiCtx();
 
   const router = useRouter();
-  const [scrolledToTop, setScrolledToTop] = useState(true);
 
+  const [scrolledToTop, setScrolledToTop] = useState(true);
   const scrollToTopCallback = useCallback(
     (value: boolean) => {
       if (value !== scrolledToTop) setScrolledToTop(value);
@@ -36,61 +43,99 @@ function Header() {
 
   useHeaderBehavior(scrollToTopCallback);
 
+  const { searchModal, closeSearchModal } = useSearchModalBehavior();
+
+  // const [searchModal, setSearchModal] = useState(false);
+  // const closeSearchModal = useCallback(() => {
+  //   setSearchModal(false);
+  // }, []);
+
   return (
-    <div
-      className={`sticky flex flex-row gap-4 top-0 z-10 h-12 sm:h-16
+    <>
+      <div
+        className={`sticky flex flex-row gap-4 top-0 z-10 h-12 sm:h-16
       w-full items-center px-2 sm:px-4 justify-between transition-all duration-[600ms]
       text-primary 
       `}
-      id="header"
-    >
-      <Link href="/" passHref>
-        <a
-          className={`text-lg sm:text-xl md:text-2xl font-black
+        id="header"
+      >
+        <Link href="/" passHref>
+          <a
+            className={`text-lg sm:text-xl md:text-2xl font-black
           
           `}
-        >
-          {APP_NAME}
-        </a>
-      </Link>
-      <div className="inline-flex items-center gap-2 sm:gap-4">
-        {router.pathname !== "/auth" && (
-          <Link href="/auth" passHref>
-            <a>
-              <button
-                className={`btn btn-sm sm:btn-md font-bold transition-all duration-[600ms] truncate
+          >
+            {APP_NAME}
+          </a>
+        </Link>
+        <div className="inline-flex items-center gap-2 sm:gap-4">
+         <div 
+          className="block sm:hidden"
+         
+         >
+         <Link
+            href={{
+              pathname: routeTrimQuery(router.asPath),
+              query: {
+                search: true,
+              },
+            }}
+            shallow
+          >
+            <a
+              className="btn btn-square btn-ghost text-base-content text-2xl btn-sm sm:btn-md"
+              role={"button"}
+            >
+              <MdSearch />
+            </a>
+          </Link>
+         </div>
+
+          {router.pathname !== "/auth" && (
+            <Link href="/auth" passHref>
+              <a>
+                <button
+                  className={`btn btn-sm sm:btn-md font-bold transition-all duration-[600ms] truncate
                 text-lg sm:text-xl h-8 sm:h-10 !min-h-0
                 ${scrolledToTop ? "btn-primary" : "btn-outline"}
                 `}
-                style={
-                  {
-                    // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
-                    // color: scrolledToTop ? "hsl(var(--p))" : "",
+                  style={
+                    {
+                      // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
+                      // color: scrolledToTop ? "hsl(var(--p))" : "",
+                    }
                   }
-                }
-              >
-                Join now
-              </button>
-            </a>
-          </Link>
-        )}
-        <label className="swap swap-rotate">
-          <input
-            type="checkbox"
-            checked={darkMode}
-            onChange={(ev) => {
-              uiAct.toggleDarkMode(ev.target.checked);
-            }}
-          />
-          <span className="swap-on text-2xl sm:text-3xl text-yellow-500" title="Turn on Dark Mode">
-            <MdOutlineLightMode />
-          </span>
-          <span className="swap-off text-2xl sm:text-3xl text-blue-500" title="Turn on Light Mode">
-            <MdOutlineDarkMode />
-          </span>
-        </label>
+                >
+                  Join now
+                </button>
+              </a>
+            </Link>
+          )}
+          <label className="swap swap-rotate btn !btn-square !btn-ghost btn-sm sm:btn-md">
+            <input
+              type="checkbox"
+              checked={darkMode}
+              onChange={(ev) => {
+                uiAct.toggleDarkMode(ev.target.checked);
+              }}
+            />
+            <span
+              className="swap-on text-2xl sm:text-3xl text-yellow-500"
+              title="Turn on Dark Mode"
+            >
+              <MdOutlineLightMode />
+            </span>
+            <span
+              className="swap-off text-2xl sm:text-3xl text-blue-500"
+              title="Turn on Light Mode"
+            >
+              <MdOutlineDarkMode />
+            </span>
+          </label>
+        </div>
       </div>
-    </div>
+      <SearchModal value={searchModal} onClose={closeSearchModal} />
+    </>
   );
 }
 

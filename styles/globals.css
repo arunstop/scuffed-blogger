@@ -60,3 +60,7 @@
 #nprogress .spinner {
   display: none !important;
 }
+
+#nprogress .bar {
+  @apply rounded-sm;
+}

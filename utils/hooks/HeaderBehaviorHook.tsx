@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getHeaderEl, getBodyEl } from "../helpers/Helpers";
+import { getHeaderEl, getBodyEl } from "../helpers/UiHelpers";
 
 function scrollCallback(event: Event, callback: (value:boolean)  => void) {
   const element = event.target as Element;
