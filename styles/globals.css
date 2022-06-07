@@ -51,11 +51,9 @@
   font-display: swap;
 }
 
-@layer base {
-  .dark {
-    color-scheme: dark;
-  }
-}
+/* @layer base {
+  
+} */
 
 #nprogress .spinner {
   display: none !important;
@@ -63,4 +61,8 @@
 
 #nprogress .bar {
   @apply rounded-sm;
+}
+
+.dark {
+  color-scheme: dark;
 }

@@ -83,7 +83,7 @@ function Header() {
             shallow
           >
             <a
-              className="btn btn-square btn-ghost text-base-content text-2xl btn-sm sm:btn-md"
+              className="btn btn-circle btn-ghost text-base-content text-2xl btn-sm sm:btn-md"
               role={"button"}
             >
               <MdSearch />
@@ -111,7 +111,7 @@ function Header() {
               </a>
             </Link>
           )}
-          <label className="swap swap-rotate btn !btn-square !btn-ghost btn-sm sm:btn-md">
+          <label className="swap swap-rotate btn !btn-circle !btn-ghost !btn-sm sm:!btn-md">
             <input
               type="checkbox"
               checked={darkMode}
