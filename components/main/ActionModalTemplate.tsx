@@ -13,12 +13,14 @@ interface ActionModalTemplateProps {
   title: string;
   children: ReactNode;
   fullscreen?: boolean;
+  desc?:string;
 }
 
 const ActionModalTemplate = ({
   value,
   onClose,
   title,
+  desc,
   children,
   fullscreen = false,
   actions = [],
@@ -36,24 +38,24 @@ const ActionModalTemplate = ({
         {!fullscreen && (
           <Transition.Child
             as={Fragment}
-            enter="ease-out duration-300"
+            enter="ease-out duration-200"
             enterFrom="opacity-0 "
             enterTo="opacity-100 "
-            leave="ease-in duration-300"
+            leave="ease-in duration-200"
             leaveFrom="opacity-100 "
             leaveTo="opacity-0 "
           >
-            {/* <div className="fixed inset-0 bg-base-content/20 backdrop-blur-md" /> */}
-            <div className="fixed inset-0 bg-base-content/20" />
+            <div className="fixed inset-0 bg-base-content/20 backdrop-blur-md" />
+            {/* <div className="fixed inset-0 bg-base-content/20" /> */}
           </Transition.Child>
         )}
 
         <Transition.Child
           as={Fragment}
-          enter="ease-out duration-300"
+          enter="ease-out duration-200"
           enterFrom="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-[1.25]"
           enterTo="opacity-100 translate-y-0 sm:translate-y-0 sm:scale-[1.00]"
-          leave="ease-in duration-300"
+          leave="ease-in duration-200"
           leaveFrom="opacity-100 translate-y-0 sm:translate-y-0 sm:scale-[1.00]"
           leaveTo="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-[0.75]"
         >
@@ -75,21 +77,21 @@ const ActionModalTemplate = ({
               {/* gradient background */}
               <GradientBackground className="rounded-t-lg" />
               <ul
-                className="flex flex-col divide-y divide-gray-400 overflow-hidden 
-              rounded-lg bg-base-300/60 shadow-xl backdrop-blur-md dark:divide-base-300
-              ring-1 ring-gray-400/20 dark:ring-base-300/20"
+                className="flex flex-col divide-y divide-gray-600/20 overflow-hidden 
+              rounded-lg bg-base-300/60 shadow-xl ring-1 ring-gray-600/20
+              backdrop-blur-md dark:divide-gray-600/20 dark:ring-gray-600/20"
               >
                 <Dialog.Title
                   as="li"
                   className="min-h-9 p-2 sm:min-h-12 sm:p-4"
                 >
                   <div className="flex flex-col items-center justify-center">
-                    <span className="text-xl font-bold sm:text-2xl text-center">
-                      {"Title of the action sheet: " + title}
+                    <span className="text-center text-xl font-bold sm:text-2xl">
+                      {title}
                     </span>
-                    <span className="text-base opacity-50 sm:text-lg text-center">
-                      {"Description of the user-resulted action if exists."}
-                    </span>
+                    {desc && <span className="text-center text-base sm:text-lg">
+                      {desc}
+                    </span>}
                     {/* <a
                       className="btn-outline btn btn-sm aspect-square !h-9 !w-9 rounded-xl 
                     !p-0 opacity-80 hover:opacity-100 sm:btn-md sm:!h-12 sm:!w-12"
@@ -105,8 +107,8 @@ const ActionModalTemplate = ({
                   <li
                     key={idx}
                     className="--btn-resp btn btn-ghost no-animation justify-between rounded-none 
-                    border-x-0 !font-normal transition-all duration-300 hover:px-4 sm:hover:px-8 
-                    hover:!font-black "
+                    border-x-0 !font-medium transition-all duration-300 hover:px-4 hover:!font-black 
+                    sm:hover:px-8 "
                     title={e.label}
                     onClick={e.action}
                   >
@@ -120,7 +122,7 @@ const ActionModalTemplate = ({
               <ul className="flex flex-row gap-4">
                 <li
                   className="--btn-resp --btn-base  btn flex-1 rounded-lg border-0 shadow-lg ring-1 
-                  ring-base-content/20 ring-1 ring-gray-400/20 dark:ring-base-300/20"
+                  ring-1 ring-base-content/20 ring-gray-400/20 dark:ring-base-300/20"
                   onClick={onClose}
                 >
                   Cancel

@@ -21,6 +21,7 @@ function ArticleCommentOptionModal({ value, onClose }: MainModalProps) {
       value={value}
       onClose={onClose}
       title="Options"
+      desc="Action cannot be undone, choose wisely"
       actions={options}
     >x</ActionModalTemplate>
   );
