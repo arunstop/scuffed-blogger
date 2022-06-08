@@ -9,9 +9,9 @@ export interface OptionItem {
 function ArticleCommentOptionItem({ icon, label, action }: OptionItem) {
   return (
     <li>
-      <a className="justify-center" tabIndex={0} onClick={action} role="button">
-        {icon && <span className="text-xl sm:text-2xl">{icon}</span>}
-        <span className="text-base font-bold sm:text-lg">{label}</span>
+      <a className="justify-center btn --btn-resp btn-ghost py-0" tabIndex={0} onClick={action} role="button">
+        {icon && <span className="text-2xl">{icon}</span>}
+        <span className="">{label}</span>
       </a>
     </li>
   );

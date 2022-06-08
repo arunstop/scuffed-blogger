@@ -24,11 +24,15 @@ function Article() {
     return () => {};
   }, [articleId]);
 
+  const title = 'Lorem ipsum dolor sit amet consectetur adipisicing elit Laudantium itaque odit sed? Quibusdam quis nemo tempora';
+
   const mzPage = useMemo(() => {
     return (
       <>
         <Head>
-          <title>{APP_NAME}</title>
+          <title>
+            {title + APP_NAME}
+          </title>
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"

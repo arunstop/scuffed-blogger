@@ -89,3 +89,7 @@
   @apply btn-sm sm:btn-md text-lg sm:text-xl
 }
 
+.--btn-base{
+  @apply bg-base-100 text-base-content hover:bg-base-300
+}
+

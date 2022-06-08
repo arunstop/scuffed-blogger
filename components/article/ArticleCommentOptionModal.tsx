@@ -1,16 +1,12 @@
 import React from "react";
 import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
-import {
-  MdDelete, MdFlag, MdPersonOff, MdReport
-} from "react-icons/md";
+import { MdDelete, MdFlag, MdPersonOff, MdReport } from "react-icons/md";
 import { MainModalProps } from "../../utils/data/Main";
-import ModalTemplate from "../main/ModalTemplate";
-import ArticleCommentOptionItem, {
-  OptionItem
-} from "./ArticleCommentOptionItem";
+import ActionModalTemplate, {
+  ActionModalAction
+} from "../main/ActionModalTemplate";
 
-
-const options: OptionItem[] = [
+const options: ActionModalAction[] = [
   { icon: <MdReport />, label: "Report comment", action: () => {} },
   { icon: <MdDelete />, label: "Delete comment", action: () => {} },
   { icon: <FaVolumeMute />, label: "Mute user", action: () => {} },
@@ -19,22 +15,14 @@ const options: OptionItem[] = [
   { icon: <MdFlag />, label: "Report user", action: () => {} },
 ];
 
-function ArticleCommentOptionModal({
-  value,
-  onClose,
-}: MainModalProps) {
+function ArticleCommentOptionModal({ value, onClose }: MainModalProps) {
   return (
-    <ModalTemplate value={value} onClose={onClose} title="Options">
-      <ul className="menu p-2 rounded-xl">
-        {options.map((e, idx) => (
-          <ArticleCommentOptionItem key={idx} {...e} />
-        ))}
-        <ArticleCommentOptionItem
-          label={"Cancel"}
-          action={onClose}
-        />
-      </ul>
-    </ModalTemplate>
+    <ActionModalTemplate
+      value={value}
+      onClose={onClose}
+      title="Options"
+      actions={options}
+    >x</ActionModalTemplate>
   );
 }
 
