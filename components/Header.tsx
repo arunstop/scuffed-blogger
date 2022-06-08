@@ -69,36 +69,33 @@ function Header() {
           </a>
         </Link>
         <div className="inline-flex items-center gap-2 sm:gap-4">
-         <div 
-          className="block sm:hidden"
-         
-         >
-         <Link
-            href={{
-              pathname: routeTrimQuery(router.asPath),
-              query: {
-                search: true,
-              },
-            }}
-            shallow
-          >
-            <a
-              className="btn btn-circle btn-ghost text-base-content text-2xl btn-sm sm:btn-md"
-              role={"button"}
+          <div className="block sm:hidden">
+            <Link
+              href={{
+                pathname: routeTrimQuery(router.asPath),
+                query: {
+                  search: true,
+                },
+              }}
+              shallow
             >
-              <MdSearch />
-            </a>
-          </Link>
-         </div>
+              <a
+                className="btn btn-circle btn-ghost text-base-content text-2xl btn-sm sm:btn-md"
+                role={"button"}
+              >
+                <MdSearch />
+              </a>
+            </Link>
+          </div>
 
           {router.pathname !== "/auth" && (
             <Link href="/auth" passHref>
               <a>
                 <button
                   className={`btn btn-sm sm:btn-md font-bold transition-all duration-[600ms] truncate
-                text-lg sm:text-xl h-8 sm:h-10 !min-h-0
-                ${scrolledToTop ? "btn-primary" : "btn-outline"}
-                `}
+                  text-lg sm:text-xl
+                  ${scrolledToTop ? "btn-primary" : "btn-outline"}
+                  `}
                   style={
                     {
                       // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
@@ -111,7 +108,7 @@ function Header() {
               </a>
             </Link>
           )}
-          <label className="swap swap-rotate btn !btn-circle !btn-ghost !btn-sm sm:!btn-md">
+          <label className="swap swap-rotate btn  btn-ghost btn-sm sm:btn-md btn-circle">
             <input
               type="checkbox"
               checked={darkMode}

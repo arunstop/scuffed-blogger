@@ -10,7 +10,7 @@ function MainTabItem({ icon, title, active, onClick }: MainTabItemProps) {
   console.log(title);
   return (
     <a
-      className={`tab h-9 sm:h-12 tab-lg !min-h-0 btn text-lg sm:text-xl font-bold
+      className={`tab tab-sm sm:tab-lg !min-h-0 btn text-lg sm:text-xl font-bold
       gap-2 sm:gap-4 text-ellipsis overflow-hidden text-opacity-100 border-1 !rounded-xl
       ${
         active

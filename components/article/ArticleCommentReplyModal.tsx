@@ -18,7 +18,7 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
     <ModalTemplate value={value} onClose={closeModal} title="Replying...">
       <div className="form-control flex-1 gap-4 rounded-xl sm:gap-8">
         <textarea
-          className="textarea-bordered textarea max-h-[24rem] min-h-[18rem] rounded-xl text-base"
+          className="textarea-bordered textarea max-h-[12rem] min-h-[12rem] sm:max-h-[24rem] sm:min-h-[18rem] rounded-xl text-base"
           placeholder="Add a reply..."
           value={reply}
           onChange={(ev) => setReply(ev.target.value)}

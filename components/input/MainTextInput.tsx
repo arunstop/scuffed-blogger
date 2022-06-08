@@ -17,11 +17,11 @@ function MainTextInput({
   ...props
 }: MainTextInputProps) {
   return (
-    <label className="input-group-sm input-group relative rounded-xl sm:input-group-md">
+    <label className="h-9 sm:h-12 input-group-sm input-group relative rounded-xl sm:input-group-md">
       <input
         {...props}
         type={type}
-        className={`peer input input-md w-full !rounded-xl
+        className={`peer input input-sm sm:input-md w-full !rounded-xl
         !outline !outline-base-content/100 !outline-1 !outline-offset-0
         focus:!outline-[3px] focus:z-[2] focus:border-transparent 
         focus:valid:!outline-base-content transition-all duration-300 

@@ -108,7 +108,7 @@ Comment & {
         <span className="text-sm sm:text-base">
           {text.length !== 0 ? text : LOREM}
         </span>
-        <div className="inline-flex gap-2 sm:gap-4">
+        <div className="inline-flex gap-2 sm:gap-4 items-center">
           <a
             className="btn btn-ghost aspect-square rounded-xl p-0 text-success opacity-80 hover:opacity-100"
             title="Upvote"
@@ -132,7 +132,9 @@ Comment & {
           >
             <a
               className="btn-outline btn ml-auto font-bold normal-case 
-            opacity-80 hover:opacity-100 w-24 sm:w-36 text-lg sm:text-xl"
+              opacity-80 hover:opacity-100 w-24 sm:w-36 text-lg sm:text-xl
+              btn-sm sm:btn-md
+              "
               // onClick={() => openReplyModal(id + "")}
               // href="#reply"
               role={"button"}

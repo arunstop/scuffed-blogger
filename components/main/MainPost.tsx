@@ -98,8 +98,7 @@ function MainPost({ post }: { post: Post }) {
           <button
             className="btn-neutral btn-outline btn btn-sm btn-circle
               bg-opacity-50 text-xl font-bold normal-case opacity-80
-              group-hover:opacity-100
-              sm:btn-md sm:!text-3xl"
+              group-hover:opacity-100 sm:btn-md sm:!text-3xl"
             title="Add to bookmark"
           >
             <MdBookmarkAdd />
@@ -107,7 +106,7 @@ function MainPost({ post }: { post: Post }) {
           <PostLinker href={`/article/${post.id}`}>
             <button
               className="btn-neutral btn-outline btn btn-sm w-32
-              bg-opacity-50 text-base font-bold normal-case opacity-80
+              bg-opacity-50 text-lg font-bold normal-case opacity-80
               group-hover:opacity-100 sm:btn-md sm:!text-xl"
             >
               Read

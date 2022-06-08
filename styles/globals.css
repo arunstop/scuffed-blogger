@@ -55,14 +55,27 @@
   
 } */
 
+/* Appliying dark color scheme to dark theme */
+.dark {
+  color-scheme: dark;
+}
+
+/* Hide spinner of progressbar */
 #nprogress .spinner {
   display: none !important;
 }
 
+/* Make progressbar have rounded edge */
 #nprogress .bar {
   @apply rounded-sm;
 }
 
-.dark {
-  color-scheme: dark;
+/* Applis min with to small variant of components */
+.btn-sm, .tab-sm, .input-sm{
+  @apply h-9 min-h-[2.25rem]
 }
+
+.btn-circle:where(.btn-sm) {
+    @apply h-9 w-9
+}
+

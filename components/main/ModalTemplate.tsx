@@ -26,7 +26,7 @@ const ModalTemplate = ({
         onClose={onClose}
       >
         {/* OVERLAY */}
-        <Transition.Child
+        {!fullscreen && <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
           enterFrom="opacity-0 "
@@ -37,7 +37,7 @@ const ModalTemplate = ({
         >
           {/* <div className="fixed inset-0 bg-base-content/20 backdrop-blur-md" /> */}
           <div className="fixed inset-0 bg-base-content/20" />
-        </Transition.Child>
+        </Transition.Child>}
 
         <Transition.Child
           as={Fragment}
@@ -50,22 +50,22 @@ const ModalTemplate = ({
         >
           <Dialog.Panel
             className={`!pointer-events-none flex w-full justify-center 
-            ${fullscreen ? "" : "sm:p-8"}`}
+            ${fullscreen ? "h-full" : "max-h-full sm:p-8"}`}
           >
             <div
               className={`modal-box !pointer-events-auto relative flex w-full flex-1 
               !translate-y-0 !scale-[1] flex-col gap-4 ring-1 ring-base-content/20
               ${
                 fullscreen
-                  ? "!rounded-none !h-screen !max-w-[100vw] !w-screen !max-h-screen"
-                  : "!rounded-xl sm:!max-w-md md:!max-w-lg lg:!max-w-xl !max-h-[95vh] "
+                  ? "!rounded-none !max-w-[100vw] !w-screen !max-h-screen "
+                  : "rounded-t-xl sm:!rounded-xl sm:!max-w-md md:!max-w-lg lg:!max-w-xl !max-h-screen "
               }`}
             >
               {/* gradient background */}
               <GradientBackground />
               <Dialog.Title as="div" className="">
                 <div className="flex flex-row items-center justify-between">
-                  <span className="text-2xl font-bold">{title}</span>
+                  <span className="text-xl font-bold sm:text-2xl">{title}</span>
                   <a
                     className="btn-outline btn btn-sm aspect-square !h-9 !w-9 rounded-xl 
                     !p-0 opacity-80 hover:opacity-100 sm:btn-md sm:!h-12 sm:!w-12"

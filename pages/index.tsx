@@ -23,7 +23,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{APP_NAME}</title>
+        <title>{`${APP_NAME} - Let your voice be heard`}</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={APP_DESC} />
       </Head>
