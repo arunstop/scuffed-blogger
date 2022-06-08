@@ -47,7 +47,7 @@ function MainTextInput({
 
       {clearIcon && (
         <span
-          className={`btn btn-ghost absolute inset-y-0 right-0 z-[2] 
+          className={`btn btn-ghost absolute inset-y-0 right-0 z-[2] btn-sm sm:btn-md
           w-9 !rounded-xl bg-transparent p-0 text-xl sm:w-12 sm:text-2xl
           ${clearable ? "visible" : "invisible"}
           `}

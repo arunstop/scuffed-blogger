@@ -11,11 +11,11 @@ const socialButtons: SocialButtonProps[] = [
 function AuthSocialSection() {
   return (
     <>
-      <span className="mx-auto text-lg font-bold opacity-50 sm:text-xl">
+      <span className="mx-auto font-bold opacity-50 sm:text-lg">
         Or login with
       </span>
 
-      <div className="flex flex-col flex-wrap gap-2 sm:flex-row sm:gap-4">
+      <div className="flex flex-col justify-center flex-wrap gap-2 sm:flex-row sm:gap-4">
         {socialButtons.map((e, idx) => (
           <AuthSocialButton key={idx} {...e} />
         ))}

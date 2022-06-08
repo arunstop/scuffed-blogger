@@ -15,28 +15,28 @@ function AuthLoginForm({ changeForm }: AuthFormProps) {
         minLength={8}
       />
       <div className="inline-flex flex-wrap justify-end gap-4 sm:gap-8">
-        {/* <button className="btn btn-link p-0 text-lg font-bold sm:text-xl">
+        {/* <button className="btn --btn-resp btn-link p-0 font-bold">
     Create Account
   </button> */}
 
         <button
-          className="btn btn-link p-0 text-lg font-bold text-primary-content sm:text-xl"
+          className="btn --btn-resp btn-link p-0 font-bold text-primary-content !text-base sm:!text-lg"
           onClick={() => changeForm("RESET_PW")}
           tabIndex={-1}
         >
           Forget Password?
         </button>
       </div>
-      <button className="btn btn-primary text-lg font-bold sm:text-xl">
+      <button className="btn --btn-resp btn-primary font-bold">
         Login
       </button>
-      <span className="mx-auto text-lg font-bold opacity-50 sm:text-xl">
+      <span className="mx-auto font-bold opacity-50 sm:text-lg">
         New to {APP_NAME}?
       </span>
 
       <button
-        className="btn btn-primary flex-1 flex-nowrap gap-x-2
-            text-clip text-lg font-bold sm:text-xl sm:gap-x-4"
+        className="btn --btn-resp btn-primary flex-1 flex-nowrap gap-x-2
+        text-clip font-bold sm:gap-x-4"
         onClick={() => changeForm("REGISTER")}
       >
         Register Now

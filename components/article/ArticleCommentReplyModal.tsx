@@ -23,10 +23,10 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
           value={reply}
           onChange={(ev) => setReply(ev.target.value)}
         />
-        <div className="flex w-full justify-end gap-4">
+        <div className="flex w-full justify-end gap-2 sm:gap-4">
           {reply.length !== 0 && (
             <button
-              className="btn-outline btn ml-auto w-24 text-lg 
+              className="btn-outline btn --btn-resp ml-auto w-24 text-lg 
                         font-bold normal-case opacity-80 hover:opacity-100 sm:w-36 sm:text-xl"
               onClick={() => {
                 setReply("");
@@ -38,9 +38,8 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
           )}
           <button
             className={`flex-1 sm:flex-none font-bold btn btn-primary 
-                        normal-case text-xl sm:w-48 transition ${
-                          reply.length !== 0 ? "" : "btn-disabled"
-                        }`}
+            normal-case text-xl sm:w-48 transition --btn-resp
+            ${reply.length !== 0 ? "" : "btn-disabled"}`}
             onClick={closeModal}
           >
             Reply

@@ -12,8 +12,8 @@ export default function AuthSocialButton({
 }: SocialButtonProps) {
   return (
     <button
-      className="btn btn-primary flex-1 flex-nowrap gap-x-2
-  text-clip text-lg font-bold sm:gap-x-4 sm:text-lg !leading-none"
+      className="btn btn-primary flex-nowrap gap-x-2
+  text-clip --btn-resp font-bold sm:gap-x-4 !leading-none"
       onClick={() => action()}
     >
       <span className="text-xl sm:text-2xl">{icon}</span>

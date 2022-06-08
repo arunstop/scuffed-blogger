@@ -97,11 +97,13 @@ function MainPost({ post }: { post: Post }) {
         <div className="flex flex-row items-center justify-end gap-2 sm:gap-4">
           <button
             className="btn-neutral btn-outline btn btn-sm btn-circle
-              bg-opacity-50 text-xl font-bold normal-case opacity-80
-              group-hover:opacity-100 sm:btn-md sm:!text-3xl"
+            bg-opacity-50 font-bold normal-case opacity-80
+            group-hover:opacity-100 sm:btn-md"
             title="Add to bookmark"
           >
+          <span className="text-2xl">
             <MdBookmarkAdd />
+          </span>
           </button>
           <PostLinker href={`/article/${post.id}`}>
             <button

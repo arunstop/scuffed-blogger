@@ -37,11 +37,11 @@ function ArticleSectionComments({ id }: { id: string }) {
             value={comment}
             onChange={(ev) => setComment(ev.target.value)}
           />
-          <div className="flex justify-end w-full gap-4">
+          <div className="flex justify-end w-full gap-2 sm:gap-4">
             {comment.length !== 0 && (
               <button
                 className="btn-outline btn ml-auto text-lg font-bold normal-case 
-                opacity-80 hover:opacity-100 w-24 sm:w-36 border-2 sm:text-xl"
+                opacity-80 hover:opacity-100 w-24 sm:w-36 border-2 sm:text-xl --btn-resp"
                 onClick={() => {
                   setComment("");
                 }}
@@ -51,7 +51,8 @@ function ArticleSectionComments({ id }: { id: string }) {
             )}
             <button
               className={`flex-1 sm:flex-none font-bold btn btn-primary 
-              normal-case text-xl sm:w-48 ${
+              normal-case text-xl sm:w-48 --btn-resp
+              ${
                 comment.length !== 0 ? "" : "btn-disabled"
               }`}
               onClick={() => {

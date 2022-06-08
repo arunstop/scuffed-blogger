@@ -54,22 +54,22 @@ function ArticleSectionAction({ id }: { id: string }) {
         font-bold normal-case sm:w-48 bg-yellow-500 hover:bg-yellow-600 text-white"
       > */}
       <button
-        className="btn btn-primary w-full 
-        gap-2 text-xl font-bold normal-case sm:w-48"
+        className="btn --btn-resp btn-primary w-full 
+        gap-2 font-bold normal-case sm:w-48"
       >
         <MdBookmarkAdd className="text-2xl" />
         Bookmark
       </button>
       <button
-        className="btn btn-primary w-full 
-        gap-2 text-xl font-bold normal-case sm:w-48"
+        className="btn --btn-resp btn-primary w-full 
+        gap-2 font-bold normal-case sm:w-48"
       >
         <MdOutlinePlaylistAdd className="text-2xl" />
         Read Later
       </button>
       <button
-        className="btn btn-primary w-full 
-        gap-2 text-xl font-bold normal-case sm:w-48"
+        className="btn --btn-resp btn-primary w-full 
+        gap-2 font-bold normal-case sm:w-48"
       >
         <MdShare className="text-2xl" />
         Share

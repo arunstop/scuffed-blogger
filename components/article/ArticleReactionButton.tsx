@@ -45,7 +45,7 @@ function ArticleReactionButton({
   return (
     <label
       className={`btn btn-success flex-1 !border-[2px] sm:w-32 
-      sm:flex-none sm:border-2
+      sm:flex-none sm:border-2 --btn-resp
       ${outlined && !value ? "btn-outline" : ""}
       ${getColor(color)}
       `}

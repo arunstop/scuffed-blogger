@@ -10,15 +10,15 @@ function AuthResetPwForm({ changeForm }: AuthFormProps) {
       <MainTextInput type="email" placeholder="Email..." icon={<MdEmail />} />
      
 
-      <button className="btn btn-primary text-lg font-bold sm:text-xl">
+      <button className="btn --btn-resp btn-primary text-lg font-bold sm:text-xl">
         Login
       </button>
-      <span className="mx-auto text-lg font-bold opacity-50 sm:text-xl">
+      <span className="mx-auto font-bold opacity-50 sm:text-lg">
         New to {APP_NAME}?
       </span>
 
       <button
-        className="btn btn-primary flex-1 flex-nowrap gap-x-2
+        className="btn --btn-resp btn-primary flex-1 flex-nowrap gap-x-2
             text-clip text-lg font-bold sm:gap-x-4 sm:text-lg"
         onClick={() => changeForm("REGISTER")}
       >

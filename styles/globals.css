@@ -79,3 +79,13 @@
     @apply h-9 w-9
 }
 
+.btn{
+  @apply font-bold
+}
+
+
+/* Custom responsive class */
+.--btn-resp{
+  @apply btn-sm sm:btn-md text-lg sm:text-xl
+}
+
