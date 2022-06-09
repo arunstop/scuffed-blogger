@@ -156,9 +156,10 @@ const ActionModalTemplate = ({
                   enter="ease-out duration-200"
                   enterFrom="opacity-0 scale-150"
                   enterTo="opacity-100 sm:scale-100"
-                  // leave="ease-in duration-200"
-                  // leaveFrom="opacity-100 sm:scale-100"
-                  // leaveTo="opacity-0 scale-0"
+                  unmount={false}
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 sm:scale-100"
+                  leaveTo="opacity-0 scale-0"
                 >
                   <div
                     className="flex flex-col gap-4 sm:gap-8 rounded-xl bg-base-300
