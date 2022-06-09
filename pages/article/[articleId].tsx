@@ -102,7 +102,7 @@ function Article() {
 }
 
 const LazyArticleSectionComments = dynamic(
-  () => import("../../components/article/ArticleSectionComments"),
+  () => import("../../components/article/ArticleCommentSection"),
   {
     loading: () => <MainSectionSkeleton text="Loading comments..." />,
     ssr: false,
@@ -110,7 +110,7 @@ const LazyArticleSectionComments = dynamic(
 );
 
 const LazyArticleSectionSuggestions = dynamic(
-  () => import("../../components/article/ArticleSectionSuggestions"),
+  () => import("../../components/article/ArticleSuggestionSection"),
   {
     loading: () => <MainSectionSkeleton text="Loading more posts..." />,
     ssr: false,

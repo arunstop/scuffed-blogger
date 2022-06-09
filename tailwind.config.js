@@ -1,9 +1,12 @@
 module.exports = {
-  content: ["./pages/**/*.tsx", "./components/**/*.tsx","./utils/**/*.tsx"],
+  content: ["./pages/**/*.tsx", "./components/**/*.tsx", "./utils/**/*.tsx"],
   theme: {
     extend: {
       fontFamily: {
         nunito: ["Nunito", "sans-serif"],
+      },
+      rotate: {
+        360: "360deg",
       },
     },
   },

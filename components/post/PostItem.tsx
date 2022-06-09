@@ -70,6 +70,7 @@ function PostItem({ post }: { post: Post }) {
           <Link
             href={{
               pathname: router.asPath,
+              
               query: {
                 postoption: post.id,
               },
@@ -129,4 +130,4 @@ function PostItem({ post }: { post: Post }) {
   );
 }
 
-export default PostItem;
+export default React.memo(PostItem);

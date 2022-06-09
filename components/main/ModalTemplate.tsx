@@ -35,7 +35,7 @@ const ModalTemplate = ({
           leaveFrom="opacity-100 "
           leaveTo="opacity-0 "
         >
-          <div className="fixed inset-0 bg-base-content/20 backdrop-blur-md" />
+          <div className="fixed inset-0 bg-base-content/20 backdrop-blur-sm" />
           {/* <div className="fixed inset-0 bg-base-content/20" /> */}
         </Transition.Child>}
 

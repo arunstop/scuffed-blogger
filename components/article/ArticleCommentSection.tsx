@@ -11,7 +11,7 @@ const egComments: Comment[] = [
   { id: 6, text: "" },
 ];
 
-function ArticleSectionComments({ id }: { id: string }) {
+function ArticleCommentSection({ id }: { id: string }) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<Comment[]>(egComments);
 
@@ -75,4 +75,4 @@ function ArticleSectionComments({ id }: { id: string }) {
   );
 }
 
-export default ArticleSectionComments;
+export default ArticleCommentSection;
