@@ -17,9 +17,7 @@ function PostPopupOption() {
       <li>
         <a className="">
           <MdHideSource className="text-xl sm:text-2xl" />
-          <span className="text-base sm:text-lg font-bold">
-            Show less like this
-          </span>
+          <span className="text-base sm:text-lg font-bold">Show less like this</span>
         </a>
       </li>
       <li>

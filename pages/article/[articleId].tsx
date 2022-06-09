@@ -19,7 +19,7 @@ function Article() {
   const { articleId } = router.query;
 
   useEffect(() => {
-    scrollToTop(true);
+    scrollToTop();
 
     return () => {};
   }, [articleId]);
