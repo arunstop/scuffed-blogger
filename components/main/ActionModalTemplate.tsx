@@ -2,6 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, ReactNode } from "react";
 import { MainModalProps } from "../../utils/data/Main";
 import useOptionModalConfirmationHook from "../../utils/hooks/OptionModalConfirmationHook";
+import ConfirmationModalTemplate from "./ConfirmationModalTemplate";
 import GradientBackground from "./GradientBackground";
 
 export interface ActionModalActionConfirmation {
@@ -35,13 +36,17 @@ const ActionModalTemplate = ({
   actions = [],
 }: MainModalProps &
   ActionModalTemplateProps & { actions: ActionModalAction[] }) => {
-  const { confirmation, closeConfirmation, openConfirmation } =
+  const confirmation =
     useOptionModalConfirmationHook();
 
   function closeModal() {
-    closeConfirmation();
+    confirmation.close();
     onClose();
   }
+  console.log("render ActionModal Template"+confirmation.data?.title);
+
+
+  // const laggedConfirmation = useMemo(() => confirmation, [confirmation]);
   return (
     <Transition appear show={value} as={Fragment}>
       <Dialog
@@ -112,14 +117,6 @@ const ActionModalTemplate = ({
                           {desc}
                         </span>
                       )}
-                      {/* <a
-                      className="btn-outline btn btn-sm aspect-square !h-9 !w-9 rounded-xl 
-                    !p-0 opacity-80 hover:opacity-100 sm:btn-md sm:!h-12 sm:!w-12"
-                      title="Back"
-                      onClick={onClose} 
-                    >
-                      <FaTimes className="text-2xl sm:text-3xl" />
-                    </a> */}
                     </div>
                   </Dialog.Title>
 
@@ -132,7 +129,7 @@ const ActionModalTemplate = ({
                       title={e.label}
                       onClick={
                         e.confirmation
-                          ? () => openConfirmation(e.confirmation!)
+                          ? () => confirmation.open(e.confirmation)
                           : e.action
                       }
                     >
@@ -147,51 +144,11 @@ const ActionModalTemplate = ({
                   ))}
                 </>
                 {/* Confirmation dialog */}
-                <Transition
-                  as={"div"}
-                  show={confirmation !== null}
-                  appear
-                  className="absolute inset-0 flex flex-col items-center 
-                    justify-center p-4 sm:p-8 "
-                  enter="ease-out duration-200"
-                  enterFrom="opacity-0 scale-150"
-                  enterTo="opacity-100 sm:scale-100"
-                  unmount={false}
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100 sm:scale-100"
-                  leaveTo="opacity-0 scale-0"
-                >
-                  <div
-                    className="flex flex-col gap-4 sm:gap-8 rounded-xl bg-base-300
-                      p-4 sm:p-8 min-w-[75%] ring-1 ring-gray-600/20 shadow-lg"
-                  >
-                    <div className="flex flex-col gap-2 sm:gap-4">
-                      <span className="text-center text-xl font-bold sm:text-2xl">
-                        {confirmation?.title || "-"}
-                      </span>
-                      <span
-                        className="text-center text-base text-base-content 
-                        text-opacity-75 sm:text-lg"
-                      >
-                        {confirmation?.desc || "-"}
-                      </span>
-                    </div>
-                    <div className="inline-flex flex-row-reverse gap-2 sm:gap-4 w-full">
-                      <button
-                        className="btn flex-1 --btn-resp btn-primary rounded-xl"
-                        onClick={() => closeConfirmation()}
-                      >
-                        OK
-                      </button>
-                      <button
-                        className="btn flex-1 --btn-resp btn-outline rounded-xl"
-                        onClick={() => closeConfirmation()}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </Transition>
+                <ConfirmationModalTemplate
+                  value={confirmation.show}
+                  onClose={() => confirmation.close()}
+                  confirmation={confirmation.data}
+                />
               </ul>
 
               {/* Basic navigation */}

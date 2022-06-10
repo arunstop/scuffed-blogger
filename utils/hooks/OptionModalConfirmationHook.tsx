@@ -2,22 +2,34 @@ import { useCallback, useState } from "react";
 import { ActionModalActionConfirmation } from "../../components/main/ActionModalTemplate";
 
 function useOptionModalConfirmationHook() {
-  const [confirmation, setConfirmation] =
-    useState<ActionModalActionConfirmation | null>(null);
-  const closeConfirmation = useCallback(() => {
-    setConfirmation(null);
-  }, []);
-  const openConfirmation = useCallback(
-    (value: ActionModalActionConfirmation) => {
-      setConfirmation(value);
+  const [confirmation, setConfirmation] = useState<{
+    show: boolean;
+    data?: ActionModalActionConfirmation;
+  }>({ show: false });
+  // const [show, setShow] = useState(false);
+
+  // const clear = useCallback(() => {
+  //   setConfirmation({show:false});
+  // }, []);
+
+  const close = useCallback(() => {
+    // console.log(confirmation.data);
+    setConfirmation({ show: false, data: confirmation.data });
+  }, [confirmation]);
+  const open = useCallback(
+    (value: ActionModalActionConfirmation | undefined) => {
+      // setShow(true);
+      setConfirmation({ show: true, data: value });
     },
     [],
   );
 
   return {
-    confirmation,
-    openConfirmation,
-    closeConfirmation,
+    ...confirmation,
+    // show,
+    open,
+    close,
+    // clear,
   };
 }
 
