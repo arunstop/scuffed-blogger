@@ -13,7 +13,7 @@ function ConfirmationModalTemplate({
       show={value}
       as={"div"}
       className="absolute inset-0 flex flex-col items-center 
-      justify-center p-4 sm:p-8"
+      justify-center p-4 sm:p-8 !border-0"
       appear
       unmount={true}
     >
@@ -26,14 +26,14 @@ function ConfirmationModalTemplate({
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-      <div className="absolute inset-0 bg-base-content/50"></div>
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-md"></div>
       </Transition.Child>
 
       <Transition.Child
         as={"div"}
-        className="flex flex-col gap-4 sm:gap-8 rounded-xl bg-base-300
-        p-4 sm:p-8 min-w-[75%] ring-1 ring-gray-600/20 shadow-lg
-        z-[1]"
+        className="z-[1] flex min-w-[75%] flex-col gap-4 rounded-xl
+        bg-base-300 p-4 shadow-lg ring-1 ring-gray-600/20 sm:gap-8
+        sm:p-8"
         enter="ease-out duration-200"
         enterFrom="opacity-0 scale-150"
         enterTo="opacity-100 scale-100"
@@ -52,15 +52,15 @@ function ConfirmationModalTemplate({
             {confirmation?.desc || "-"}
           </span>
         </div>
-        <div className="inline-flex flex-row-reverse gap-2 sm:gap-4 w-full">
+        <div className="inline-flex w-full flex-row-reverse gap-2 sm:gap-4">
           <button
-            className="btn flex-1 --btn-resp btn-primary rounded-xl"
+            className="--btn-resp btn btn-primary flex-1 rounded-xl"
             onClick={() => onClose()}
           >
             OK
           </button>
           <button
-            className="btn flex-1 --btn-resp btn-outline rounded-xl"
+            className="--btn-resp btn-outline btn flex-1 rounded-xl"
             onClick={() => onClose()}
           >
             Cancel

@@ -35,7 +35,7 @@ const ModalTemplate = ({
           leaveFrom="opacity-100 "
           leaveTo="opacity-0 "
         >
-          <div className="fixed inset-0 bg-base-content/20 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
           {/* <div className="fixed inset-0 bg-base-content/20" /> */}
         </Transition.Child>}
 
@@ -49,6 +49,7 @@ const ModalTemplate = ({
           leaveTo="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-[0.75]"
         >
           <Dialog.Panel
+          as="div" 
             className={`!pointer-events-none flex w-full justify-center 
             ${fullscreen ? "h-full" : "max-h-full sm:p-8"}`}
           >

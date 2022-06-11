@@ -1,7 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, ReactNode } from "react";
 import { MainModalProps } from "../../utils/data/Main";
-import useOptionModalConfirmationHook from "../../utils/hooks/OptionModalConfirmationHook";
+import useOptionModalConfirmationHook from "../../utils/hooks/PostOptionConfirmationModalBehaviorHook";
+
+import ActionModalActionItem from "./ActionModalActionItem";
 import ConfirmationModalTemplate from "./ConfirmationModalTemplate";
 import GradientBackground from "./GradientBackground";
 
@@ -36,15 +38,13 @@ const ActionModalTemplate = ({
   actions = [],
 }: MainModalProps &
   ActionModalTemplateProps & { actions: ActionModalAction[] }) => {
-  const confirmation =
-    useOptionModalConfirmationHook();
+  const confirmation = useOptionModalConfirmationHook();
 
   function closeModal() {
     confirmation.close();
     onClose();
   }
-  console.log("render ActionModal Template"+confirmation.data?.title);
-
+  console.log("render ActionModal Template" + confirmation.data?.title);
 
   // const laggedConfirmation = useMemo(() => confirmation, [confirmation]);
   return (
@@ -67,7 +67,7 @@ const ActionModalTemplate = ({
             leaveTo="opacity-0 "
           >
             {/* <div className="fixed inset-0 bg-base-content/20 backdrop-blur-sm" /> */}
-            <div className="fixed inset-0 bg-base-content/20" />
+            <div className="fixed inset-0 bg-black/60" />
           </Transition.Child>
         )}
 
@@ -82,6 +82,7 @@ const ActionModalTemplate = ({
         >
           {/* Container */}
           <Dialog.Panel
+           as={"div"}
             className={`!pointer-events-none flex w-full justify-center
             p-2 sm:p-4`}
           >
@@ -99,10 +100,13 @@ const ActionModalTemplate = ({
               <GradientBackground className="rounded-t-xl" />
               {/* Modal box */}
               <ul
-                className="relative flex flex-col divide-y divide-gray-600/20 
-                overflow-hidden !rounded-xl bg-base-300/60 shadow-xl ring-1
-                ring-gray-600/20 backdrop-blur-md z-10"
+                className="relative z-10 flex flex-col divide-y 
+                divide-gray-600/20 overflow-hidden !rounded-xl shadow-xl
+                ring-1 ring-gray-600/20"
               >
+              {/* Backdrop blur */}
+                <div className="absolute inset-0 z-[-1] rounded-xl bg-base-300/60 backdrop-blur-md" />
+
                 <>
                   <Dialog.Title
                     as="div"
@@ -121,26 +125,11 @@ const ActionModalTemplate = ({
                   </Dialog.Title>
 
                   {actions.map((e, idx) => (
-                    <li
+                    <ActionModalActionItem
                       key={idx}
-                      className="--btn-resp group btn btn-ghost no-animation flex-nowrap 
-                    justify-between gap-2 rounded-none border-x-0 !font-medium transition-all 
-                    duration-300 hover:px-4 hover:!font-black sm:gap-4 sm:hover:px-8"
-                      title={e.label}
-                      onClick={
-                        e.confirmation
-                          ? () => confirmation.open(e.confirmation)
-                          : e.action
-                      }
-                    >
-                      <span className="truncate">
-                        {e.label + " " + !!e.confirmation + ""}
-                      </span>
-                      {/* <span className="text-2xl transition-transform duration-300 ease-in group-hover:-scale-x-100">{e.icon}</span> */}
-                      <span className="text-2xl transition-transform duration-300">
-                        {e.icon}
-                      </span>
-                    </li>
+                      openConfirmation={confirmation.open}
+                      {...e}
+                    />
                   ))}
                 </>
                 {/* Confirmation dialog */}
@@ -161,14 +150,14 @@ const ActionModalTemplate = ({
                 >
                   OK
                 </a> */}
-                <a
+                <button
                   className="--btn-resp --btn-base  btn flex-1 rounded-xl border-0 shadow-lg
                   ring-1 ring-gray-600/20"
                   onClick={closeModal}
                   role={"button"}
                 >
                   Cancel
-                </a>
+                </button>
               </div>
               {/* {children} */}
             </div>

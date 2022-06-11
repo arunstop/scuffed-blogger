@@ -36,7 +36,7 @@ const options: ActionModalAction[] = [
     label: "Mute author",
     confirmation: {
       title: "Mute author",
-      desc: "You will not see any of their posts until you un-mute them back, comments, are you sure?",
+      desc: "You will not see any of their posts until you un-mute them back, are you sure?",
     },
     action: () => {},
   },

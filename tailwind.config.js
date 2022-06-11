@@ -27,6 +27,8 @@ module.exports = {
           ...require("daisyui/src/colors/themes")["[data-theme=forest]"],
           "--btn-text-case": "none", // set default text transform for buttons
           primary: "#312e81",
+          neutral: "#d7cccc",
+          "base-content": "#d7cccc",
         },
       },
     ],

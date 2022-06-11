@@ -6,13 +6,9 @@ function useOptionModalConfirmationHook() {
     show: boolean;
     data?: ActionModalActionConfirmation;
   }>({ show: false });
-  // const [show, setShow] = useState(false);
-
-  // const clear = useCallback(() => {
-  //   setConfirmation({show:false});
-  // }, []);
 
   const close = useCallback(() => {
+    if(confirmation.show===false) return;
     // console.log(confirmation.data);
     setConfirmation({ show: false, data: confirmation.data });
   }, [confirmation]);

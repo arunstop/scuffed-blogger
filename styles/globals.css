@@ -90,6 +90,6 @@
 }
 
 .--btn-base{
-  @apply bg-base-100 text-base-content hover:bg-base-300
+  @apply bg-base-100 text-base-content hover:bg-base-100
 }
 
