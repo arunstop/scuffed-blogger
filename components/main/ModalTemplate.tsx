@@ -21,8 +21,7 @@ const ModalTemplate = ({
     <Transition appear show={value} as={Fragment}>
       <Dialog
         as="div"
-        className="modal modal-bottom !pointer-events-auto !visible overflow-hidden 
-        !bg-opacity-0 !opacity-100 sm:modal-middle "
+        className="fixed inset-0 z-[999] flex justify-center items-end sm:items-center"
         onClose={onClose}
       >
         {/* OVERLAY */}
