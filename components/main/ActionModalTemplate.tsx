@@ -2,8 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, ReactNode } from "react";
 import { MainModalProps } from "../../utils/data/Main";
 import useOptionModalConfirmationHook from "../../utils/hooks/PostOptionConfirmationModalBehaviorHook";
-
-import ActionModalActionItem from "./ActionModalActionItem";
+import ActionModalActionSection from "./ActionModalActionSection";
 import ConfirmationModalTemplate from "./ConfirmationModalTemplate";
 import GradientBackground from "./GradientBackground";
 
@@ -58,15 +57,15 @@ const ActionModalTemplate = ({
         {!fullscreen && (
           <Transition.Child
             as={Fragment}
-            enter="ease-out duration-200"
+            enter="ease-out duration-500"
             enterFrom="opacity-0 "
             enterTo="opacity-100 "
             leave="ease-in duration-200"
             leaveFrom="opacity-100 "
             leaveTo="opacity-0 "
           >
-            {/* <div className="fixed inset-0 bg-base-content/20 backdrop-blur-sm" /> */}
-            <div className="fixed inset-0 bg-black/60" />
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
+            {/* <div className="fixed inset-0 bg-black/60" /> */}
           </Transition.Child>
         )}
 
@@ -81,7 +80,7 @@ const ActionModalTemplate = ({
         >
           {/* Container */}
           <Dialog.Panel
-           as={"div"}
+            as={"div"}
             className={`!pointer-events-none flex w-full justify-center
             p-2 sm:p-4`}
           >
@@ -103,34 +102,31 @@ const ActionModalTemplate = ({
                 divide-gray-600/20 overflow-hidden !rounded-xl shadow-xl
                 ring-1 ring-gray-600/20"
               >
-              {/* Backdrop blur */}
+                {/* Backdrop blur */}
                 <div className="absolute inset-0 z-[-1] rounded-xl bg-base-300/60 backdrop-blur-md" />
 
-                <>
-                  <Dialog.Title
-                    as="div"
-                    className="min-h-9 p-2 sm:min-h-12 sm:p-4"
-                  >
-                    <div className="flex flex-col items-center justify-center">
-                      <span className="text-center text-xl font-bold sm:text-2xl">
-                        {title}
+                {/* Title section */}
+                <Dialog.Title
+                  as="div"
+                  className="min-h-9 p-2 sm:min-h-12 sm:p-4"
+                >
+                  <div className="flex flex-col items-center justify-center">
+                    <span className="text-center text-xl font-bold sm:text-2xl">
+                      {title}
+                    </span>
+                    {desc && (
+                      <span className="text-center text-base text-base-content text-opacity-75 sm:text-lg">
+                        {desc}
                       </span>
-                      {desc && (
-                        <span className="text-center text-base text-base-content text-opacity-75 sm:text-lg">
-                          {desc}
-                        </span>
-                      )}
-                    </div>
-                  </Dialog.Title>
+                    )}
+                  </div>
+                </Dialog.Title>
 
-                  {actions.map((e, idx) => (
-                    <ActionModalActionItem
-                      key={idx}
-                      openConfirmation={confirmation.open}
-                      {...e}
-                    />
-                  ))}
-                </>
+                {/* Action section */}
+                <ActionModalActionSection
+                  actions={actions}
+                  openConfirmation={confirmation.open}
+                />
                 {/* Confirmation dialog */}
                 <ConfirmationModalTemplate
                   value={confirmation.show}

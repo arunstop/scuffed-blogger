@@ -27,7 +27,7 @@ const ModalTemplate = ({
         {/* OVERLAY */}
         {!fullscreen && <Transition.Child
           as={Fragment}
-          enter="ease-out duration-200"
+          enter="ease-out duration-500"
           enterFrom="opacity-0 "
           enterTo="opacity-100 "
           leave="ease-in duration-200"

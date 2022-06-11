@@ -22,7 +22,7 @@ function ActionModalActionItem({
       title={label}
       onClick={confirmation ? () => openConfirmation(confirmation) : action}
     >
-      <span className="truncate">{label + " " + !!confirmation + ""}</span>
+      <span className="truncate">{label} {!!confirmation && <>&middot;</>}</span>
       {/* <span className="text-2xl transition-transform duration-300 ease-in group-hover:-scale-x-100">{icon}</span> */}
       <span className="text-2xl transition-transform duration-300">{icon}</span>
     </li>
