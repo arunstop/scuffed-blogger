@@ -1,17 +1,17 @@
 import React, { useCallback, useState } from "react";
-import { UserAbout } from "./UserAbout";
+import { UserAboutTab } from "./UserAboutTab";
 import { UserContentTabs } from "./UserContentTabs";
-import { UserLists } from "./UserLists";
-import { UserPosts } from "./UserPosts";
+import { UserListTab } from "./UserListTab";
+import { UserPostTab } from "./UserPostTab";
 
 const RENDER_SECTIONS = (title: string) => {
   if (title === "Posts") {
-    return <UserPosts id={"2"} />;
+    return <UserPostTab id={"2"} />;
   } else if(title==="Lists"){
-    return <UserLists/>;
+    return <UserListTab/>;
   }
   else {
-    return <UserAbout id={"1"}/>;
+    return <UserAboutTab id={"1"}/>;
   }
 };
 
@@ -22,7 +22,7 @@ const UserContent = () => {
   }, []);
   console.log("Render : UserContent");
   return (
-    <div className="flex flex-col gap-4 sm:gap-8 min-h-screen">
+    <div className="flex min-h-screen flex-col gap-4 sm:gap-8">
       <UserContentTabs activeTab={activeTab + ""} onClick={changeActiveTab} />
       {RENDER_SECTIONS(activeTab)}
     </div>

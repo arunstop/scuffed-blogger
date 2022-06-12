@@ -2,7 +2,7 @@ import React from "react";
 import { MdBookmarkAdd, MdPlaylistAdd } from "react-icons/md";
 import PostLinker from "../post/PostLinker";
 
-const UserList = ({ id }: { id: string }) => {
+const UserListItem = ({ id }: { id: string }) => {
   return (
     <div
       className="group flex w-full flex-col rounded-xl bg-primary
@@ -19,7 +19,7 @@ const UserList = ({ id }: { id: string }) => {
           {[...Array((parseInt(id) || 0) % 2 === 0 ? 4 : 3)].map((e, idx) => (
             <div key={idx} className="flex-1 overflow-hidden bg-base-content">
               <img
-                className="h-full flex-1 object-cover transition-transform group-hover:scale-[1.2]"
+                className="h-full flex-1 object-cover transition-transform group-hover:scale-[1.2] duration-500"
                 src={`https://picsum.photos/id/${idx + ""}/500/300`}
                 alt="Image"
               />
@@ -84,4 +84,4 @@ const UserList = ({ id }: { id: string }) => {
   );
 };
 
-export default UserList;
+export default UserListItem;

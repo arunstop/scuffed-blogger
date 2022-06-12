@@ -23,7 +23,7 @@ const links: UserAboutLink[] = [
   { href: `https://www.discord.com`, title: `Join the Discord server` },
 ];
 
-export const UserAbout = ({ id }: { id: string }) => {
+export const UserAboutTab = ({ id }: { id: string }) => {
   return (
     <div className="flex flex-1 flex-col gap-4 sm:gap-8">
       <p className="text-lg sm:text-xl">
@@ -43,22 +43,23 @@ export const UserAbout = ({ id }: { id: string }) => {
         Pariatur, modi similique.
       </p>
       <div className="flex flex-col gap-4 sm:gap-8">
-          <div className="text-lg sm:text-xl font-black">Connect :</div>
+          <div className="text-lg font-black sm:text-xl">Connect :</div>
           <div className="flex flex-wrap gap-2 sm:gap-4">
             {links.map((e, idx) => (
               <MainLink
                 key={idx}
                 href={e.href}
                 newTab
-                className="btn text-base sm:text-lg border-none h-auto py-2 px-4 sm:py-3 sm:px-6 decoration-2
-                btn-primary bg-opacity-10 text-primary-content hover:text-base-content gap-2 sm:gap-4 hover:underline"
+                className="btn btn-primary h-auto gap-2 border-none bg-opacity-10 py-2 px-4 text-base 
+                text-primary-content decoration-2 hover:text-base-content hover:underline 
+                sm:gap-4 sm:py-3 sm:px-6 sm:text-lg"
               >
                 {e.title}
               </MainLink>
             ))}
           </div>
         </div>
-      <p className="gap-2 opacity-75 sm:gap-4 text-base sm:text-lg">
+      <p className="gap-2 text-base opacity-75 sm:gap-4 sm:text-lg">
         <span>Joined since January 2022</span>
         <span className="mx-2 font-black sm:mx-4">&middot;</span>
         <span>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import { MainTabItemProps } from "../main/MainTabItem";
@@ -34,15 +35,16 @@ export const UserContentTabs = React.memo(function UserContentTabs({
     <div className="tabs tabs-boxed rounded-xl w-full">
       {tabs.map((e, idx) => {
         return (
-          <a
-            key={idx}
-            className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl font-bold transition-colors ${
-              activeTab === e.title ? "tab-active" : ""
-            }`}
-            onClick={() => onClick(e.title)}
-          >
-            {e.title}
-          </a>
+          <Link key={idx} href={e.title.toLowerCase()} passHref>
+            <a
+              className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl font-bold transition-colors ${
+                activeTab === e.title ? "tab-active" : ""
+              }`}
+              onClick={() => onClick(e.title)}
+            >
+              {e.title}
+            </a>
+          </Link>
         );
       })}
     </div>

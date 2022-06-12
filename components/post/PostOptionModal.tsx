@@ -5,11 +5,11 @@ import {
   MdHideSource,
   MdPersonOff,
   MdReport,
-  MdShare,
+  MdShare
 } from "react-icons/md";
-import { MainModalProps } from "../../utils/data/Main";
+import { usePostOptionModalBehaviorHook } from "../../utils/hooks/PostOptionModalBehaviorHook";
 import ActionModalTemplate, {
-  ActionModalAction,
+  ActionModalAction
 } from "../main/ActionModalTemplate";
 
 const options: ActionModalAction[] = [
@@ -63,11 +63,13 @@ const options: ActionModalAction[] = [
   },
 ];
 
-function ArticleCommentOptionModal({ value, onClose }: MainModalProps) {
+function ArticleCommentOptionModal() {
+
+  const {optionModal,closeOptionModal}= usePostOptionModalBehaviorHook();
   return (
     <ActionModalTemplate
-      value={value}
-      onClose={onClose}
+      value={optionModal}
+      onClose={closeOptionModal}
       title="Post options"
       desc="What to do about this post?"
       actions={options}

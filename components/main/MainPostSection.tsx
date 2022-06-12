@@ -1,10 +1,8 @@
 import React from "react";
-import { usePostOptionModalBehaviorHook } from "../../utils/hooks/PostOptionModalBehaviorHook";
 import PostItem from "../post/PostItem";
 import PostOptionModal from "../post/PostOptionModal";
 
 function MainPostSection() {
-  const { optionModal, closeOptionModal } = usePostOptionModalBehaviorHook();
 
   return (
     <>
@@ -16,7 +14,7 @@ function MainPostSection() {
           />
         ))}
       </div>
-      <PostOptionModal value={optionModal} onClose={closeOptionModal} />
+      <PostOptionModal/>
     </>
   );
 }
