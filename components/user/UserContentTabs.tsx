@@ -1,26 +1,28 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import { MainTabItemProps } from "../main/MainTabItem";
 
 export interface UserContentTabsProps {
   activeTab: string;
+  currentPath: string;
   onClick: (title: string) => void;
 }
 
 const tabs: MainTabItemProps[] = [
   {
-    title: "Posts",
+    title: "posts",
     icon: <MdStar className="text-xl sm:text-2xl" />,
     active: false,
   },
   {
-    title: "Lists",
+    title: "lists",
     icon: <MdTrendingUp className="text-xl sm:text-2xl" />,
     active: false,
   },
   {
-    title: "About",
+    title: "about",
     icon: <MdForum className="text-xl sm:text-2xl" />,
     active: false,
   },
@@ -29,20 +31,38 @@ const tabs: MainTabItemProps[] = [
 export const UserContentTabs = React.memo(function UserContentTabs({
   activeTab,
   onClick,
+  currentPath,
 }: UserContentTabsProps) {
-  console.log("Render: UserContentTabs");
+  const router = useRouter();
+  // active tab with
+  let expectedActiveTab = "posts";
+  if (tabs.map((e) => e.title).includes(activeTab)) {
+    expectedActiveTab = activeTab;
+  }
+  const currentPrettyPath = `/${router.pathname.split("/")[1]}/${
+    router.query.authorslug?.[0]
+  }`;
+  // console.log(router);
   return (
     <div className="tabs tabs-boxed rounded-xl w-full">
       {tabs.map((e, idx) => {
         return (
-          <Link key={idx} href={e.title.toLowerCase()} passHref>
+          <Link
+            key={idx}
+            href={{
+              pathname: currentPrettyPath+"/"+e.title,
+            }}
+            passHref
+            shallow
+          >
             <a
+              key={idx}
               className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl font-bold transition-colors ${
-                activeTab === e.title ? "tab-active" : ""
+                expectedActiveTab === e.title ? "tab-active" : ""
               }`}
               onClick={() => onClick(e.title)}
             >
-              {e.title}
+              <span className="first-letter:uppercase">{e.title}</span>
             </a>
           </Link>
         );

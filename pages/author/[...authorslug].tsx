@@ -1,19 +1,54 @@
+import { GetServerSideProps } from "next";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import MainContainer from "../../components/main/MainContainer";
-import UserContent from "../../components/user/UserContent";
+import MainSectionSkeleton from "../../components/main/MainSectionSkeleton";
 import { APP_NAME } from "../../utils/helpers/Constants";
 
-function Author() {
-  const router = useRouter();
-  const { author } = router.query;
+interface AuthorPageProps {
+  author: string;
+  tab: string;
+}
+
+export const getServerSideProps: GetServerSideProps<AuthorPageProps> = async (
+  context,
+) => {
+  // SLUG ORDER
+  // 0 = User's id
+  // 1 = Tab/section
+
+  const slug = context.query.authorslug || [];
+  const author = slug[0];
+  const tab = slug[1] || "post";
+  // console.log(tab);
+
+  return {
+    props: {
+      author,
+      tab,
+    },
+  };
+};
+
+const LazyUserContent = dynamic(
+  () => import("../../components/user/UserContent"),
+  {
+    loading: () => <MainSectionSkeleton text="Loading User's information..." />,
+    ssr: false,
+  },
+);
+
+function Author({author,tab}:AuthorPageProps) {
   const title = author + " | " + APP_NAME;
   const content = `Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id iste ipsum fugiat ut, 
   deleniti, ea cupiditate officia saepe quia hic perspiciatis perferendis rem 
   explicabo obcaecati repudiandae sint mollitia! Laudantium, corporis?`;
+
+  console.log("Render: author [...slug]");
+  // console.log(tab);
 
   return (
     <>
@@ -66,8 +101,7 @@ function Author() {
             </p>
           </div>
         </div>
-
-        <UserContent />
+         <LazyUserContent initTab={tab} />
       </MainContainer>
       <Footer />
     </>
@@ -88,15 +122,19 @@ const FollowButton = React.memo(function FollowButton() {
         btn sm:btn-lg text-xl sm:text-2xl font-bold 
         !border-2 sm:!border-4 !outline-none group
         transition-all w-32 sm:w-40
-        ${following?'btn-outline btn-neutral':'btn-primary'}
+        ${following ? "btn-outline btn-neutral" : "btn-primary"}
       `}
         onClick={() => setFollowing(!following)}
       >
-        <span className="block group-hover:hidden">{following ? "Following" : "Follow"}</span>
-        <span className="hidden group-hover:block">{following ? "Unfollow" : "Follow"}</span>
+        <span className="block group-hover:hidden">
+          {following ? "Following" : "Follow"}
+        </span>
+        <span className="hidden group-hover:block">
+          {following ? "Unfollow" : "Follow"}
+        </span>
       </button>
     </div>
   );
 });
 
-export default Author;
+export default React.memo(Author);
