@@ -8,6 +8,7 @@ function ConfirmationModalTemplate({
   onClose,
   confirmation,
 }: MainModalProps & { confirmation?: ActionModalActionConfirmation }) {
+  
   return (
     <Transition
       show={value}
@@ -31,6 +32,7 @@ function ConfirmationModalTemplate({
 
       <Transition.Child
         as={"div"}
+        id="confirmation-modal"
         className="z-[1] flex min-w-[75%] flex-col gap-4 rounded-xl
         bg-base-300 p-4 shadow-lg ring-1 ring-gray-600/20 sm:gap-8
         sm:p-8"
@@ -47,7 +49,7 @@ function ConfirmationModalTemplate({
           </span>
           <span
             className="text-center text-base text-base-content 
-        text-opacity-75 sm:text-lg"
+            text-opacity-75 sm:text-lg"
           >
             {confirmation?.desc || "-"}
           </span>

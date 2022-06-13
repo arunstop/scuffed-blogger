@@ -15,19 +15,20 @@ const UserListItem = ({ id }: { id: string }) => {
         rounded-t-xl rounded-bl-none bg-base-content sm:h-auto sm:w-96 
         sm:rounded-l-xl sm:rounded-tr-none "
       >
-        <div className="flex h-full justify-end gap-0.5 sm:gap-1 relative">
+        <div className="relative flex h-full justify-end gap-0.5 sm:gap-1">
           {[...Array((parseInt(id) || 0) % 2 === 0 ? 4 : 3)].map((e, idx) => (
             <div key={idx} className="flex-1 overflow-hidden bg-base-content">
               <img
-                className="h-full flex-1 object-cover transition-transform group-hover:scale-[1.2] duration-500"
+                className="h-full flex-1 object-cover transition-transform 
+                duration-1000 group-hover:scale-[1.2]"
                 src={`https://picsum.photos/id/${idx + ""}/500/300`}
                 alt="Image"
               />
             </div>
           ))}
           <div
-            className="bg-base-100/80 flex max-h-32 absolute bottom-0 w-full p-4 
-            flex-wrap gap-2 text-base sm:text-lg justify-center font-bold "
+            className="absolute bottom-0 flex max-h-32 w-full flex-wrap justify-center 
+            gap-2 bg-base-100/80 p-4 text-base font-bold sm:text-lg "
           >
             <span className="">7 Articles</span>
             <span className="font-black">&middot;</span>
@@ -55,7 +56,7 @@ const UserListItem = ({ id }: { id: string }) => {
         <div className="mt-auto flex flex-row items-center justify-end gap-2 sm:gap-4">
           <button
             className="btn-neutral btn-outline btn btn-sm btn-circle 
-            bg-opacity-50 text-xl font-bold normal-case opacity-80
+            bg-opacity-50 !p-0 text-2xl font-bold opacity-80
             group-hover:opacity-100 sm:btn-md sm:!text-3xl"
             title="Add to bookmark"
           >
@@ -63,7 +64,7 @@ const UserListItem = ({ id }: { id: string }) => {
           </button>
           <button
             className="btn-neutral btn-outline btn btn-sm btn-circle
-            bg-opacity-50 text-xl font-bold normal-case opacity-80
+            bg-opacity-50 !p-0 text-2xl font-bold opacity-80
             group-hover:opacity-100 sm:btn-md sm:!text-3xl"
             title="Add to bookmark"
           >
@@ -72,7 +73,7 @@ const UserListItem = ({ id }: { id: string }) => {
           <PostLinker href={`/article/${id}`}>
             <button
               className="btn-neutral btn-outline btn btn-sm w-32
-              bg-opacity-50 text-base font-bold normal-case opacity-80
+              bg-opacity-50 text-lg font-bold normal-case opacity-80
               group-hover:opacity-100 sm:btn-md sm:!text-xl"
             >
               View

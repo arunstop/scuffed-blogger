@@ -7,7 +7,7 @@ export function usePostOptionModalBehaviorHook() {
   const router = useRouter();
 
   // open state
-  const openOptionModal = useCallback((value: boolean) => {
+  const toggleOptionModal = useCallback((value: boolean) => {
     setOptionModal(value);
   }, []);
 
@@ -21,9 +21,11 @@ export function usePostOptionModalBehaviorHook() {
     });
   }, [router]);
 
-  // Determine on what query the state will change
+  // Determine on what query/param on url, the state will change
   useEffect(() => {
-    openOptionModal(!!router.query.postoption);
+    // if query "postoption" exist, it will open the modal
+    // if it doesn't it will close the modal
+    toggleOptionModal(!!router.query.postoption);
 
     return () => {};
   }, [router.query.postoption]);

@@ -50,7 +50,7 @@ const ActionModalTemplate = ({
     <Transition appear show={value} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed inset-0 z-[999] flex justify-center items-end sm:items-center"
+        className="fixed inset-0 z-[999] flex items-end justify-center sm:items-center"
         onClose={closeModal}
       >
         {/* OVERLAY */}

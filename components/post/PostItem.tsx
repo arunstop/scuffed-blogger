@@ -28,11 +28,12 @@ function PostItem({ post }: { post: Post }) {
     >
       <PostLinker
         href={`/article/${post.id}`}
-        className="relative aspect-square h-60 w-full overflow-hidden 
-        rounded-t-xl rounded-bl-none bg-base-content sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none"
+        className="relative aspect-square h-60 w-full overflow-hidden rounded-t-xl 
+        rounded-bl-none bg-base-content sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none"
       >
         <img
-          className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2]"
+          className="h-full w-full max-w-none object-cover transition-transform 
+          duration-1000 group-hover:scale-[1.2]"
           src={`https://picsum.photos/id/${post.id}/500/300`}
           alt="Image"
           width={240}
@@ -78,8 +79,8 @@ function PostItem({ post }: { post: Post }) {
             shallow
           >
             <a
-              className="btn btn-ghost aspect-square rounded-xl p-0 opacity-80 
-              hover:opacity-100 ml-auto"
+              className="btn btn-ghost ml-auto aspect-square rounded-xl p-0 
+              opacity-80 hover:opacity-100"
               title="Options"
             >
               <MdMoreHoriz className="text-2xl sm:text-3xl" />
@@ -107,7 +108,7 @@ function PostItem({ post }: { post: Post }) {
         <div className="flex flex-row items-center justify-end gap-2 sm:gap-4">
           <button
             className="btn-neutral btn-outline btn btn-sm btn-circle
-            bg-opacity-50 font-bold normal-case opacity-80
+            font-bold normal-case opacity-80
             group-hover:opacity-100 sm:btn-md"
             title="Add to bookmark"
           >
@@ -118,7 +119,7 @@ function PostItem({ post }: { post: Post }) {
           <PostLinker href={`/article/${post.id}`}>
             <button
               className="btn-neutral btn-outline btn btn-sm w-32
-              bg-opacity-50 text-lg font-bold normal-case opacity-80
+              text-lg font-bold normal-case opacity-80
               group-hover:opacity-100 sm:btn-md sm:!text-xl"
             >
               Read

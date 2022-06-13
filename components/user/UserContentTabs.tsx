@@ -44,7 +44,7 @@ export const UserContentTabs = React.memo(function UserContentTabs({
   }`;
   // console.log(router);
   return (
-    <div className="tabs tabs-boxed rounded-xl w-full">
+    <div className="tabs tabs-boxed w-full rounded-xl">
       {tabs.map((e, idx) => {
         return (
           <Link

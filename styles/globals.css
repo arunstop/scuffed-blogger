@@ -75,8 +75,14 @@
   @apply h-9 min-h-[2.25rem]
 }
 
+/* Responsive BTN-CIRCLE small var */
 .btn-circle:where(.btn-sm) {
     @apply h-9 w-9
+}
+
+/* Responsive BTN-CIRCLE  medium var */
+.btn-circle:where(.sm\:btn-md) {
+    @apply sm:h-12 sm:w-12
 }
 
 .btn{

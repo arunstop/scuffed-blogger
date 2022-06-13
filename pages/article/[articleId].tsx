@@ -1,15 +1,17 @@
-import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo } from "react";
+import React, {
+  useEffect,
+  useMemo
+} from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleSectionAction from "../../components/article/ArticleActions";
 import ArticleContent from "../../components/article/ArticleContent";
+import ArticleMoreContent from "../../components/article/ArticleMoreContent";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
-import MainSectionSkeleton from "../../components/main/MainSectionSkeleton";
 import MainUserLabel from "../../components/main/MainUserLabel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
@@ -17,22 +19,21 @@ import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 function Article() {
   const router = useRouter();
   const { articleId } = router.query;
-
+  
   useEffect(() => {
     scrollToTop();
 
     return () => {};
   }, [articleId]);
 
-  const title = 'Lorem ipsum dolor sit amet consectetur adipisicing elit Laudantium itaque odit sed? Quibusdam quis nemo tempora';
+  const title =
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit Laudantium itaque odit sed? Quibusdam quis nemo tempora";
 
   const mzPage = useMemo(() => {
     return (
       <>
         <Head>
-          <title>
-            {title + APP_NAME}
-          </title>
+          <title>{title + APP_NAME}</title>
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"
@@ -88,9 +89,8 @@ function Article() {
 
           <ArticleSectionAction id={articleId + ""} />
 
-          <LazyArticleSectionComments id={articleId + ""} />
-
-          <LazyArticleSectionSuggestions id={articleId + ""} />
+          {/* Comment and Suggestion section */}
+          <ArticleMoreContent id={articleId + ""} />
         </div>
         <Footer />
       </>
@@ -100,21 +100,5 @@ function Article() {
   console.log("render [articleId]");
   return <>{mzPage}</>;
 }
-
-const LazyArticleSectionComments = dynamic(
-  () => import("../../components/article/ArticleCommentSection"),
-  {
-    loading: () => <MainSectionSkeleton text="Loading comments..." />,
-    ssr: false,
-  },
-);
-
-const LazyArticleSectionSuggestions = dynamic(
-  () => import("../../components/article/ArticleSuggestionSection"),
-  {
-    loading: () => <MainSectionSkeleton text="Loading more posts..." />,
-    ssr: false,
-  },
-);
 
 export default Article;
