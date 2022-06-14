@@ -11,6 +11,7 @@ import { APP_NAME } from "../utils/helpers/Constants";
 import { routeTrimQuery } from "../utils/helpers/RouteHelpers";
 import { useHeaderBehavior } from "../utils/hooks/HeaderBehaviorHook";
 import { useSearchModalBehavior } from "../utils/hooks/SearchModalBehaviorHook";
+import MainHeaderBigSearchBar from "./main/MainHeaderBigSearchBar";
 import SearchModal from "./main/SearchModal";
 
 // function scrollListener(event: Event) {
@@ -55,19 +56,20 @@ function Header() {
       <div
         className={`sticky flex flex-row gap-4 top-0 z-10 h-12 sm:h-16
       w-full items-center px-2 sm:px-4 justify-between transition-all duration-[600ms]
-      text-primary 
+      text-primary
       `}
         id="header"
       >
         <Link href="/" passHref>
           <a
             className={`text-lg sm:text-xl md:text-2xl font-black
-          
           `}
           >
             {APP_NAME}
           </a>
         </Link>
+
+        <MainHeaderBigSearchBar />
         <div className="inline-flex items-center gap-2 sm:gap-4">
           {/* <div className="block sm:hidden"> */}
           <div className="block">
@@ -85,7 +87,9 @@ function Header() {
                 role={"button"}
               >
                 <span
-                  className={`text-2xl transition-colors ${scrolledToTop ? "text-primary" : ""} `}
+                  className={`text-2xl transition-colors ${
+                    scrolledToTop ? "text-primary" : ""
+                  } `}
                 >
                   <MdSearch />
                 </span>

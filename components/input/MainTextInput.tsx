@@ -17,7 +17,9 @@ function MainTextInput({
   ...props
 }: MainTextInputProps) {
   return (
-    <label className="h-9 sm:h-12 input-group-sm input-group relative rounded-xl sm:input-group-md">
+    <label
+      className={`h-9 sm:h-12 input-group-sm input-group relative rounded-xl sm:input-group-md`}
+    >
       <input
         {...props}
         type={type}
@@ -29,6 +31,7 @@ function MainTextInput({
         placeholder-shown:!outline-base-content/20 invalid:!outline-error
         ${icon ? "pl-9 sm:pl-12" : ""}
         ${clearIcon ? "pr-9 sm:pr-12" : ""}
+        ${props.className}
         `}
       />
       {icon && (

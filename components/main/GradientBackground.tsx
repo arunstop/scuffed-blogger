@@ -10,7 +10,7 @@ function GradientBackground({
   return (
     <div
       className={`absolute inset-0 z-[-1] bg-gradient-to-b 
-      from-primary-focus/50  to-transparent
+      from-primary-focus/50  to-transparent pointer-events-none
       ${className||""}
       `}
       style={{
