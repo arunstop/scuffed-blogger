@@ -8,6 +8,10 @@ module.exports = {
       rotate: {
         360: "360deg",
       },
+      // animation:{
+      //   'bounce-fast' : "bounce 900ms infinite",
+      //   'bounce-slow' : "bounce 1100ms infinite",
+      // }
     },
   },
   plugins: [require("daisyui")],

@@ -1,5 +1,6 @@
-import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
+import ArticleCommentSection from "../../components/article/ArticleCommentSection";
+import ArticleSuggestionSection from "../../components/article/ArticleSuggestionSection";
 import useLazyScrollerHook from "../../utils/hooks/LazyScrollerHook";
 import MainSectionSkeleton from "../main/MainSectionSkeleton";
 
@@ -9,12 +10,12 @@ function ArticleMoreContent({ id }: { id: string }) {
     load: loadCommentSection,
     setLoad: setLoadCommentSection,
     ref: commentSectionRef,
-  } = useLazyScrollerHook();
+  } = useLazyScrollerHook({delay:250});
   const {
     load: loadSuggestionSection,
     setLoad: setLoadSuggestionSection,
-    ref: SuggestionSectionRef,
-  } = useLazyScrollerHook();
+    ref: suggestionSectionRef,
+  } = useLazyScrollerHook({delay:500});
 
   //   refresh when id change
   useEffect(() => {
@@ -27,34 +28,34 @@ function ArticleMoreContent({ id }: { id: string }) {
   return (
     <>
       {loadCommentSection ? (
-        <LazyArticleCommentSection id={id} />
+        <ArticleCommentSection id={id} />
       ) : (
-        <div ref={commentSectionRef}>Loading Comments...</div>
+        <MainSectionSkeleton ref={commentSectionRef} text="Loading comments..." />
       )}
 
       {loadSuggestionSection ? (
-        <LazyArticleSuggestionSection id={id} />
+        <ArticleSuggestionSection id={id} />
       ) : (
-        <div ref={SuggestionSectionRef}>Loading Related Articles...</div>
+        <MainSectionSkeleton ref={suggestionSectionRef} text="Loading related suggestions..." />
       )}
     </>
   );
 }
 
-const LazyArticleCommentSection = dynamic(
-  () => import("../../components/article/ArticleCommentSection"),
-  {
-    loading: () => <MainSectionSkeleton text="Loading comments..." />,
-    ssr: false,
-  },
-);
+// const LazyArticleCommentSection = dynamic(
+//   () => import("../../components/article/ArticleCommentSection"),
+//   {
+//     loading: () => <MainSectionSkeleton text="Loading comments..." />,
+//     ssr: false,
+//   },
+// );
 
-const LazyArticleSuggestionSection = dynamic(
-  () => import("../../components/article/ArticleSuggestionSection"),
-  {
-    loading: () => <MainSectionSkeleton text="Loading more posts..." />,
-    ssr: false,
-  },
-);
+// const LazyArticleSuggestionSection = dynamic(
+//   () => import("../../components/article/ArticleSuggestionSection"),
+//   {
+//     loading: () => <MainSectionSkeleton text="Loading more posts..." />,
+//     ssr: false,
+//   },
+// );
 
 export default ArticleMoreContent;
