@@ -7,12 +7,12 @@ function ArticleContent({ id }: { id: string }) {
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium
         itaque odit sed? Quibusdam quis nemo tempora.
       </h1>
-      <h3 className="text-2xl font-semibold sm:text-3xl">
+      <h2 className="text-2xl font-semibold sm:text-3xl">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
         commodi? Suscipit illum maxime, repellat inventore et distinctio porro.
-      </h3>
+      </h2>
       <div className="flex flex-col gap-2 sm:gap-4">
-        <figure className="relative aspect-video w-full w-full overflow-hidden rounded-xl">
+        <figure className="relative aspect-video w-full overflow-hidden rounded-xl">
           <img
             className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2] bg-primary"
             src={`https://picsum.photos/id/${Math.floor(Math.random()*10)}/500/300`}

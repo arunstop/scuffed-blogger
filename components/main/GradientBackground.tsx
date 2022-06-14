@@ -1,12 +1,21 @@
 import React from "react";
 
-function GradientBackground({ className }: { className?: string }) {
+function GradientBackground({
+  className,
+  height = "75%",
+}: {
+  className?: string;
+  height?: string;
+}) {
   return (
     <div
-      className={`absolute inset-0 z-[-1] h-[75%] bg-gradient-to-b 
+      className={`absolute inset-0 z-[-1] bg-gradient-to-b 
       from-primary-focus/50  to-transparent
-      ${className}
+      ${className||""}
       `}
+      style={{
+        height: height,
+      }}
     ></div>
   );
 }

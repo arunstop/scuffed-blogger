@@ -10,12 +10,12 @@ function ArticleMoreContent({ id }: { id: string }) {
     load: loadCommentSection,
     setLoad: setLoadCommentSection,
     ref: commentSectionRef,
-  } = useLazyScrollerHook({delay:250});
+  } = useLazyScrollerHook({delay:1000});
   const {
     load: loadSuggestionSection,
     setLoad: setLoadSuggestionSection,
     ref: suggestionSectionRef,
-  } = useLazyScrollerHook({delay:500});
+  } = useLazyScrollerHook({delay:1000});
 
   //   refresh when id change
   useEffect(() => {
@@ -30,13 +30,13 @@ function ArticleMoreContent({ id }: { id: string }) {
       {loadCommentSection ? (
         <ArticleCommentSection id={id} />
       ) : (
-        <MainSectionSkeleton ref={commentSectionRef} text="Loading comments..." />
+        <MainSectionSkeleton ref={commentSectionRef} spinner text="Loading comments..." />
       )}
 
       {loadSuggestionSection ? (
         <ArticleSuggestionSection id={id} />
       ) : (
-        <MainSectionSkeleton ref={suggestionSectionRef} text="Loading related suggestions..." />
+        <MainSectionSkeleton ref={suggestionSectionRef} spinner text="Loading related articles..." />
       )}
     </>
   );
