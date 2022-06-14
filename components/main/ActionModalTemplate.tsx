@@ -146,7 +146,7 @@ const ActionModalTemplate = ({
                   OK
                 </a> */}
                 <button
-                  className="--btn-resp --btn-base  btn flex-1 rounded-xl border-0 shadow-lg
+                  className="--btn-resp --btn-base  btn flex-1 rounded-xl border-0 shadow-xl
                   ring-1 ring-gray-600/20"
                   onClick={closeModal}
                   role={"button"}

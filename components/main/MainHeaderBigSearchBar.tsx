@@ -10,10 +10,12 @@ function MainHeaderBigSearchBar() {
   const [showSuggestion, setShowSuggestion] = useState(false);
   const clear = useCallback(() => {
     setSearch("");
+    // setShowSuggestion(true);
   }, []);
 
   const onChange = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(ev.target.value);
+    setShowSuggestion(true);
   }, []);
 
   const filteredData = searchSuggestionDummy.filter((e) =>
@@ -21,6 +23,7 @@ function MainHeaderBigSearchBar() {
       ? true
       : e.toLowerCase().includes(search.trim().toLowerCase()),
   );
+
   //   const showResult;
 
   return (
@@ -35,15 +38,16 @@ function MainHeaderBigSearchBar() {
             clearIcon
             clearable={search.trim().length >= 2}
             clearAction={clear}
-            className="md:w-96 lg:w-[30rem]"
+            className="md:w-96 lg:w-[30rem] bg-opacity-50 backdrop-blur-md"
             onFocus={(ev) => {
               setShowSuggestion(true);
             }}
             onBlur={(ev) => {
-                
-              setTimeout(() => {setShowSuggestion(false);}, 100);
-            // setShowSuggestion(false);
-              
+              setTimeout(() => {
+                if (showSuggestion) setShowSuggestion(false);
+                clear();
+              }, 100);
+              //   setShowSuggestion(false);
             }}
           />
           {showSuggestion && (

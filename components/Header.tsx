@@ -68,54 +68,58 @@ function Header() {
             {APP_NAME}
           </a>
         </Link>
+        {(router.pathname !== "/auth" && router.pathname !== "/") && (
+          <MainHeaderBigSearchBar />
+        )}
 
-        <MainHeaderBigSearchBar />
         <div className="inline-flex items-center gap-2 sm:gap-4">
-          <div className="block md:hidden">
-          {/* <div className="block"> */}
-            <Link
-              href={{
-                pathname: routeTrimQuery(router.asPath),
-                query: {
-                  search: true,
-                },
-              }}
-              shallow
-            >
-              <a
-                className="btn btn-circle btn-ghost text-base-content --btn-resp"
-                role={"button"}
-              >
-                <span
-                  className={`text-2xl transition-colors ${
-                    scrolledToTop ? "text-primary" : ""
-                  } `}
-                >
-                  <MdSearch />
-                </span>
-              </a>
-            </Link>
-          </div>
-
           {router.pathname !== "/auth" && (
-            <Link href="/auth" passHref>
-              <a>
-                <button
-                  className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
+            <>
+              <div className="block md:hidden">
+                {/* <div className="block"> */}
+                <Link
+                  href={{
+                    pathname: routeTrimQuery(router.asPath),
+                    query: {
+                      search: true,
+                    },
+                  }}
+                  shallow
+                >
+                  <a
+                    className="btn btn-circle btn-ghost text-base-content --btn-resp"
+                    role={"button"}
+                  >
+                    <span
+                      className={`text-2xl transition-colors ${
+                        scrolledToTop ? "text-primary" : ""
+                      } `}
+                    >
+                      <MdSearch />
+                    </span>
+                  </a>
+                </Link>
+              </div>
+
+              <Link href="/auth" passHref>
+                <a>
+                  <button
+                    className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
                   text-lg sm:text-xl
                   ${scrolledToTop ? "btn-primary" : "btn-outline"}
                   `}
-                  style={
-                    {
-                      // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
-                      // color: scrolledToTop ? "hsl(var(--p))" : "",
+                    style={
+                      {
+                        // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
+                        // color: scrolledToTop ? "hsl(var(--p))" : "",
+                      }
                     }
-                  }
-                >
-                  Join now
-                </button>
-              </a>
-            </Link>
+                  >
+                    Join now
+                  </button>
+                </a>
+              </Link>
+            </>
           )}
           <label className="swap swap-rotate btn  btn-ghost btn-sm sm:btn-md btn-circle">
             <input
