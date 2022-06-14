@@ -71,8 +71,8 @@ function Header() {
 
         <MainHeaderBigSearchBar />
         <div className="inline-flex items-center gap-2 sm:gap-4">
-          {/* <div className="block sm:hidden"> */}
-          <div className="block">
+          <div className="block md:hidden">
+          {/* <div className="block"> */}
             <Link
               href={{
                 pathname: routeTrimQuery(router.asPath),
