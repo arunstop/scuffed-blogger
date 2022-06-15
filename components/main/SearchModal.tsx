@@ -1,21 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import { MainModalProps } from "../../utils/data/Main";
+import { SEARCH_SUGGESTIONS_DUMMY } from "../../utils/helpers/Constants";
 import MainTextInput from "../input/MainTextInput";
 import MainSearchSuggestionItem from "./MainSearchSuggestionItem";
 import MainSectionSkeleton from "./MainSectionSkeleton";
 import ModalTemplate from "./ModalTemplate";
-
-export const searchSuggestionDummy = [
-  "Lorem ipsum dolor sit amet",
-  "consectetur adipisicing elit",
-  "Harum odio, laudantium sed",
-  "voluptatem eaque quisquam",
-  "delectus voluptates quaerat ",
-  "doloribus placeat libero excepturi",
-  "unde quae blanditiis accusamus",
-  "maxime, aspernatur debitis nesciunt",
-];
 
 const SearchModal = React.memo(function SearchModal(props: MainModalProps) {
   // const router = useRouter();
@@ -33,10 +23,10 @@ const SearchModal = React.memo(function SearchModal(props: MainModalProps) {
     return () => {};
   }, [props.value]);
 
-  const filteredData = searchSuggestionDummy.filter((e) =>
+  const filteredData = SEARCH_SUGGESTIONS_DUMMY.filter((e) =>
     search === ""
       ? true
-      : e.toLowerCase().includes(search.trim().toLowerCase()),
+      : e.title.toLowerCase().includes(search.trim().toLowerCase()),
   );
   return (
     <ModalTemplate {...props} title="Search Tuturku" fullscreen>
@@ -61,14 +51,18 @@ const SearchModal = React.memo(function SearchModal(props: MainModalProps) {
           </div>
         </div>
         <div className="flex flex-col divide-y divide-gray-600/20 min-h-screen">
-          {!filteredData.length && (
-            <MainSectionSkeleton text="No result found." />
+          {search.length >= 2 && (
+            <>
+              {!filteredData.length && (
+                <MainSectionSkeleton text="No result found." />
+              )}
+              {filteredData.map((e, idx) => {
+                return (
+                  <MainSearchSuggestionItem key={idx} val={e.title} id={e.id} />
+                );
+              })}
+            </>
           )}
-          {filteredData.map((e, idx) => {
-            return (
-              <MainSearchSuggestionItem key={idx} val={e} idx={idx}/>
-            );
-          })}
         </div>
       </div>
     </ModalTemplate>

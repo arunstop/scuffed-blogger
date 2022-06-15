@@ -7,7 +7,7 @@ function scrollCallback(event: Event, callback: (value:boolean)  => void) {
   const scrolledToTop = element.scrollTop === 0;
   callback(scrolledToTop);
   if (scrolledToTop) {
-    header!.classList.remove("bg-primary/50", "shadow-lg");
+    header!.classList.remove("bg-primary/50", "shadow-lg","backdrop-blur-md");
     header!.classList.add("text-primary");
   } else {
     // if already has the classes
@@ -16,7 +16,7 @@ function scrollCallback(event: Event, callback: (value:boolean)  => void) {
       header?.classList.contains("shadow-lg")
     )
       return;
-    header!.classList.add("bg-primary/50", "shadow-lg");
+    header!.classList.add("bg-primary/50", "shadow-lg", "backdrop-blur-md");
     header!.classList.remove("text-primary");
   }
   console.log("top" + Math.random());
