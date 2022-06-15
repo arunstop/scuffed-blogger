@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   MdOutlineDarkMode,
   MdOutlineLightMode,
@@ -46,6 +46,8 @@ function Header() {
 
   const { searchModal, closeSearchModal } = useSearchModalBehavior();
 
+  
+
   // const [searchModal, setSearchModal] = useState(false);
   // const closeSearchModal = useCallback(() => {
   //   setSearchModal(false);
@@ -67,9 +69,7 @@ function Header() {
             {APP_NAME}
           </a>
         </Link>
-        {(router.pathname !== "/auth") && (
-          <MainHeaderBigSearchBar />
-        )}
+        {router.pathname !== "/auth" ? <MainHeaderBigSearchBar /> :null}
 
         <div className="inline-flex items-center gap-2 sm:gap-4">
           {router.pathname !== "/auth" && (
@@ -86,7 +86,7 @@ function Header() {
                   shallow
                 >
                   <a
-                    className="btn btn-circle btn-ghost text-base-content --btn-resp"
+                    className="--btn-resp btn btn-ghost btn-circle text-base-content"
                     role={"button"}
                   >
                     <span
@@ -120,7 +120,7 @@ function Header() {
               </Link>
             </>
           )}
-          <label className="swap swap-rotate btn  btn-ghost btn-sm sm:btn-md btn-circle">
+          <label className="swap btn btn-ghost  swap-rotate btn-sm btn-circle sm:btn-md">
             <input
               type="checkbox"
               checked={darkMode}
@@ -129,13 +129,13 @@ function Header() {
               }}
             />
             <span
-              className="swap-on text-2xl sm:text-3xl text-yellow-500"
+              className="swap-on text-2xl text-yellow-500 sm:text-3xl"
               title="Turn on Dark Mode"
             >
               <MdOutlineLightMode />
             </span>
             <span
-              className="swap-off text-2xl sm:text-3xl text-blue-500"
+              className="swap-off text-2xl text-blue-500 sm:text-3xl"
               title="Turn on Light Mode"
             >
               <MdOutlineDarkMode />

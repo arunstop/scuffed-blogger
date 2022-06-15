@@ -9,6 +9,8 @@ import MainSectionSkeleton from "./MainSectionSkeleton";
 function MainHeaderBigSearchBar() {
   const [search, setSearch] = useState("");
   const [showSuggestion, setShowSuggestion] = useState(false);
+  const [smBreakpoint, setSmBreakpoint] = useState(false);
+
   const clear = useCallback(() => {
     setSearch("");
     // setShowSuggestion(true);
@@ -26,32 +28,66 @@ function MainHeaderBigSearchBar() {
   );
 
   function handleKeyPress(ev: KeyboardEvent) {
-    console.log(ev);
+    // console.log(ev);
     if (ev.ctrlKey) {
       if (ev.key === "/") {
         const searchBar = document.getElementById("main-header-big-search-bar");
-        if(searchBar){
+        if (searchBar) {
           searchBar.focus();
         }
       }
     }
   }
 
+  function toggleSmBreakpoint() {
+    if (window.innerWidth < 768) {
+      setSmBreakpoint(true);
+    } else {
+      setSmBreakpoint(false);
+    }
+  }
+
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyPress);
+    if (smBreakpoint) {
+      window.removeEventListener("keydown", handleKeyPress);
+    } else {
+      window.addEventListener("keydown", handleKeyPress);
+    }
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [smBreakpoint]);
+
+  useEffect(() => {
+    toggleSmBreakpoint();
+
+    function handleResize(ev: UIEvent) {
+      toggleSmBreakpoint();
+    }
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   //   const showResult;
 
   return (
-    <div className="hidden text-base-content md:block">
+    <Transition
+      show={!smBreakpoint}
+      as={"div"}
+      className="text-base-content"
+      enter="ease-out duration-200"
+      enterFrom="opacity-0 -translate-y-72 scale-125"
+      enterTo="opacity-100 -translate-y-0 scale-100"
+      leave="ease-in duration-200"
+      leaveFrom="opacity-100 "
+      leaveTo="opacity-0 "
+    >
       <div className="form-control">
         <div className="relative flex flex-col items-center gap-2 sm:gap-4">
           <MainTextInput
-          id="main-header-big-search-bar"
+            id="main-header-big-search-bar"
             value={search}
             onChange={onChange}
             placeholder="Search articles... [ CTRL + / ]"
@@ -100,7 +136,7 @@ function MainHeaderBigSearchBar() {
           </Transition>
         </div>
       </div>
-    </div>
+    </Transition>
   );
 }
 
