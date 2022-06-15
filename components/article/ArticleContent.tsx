@@ -3,11 +3,11 @@ import React from "react";
 function ArticleContent({ id }: { id: string }) {
   return (
     <>
-      <h1 className="text-4xl font-black sm:text-5xl">
+      <h1 className="text-3xl font-black sm:text-4xl">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium
         itaque odit sed? Quibusdam quis nemo tempora.
       </h1>
-      <h2 className="text-2xl font-semibold sm:text-3xl">
+      <h2 className="text-xl font-semibold sm:text-2xl">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
         commodi? Suscipit illum maxime, repellat inventore et distinctio porro.
       </h2>

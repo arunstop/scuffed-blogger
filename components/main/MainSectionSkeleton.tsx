@@ -14,7 +14,7 @@ const MainSectionSkeleton = React.forwardRef<
     <div
       ref={ref}
       className="wrap mx-auto flex justify-center items-center gap-2 text-center 
-      text-lg font-bold sm:gap-4 sm:text-xl my-16 md:my-20 lg:my-24"
+      text-lg font-bold sm:gap-4 sm:text-xl my-16 md:my-20 lg:my-24 xl:my-28"
     >
       {spinner && (
         <div className="inline-flex flex-nowrap animate-pulse">

@@ -9,6 +9,7 @@ interface ActionButtonProps {
   outlined?: boolean;
   value: boolean;
   onChange?: (value: boolean) => void;
+  className?:string;
 }
 
 const getColor = (color: MainColorTypes) => {
@@ -29,7 +30,7 @@ const getColor = (color: MainColorTypes) => {
       return "btn-error";
 
     default:
-      return "neutral";
+      return "btn-neutral";
   }
 };
 
@@ -41,6 +42,7 @@ function ArticleReactionButton({
   color = "neutral",
   value = false,
   onChange,
+  className="",
 }: ActionButtonProps) {
   return (
     <label
@@ -48,13 +50,15 @@ function ArticleReactionButton({
       sm:flex-none sm:border-2 --btn-resp
       ${outlined && !value ? "btn-outline" : ""}
       ${getColor(color)}
+      ${className}
       `}
       title={title}
+      tabIndex={-1}
     >
       <input
         className="opacity-0 appearance-none peer"
         type="checkbox"
-        onChange={(ev)=>onChange?.(ev.target.checked)}
+        onChange={(ev) => onChange?.(ev.target.checked)}
       />
 
       <span className="text-2xl transition-transform duration-[600ms] peer-checked:rotate-[360deg]">

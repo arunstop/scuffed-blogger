@@ -21,6 +21,7 @@ const LikeButton = React.memo(function LikeButton() {
       outlined
       title="Like"
       onChange={toggleLike}
+      className="hover:bg-opacity-20 hover:text-success"
     />
   );
 });
@@ -38,6 +39,7 @@ const DislikeButton = React.memo(function DislikeButton() {
       outlined
       title="Disike"
       onChange={toggleDislike}
+      className="hover:bg-opacity-20 hover:text-error"
     />
   );
 });

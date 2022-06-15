@@ -39,7 +39,7 @@ function MainHeaderBigSearchBar() {
             clearIcon
             clearable={search.trim().length >= 2}
             clearAction={clear}
-            className="bg-opacity-50 backdrop-blur-md md:w-96 lg:w-[30rem]"
+            className="bg-opacity-50 md:w-96 lg:w-[30rem]"
             onFocus={(_) => {
               setShowSuggestion(true);
             }}
@@ -65,7 +65,7 @@ function MainHeaderBigSearchBar() {
             leaveTo="opacity-0 -translate-y-72"
           >
             <div
-              className="flex max-h-[24rem] min-h-[12rem] flex-col 
+              className="flex max-h-[24rem] min-h-[12rem] flex-col
                 divide-y divide-gray-600/20 overflow-auto p-4 transition-all"
             >
               {!filteredData.length && (
