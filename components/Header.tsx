@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   MdOutlineDarkMode,
   MdOutlineLightMode,
-  MdSearch,
+  MdSearch
 } from "react-icons/md";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
 import { APP_NAME } from "../utils/helpers/Constants";
