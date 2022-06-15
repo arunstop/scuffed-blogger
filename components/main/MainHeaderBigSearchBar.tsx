@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import { SEARCH_SUGGESTIONS_DUMMY } from "../../utils/helpers/Constants";
 import MainTextInput from "../input/MainTextInput";
@@ -25,6 +25,25 @@ function MainHeaderBigSearchBar() {
       : e.title.toLowerCase().includes(search.trim().toLowerCase()),
   );
 
+  function handleKeyPress(ev: KeyboardEvent) {
+    console.log(ev);
+    if (ev.ctrlKey) {
+      if (ev.key === "/") {
+        const searchBar = document.getElementById("main-header-big-search-bar");
+        if(searchBar){
+          searchBar.focus();
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
+
   //   const showResult;
 
   return (
@@ -32,9 +51,10 @@ function MainHeaderBigSearchBar() {
       <div className="form-control">
         <div className="relative flex flex-col items-center gap-2 sm:gap-4">
           <MainTextInput
+          id="main-header-big-search-bar"
             value={search}
             onChange={onChange}
-            placeholder="Search articles..."
+            placeholder="Search articles... [ CTRL + / ]"
             icon={<MdSearch />}
             clearIcon
             clearable={search.trim().length >= 2}
@@ -55,7 +75,7 @@ function MainHeaderBigSearchBar() {
           <Transition
             show={showSuggestion && search.trim().length >= 2}
             as={"div"}
-            className={`absolute mt-12 bg-base-100 ring-1 ring-gray-600/20 w-full
+            className={`absolute mt-[3.5rem] bg-base-100 ring-1 ring-gray-600/20 w-full
               rounded-xl shadow-lg shadow-base-content/20 overflow-hidden transition-all`}
             enter="ease-out duration-200"
             enterFrom="opacity-0 -translate-y-72 scale-125"
@@ -72,7 +92,9 @@ function MainHeaderBigSearchBar() {
                 <MainSectionSkeleton text="No result found." />
               )}
               {filteredData.map((e, idx) => {
-                return <MainSearchSuggestionItem key={idx} val={e.title} id={e.id} />;
+                return (
+                  <MainSearchSuggestionItem key={idx} val={e.title} id={e.id} />
+                );
               })}
             </div>
           </Transition>
