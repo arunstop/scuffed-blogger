@@ -46,8 +46,6 @@ function Header() {
 
   const { searchModal, closeSearchModal } = useSearchModalBehavior();
 
-  
-
   // const [searchModal, setSearchModal] = useState(false);
   // const closeSearchModal = useCallback(() => {
   //   setSearchModal(false);
@@ -65,11 +63,18 @@ function Header() {
           <a
             className={`text-lg sm:text-xl md:text-2xl font-black
           `}
+            // onClick={
+            //   router.pathname === "/"
+            //     ? () => {
+            //         scrollToTop();
+            //       }
+            //     : undefined
+            // }
           >
             {APP_NAME}
           </a>
         </Link>
-        {router.pathname !== "/auth" ? <MainHeaderBigSearchBar /> :null}
+        {router.pathname !== "/auth" ? <MainHeaderBigSearchBar /> : null}
 
         <div className="inline-flex items-center gap-2 sm:gap-4">
           {router.pathname !== "/auth" && (

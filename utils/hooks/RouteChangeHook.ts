@@ -3,9 +3,31 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 export const useRouteChange = () => {
   const router = useRouter();
+
+  // `routeChangeComplete` has 2 params which are
+  // - url
+  // - {shallow}
+  // // https://nextjs.org/docs/api-reference/next/router#routerevents
+  function handleRouteChangeComplete(
+    url: string,
+    { shallow }: { shallow: boolean },
+  ) {
+    // SCROLL to top on route change only when the shallow is false
+    if (!shallow) {
+      scrollToTop();
+    }
+  }
+  // useEffect(() => {
+  //   scrollToTop();
+
+  //   return () => {};
+  // }, [router.pathname]);
+
   useEffect(() => {
-    scrollToTop();
-    return () => {};
+    router.events.on("routeChangeComplete", handleRouteChangeComplete);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChangeComplete);
+    };
   }, [router.pathname]);
 };
 

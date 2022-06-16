@@ -112,13 +112,13 @@ function MainHeaderBigSearchBar() {
             show={showSuggestion && search.trim().length >= 2}
             as={"div"}
             className={`absolute mt-[3.5rem] bg-base-100 ring-1 ring-gray-600/20 w-full
-              rounded-xl shadow-lg shadow-base-content/20 overflow-hidden transition-all`}
+            rounded-xl shadow-lg shadow-base-content/20 overflow-hidden transition-all`}
             enter="ease-out duration-200"
             enterFrom="opacity-0 -translate-y-72 scale-125"
             enterTo="opacity-100 -translate-y-0 scale-100"
             leave="ease-in duration-200"
-            leaveFrom="opacity-100 -translate-y-0"
-            leaveTo="opacity-0 -translate-y-72"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
           >
             <div
               className="flex max-h-[24rem] min-h-[12rem] flex-col

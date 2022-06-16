@@ -19,6 +19,7 @@ const LazyMainPostSection = dynamic(
 );
 
 const Home: NextPage = () => {
+  console.log("render Index");
   return (
     <>
       <Head>
