@@ -37,8 +37,8 @@ function MainTextInput({
       {icon && (
         <span
           className={`duration-[600ms] absolute inset-y-0 left-0 z-[2] w-9
-          justify-center bg-transparent p-0 text-xl transition-all peer-focus:scale-125 
-          peer-focus:text-base-content/100 sm:w-12 sm:text-2xl 
+          justify-center bg-transparent p-0 text-xl transition-all peer-focus:scale-[1.375]
+          sm:peer-focus:scale-150 peer-focus:text-base-content/100 sm:w-12 sm:text-2xl 
           peer-focus:rotate-[360deg] peer-invalid:text-error peer-focus:peer-invalid:text-error 
           peer-placeholder-shown:text-base-content/50 
           peer-placeholder-shown:peer-invalid:text-base-content/50
