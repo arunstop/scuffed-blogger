@@ -9,17 +9,20 @@ function MyApp({ Component, pageProps }: AppProps) {
   // Detect route change
   useRouteChange();
   return (
-    <UiProvider>
-      <NextNProgress
-        color="hsl(var(--pc))"
-        startPosition={0.4}
-        stopDelayMs={200}
-        height={6}
-        showOnShallow={false}
-      />
+    <>
       <Script src="/ThemeInitializer.js" strategy="beforeInteractive" />
-      <Component {...pageProps} />
-    </UiProvider>
+
+      <UiProvider>
+        <NextNProgress
+          color="hsl(var(--pc))"
+          startPosition={0.4}
+          stopDelayMs={200}
+          height={6}
+          showOnShallow={false}
+        />
+        <Component {...pageProps} />
+      </UiProvider>
+    </>
   );
 }
 
