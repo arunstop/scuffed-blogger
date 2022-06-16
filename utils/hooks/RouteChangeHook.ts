@@ -28,7 +28,7 @@ export const useRouteChange = () => {
     return () => {
       router.events.off("routeChangeComplete", handleRouteChangeComplete);
     };
-  }, [router.pathname]);
+  }, []);
 };
 
 export function scrollToTop(smooth = false) {

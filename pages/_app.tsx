@@ -1,5 +1,4 @@
 import type { AppProps } from "next/app";
-import Script from "next/script";
 import NextNProgress from "nextjs-progressbar";
 import "../styles/globals.css";
 import { UiProvider } from "../utils/contexts/ui/UiProvider";
@@ -17,7 +16,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         height={6}
         showOnShallow={false}
       />
-      <Script src="/ThemeInitializer.js" strategy="beforeInteractive" />
       <Component {...pageProps} />
     </UiProvider>
   );
