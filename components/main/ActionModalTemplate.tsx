@@ -43,7 +43,7 @@ const ActionModalTemplate = ({
     confirmation.close();
     onClose();
   }
-  console.log("render ActionModal Template" + confirmation.data?.title);
+  // console.log("render ActionModal Template " + confirmation.data?.title);
 
   // const laggedConfirmation = useMemo(() => confirmation, [confirmation]);
   return (

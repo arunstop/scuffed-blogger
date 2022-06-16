@@ -97,7 +97,7 @@ function Article() {
     );
   }, [articleId]);
 
-  console.log("render [articleId]");
+  // console.log("render [articleId]");
   return <>{mzPage}</>;
 }
 

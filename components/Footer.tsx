@@ -16,15 +16,15 @@ function Footer() {
       <div>
         <span className="footer-title">Socials</span>
         <div className="grid grid-flow-col gap-4">
-          <a className="btn btn-ghost btn-square">
+          <span className="btn btn-ghost btn-square">
             <FaTwitter className="text-2xl sm:text-3xl" />
-          </a>
-          <a className="btn btn-ghost btn-square">
+          </span>
+          <span className="btn btn-ghost btn-square">
             <FaInstagram className="text-2xl sm:text-3xl" />
-          </a>
-          <a className="btn btn-ghost btn-square">
+          </span>
+          <span className="btn btn-ghost btn-square">
             <FaYoutube className="text-2xl sm:text-3xl" />
-          </a>
+          </span>
         </div>
       </div>
     </footer>

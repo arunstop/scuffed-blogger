@@ -15,7 +15,7 @@ function ArticleCommentSection({ id }: { id: string }) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<Comment[]>(egComments);
 
-  console.log("render ArticleSectionComments");
+  // console.log("render ArticleCommentSection");
   return (
     <div className="flex flex-col gap-4 sm:gap-8">
       <div className="flex flex-row gap-4 items-start">
