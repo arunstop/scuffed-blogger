@@ -12,6 +12,10 @@ export const useRouteChange = () => {
     url: string,
     { shallow }: { shallow: boolean },
   ) {
+    // Do not scroll if there is a modal.
+    // meaning the user is trying to back out of a modal
+    // instead of a page
+    if (document.getElementById("headlessui-portal-root")) return;
     // SCROLL to top on route change only when the shallow is false
     if (!shallow) {
       scrollToTop();
