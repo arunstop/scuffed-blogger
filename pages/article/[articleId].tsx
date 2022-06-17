@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, {
-  useEffect,
   useMemo
 } from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
@@ -15,7 +14,6 @@ import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../components/main/MainUserLabel";
 import { APP_NAME } from "../../utils/helpers/Constants";
-import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 
 function Article() {
   const router = useRouter();
