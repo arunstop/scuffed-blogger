@@ -8,7 +8,9 @@ function Footer() {
       <div>
         <FaBloggerB className="text-5xl text-primary-focus sm:text-[4rem]" />
         <p>
-          <span className="text-xl font-black text-primary sm:text-2xl">{APP_NAME}</span>
+          <span className="text-xl font-black text-primary sm:text-2xl">
+            {APP_NAME}
+          </span>
           <br />
           <span className="text-base sm:text-lg">{APP_DESC}</span>
         </p>
@@ -16,15 +18,30 @@ function Footer() {
       <div>
         <span className="footer-title">Socials</span>
         <div className="grid grid-flow-col gap-4">
-          <span className="btn btn-ghost btn-square">
+          <a
+            className="btn btn-ghost btn-square"
+            href="https://twitter.com/"
+            target={"_blank"}
+            rel="noreferrer"
+          >
             <FaTwitter className="text-2xl sm:text-3xl" />
-          </span>
-          <span className="btn btn-ghost btn-square">
+          </a>
+          <a
+            className="btn btn-ghost btn-square"
+            href="https://instagram.com/"
+            target={"_blank"}
+            rel="noreferrer"
+          >
             <FaInstagram className="text-2xl sm:text-3xl" />
-          </span>
-          <span className="btn btn-ghost btn-square">
+          </a>
+          <a
+            className="btn btn-ghost btn-square"
+            href="https://youtube.com/"
+            target={"_blank"}
+            rel="noreferrer"
+          >
             <FaYoutube className="text-2xl sm:text-3xl" />
-          </span>
+          </a>
         </div>
       </div>
     </footer>
