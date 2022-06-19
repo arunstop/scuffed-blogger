@@ -12,11 +12,12 @@ function MainMarkdownContainer({
   className,
 }: MainMarkdownContainerProps) {
   useEffect(() => {
-    // making every link to be open in a new tab
     const container = document.getElementById("main-markdown-container");
     if (container) {
+      // making every link to be open in a new tab
       const links = Array.from(container.getElementsByTagName("a"));
       links.forEach((linkEl) => {
+        if (linkEl.href.includes("#")) return;
         linkEl.setAttribute("target", "_blank");
       });
     }
