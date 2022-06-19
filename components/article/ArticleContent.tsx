@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { KEY_ARTICLE_CONTENT } from "../../utils/helpers/Constants";
+import { storageFind } from "../../utils/helpers/LocalStorage";
+import MainMarkdownContainer from "../main/MainMarkdownContainer";
 
 function ArticleContent({ id }: { id: string }) {
+  const [content, setContent] = useState("");
+  useEffect(() => {
+    setContent(decodeURIComponent(storageFind(KEY_ARTICLE_CONTENT) || ""));
+    return () => {};
+  }, []);
+
   return (
     <>
       <h1 className="text-3xl font-black sm:text-4xl">
@@ -15,7 +24,9 @@ function ArticleContent({ id }: { id: string }) {
         <figure className="relative aspect-video w-full overflow-hidden rounded-xl">
           <img
             className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2] bg-primary"
-            src={`https://picsum.photos/id/${Math.floor(Math.random()*10)}/500/300`}
+            src={`https://picsum.photos/id/${Math.floor(
+              Math.random() * 10,
+            )}/500/300`}
             alt="Image"
             width={240}
             height={240}
@@ -27,19 +38,7 @@ function ArticleContent({ id }: { id: string }) {
           architecto nobis.
         </span>
       </div>
-      <span className="first-letter: text-[1.125rem] sm:text-[1.25rem]">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Culpa corporis
-        dolorem quidem vel aliquam aliquid alias velit, placeat officia vitae
-        veniam, qui iste id ab, a quia quis? Non, tempore.
-        <br />
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Culpa corporis
-        dolorem quidem vel aliquam aliquid alias velit, placeat officia vitae
-        veniam, qui iste id ab, a quia quis? Non, tempore.
-        <br />
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Culpa corporis
-        dolorem quidem vel aliquam aliquid alias velit, placeat officia vitae
-        veniam, qui iste id ab, a quia quis? Non, tempore.
-      </span>
+      <MainMarkdownContainer content={content} />
     </>
   );
 }

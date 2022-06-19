@@ -9,6 +9,7 @@ obcaecati! Lorem ipsum dolor sit amet consectetur, adipisicing elit.
 Voluptatibus quo praesentium temporibus quod rerum labore officiis
 animi provident natus minus dolorem corrupti quos dolor unde vero vel,
 saepe tempora obcaecati!`;
+export const KEY_ARTICLE_CONTENT = "DUMMY_ARTICLE_CONTENT";
 
 export const SEARCH_SUGGESTIONS_DUMMY = [
   { id: Math.floor(Math.random() * 100), title: "Lorem ipsum dolor sit amet" },

@@ -77,6 +77,24 @@ function Header() {
         {router.pathname !== "/auth" ? <MainHeaderBigSearchBar /> : null}
 
         <div className="inline-flex items-center gap-2 sm:gap-4">
+        <Link href="/write" passHref>
+                <a>
+                  <button
+                    className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
+                  text-lg sm:text-xl
+                  ${scrolledToTop ? "btn-primary" : "btn-outline"}
+                  `}
+                    style={
+                      {
+                        // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
+                        // color: scrolledToTop ? "hsl(var(--p))" : "",
+                      }
+                    }
+                  >
+                    Write
+                  </button>
+                </a>
+              </Link>
           {router.pathname !== "/auth" && (
             <>
               <div className="block md:hidden">

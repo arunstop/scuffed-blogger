@@ -1,16 +1,24 @@
-import React, { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import gfm from "remark-gfm";
+import React, { useEffect, useState } from "react";
+import { KEY_ARTICLE_CONTENT } from "../../utils/helpers/Constants";
+import { storageFind, storageSave } from "../../utils/helpers/LocalStorage";
+import MainMarkdownContainer from "../main/MainMarkdownContainer";
 function WritingPanel() {
-  const [article, setArticle] = useState("#Heading");
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    setContent(storageFind(KEY_ARTICLE_CONTENT));
+
+    return () => {};
+  }, []);
+
   return (
     <>
-      <div className="flex flex-1 flex-row mb-72">
-        <article
-          className="prose grow rounded-xl outline outline-offset-8 outline-2 outline-base-content/20 prose-sm md:prose !max-w-none"
-        >
-          <ReactMarkdown remarkPlugins={[gfm]}>{article}</ReactMarkdown>
-        </article>
+      <div className="flex flex-1 flex-row mb-80">
+        <MainMarkdownContainer
+          content={decodeURIComponent(content)|| "## Content will appear here..."}
+          className="outline outline-offset-[1rem] outline-2 
+          outline-base-content/10"
+        />
       </div>
       <div
         className="fixed inset-x-0 mx-auto my-4 bottom-0 h-72 flex flex-col border-2 
@@ -18,7 +26,7 @@ function WritingPanel() {
       >
         <div className="flex flex-row flex-wrap p-2 gap-2 items-center justify-between">
           <div className="flex flex-row flex-wrap gap-2 flex-1">
-            <span>
+            {/* <span>
               <button>A</button>
             </span>
             <span>
@@ -29,20 +37,29 @@ function WritingPanel() {
             </span>
             <span>
               <button>A</button>
-            </span>
+            </span> */}
           </div>
           <div className="flex flex-row flex-none gap-2">
-          <button className="btn --btn-resp btn-outline">Hide</button>
-            <button className="btn --btn-resp btn-primary">Submit</button>
+            <button className="btn --btn-resp btn-outline">Hide</button>
+            <button
+              className="btn --btn-resp btn-primary"
+              onClick={() => {
+                storageSave(KEY_ARTICLE_CONTENT, content);
+                alert("Saved");
+              }}
+            >
+              Submit
+            </button>
           </div>
         </div>
         <textarea
           className="p-2 rounded-xl outline outline-1 outline-base-content/20 
           w-full h-full focus:outline-base-content focus:outline-2 resize-none z-20
           transition-all"
-          value={article}
+          placeholder="Write the article's content"
+          value={decodeURIComponent(content)}
           onChange={(ev) => {
-            setArticle(ev.target.value);
+            setContent(encodeURIComponent(ev.target.value));
           }}
         />
       </div>
