@@ -13,7 +13,7 @@ import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 const LazyMainPostSection = dynamic(
   () => import("../components/main/MainPostSection"),
   {
-    loading: () => <MainSectionSkeleton text="Loading posts..." />,
+    loading: () => <MainSectionSkeleton text="Loading posts..." spinner />,
     ssr: false,
   },
 );

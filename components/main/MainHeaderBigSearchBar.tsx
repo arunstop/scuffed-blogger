@@ -90,11 +90,12 @@ function MainHeaderBigSearchBar() {
             id="main-header-big-search-bar"
             value={search}
             onChange={onChange}
-            placeholder="Search articles... [ CTRL + / ]"
+            placeholder="Search - CTRL + /"
             icon={<MdSearch />}
             clearIcon
             clearable={search.trim().length >= 2}
             clearAction={clear}
+            minLength={2}
             className="bg-opacity-50 md:w-96 lg:w-[30rem]"
             onFocus={(_) => {
               setShowSuggestion(true);

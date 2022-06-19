@@ -32,7 +32,11 @@ function ArticleCommentSection({ id }: { id: string }) {
         </div>
         <div className="form-control flex-1 rounded-xl gap-4">
           <textarea
-            className="textarea textarea-bordered rounded-xl h-24 text-base min-h-[12rem]"
+            className="textarea textarea-bordered rounded-xl h-24 text-base min-h-[12rem]
+            border-0 placeholder-shown:!outline-dashed
+            outline outline-1 !outline-offset-0 outline-base-content/20
+            focus:outline-base-content transition-all
+            "
             placeholder="Add a comment..."
             value={comment}
             onChange={(ev) => setComment(ev.target.value)}
