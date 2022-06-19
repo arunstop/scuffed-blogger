@@ -6,26 +6,26 @@ function WritingPanel() {
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    setContent(storageFind(KEY_ARTICLE_CONTENT));
+    setContent(storageFind(KEY_ARTICLE_CONTENT)||"");
 
     return () => {};
   }, []);
 
   return (
     <>
-      <div className="flex flex-1 flex-row mb-80">
+      <div className="mb-80 flex flex-1 flex-row">
         <MainMarkdownContainer
           content={decodeURIComponent(content)|| "## Content will appear here..."}
-          className="outline outline-offset-[1rem] outline-2 
+          className="outline outline-2 outline-offset-[1rem] 
           outline-base-content/10"
         />
       </div>
       <div
-        className="fixed inset-x-0 mx-auto my-4 bottom-0 h-72 flex flex-col border-2 
-        bg-base-300 border-base-content/20 max-w-[60rem] rounded-xl "
+        className="fixed inset-x-0 bottom-0 mx-auto my-4 flex h-72 max-w-[60rem] flex-col 
+        rounded-xl border-2 border-base-content/20 bg-base-300 "
       >
-        <div className="flex flex-row flex-wrap p-2 gap-2 items-center justify-between">
-          <div className="flex flex-row flex-wrap gap-2 flex-1">
+        <div className="flex flex-row flex-wrap items-center justify-between gap-2 p-2">
+          <div className="flex flex-1 flex-row flex-wrap gap-2">
             {/* <span>
               <button>A</button>
             </span>
@@ -39,10 +39,10 @@ function WritingPanel() {
               <button>A</button>
             </span> */}
           </div>
-          <div className="flex flex-row flex-none gap-2">
-            <button className="btn --btn-resp btn-outline">Hide</button>
+          <div className="flex flex-none flex-row gap-2">
+            <button className="--btn-resp btn-outline btn">Hide</button>
             <button
-              className="btn --btn-resp btn-primary"
+              className="--btn-resp btn btn-primary"
               onClick={() => {
                 storageSave(KEY_ARTICLE_CONTENT, content);
                 alert("Saved");
@@ -53,9 +53,9 @@ function WritingPanel() {
           </div>
         </div>
         <textarea
-          className="p-2 rounded-xl outline outline-1 outline-base-content/20 
-          w-full h-full focus:outline-base-content focus:outline-2 resize-none z-20
-          transition-all"
+          className="z-20 h-full w-full resize-none rounded-xl 
+          p-2 outline outline-1 outline-base-content/20 transition-all focus:outline-2
+          focus:outline-base-content"
           placeholder="Write the article's content"
           value={decodeURIComponent(content)}
           onChange={(ev) => {
