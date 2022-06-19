@@ -10,6 +10,8 @@ function ArticleContent({ id }: { id: string }) {
     return () => {};
   }, []);
 
+  console.log("render Article Content");
+
   return (
     <>
       <h1 className="text-3xl font-black sm:text-4xl">

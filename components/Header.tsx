@@ -26,7 +26,7 @@ import SearchModal from "./main/SearchModal";
 // }
 
 function Header() {
-  console.log("header");
+  // console.log("header");
   const {
     uiStt: { darkMode },
     uiAct,
