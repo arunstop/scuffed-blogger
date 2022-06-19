@@ -12,6 +12,14 @@ function MainMarkdownContainer({
   className,
 }: MainMarkdownContainerProps) {
   useEffect(() => {
+    // making every link to be open in a new tab
+    const container = document.getElementById("main-markdown-container");
+    if (container) {
+      const links = Array.from(container.getElementsByTagName("a"));
+      links.forEach((linkEl) => {
+        linkEl.setAttribute("target", "_blank");
+      });
+    }
     return () => {};
   }, []);
 
@@ -35,4 +43,4 @@ function MainMarkdownContainer({
   );
 }
 
-export default MainMarkdownContainer;
+export default React.memo(MainMarkdownContainer);
