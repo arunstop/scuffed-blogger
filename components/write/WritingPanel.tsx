@@ -1,21 +1,115 @@
 import React, { useEffect, useState } from "react";
-import { KEY_ARTICLE_CONTENT } from "../../utils/helpers/Constants";
+import { ArticleModel } from "../../utils/data/models/Article";
+import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
 import { storageFind, storageSave } from "../../utils/helpers/LocalStorage";
+import MainTextAreaInput from "../input/MainTextAreaInput";
+import MainTextInput from "../input/MainTextInput";
 import MainMarkdownContainer from "../main/MainMarkdownContainer";
 function WritingPanel() {
+  const [article, setArticle] = useState<undefined | ArticleModel>();
   const [content, setContent] = useState("");
+  const [preview, setPreview] = useState(false);
 
   useEffect(() => {
-    setContent(storageFind(KEY_ARTICLE_CONTENT)||"");
+    const dummyArticle = JSON.parse(storageFind(KEY_ARTICLE_CONTENT));
+    if (dummyArticle) {
+      setArticle(dummyArticle as ArticleModel);
+      setContent(dummyArticle.content);
+    }
 
     return () => {};
   }, []);
 
   return (
     <>
-      <div className="mb-80 flex flex-1 flex-row">
+      <div className="flex flex-col">
+        <div className="tabs tabs-boxed w-full rounded-xl">
+          {["Write", "Preview"].map((e, idx) => {
+            return (
+              <a
+                key={idx}
+                className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl font-bold transition-colors ${
+                  idx === 0 ? "tab-active" : ""
+                }`}
+                onClick={() => setPreview(idx !== 0)}
+              >
+                <span className="first-letter:uppercase">{e}</span>
+              </a>
+            );
+          })}
+          <div className="ml-auto my-auto flex flex-none flex-row gap-2">
+            <button className="--btn-resp btn-outline btn">Hide</button>
+            <button
+              className="--btn-resp btn btn-primary"
+              onClick={() => {
+                if (article) {
+                  const draft: ArticleModel = {
+                    title: LOREM.slice(0, 120),
+                    desc: LOREM.slice(121, LOREM.length),
+                    content: content,
+                    thumbnail: `https://picsum.photos/id/${Math.floor(
+                      Math.random() * 10,
+                    )}/500/300`,
+                    author: "Munkrey Alf",
+                    dateAdded: Date.now(),
+                    dateUpdated: Date.now(),
+                    deleted: 0,
+                    duration: decodeURIComponent(article.content).length / 200,
+                    tags: ["Technology", "Photography"],
+                  };
+                  storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
+                  alert("Saved");
+                }
+              }}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-row gap-2 sm:gap-4">
+          {preview && (
+            <div className="mb-80 flex flex-1 flex-row">
+              <MainMarkdownContainer
+                content={
+                  decodeURIComponent(content) ||
+                  "## Content will appear here..."
+                }
+                className="outline outline-2 outline-offset-[1rem] outline-base-content/10"
+              />
+            </div>
+          )}
+          {!preview && (
+            <div
+              className="my-4 h-screen flex w-full flex-col gap-4
+              rounded-xl "
+            >
+              <span>Title</span>
+              <MainTextInput placeholder="Very lucrative and straight-forward sentence..." />
+              <span>Description</span>
+              <MainTextAreaInput
+                placeholder="This article talks about something interesting..."
+                className="!h-32 max-h-32"
+              />
+              <span>Content</span>
+              <textarea
+                className="h-full w-full resize-none rounded-xl 
+                p-2 outline outline-1 outline-base-content/20 transition-all focus:outline-2
+                focus:outline-base-content"
+                placeholder="Write the article's content"
+                value={decodeURIComponent(content)}
+                onChange={(ev) => {
+                  setContent(encodeURIComponent(ev.target.value));
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+      {/* <div className="mb-80 flex flex-1 flex-row">
         <MainMarkdownContainer
-          content={decodeURIComponent(content)|| "## Content will appear here..."}
+          content={
+            decodeURIComponent(content) || "## Content will appear here..."
+          }
           className="outline outline-2 outline-offset-[1rem] 
           outline-base-content/10"
         />
@@ -26,26 +120,31 @@ function WritingPanel() {
       >
         <div className="flex flex-row flex-wrap items-center justify-between gap-2 p-2">
           <div className="flex flex-1 flex-row flex-wrap gap-2">
-            {/* <span>
-              <button>A</button>
-            </span>
-            <span>
-              <button>A</button>
-            </span>
-            <span>
-              <button>A</button>
-            </span>
-            <span>
-              <button>A</button>
-            </span> */}
+            
           </div>
           <div className="flex flex-none flex-row gap-2">
             <button className="--btn-resp btn-outline btn">Hide</button>
             <button
               className="--btn-resp btn btn-primary"
               onClick={() => {
-                storageSave(KEY_ARTICLE_CONTENT, content);
-                alert("Saved");
+                if (article) {
+                  const draft: ArticleModel = {
+                    title: LOREM.slice(0, 120),
+                    desc: LOREM.slice(121, LOREM.length),
+                    content: content,
+                    thumbnail: `https://picsum.photos/id/${Math.floor(
+                      Math.random() * 10,
+                    )}/500/300`,
+                    author: "Munkrey Alf",
+                    dateAdded: Date.now(),
+                    dateUpdated: Date.now(),
+                    deleted: 0,
+                    duration: decodeURIComponent(article.content).length / 200,
+                    tags: ["Technology", "Photography"],
+                  };
+                  storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
+                  alert("Saved");
+                }
               }}
             >
               Submit
@@ -62,7 +161,7 @@ function WritingPanel() {
             setContent(encodeURIComponent(ev.target.value));
           }}
         />
-      </div>
+      </div> */}
     </>
     // <div className="flex flex-1  flex-row items-stretch">
     //   <textarea

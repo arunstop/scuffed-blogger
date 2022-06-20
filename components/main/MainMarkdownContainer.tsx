@@ -17,12 +17,13 @@ function MainMarkdownContainer({
       // making every link to be open in a new tab
       const links = Array.from(container.getElementsByTagName("a"));
       links.forEach((linkEl) => {
-        if (linkEl.href.includes("#")) return;
+        if (linkEl.href.includes("#") || linkEl.getAttribute("target") !== null)
+          return;
         linkEl.setAttribute("target", "_blank");
       });
     }
     return () => {};
-  }, []);
+  }, [content]);
 
   return (
     <article
@@ -31,9 +32,9 @@ function MainMarkdownContainer({
       prose-th:!border-x-2 prose-td:border-2 prose-td:!p-2 prose-thead:bg-base-300
       prose-th:!p-2 prose-th:!font-bold prose-strong:!font-bold prose-thead:!border-y-2
       prose-td:!border-base-content/20 prose-th:!border-base-content/20 prose-thead:!border-base-content/20
-      prose-code:bg-base-300 prose-code:!rounded-sm prose-code:outline prose-code:outline-2 
-      prose-code:outline-base-content/10 prose-pre:![background-color:hsl(var(--bc)/50%)]
-      prose-code:prose-pre:bg-transparent prose-code:prose-pre:outline-none
+      prose-code:bg-base-300 prose-code:!rounded-md prose-code:outline prose-code:outline-1 
+      prose-code:outline-base-content/20 prose-pre:![background-color:hsl(var(--bc)/30%)]
+      prose-code:prose-pre:bg-transparent prose-code:prose-pre:outline-none prose-pre:!text-base-content
       ${className}
       `}
     >
