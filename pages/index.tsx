@@ -14,7 +14,7 @@ const LazyMainPostSection = dynamic(
   () => import("../components/main/MainPostSection"),
   {
     loading: () => <MainSectionSkeleton text="Loading posts..." spinner />,
-    ssr: false,
+    
   },
 );
 

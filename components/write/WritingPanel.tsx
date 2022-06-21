@@ -6,7 +6,7 @@ import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
 import { storageFind, storageSave } from "../../utils/helpers/LocalStorage";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
-import MainMarkdownContainer from "../main/MainMarkdownContainer";
+import WritingPanelPreview from "./WritingPanelPreview";
 
 const tabs: { icon: ReactNode; title: string }[] = [
   {
@@ -127,14 +127,8 @@ function WritingPanel() {
             leaveFrom="opacity-100 translate-x-0 "
             leaveTo="opacity-50 translate-x-[120%] "
           >
-            <div className="flex flex-1 flex-row ">
-              <MainMarkdownContainer
-                content={
-                  decodeURIComponent(content) ||
-                  "## Content will appear here..."
-                }
-                // className="outline outline-2 outline-offset-[1rem] outline-base-content/10"
-              />
+                <div className="flex flex-1 flex-row w-full ">
+            <WritingPanelPreview content={content} />
             </div>
           </Transition>
         </div>
@@ -214,5 +208,4 @@ function WritingPanel() {
     // </div>
   );
 }
-
 export default WritingPanel;
