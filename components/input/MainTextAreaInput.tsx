@@ -1,18 +1,19 @@
-import React, { ReactNode } from "react";
-import { MdClose } from "react-icons/md";
+import React from "react";
 
-type MainTextAreaInputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-  clearable?: boolean;
-  clearIcon?: boolean;
-  clearAction?: () => void;
-  icon?: ReactNode;
-};
+type MainTextAreaInputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> 
+// & {
+//   clearable?: boolean;
+//   clearIcon?: boolean;
+//   clearAction?: () => void;
+//   icon?: ReactNode;
+// }
+;
 
 function MainTextAreaInput({
-  icon,
-  clearable = false,
-  clearIcon = false,
-  clearAction = () => {},
+  // icon,
+  // clearable = false,
+  // clearIcon = false,
+  // clearAction = () => {},
   ...props
 }: MainTextAreaInputProps) {
   return (
@@ -21,42 +22,17 @@ function MainTextAreaInput({
     >
       <textarea
         {...props}
-        className={`peer textarea w-full !rounded-xl text-sm sm:text-base
+        className={`peer textarea w-full !rounded-xl text-sm md:text-base
         !outline !outline-base-content/100 !outline-1 !outline-offset-0
         focus:!outline-[2px] sm:focus:!outline-[3px] focus:z-[2] focus:border-transparent 
-        focus:valid:!outline-base-content transition-colors duration-300 
+        focus:valid:!outline-base-content transition-[outline,colors] duration-300 
         font-semibold invalid:text-error focus:invalid:!outline-error
         placeholder-shown:!outline-base-content/20 invalid:!outline-error
         invalid:!outline-dashed placeholder-shown:!outline-dashed
-        p-2 sm:p-4
+        px-2 md:px-4 py-1 md:py-2
         ${props.className}
         `}
       />
-      {icon && (
-        <span
-          className={`duration-[600ms] absolute inset-y-0 left-0 z-[2] w-9
-          justify-center bg-transparent p-0 text-xl transition-all peer-focus:scale-[1.375]
-          sm:peer-focus:scale-150 peer-focus:text-base-content/100 sm:w-12 sm:text-2xl 
-          peer-focus:rotate-[360deg] peer-invalid:text-error peer-focus:peer-invalid:text-error 
-          peer-placeholder-shown:text-base-content/50 
-          peer-placeholder-shown:peer-invalid:text-base-content/50
-          `}
-        >
-          {icon}
-        </span>
-      )}
-
-      {clearIcon && (
-        <span
-          className={`btn btn-ghost absolute inset-y-0 right-0 z-[2] btn-sm sm:btn-md
-          w-9 !rounded-xl bg-transparent !p-0 text-xl sm:w-12 sm:!text-2xl
-          ${clearable ? "visible" : "invisible"}
-          `}
-          onClick={clearAction}
-        >
-          <MdClose />
-        </span>
-      )}
     </label>
   );
 }

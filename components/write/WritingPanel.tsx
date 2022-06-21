@@ -1,14 +1,28 @@
-import React, { useEffect, useState } from "react";
+import { Transition } from "@headlessui/react";
+import React, { Fragment, ReactNode, useEffect, useState } from "react";
+import { MdEdit, MdPreview } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/Article";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
 import { storageFind, storageSave } from "../../utils/helpers/LocalStorage";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
 import MainMarkdownContainer from "../main/MainMarkdownContainer";
+
+const tabs: { icon: ReactNode; title: string }[] = [
+  {
+    icon: <MdEdit />,
+    title: "Write",
+  },
+  {
+    icon: <MdPreview />,
+    title: "Preview",
+  },
+];
+
 function WritingPanel() {
   const [article, setArticle] = useState<undefined | ArticleModel>();
   const [content, setContent] = useState("");
-  const [preview, setPreview] = useState(false);
+  const [tab, setTab] = useState<string>("Write");
 
   useEffect(() => {
     const dummyArticle = JSON.parse(storageFind(KEY_ARTICLE_CONTENT));
@@ -22,18 +36,19 @@ function WritingPanel() {
 
   return (
     <>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2 sm:gap-4">
         <div className="tabs tabs-boxed w-full rounded-xl">
-          {["Write", "Preview"].map((e, idx) => {
+          {tabs.map((e, idx) => {
             return (
               <a
                 key={idx}
-                className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl font-bold transition-colors ${
-                  idx === 0 ? "tab-active" : ""
-                }`}
-                onClick={() => setPreview(idx !== 0)}
+                className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl 
+                font-bold transition-colors gap-2
+                ${e.title === tab ? "tab-active" : ""}`}
+                onClick={() => setTab(e.title)}
               >
-                <span className="first-letter:uppercase">{e}</span>
+                <span className="text-2xl">{e.icon}</span>
+                <span className="first-letter:uppercase">{e.title}</span>
               </a>
             );
           })}
@@ -66,25 +81,23 @@ function WritingPanel() {
             </button>
           </div>
         </div>
-        <div className="flex flex-row gap-2 sm:gap-4">
-          {preview && (
-            <div className="mb-80 flex flex-1 flex-row">
-              <MainMarkdownContainer
-                content={
-                  decodeURIComponent(content) ||
-                  "## Content will appear here..."
-                }
-                className="outline outline-2 outline-offset-[1rem] outline-base-content/10"
-              />
-            </div>
-          )}
-          {!preview && (
-            <div
-              className="my-4 h-screen flex w-full flex-col gap-4
-              rounded-xl "
-            >
+        <div className="flex flex-row gap-2 sm:gap-4 relative">
+          <Transition
+            show={tab === "Write"}
+            as={Fragment}
+            enter="ease-out transition-all absolute duration-500"
+            enterFrom="opacity-50 -translate-x-[120%] "
+            enterTo="opacity-100 translate-x-0 "
+            leave="ease-in transition-all absolute duration-500"
+            leaveFrom="opacity-100 translate-x-0 "
+            leaveTo="opacity-50 -translate-x-[120%] "
+          >
+            <div className="flex w-full flex-col gap-4">
               <span>Title</span>
-              <MainTextInput placeholder="Very lucrative and straight-forward sentence..." />
+              <MainTextInput
+                scaleTo="md"
+                placeholder="Very lucrative and straight-forward sentence..."
+              />
               <span>Description</span>
               <MainTextAreaInput
                 placeholder="This article talks about something interesting..."
@@ -92,7 +105,7 @@ function WritingPanel() {
               />
               <span>Content</span>
               <textarea
-                className="h-full w-full resize-none rounded-xl 
+                className="min-h-[30rem] w-full resize-none rounded-xl 
                 p-2 outline outline-1 outline-base-content/20 transition-all focus:outline-2
                 focus:outline-base-content"
                 placeholder="Write the article's content"
@@ -102,7 +115,28 @@ function WritingPanel() {
                 }}
               />
             </div>
-          )}
+          </Transition>
+          <Transition
+            as={Fragment}
+            appear
+            show={tab === "Preview"}
+            enter="ease-out transition-all absolute duration-500"
+            enterFrom="opacity-50 translate-x-[120%] "
+            enterTo="opacity-100 translate-x-0 "
+            leave="ease-in transition-all absolute duration-500"
+            leaveFrom="opacity-100 translate-x-0 "
+            leaveTo="opacity-50 translate-x-[120%] "
+          >
+            <div className="flex flex-1 flex-row ">
+              <MainMarkdownContainer
+                content={
+                  decodeURIComponent(content) ||
+                  "## Content will appear here..."
+                }
+                // className="outline outline-2 outline-offset-[1rem] outline-base-content/10"
+              />
+            </div>
+          </Transition>
         </div>
       </div>
       {/* <div className="mb-80 flex flex-1 flex-row">

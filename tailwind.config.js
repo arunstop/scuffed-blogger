@@ -1,5 +1,10 @@
 module.exports = {
-  content: ["./pages/**/*.tsx", "./components/**/*.tsx", "./utils/**/*.tsx"],
+  content: [
+    "./pages/**/*.tsx",
+    "./components/**/*.tsx",
+    "./utils/**/*.tsx",
+    "./utils/helpers/InputHelpers.ts",
+  ],
   theme: {
     extend: {
       fontFamily: {
