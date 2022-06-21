@@ -15,7 +15,7 @@ function WritingPanelPreview({ content }: { content: string }) {
   }, []);
 
   return (
-    <div className="flex flex-1 flex-row ">
+    <div className="flex flex-1 flex-row self-start ">
       {loaded ? (
         <MainMarkdownContainer
           content={

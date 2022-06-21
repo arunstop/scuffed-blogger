@@ -52,36 +52,8 @@ function WritingPanel() {
               </a>
             );
           })}
-          <div className="ml-auto my-auto flex flex-none flex-row gap-2">
-            <button className="--btn-resp btn-outline btn">Hide</button>
-            <button
-              className="--btn-resp btn btn-primary"
-              onClick={() => {
-                if (article) {
-                  const draft: ArticleModel = {
-                    title: LOREM.slice(0, 120),
-                    desc: LOREM.slice(121, LOREM.length),
-                    content: content,
-                    thumbnail: `https://picsum.photos/id/${Math.floor(
-                      Math.random() * 10,
-                    )}/500/300`,
-                    author: "Munkrey Alf",
-                    dateAdded: Date.now(),
-                    dateUpdated: Date.now(),
-                    deleted: 0,
-                    duration: decodeURIComponent(article.content).length / 200,
-                    tags: ["Technology", "Photography"],
-                  };
-                  storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
-                  alert("Saved");
-                }
-              }}
-            >
-              Submit
-            </button>
-          </div>
         </div>
-        <div className="flex flex-row gap-2 sm:gap-4 relative">
+        <div className="flex flex-row gap-2 sm:gap-4 relative min-h-screen">
           <Transition
             show={tab === "Write"}
             as={Fragment}
@@ -93,19 +65,21 @@ function WritingPanel() {
             leaveTo="opacity-50 -translate-x-[120%] "
           >
             <div className="flex w-full flex-col gap-4">
-              <span>Title</span>
+              <span className="text-xl sm:text-2xl">Title</span>
               <MainTextInput
                 scaleTo="md"
+                value={article?.title}
                 placeholder="Very lucrative and straight-forward sentence..."
               />
-              <span>Description</span>
+              <span className="text-xl sm:text-2xl">Description</span>
               <MainTextAreaInput
                 placeholder="This article talks about something interesting..."
+                value={article?.desc}
                 className="!h-32 max-h-32"
               />
-              <span>Content</span>
+              <span className="text-xl sm:text-2xl">Content</span>
               <textarea
-                className="min-h-[30rem] w-full resize-none rounded-xl 
+                className="min-h-[36rem] w-full resize-none rounded-xl 
                 p-2 outline outline-1 outline-base-content/20 transition-all focus:outline-2
                 focus:outline-base-content"
                 placeholder="Write the article's content"
@@ -127,10 +101,45 @@ function WritingPanel() {
             leaveFrom="opacity-100 translate-x-0 "
             leaveTo="opacity-50 translate-x-[120%] "
           >
-                <div className="flex flex-1 flex-row w-full ">
-            <WritingPanelPreview content={content} />
+            <div className="flex flex-1 flex-row w-full ">
+              <WritingPanelPreview content={content} />
             </div>
           </Transition>
+        </div>
+        <div className="flex flex-row flex-wrap gap-2 sm:gap-4 justify-end w-full">
+          <button
+            className="--btn-resp btn btn-outline"
+            onClick={() => {
+              setContent("");
+            }}
+          >
+            Reset
+          </button>
+          <button
+            className="--btn-resp btn btn-primary"
+            onClick={() => {
+              if (article) {
+                const draft: ArticleModel = {
+                  title: LOREM.slice(0, 120),
+                  desc: LOREM.slice(121, LOREM.length),
+                  content: content,
+                  thumbnail: `https://picsum.photos/id/${Math.floor(
+                    Math.random() * 10,
+                  )}/500/300`,
+                  author: "Munkrey Alf",
+                  dateAdded: Date.now(),
+                  dateUpdated: Date.now(),
+                  deleted: 0,
+                  duration: decodeURIComponent(article.content).length / 200,
+                  tags: ["Technology", "Photography"],
+                };
+                storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
+                alert("Saved");
+              }
+            }}
+          >
+            Submit Article
+          </button>
         </div>
       </div>
       {/* <div className="mb-80 flex flex-1 flex-row">
