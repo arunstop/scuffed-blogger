@@ -13,7 +13,7 @@ interface AuthorPageProps {
   tab: string;
 }
 
-export const getServerSideProps: GetServerSideProps<AuthorPageProps> = async (
+const getServerSideProps: GetServerSideProps<AuthorPageProps> = async (
   context,
 ) => {
   // SLUG ORDER
