@@ -17,7 +17,14 @@ function MainMarkdownContainer({
       // making every link to be open in a new tab
       const links = Array.from(container.getElementsByTagName("a"));
       links.forEach((linkEl) => {
-        if (linkEl.href.includes("#") || linkEl.getAttribute("target") !== null)
+        // using `getAttribute` instead of `.href`
+        // becase `.href` returns a full link
+        // instead of the raw text inside of that attribute
+        const rawHref = linkEl.getAttribute("href")||"";
+        console.log(rawHref);
+        // check if the href points to an `id`
+        // or check if `target` attribute is not null already
+        if (rawHref[0]==="#" || linkEl.getAttribute("target") !== null)
           return;
         linkEl.setAttribute("target", "_blank");
       });
