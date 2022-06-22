@@ -1,4 +1,5 @@
 import { isFalsy } from "../Main";
+import _ from "lodash";
 
 export interface ArticleModel {
   title: string;
@@ -19,8 +20,8 @@ export function isArticleModel(value: unknown) {
   if (typeof value !== "object") return false;
   // check falsy
   if (isFalsy(value)) return false;
-  // check if there is a
-  if (
+  // check if all required properties are satisfied
+  const requiredPropsValid =
     "title" in value &&
     "desc" in value &&
     "thumbnail" in value &&
@@ -30,7 +31,26 @@ export function isArticleModel(value: unknown) {
     "dateUpdated" in value &&
     "duration" in value &&
     "tags" in value &&
-    "deleted" in value
-  )
-    return true;
+    "deleted" in value;
+  // list all properties
+  const props = [
+    "title",
+    "desc",
+    "thumbnail",
+    "content",
+    "author",
+    "dateAdded",
+    "dateUpdated",
+    "duration",
+    "tags",
+    "deleted",
+    "community",
+  ];
+  // check if `value` has props that is not in the required on the props
+  const unrequiredPropsValid =
+    _.difference(Object.keys(value), props).length === 0;
+
+  // if all required props are satisfied
+  // and no other unrequired value, returns true
+  return requiredPropsValid === true && unrequiredPropsValid === true;
 }
