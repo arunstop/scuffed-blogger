@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
+import { addArticle } from "../../utils/api/Api";
 import { ArticleModel } from "../../utils/data/models/Article";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
 import { storageFind, storageSave } from "../../utils/helpers/LocalStorage";
@@ -33,7 +34,7 @@ function WritingPanel() {
   const [tab, setTab] = useState<string>("Write");
 
   useEffect(() => {
-    console.log("test");
+    // console.log("test");
     let localArticle = storageFind(KEY_ARTICLE_CONTENT);
     if (localArticle) {
       try {
@@ -63,6 +64,9 @@ function WritingPanel() {
   const editContent = useCallback((value: string) => {
     setContent(value);
   }, []);
+  const submitArticle = useCallback( async (article:ArticleModel)=>{
+console.log(await addArticle(article));
+  },[]);
 
   return (
     <>
@@ -161,8 +165,9 @@ function WritingPanel() {
                 duration: content.length / 200,
                 tags: ["Technology", "Photography"],
               };
+              submitArticle(draft);
               storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
-              alert("Saved");
+              // alert("Saved");
               // }
             }}
           >
