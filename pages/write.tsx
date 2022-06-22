@@ -1,12 +1,34 @@
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import React from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import MainContainer from "../components/main/MainContainer";
 import WritingPanel from "../components/write/WritingPanel";
+import { getArticleById } from "../utils/api/Api";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
-function Write() {
+export const getServerSideProps: GetServerSideProps<{ xd: any }> = async (
+  context,
+) => {
+  // SLUG ORDER
+  // 0 = User's id
+  // 1 = Tab/section
+
+  const slug = context.query.authorslug || [];
+  const author = slug[0];
+  const tab = slug[1] || "post";
+
+  const article = await getArticleById();
+  // const article = await addArticle("HAHAHAHA");
+  // console.log(tab);
+
+  return {
+    props: { xd: article },
+  };
+};
+function Write({ xd }: { xd: any }) {
+  console.log(xd);
   return (
     <>
       <Head>
@@ -18,7 +40,7 @@ function Write() {
       <MainContainer className="">
         <WritingPanel />
       </MainContainer>
-      <Footer/>
+      <Footer />
     </>
   );
 }
