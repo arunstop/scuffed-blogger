@@ -21,13 +21,26 @@ const tabs: { icon: ReactNode; title: string }[] = [
 
 function WritingPanel() {
   const [article, setArticle] = useState<undefined | ArticleModel>();
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
   const [content, setContent] = useState("");
   const [tab, setTab] = useState<string>("Write");
 
   useEffect(() => {
-    const dummyArticle = JSON.parse(storageFind(KEY_ARTICLE_CONTENT));
+    let localArticle = storageFind(KEY_ARTICLE_CONTENT);
+    if (localArticle) {
+      try{
+        localArticle=JSON.parse(localArticle);
+      }catch{
+        localArticle="null";
+      }
+      console.log(localArticle);
+    }
+    const dummyArticle = localArticle as any;
     if (dummyArticle) {
       setArticle(dummyArticle as ArticleModel);
+      setTitle(dummyArticle.title);
+      setDesc(dummyArticle.desc);
       setContent(dummyArticle.content);
     }
 
@@ -68,14 +81,20 @@ function WritingPanel() {
               <span className="text-xl sm:text-2xl">Title</span>
               <MainTextInput
                 scaleTo="md"
-                value={article?.title}
+                value={title}
                 placeholder="Very lucrative and straight-forward sentence..."
+                onChange={(ev)=>{
+                  setTitle(ev.target.value);
+                }}
               />
               <span className="text-xl sm:text-2xl">Description</span>
               <MainTextAreaInput
                 placeholder="This article talks about something interesting..."
-                value={article?.desc}
                 className="!h-32 max-h-32"
+                value={desc}
+                onChange={(ev)=>{
+                  setDesc(ev.target.value);
+                }}
               />
               <span className="text-xl sm:text-2xl">Content</span>
               <textarea
@@ -118,10 +137,10 @@ function WritingPanel() {
           <button
             className="--btn-resp btn btn-primary"
             onClick={() => {
-              if (article) {
+              // if (article) {
                 const draft: ArticleModel = {
-                  title: LOREM.slice(0, 120),
-                  desc: LOREM.slice(121, LOREM.length),
+                  title: title || LOREM.slice(0, 120),
+                  desc: desc || LOREM.slice(121, LOREM.length),
                   content: content,
                   thumbnail: `https://picsum.photos/id/${Math.floor(
                     Math.random() * 10,
@@ -130,12 +149,12 @@ function WritingPanel() {
                   dateAdded: Date.now(),
                   dateUpdated: Date.now(),
                   deleted: 0,
-                  duration: decodeURIComponent(article.content).length / 200,
+                  duration: decodeURIComponent(content).length / 200,
                   tags: ["Technology", "Photography"],
                 };
                 storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
                 alert("Saved");
-              }
+              // }
             }}
           >
             Submit Article
