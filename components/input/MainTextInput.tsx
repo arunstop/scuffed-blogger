@@ -34,6 +34,7 @@ function MainTextInput({
         font-semibold invalid:text-error focus:invalid:!outline-error
         placeholder-shown:!outline-base-content/20 invalid:!outline-error
         invalid:!outline-dashed placeholder-shown:!outline-dashed
+        bg-base-100
         ${getScalingInput(scaleTo)}
         ${icon ? getScalingInputIcon(scaleTo) : ""}
         ${clearIcon ? getScalingInputClearIcon(scaleTo) : ""}
