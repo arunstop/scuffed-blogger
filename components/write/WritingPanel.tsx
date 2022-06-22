@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import React, { Fragment, ReactNode, useEffect, useState } from "react";
+import React, { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
 import { MdEdit, MdPreview } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/Article";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
@@ -27,14 +27,15 @@ function WritingPanel() {
   const [tab, setTab] = useState<string>("Write");
 
   useEffect(() => {
+    console.log("test");
     let localArticle = storageFind(KEY_ARTICLE_CONTENT);
     if (localArticle) {
-      try{
-        localArticle=JSON.parse(localArticle);
-      }catch{
-        localArticle="null";
+      try {
+        localArticle = JSON.parse(localArticle);
+      } catch {
+        localArticle = "null";
       }
-      console.log(localArticle);
+      // console.log(localArticle);
     }
     const dummyArticle = localArticle as any;
     if (dummyArticle) {
@@ -45,6 +46,16 @@ function WritingPanel() {
     }
 
     return () => {};
+  }, []);
+
+  const editTitle = useCallback((value:string) => {
+    setTitle(value);
+  }, []);
+  const editDesc = useCallback((value:string) => {
+    setDesc(value);
+  }, []);
+  const editContent = useCallback((value:string) => {
+    setContent(value);
   }, []);
 
   return (
@@ -78,34 +89,30 @@ function WritingPanel() {
             leaveTo="opacity-50 -translate-x-[120%] "
           >
             <div className="flex w-full flex-col gap-4">
-              <span className="text-xl sm:text-2xl">Title</span>
+              <span className="text-xl sm:text-2xl font-bold">Title</span>
               <MainTextInput
                 scaleTo="md"
                 value={title}
                 placeholder="Very lucrative and straight-forward sentence..."
-                onChange={(ev)=>{
-                  setTitle(ev.target.value);
-                }}
+                onChange={(ev) => editTitle(ev.target.value)}
               />
-              <span className="text-xl sm:text-2xl">Description</span>
+              <span className="text-xl sm:text-2xl font-bold">Description</span>
               <MainTextAreaInput
                 placeholder="This article talks about something interesting..."
                 className="!h-32 max-h-32"
                 value={desc}
-                onChange={(ev)=>{
-                  setDesc(ev.target.value);
-                }}
+                onChange={(ev) => editDesc(ev.target.value)}
+
               />
-              <span className="text-xl sm:text-2xl">Content</span>
+              <span className="text-xl sm:text-2xl font-bold">Content</span>
               <textarea
                 className="min-h-[36rem] w-full resize-none rounded-xl 
                 p-2 outline outline-1 outline-base-content/20 transition-all focus:outline-2
                 focus:outline-base-content"
                 placeholder="Write the article's content"
-                value={decodeURIComponent(content)}
-                onChange={(ev) => {
-                  setContent(encodeURIComponent(ev.target.value));
-                }}
+                value={content}
+                onChange={(ev) => editContent(ev.target.value)}
+
               />
             </div>
           </Transition>
@@ -138,22 +145,22 @@ function WritingPanel() {
             className="--btn-resp btn btn-primary"
             onClick={() => {
               // if (article) {
-                const draft: ArticleModel = {
-                  title: title || LOREM.slice(0, 120),
-                  desc: desc || LOREM.slice(121, LOREM.length),
-                  content: content,
-                  thumbnail: `https://picsum.photos/id/${Math.floor(
-                    Math.random() * 10,
-                  )}/500/300`,
-                  author: "Munkrey Alf",
-                  dateAdded: Date.now(),
-                  dateUpdated: Date.now(),
-                  deleted: 0,
-                  duration: decodeURIComponent(content).length / 200,
-                  tags: ["Technology", "Photography"],
-                };
-                storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
-                alert("Saved");
+              const draft: ArticleModel = {
+                title: title || LOREM.slice(0, 120),
+                desc: desc || LOREM.slice(121, LOREM.length),
+                content: content,
+                thumbnail: `https://picsum.photos/id/${Math.floor(
+                  Math.random() * 10,
+                )}/500/300`,
+                author: "Munkrey Alf",
+                dateAdded: Date.now(),
+                dateUpdated: Date.now(),
+                deleted: 0,
+                duration: decodeURIComponent(content).length / 200,
+                tags: ["Technology", "Photography"],
+              };
+              storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
+              alert("Saved");
               // }
             }}
           >
