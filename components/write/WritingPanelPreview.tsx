@@ -22,7 +22,7 @@ function WritingPanelPreview({ content }: { content: string }) {
         show={loaded}
         className="w-full"
         appear
-        enter="ease-out transition-all absolute duration-200"
+        enter="ease-out transition-all absolute duration-200 origin-right"
         enterFrom="opacity-50 scale-x-50"
         enterTo="opacity-100 scale-x-100"
       >
@@ -36,11 +36,11 @@ function WritingPanelPreview({ content }: { content: string }) {
       <Transition
         as={"div"}
         show={!loaded}
-        className="w-full"
+        className="w-full origin"
         appear
         leave="ease-in transition-all absolute duration-200"
         leaveFrom="opacity-100 scale-x-100"
-        leaveTo="opacity-50 scale-x-50"
+        leaveTo="opacity-50 scale-x-0"
       >
         <MainSectionSkeleton text="Loading preview..." spinner />
       </Transition>

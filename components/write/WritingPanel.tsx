@@ -1,6 +1,12 @@
 import { Transition } from "@headlessui/react";
-import React, { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
-import { MdEdit, MdPreview } from "react-icons/md";
+import React, {
+  Fragment,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/Article";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
 import { storageFind, storageSave } from "../../utils/helpers/LocalStorage";
@@ -14,7 +20,7 @@ const tabs: { icon: ReactNode; title: string }[] = [
     title: "Write",
   },
   {
-    icon: <MdPreview />,
+    icon: <MdRemoveRedEye />,
     title: "Preview",
   },
 ];
@@ -42,19 +48,19 @@ function WritingPanel() {
       setArticle(dummyArticle as ArticleModel);
       setTitle(dummyArticle.title);
       setDesc(dummyArticle.desc);
-      setContent(dummyArticle.content);
+      setContent(decodeURIComponent(dummyArticle.content));
     }
 
     return () => {};
   }, []);
 
-  const editTitle = useCallback((value:string) => {
+  const editTitle = useCallback((value: string) => {
     setTitle(value);
   }, []);
-  const editDesc = useCallback((value:string) => {
+  const editDesc = useCallback((value: string) => {
     setDesc(value);
   }, []);
-  const editContent = useCallback((value:string) => {
+  const editContent = useCallback((value: string) => {
     setContent(value);
   }, []);
 
@@ -77,42 +83,38 @@ function WritingPanel() {
             );
           })}
         </div>
-        <div className="flex flex-row gap-2 sm:gap-4 relative min-h-screen">
+        <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4">
           <Transition
             show={tab === "Write"}
             as={Fragment}
-            enter="ease-out transition-all absolute duration-500"
-            enterFrom="opacity-50 -translate-x-[120%] "
-            enterTo="opacity-100 translate-x-0 "
-            leave="ease-in transition-all absolute duration-500"
-            leaveFrom="opacity-100 translate-x-0 "
-            leaveTo="opacity-50 -translate-x-[120%] "
+            enter="ease-out transition-all absolute duration-[600ms]"
+            enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
+            enterTo="opacity-100 translate-x-0 scale-x-100"
+            leave="ease-in transition-all absolute duration-300"
+            leaveFrom="opacity-100 translate-x-0 scale-x-100"
+            leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
           >
             <div className="flex w-full flex-col gap-4">
-              <span className="text-xl sm:text-2xl font-bold">Title</span>
+              <span className="text-xl font-bold sm:text-2xl">Title</span>
               <MainTextInput
                 scaleTo="md"
                 value={title}
                 placeholder="Very lucrative and straight-forward sentence..."
                 onChange={(ev) => editTitle(ev.target.value)}
               />
-              <span className="text-xl sm:text-2xl font-bold">Description</span>
+              <span className="text-xl font-bold sm:text-2xl">Description</span>
               <MainTextAreaInput
                 placeholder="This article talks about something interesting..."
                 className="!h-32 max-h-32"
                 value={desc}
                 onChange={(ev) => editDesc(ev.target.value)}
-
               />
-              <span className="text-xl sm:text-2xl font-bold">Content</span>
-              <textarea
-                className="min-h-[36rem] w-full resize-none rounded-xl 
-                p-2 outline outline-1 outline-base-content/20 transition-all focus:outline-2
-                focus:outline-base-content"
+              <span className="text-xl font-bold sm:text-2xl">Content</span>
+              <MainTextAreaInput
+                className="min-h-[36rem] resize-none"
                 placeholder="Write the article's content"
                 value={content}
                 onChange={(ev) => editContent(ev.target.value)}
-
               />
             </div>
           </Transition>
@@ -120,21 +122,21 @@ function WritingPanel() {
             as={Fragment}
             appear
             show={tab === "Preview"}
-            enter="ease-out transition-all absolute duration-500"
-            enterFrom="opacity-50 translate-x-[120%] "
-            enterTo="opacity-100 translate-x-0 "
-            leave="ease-in transition-all absolute duration-500"
-            leaveFrom="opacity-100 translate-x-0 "
-            leaveTo="opacity-50 translate-x-[120%] "
+            enter="ease-out transition-all absolute duration-[600ms]"
+            enterFrom="opacity-0 translate-x-[50%] scale-x-0"
+            enterTo="opacity-100 translate-x-0 scale-x-100"
+            leave="ease-in transition-all absolute duration-300"
+            leaveFrom="opacity-100 translate-x-0 scale-x-100"
+            leaveTo="opacity-0 translate-x-[50%] scale-x-0"
           >
-            <div className="flex flex-1 flex-row w-full ">
+            <div className="flex w-full flex-1 flex-row ">
               <WritingPanelPreview content={content} />
             </div>
           </Transition>
         </div>
-        <div className="flex flex-row flex-wrap gap-2 sm:gap-4 justify-end w-full">
+        <div className="flex w-full flex-row flex-wrap justify-end gap-2 sm:gap-4">
           <button
-            className="--btn-resp btn btn-outline"
+            className="--btn-resp btn-outline btn"
             onClick={() => {
               setContent("");
             }}
@@ -148,7 +150,7 @@ function WritingPanel() {
               const draft: ArticleModel = {
                 title: title || LOREM.slice(0, 120),
                 desc: desc || LOREM.slice(121, LOREM.length),
-                content: content,
+                content: encodeURIComponent(content),
                 thumbnail: `https://picsum.photos/id/${Math.floor(
                   Math.random() * 10,
                 )}/500/300`,
@@ -156,7 +158,7 @@ function WritingPanel() {
                 dateAdded: Date.now(),
                 dateUpdated: Date.now(),
                 deleted: 0,
-                duration: decodeURIComponent(content).length / 200,
+                duration: content.length / 200,
                 tags: ["Technology", "Photography"],
               };
               storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
