@@ -1,9 +1,10 @@
 import React from "react";
+import MainSpinner from "./MainSpinner";
 
 // Ref on custom component needs to be forwarded
 // reference: https://stackoverflow.com/a/66876771
 interface MainSectionSkeletonProps {
-  text?: string;
+  text: string;
   spinner?: boolean;
 }
 const MainSectionSkeleton = React.forwardRef<
@@ -16,20 +17,7 @@ const MainSectionSkeleton = React.forwardRef<
       className="wrap mx-auto flex justify-center items-center gap-2 text-center 
       text-lg font-bold sm:gap-4 sm:text-xl my-16 md:my-20 lg:my-24 xl:my-28"
     >
-      {spinner && (
-        <div className="inline-flex flex-nowrap animate-pulse">
-          {/* <span className="animate-[bounce_1s_ease-in-out_0.4s_infinite] text-5xl font-black "> */}
-          <span className="animate-[bounce_1s_ease-in-out_0.0s_infinite_backwards] text-5xl font-black ">
-            &middot;
-          </span>
-          <span className="animate-[bounce_1s_ease-in-out_0.2s_infinite_backwards] text-5xl font-black ">
-            &middot;
-          </span>
-          <span className="animate-[bounce_1s_ease-in-out_0.4s_infinite_backwards] text-5xl font-black ">
-            &middot;
-          </span>
-        </div>
-      )}
+      {spinner && <MainSpinner />}
       <span>{props.text}</span>
     </div>
   );
