@@ -6,10 +6,18 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { MdEdit, MdRemoveRedEye } from "react-icons/md";
+import {
+  MdCheck,
+  MdClose,
+  MdEdit,
+  MdRemoveRedEye,
+  MdWorkspaces,
+} from "react-icons/md";
 import { addArticle } from "../../utils/api/Api";
+import { MainNetworkResponse } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/Article";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
+import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { storageFind, storageSave } from "../../utils/helpers/LocalStorage";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
@@ -32,6 +40,10 @@ function WritingPanel() {
   const [desc, setDesc] = useState("");
   const [content, setContent] = useState("");
   const [tab, setTab] = useState<string>("Write");
+  const [showSnack, setShowSnack] = useState(false);
+  const [networkResp, setNetWorkResp] = useState<
+    MainNetworkResponse | undefined
+  >();
 
   useEffect(() => {
     // console.log("test");
@@ -64,12 +76,100 @@ function WritingPanel() {
   const editContent = useCallback((value: string) => {
     setContent(value);
   }, []);
-  const submitArticle = useCallback( async (article:ArticleModel)=>{
-console.log(await addArticle(article));
-  },[]);
+  const submitArticle = useCallback(
+    async (article: ArticleModel) => {
+      if (showSnack) return;
+      // console.log(
+      await addArticle({
+        article: article,
+        callback: async (resp) => {
+          setShowSnack(true);
+          setNetWorkResp(resp);
+          if (resp.status !== "loading") {
+            await waitFor(4000);
+            setShowSnack(false);
+          }
+        },
+      });
+      // );
+    },
+    [showSnack],
+  );
 
   return (
     <>
+      <div
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-[999] flex h-auto 
+        min-h-[50vh] items-end justify-center p-2 sm:p-4 [&>*]:pointer-events-auto"
+      >
+        <Transition
+          show={(showSnack && networkResp?.status === "loading")}
+          as={Fragment}
+          enter="ease-out transition-all absolute duration-[600ms]"
+          enterFrom="opacity-50 translate-y-full  "
+          enterTo="opacity-100 translate-y-0 "
+          leave="ease-in transition-all absolute duration-300"
+          leaveFrom="opacity-100 translate-y-0 "
+          leaveTo="opacity-50 translate-y-full "
+        >
+          <div>
+            <div
+              className="alert flex-row items-center gap-4 bg-primary/50 py-2 text-sm 
+              text-base-content ring-1 ring-base-content/20 backdrop-blur-md sm:py-4 sm:text-lg"
+            >
+              <MdWorkspaces className="flex-none animate-spin text-2xl sm:text-3xl" />
+              <div className="!m-0">
+                <span className="font-bold">{networkResp?.message}</span>
+              </div>
+            </div>
+          </div>
+        </Transition>
+
+        <Transition
+          show={(showSnack && networkResp?.status === "success")}
+          as={Fragment}
+          enter="ease-out transition-all absolute duration-[600ms]"
+          enterFrom="opacity-50 translate-y-full  "
+          enterTo="opacity-100 translate-y-0 "
+          leave="ease-in transition-all absolute duration-300"
+          leaveFrom="opacity-100 translate-y-0 "
+          leaveTo="opacity-50 translate-y-full "
+        >
+          <div>
+            <div
+              className="alert flex-row items-center gap-4 bg-success/50 py-2 text-sm 
+              text-base-content ring-1 ring-base-content/20 backdrop-blur-md sm:py-4 sm:text-lg"
+            >
+              <MdCheck className="flex-none text-2xl sm:text-3xl" />
+              <div className="!m-0">
+                <span className="font-bold">{networkResp?.message}</span>
+              </div>
+            </div>
+          </div>
+        </Transition>
+        <Transition
+          show={(showSnack && networkResp?.status === "error")}
+          as={Fragment}
+          enter="ease-out transition-all absolute duration-[600ms]"
+          enterFrom="opacity-50 translate-y-full  "
+          enterTo="opacity-100 translate-y-0 "
+          leave="ease-in transition-all absolute duration-300"
+          leaveFrom="opacity-100 translate-y-0 "
+          leaveTo="opacity-50 translate-y-full "
+        >
+          <div>
+            <div
+              className="alert flex-row items-center gap-4 bg-error/50 py-2 text-sm 
+              text-base-content ring-1 ring-base-content/20 backdrop-blur-md sm:py-4 sm:text-lg"
+            >
+              <MdClose className="flex-none text-2xl sm:text-3xl" />
+              <div className="!m-0">
+                <span className="font-bold">{networkResp?.data as string}</span>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </div>
       <div className="flex flex-col gap-2 sm:gap-4">
         <div className="tabs tabs-boxed w-full rounded-xl">
           {tabs.map((e, idx) => {
@@ -167,87 +267,13 @@ console.log(await addArticle(article));
               };
               submitArticle(draft);
               storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
-              // alert("Saved");
-              // }
             }}
           >
             Submit Article
           </button>
         </div>
       </div>
-      {/* <div className="mb-80 flex flex-1 flex-row">
-        <MainMarkdownContainer
-          content={
-            decodeURIComponent(content) || "## Content will appear here..."
-          }
-          className="outline outline-2 outline-offset-[1rem] 
-          outline-base-content/10"
-        />
-      </div>
-      <div
-        className="fixed inset-x-0 bottom-0 mx-auto my-4 flex h-72 max-w-[60rem] flex-col 
-        rounded-xl border-2 border-base-content/20 bg-base-300 "
-      >
-        <div className="flex flex-row flex-wrap items-center justify-between gap-2 p-2">
-          <div className="flex flex-1 flex-row flex-wrap gap-2">
-            
-          </div>
-          <div className="flex flex-none flex-row gap-2">
-            <button className="--btn-resp btn-outline btn">Hide</button>
-            <button
-              className="--btn-resp btn btn-primary"
-              onClick={() => {
-                if (article) {
-                  const draft: ArticleModel = {
-                    title: LOREM.slice(0, 120),
-                    desc: LOREM.slice(121, LOREM.length),
-                    content: content,
-                    thumbnail: `https://picsum.photos/id/${Math.floor(
-                      Math.random() * 10,
-                    )}/500/300`,
-                    author: "Munkrey Alf",
-                    dateAdded: Date.now(),
-                    dateUpdated: Date.now(),
-                    deleted: 0,
-                    duration: decodeURIComponent(article.content).length / 200,
-                    tags: ["Technology", "Photography"],
-                  };
-                  storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
-                  alert("Saved");
-                }
-              }}
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-        <textarea
-          className="z-20 h-full w-full resize-none rounded-xl 
-          p-2 outline outline-1 outline-base-content/20 transition-all focus:outline-2
-          focus:outline-base-content"
-          placeholder="Write the article's content"
-          value={decodeURIComponent(content)}
-          onChange={(ev) => {
-            setContent(encodeURIComponent(ev.target.value));
-          }}
-        />
-      </div> */}
     </>
-    // <div className="flex flex-1  flex-row items-stretch">
-    //   <textarea
-    //     className="min-w-[50%] flex-1 rounded-l-xl p-4 focus:z-10"
-    //     value={article}
-    //     onChange={(ev) => {
-    //       setArticle(ev.target.value);
-    //     }}
-    //   />
-    //   <article
-    //     className="prose max-w-[50%] flex-1 rounded-xl border-2 border-base-content/20 p-4
-    //     lg:prose-xl"
-    //   >
-    //     <ReactMarkdown remarkPlugins={[gfm]}>{article}</ReactMarkdown>
-    //   </article>
-    // </div>
   );
 }
 export default WritingPanel;
