@@ -106,11 +106,11 @@ function WritingPanel() {
           show={(showSnack && networkResp?.status === "loading")}
           as={Fragment}
           enter="ease-out transition-all absolute duration-[600ms]"
-          enterFrom="opacity-50 translate-y-full  "
-          enterTo="opacity-100 translate-y-0 "
+          enterFrom="opacity-50 translate-y-full  scale-0"
+          enterTo="opacity-100 translate-y-0 scale-100"
           leave="ease-in transition-all absolute duration-300"
-          leaveFrom="opacity-100 translate-y-0 "
-          leaveTo="opacity-50 translate-y-full "
+          leaveFrom="opacity-100 translate-y-0 scale-100"
+          leaveTo="opacity-50 translate-y-full scale-0"
         >
           <div>
             <div
@@ -129,11 +129,11 @@ function WritingPanel() {
           show={(showSnack && networkResp?.status === "success")}
           as={Fragment}
           enter="ease-out transition-all absolute duration-[600ms]"
-          enterFrom="opacity-50 translate-y-full  "
-          enterTo="opacity-100 translate-y-0 "
+          enterFrom="opacity-50 translate-y-full  scale-0"
+          enterTo="opacity-100 translate-y-0 scale-100"
           leave="ease-in transition-all absolute duration-300"
-          leaveFrom="opacity-100 translate-y-0 "
-          leaveTo="opacity-50 translate-y-full "
+          leaveFrom="opacity-100 translate-y-0 scale-100"
+          leaveTo="opacity-50 translate-y-full scale-0"
         >
           <div>
             <div
@@ -151,11 +151,11 @@ function WritingPanel() {
           show={(showSnack && networkResp?.status === "error")}
           as={Fragment}
           enter="ease-out transition-all absolute duration-[600ms]"
-          enterFrom="opacity-50 translate-y-full  "
-          enterTo="opacity-100 translate-y-0 "
+          enterFrom="opacity-50 translate-y-full  scale-0"
+          enterTo="opacity-100 translate-y-0 scale-100"
           leave="ease-in transition-all absolute duration-300"
-          leaveFrom="opacity-100 translate-y-0 "
-          leaveTo="opacity-50 translate-y-full "
+          leaveFrom="opacity-100 translate-y-0 scale-100"
+          leaveTo="opacity-50 translate-y-full scale-0"
         >
           <div>
             <div
@@ -193,9 +193,9 @@ function WritingPanel() {
             as={Fragment}
             enter="ease-out transition-all absolute duration-[600ms]"
             enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
-            enterTo="opacity-100 translate-x-0 scale-x-100"
+            enterTo="opacity-100 translate-x-0 scale-x-100scale-100"
             leave="ease-in transition-all absolute duration-300"
-            leaveFrom="opacity-100 translate-x-0 scale-x-100"
+            leaveFrom="opacity-100 translate-x-0 scale-x-100scale-100"
             leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
           >
             <div className="flex w-full flex-col gap-4">
@@ -228,9 +228,9 @@ function WritingPanel() {
             show={tab === "Preview"}
             enter="ease-out transition-all absolute duration-[600ms]"
             enterFrom="opacity-0 translate-x-[50%] scale-x-0"
-            enterTo="opacity-100 translate-x-0 scale-x-100"
+            enterTo="opacity-100 translate-x-0 scale-x-100scale-100"
             leave="ease-in transition-all absolute duration-300"
-            leaveFrom="opacity-100 translate-x-0 scale-x-100"
+            leaveFrom="opacity-100 translate-x-0 scale-x-100scale-100"
             leaveTo="opacity-0 translate-x-[50%] scale-x-0"
           >
             <div className="flex w-full flex-1 flex-row ">

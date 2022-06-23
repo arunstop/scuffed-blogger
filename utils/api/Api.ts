@@ -51,7 +51,7 @@ export async function addArticle({
   try {
     //   Call the endpoint
     const result = await axiosClient
-      .post("/api/hello", JSON.stringify(article), {
+      .post("/api/article/add", JSON.stringify(article), {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
         },
