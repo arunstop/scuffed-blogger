@@ -1,8 +1,6 @@
 import Head from "next/head";
 import React from "react";
 import AuthPanel from "../components/auth/AuthPanel";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import MainContainer from "../components/main/MainContainer";
 import { APP_NAME } from "../utils/helpers/Constants";
 
@@ -16,11 +14,11 @@ function Auth() {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={"Login to write articles!"} />
       </Head>
-      <Header />
+      {/* <Header /> */}
       <MainContainer>
         <AuthPanel />
       </MainContainer>
-      <Footer/>
+      {/* <Footer/> */}
     </>
   );
 }

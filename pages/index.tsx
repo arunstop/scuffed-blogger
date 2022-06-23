@@ -2,8 +2,6 @@ import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import React from "react";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import MainContainer from "../components/main/MainContainer";
 import MainSectionFilter from "../components/main/MainSectionFilterTab";
 import MainSectionSkeleton from "../components/main/MainSectionSkeleton";
@@ -27,13 +25,11 @@ const Home: NextPage = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={APP_DESC} />
       </Head>
-      <Header />
       <MainContainer>
         {/* <div className="hidden sm:block"><MainSearchBar /></div> */}
         <MainSectionFilter />
         <LazyMainPostSection />
       </MainContainer>
-      <Footer />
     </>
   );
 };

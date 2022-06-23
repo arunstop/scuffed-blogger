@@ -2,8 +2,6 @@ import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import React, { useState } from "react";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import MainContainer from "../../components/main/MainContainer";
 import MainSectionSkeleton from "../../components/main/MainSectionSkeleton";
 import { APP_NAME } from "../../utils/helpers/Constants";
@@ -57,7 +55,6 @@ function Author({author,tab}:AuthorPageProps) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={content} />
       </Head>
-      <Header />
       <MainContainer>
         <div className="relative flex h-auto w-full flex-col">
           <img
@@ -103,7 +100,6 @@ function Author({author,tab}:AuthorPageProps) {
         </div>
          <LazyUserContent initTab={tab} />
       </MainContainer>
-      <Footer />
     </>
   );
 }

@@ -1,8 +1,6 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import React from "react";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import MainContainer from "../components/main/MainContainer";
 import WritingPanel from "../components/write/WritingPanel";
 import { getArticleById } from "../utils/api/Api";
@@ -36,11 +34,9 @@ function Write({ xd }: { xd: any }) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={APP_DESC} />
       </Head>
-      <Header />
       <MainContainer className="">
         <WritingPanel />
       </MainContainer>
-      <Footer />
     </>
   );
 }

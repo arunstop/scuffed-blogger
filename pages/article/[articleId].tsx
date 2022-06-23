@@ -7,8 +7,6 @@ import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleSectionAction from "../../components/article/ArticleActions";
 import ArticleContent from "../../components/article/ArticleContent";
 import ArticleMoreContent from "../../components/article/ArticleMoreContent";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import MainContainer from "../../components/main/MainContainer";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
@@ -42,7 +40,6 @@ function Article() {
             content="Scuffed blogs, for scuffed people"
           />
         </Head>
-        <Header />
         <MainContainer>
           <div className="inline-flex justify-start">
             <div className="dropdown-hover dropdown self-start">
@@ -87,7 +84,6 @@ function Article() {
           {/* Comment and Suggestion section */}
           <ArticleMoreContent id={articleId + ""} />
         </MainContainer>
-        <Footer />
       </>
     );
   }, [articleId]);
