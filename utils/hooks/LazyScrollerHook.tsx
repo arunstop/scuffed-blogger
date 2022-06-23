@@ -1,12 +1,11 @@
 import { useCallback, useRef, useState } from "react";
+import { waitFor } from "../helpers/DelayHelpers";
 
 interface LazyScrollerHookProps {
   delay?: number;
   callback?: () => void;
 }
-function waitFor(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+
 
 function useLazyScrollerHook(
   { delay = 0, callback }: LazyScrollerHookProps = {}, // <==
