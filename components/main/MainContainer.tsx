@@ -11,12 +11,10 @@ function MainContainer({ className, children }: MainContainerProps) {
       as={Fragment}
       appear
       show={true}
-      enter="ease-out transition-all fixed top-0 inset-x-0 duration-300 origin-top"
+      enter="ease-out transition-all duration-300 origin-top"
       enterFrom="opacity-0 translate-y-[20%] scale-x-150"
       enterTo="opacity-100 translate-y-0 scale-x-100"
-      leave="ease-in transition-all fixed top-0 inset-x-0 duration-300 origin-top"
-      leaveFrom="opacity-100 scale-100"
-      leaveTo="opacity-0 scale-150"
+      entered="transform-none"
     >
       <div
         className={`mx-auto flex min-h-screen max-w-[60rem] 
