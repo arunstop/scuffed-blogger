@@ -16,7 +16,7 @@ function WritingPanelPreview({ content }: { content: string }) {
   }, []);
 
   return (
-    <div className="flex flex-1 flex-row self-start ">
+    <div className="flex flex-1 flex-row self-start w-full">
       <Transition
         as={"div"}
         show={loaded}

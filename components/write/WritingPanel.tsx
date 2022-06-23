@@ -193,9 +193,9 @@ function WritingPanel() {
             as={Fragment}
             enter="ease-out transition-all absolute duration-[600ms]"
             enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
-            enterTo="opacity-100 translate-x-0 scale-x-100scale-100"
+            enterTo="opacity-100 translate-x-0 scale-x-100"
             leave="ease-in transition-all absolute duration-300"
-            leaveFrom="opacity-100 translate-x-0 scale-x-100scale-100"
+            leaveFrom="opacity-100 translate-x-0 scale-x-100"
             leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
           >
             <div className="flex w-full flex-col gap-4">
@@ -228,12 +228,12 @@ function WritingPanel() {
             show={tab === "Preview"}
             enter="ease-out transition-all absolute duration-[600ms]"
             enterFrom="opacity-0 translate-x-[50%] scale-x-0"
-            enterTo="opacity-100 translate-x-0 scale-x-100scale-100"
+            enterTo="opacity-100 translate-x-0 scale-x-100"
             leave="ease-in transition-all absolute duration-300"
-            leaveFrom="opacity-100 translate-x-0 scale-x-100scale-100"
+            leaveFrom="opacity-100 translate-x-0 scale-x-100"
             leaveTo="opacity-0 translate-x-[50%] scale-x-0"
           >
-            <div className="flex w-full flex-1 flex-row ">
+            <div className="flex w-full flex-1 flex-row w-full">
               <WritingPanelPreview content={content} />
             </div>
           </Transition>

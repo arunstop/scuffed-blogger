@@ -9,7 +9,7 @@ interface MainMarkdownContainerProps {
 
 function MainMarkdownContainer({
   content,
-  className,
+  className="",
 }: MainMarkdownContainerProps) {
   useEffect(() => {
     const container = document.getElementById("main-markdown-container");
@@ -36,12 +36,16 @@ function MainMarkdownContainer({
     <article
       id="main-markdown-container"
       className={`prose grow rounded-sm prose-sm md:prose lg:prose-lg !max-w-none prose-img:rounded-lg
-      prose-th:!border-x-2 prose-td:border-2 prose-td:!p-2 prose-thead:bg-base-300
+      prose-th:!border-x-2 prose-td:border-2 prose-td:!p-2
       prose-th:!p-2 prose-th:!font-bold prose-strong:!font-bold prose-thead:!border-y-2
-      prose-td:!border-base-content/20 prose-th:!border-base-content/20 prose-thead:!border-base-content/20
+      prose-td:!border-base-content/20 prose-thead:!border-base-content/20
       prose-code:bg-base-300 prose-code:!rounded-md prose-code:outline prose-code:outline-1 
       prose-code:outline-base-content/20 prose-pre:![background-color:hsl(var(--bc)/30%)]
       prose-code:prose-pre:bg-transparent prose-code:prose-pre:outline-none prose-pre:!text-base-content
+      prose-table:block prose-table:overflow-auto prose-table:max-w-full prose-table:!w-auto 
+      prose-thead:bg-base-content/30 prose-th:!text-base-content prose-th:!border-base-100  
+      first:prose-th:!border-l-0 last:prose-th:!border-r-0 prose-thead:!border-y-base-100
+      even:prose-tr:prose-table:bg-base-300
       ${className}
       `}
     >
