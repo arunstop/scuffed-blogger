@@ -3,6 +3,14 @@ export interface MainModalProps {
   onClose: () => void;
 }
 
+export type NetworkResponseStatus = "loading" | "success" | "error";
+
+export interface MainNetworkResponse{
+  message: string;
+  status: NetworkResponseStatus;
+  data: unknown;
+}
+
 // CHECK FALSY
 // Falsy values :
 export type Falsy = false | 0 | -0 | 0n | "" | null | undefined;
