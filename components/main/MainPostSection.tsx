@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Api } from "../../utils/api/Api";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import ErrorPlaceholder from "../placeholder/ErrorPlaceholder";
-import LoadingPlaceholder from "../placeholder/LoadingPlaceholder";
+import LoadingIndicator from "../placeholder/LoadingIndicator";
 import PostItem from "../post/PostItem";
 import PostOptionModal from "../post/PostOptionModal";
 
@@ -40,8 +40,20 @@ function MainPostSection() {
 
   return (
     <>
+      {/* <LoadingPlaceholder
+        title="Submitting article..."
+        desc={"Adding your beautifully written article into our database. Please wait for a moment, this will be very quick"}
+        action={loadPosts}
+        actionLabel="Cancel"
+      />
+      <SuccessPlaceholder
+        title="Article has been submitted!"
+        desc={"Congratulation! We did it! Your beautifully written article has been added into our database for the world to read it!"}
+        action={loadPosts}
+        actionLabel="Go to the article"
+      /> */}
       <div className="flex flex-col w-full gap-2 sm:gap-4 items-center min-h-screen">
-        {loading && <LoadingPlaceholder text="Loading posts..." spinner />}
+        {loading && <LoadingIndicator text="Loading posts..." spinner />}
         <Transition
           show={!loading && posts?.status === "error"}
           as={"div"}
