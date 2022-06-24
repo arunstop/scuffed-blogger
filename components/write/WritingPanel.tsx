@@ -4,16 +4,16 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
-  useState,
+  useState
 } from "react";
 import {
   MdCheck,
   MdClose,
   MdEdit,
   MdRemoveRedEye,
-  MdWorkspaces,
+  MdWorkspaces
 } from "react-icons/md";
-import { addArticle } from "../../utils/api/Api";
+import { Api } from "../../utils/api/Api";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/Article";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
@@ -80,7 +80,7 @@ function WritingPanel() {
     async (article: ArticleModel) => {
       if (showSnack) return;
       // console.log(
-      await addArticle({
+      await Api.addArticle({
         article: article,
         callback: async (resp) => {
           setShowSnack(true);

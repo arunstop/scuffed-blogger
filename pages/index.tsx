@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import React from "react";
 import MainContainer from "../components/main/MainContainer";
+import MainPostSection from "../components/main/MainPostSection";
 import MainSectionFilter from "../components/main/MainSectionFilterTab";
 import MainSectionSkeleton from "../components/main/MainSectionSkeleton";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
@@ -28,7 +29,7 @@ const Home: NextPage = () => {
       <MainContainer>
         {/* <div className="hidden sm:block"><MainSearchBar /></div> */}
         <MainSectionFilter />
-        <LazyMainPostSection />
+        <MainPostSection />
       </MainContainer>
     </>
   );

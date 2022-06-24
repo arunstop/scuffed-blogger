@@ -3,7 +3,6 @@ import Head from "next/head";
 import React from "react";
 import MainContainer from "../components/main/MainContainer";
 import WritingPanel from "../components/write/WritingPanel";
-import { getArticleById } from "../utils/api/Api";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
 export const getServerSideProps: GetServerSideProps<{ xd: any }> = async (
@@ -17,7 +16,8 @@ export const getServerSideProps: GetServerSideProps<{ xd: any }> = async (
   const author = slug[0];
   const tab = slug[1] || "post";
 
-  const article = await getArticleById();
+  // const article = await Api.getArticleById();
+  const article = "";
   // const article = await addArticle("HAHAHAHA");
   // console.log(tab);
 
