@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React, { useCallback, useEffect, useState } from "react";
-import { Api } from "../../utils/api/Api";
+import { Api } from "../../utils/services/api/Api";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import ErrorPlaceholder from "../placeholder/ErrorPlaceholder";
 import LoadingIndicator from "../placeholder/LoadingIndicator";

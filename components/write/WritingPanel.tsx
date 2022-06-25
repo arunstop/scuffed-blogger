@@ -6,21 +6,16 @@ import React, {
   useEffect,
   useState
 } from "react";
-import {
-  MdCheck,
-  MdClose,
-  MdEdit,
-  MdRemoveRedEye,
-  MdWorkspaces
-} from "react-icons/md";
-import { Api } from "../../utils/api/Api";
+import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/Article";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
-import { waitFor } from "../../utils/helpers/DelayHelpers";
-import { storageFind, storageSave } from "../../utils/helpers/LocalStorage";
+import { storageFind } from "../../utils/helpers/LocalStorage";
+import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
+import { Api } from "../../utils/services/api/Api";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
+import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelPreview from "./WritingPanelPreview";
 
 const tabs: { icon: ReactNode; title: string }[] = [
@@ -40,10 +35,8 @@ function WritingPanel() {
   const [desc, setDesc] = useState("");
   const [content, setContent] = useState("");
   const [tab, setTab] = useState<string>("Write");
-  const [showSnack, setShowSnack] = useState(false);
-  const [networkResp, setNetWorkResp] = useState<
-    MainNetworkResponse | undefined
-  >();
+  const [loading, setLoading] = useState(false);
+  const [networkResp, setNetWorkResp] = useState<MainNetworkResponse>();
 
   useEffect(() => {
     // console.log("test");
@@ -76,39 +69,54 @@ function WritingPanel() {
   const editContent = useCallback((value: string) => {
     setContent(value);
   }, []);
-  const submitArticle = useCallback(
-    async (article: ArticleModel) => {
-      if (showSnack) return;
-      // console.log(
-      await Api.addArticle({
-        article: article,
-        callback: async (resp) => {
-          setShowSnack(true);
-          setNetWorkResp(resp);
-          if (resp.status !== "loading") {
-            await waitFor(4000);
-            setShowSnack(false);
-          }
-        },
-      });
-      // );
-    },
-    [showSnack],
-  );
+  const submitArticle = useCallback(async () => {
+    const newArticle: ArticleModel = {
+      title: title || LOREM.slice(0, 120),
+      desc: desc || LOREM.slice(121, LOREM.length),
+      content: encodeURIComponent(content),
+      thumbnail: `https://picsum.photos/id/${Math.floor(
+        Math.random() * 10,
+      )}/500/300`,
+      author: "Munkrey Alf",
+      dateAdded: Date.now(),
+      dateUpdated: Date.now(),
+      deleted: 0,
+      duration: content.length / 200,
+      tags: ["Technology", "Photography"],
+    };
+    // if (loading) return;
+    setLoading(true);
+
+    await Api.addArticle({
+      article: newArticle,
+      callback: async (resp) => {
+        setNetWorkResp(resp);
+        if (resp.status !== "loading") {
+          // await waitFor(4000);
+          setLoading(false);
+        }
+      },
+    });
+  }, [content, desc, title]);
+
+  useEffect(() => {
+    scrollToTop(true);
+    return () => {};
+  }, [loading,networkResp]);
 
   return (
     <>
-      <div
+      {/* <div
         className="pointer-events-none fixed inset-x-0 bottom-0 z-[999] flex h-auto 
         min-h-[50vh] items-end justify-center p-2 sm:p-4 [&>*]:pointer-events-auto"
       >
         <Transition
-          show={(showSnack && networkResp?.status === "loading")}
+          show={loading && networkResp?.status === "loading"}
           as={Fragment}
-          enter="ease-out transition-all absolute duration-[600ms]"
+          enter="ease-out transform transition duration-[600ms]"
           enterFrom="opacity-50 translate-y-full  scale-0"
           enterTo="opacity-100 translate-y-0 scale-100"
-          leave="ease-in transition-all absolute duration-300"
+          leave="ease-in transform transition duration-300"
           leaveFrom="opacity-100 translate-y-0 scale-100"
           leaveTo="opacity-50 translate-y-full scale-0"
         >
@@ -126,7 +134,7 @@ function WritingPanel() {
         </Transition>
 
         <Transition
-          show={(showSnack && networkResp?.status === "success")}
+          show={loading && networkResp?.status === "success"}
           as={Fragment}
           enter="ease-out transition-all absolute duration-[600ms]"
           enterFrom="opacity-50 translate-y-full  scale-0"
@@ -148,7 +156,7 @@ function WritingPanel() {
           </div>
         </Transition>
         <Transition
-          show={(showSnack && networkResp?.status === "error")}
+          show={loading && networkResp?.status === "error"}
           as={Fragment}
           enter="ease-out transition-all absolute duration-[600ms]"
           enterFrom="opacity-50 translate-y-full  scale-0"
@@ -169,110 +177,201 @@ function WritingPanel() {
             </div>
           </div>
         </Transition>
+      </div> */}
+
+      <div className="min-w-full relative">
+        <Transition
+          show={loading}
+          appear
+          as={"div"}
+          className="w-full absolute inset-x-0"
+          enter="ease-out transform transition duration-500"
+          enterFrom="opacity-0 translate-y-[20%] scale-x-0"
+          enterTo="opacity-100 translate-y-0 scale-x-100"
+          leave="ease-in transform transition duration-300"
+          leaveFrom="opacity-100 translate-y-0 scale-x-100"
+          leaveTo="opacity-0 translate-y-[20%] scale-x-0"
+        >
+          <StatusPlaceholder
+            status="loading"
+            title="Submitting article..."
+            desc={
+              "Adding your beautifully written article into our database. Please wait for a moment, this will be very quick"
+            }
+            actions={[
+              {
+                label: "Cancel",
+                callback: () => {},
+              },
+            ]}
+          />
+        </Transition>
+        {networkResp && (
+          <>
+            <Transition
+              show={!loading && networkResp?.status === "error"}
+              appear
+              as={"div"}
+              className="w-full absolute inset-x-0"
+              enter="ease-out transform transition duration-500"
+              enterFrom="opacity-0 translate-y-[20%] scale-x-0"
+              enterTo="opacity-100 translate-y-0 scale-x-100"
+              leave="ease-in transform transition duration-300"
+              leaveFrom="opacity-100 translate-y-0 scale-x-100"
+              leaveTo="opacity-0 translate-y-[20%] scale-x-0"
+            >
+              <StatusPlaceholder
+                status="error"
+                title="Oops something fishy just happened..."
+                desc={`Sorry that this just happened :(. ${networkResp?.message} and saying : ${networkResp?.data}`}
+                actions={[
+                  {
+                    label: "Go back",
+                    callback: () => {
+                      setNetWorkResp(undefined);
+                    },
+                  },
+                  {
+                    label: "Try again",
+                    callback: () => {
+                      submitArticle();
+                    },
+                  },
+                ]}
+              />
+            </Transition>
+
+            <Transition
+              show={!loading && networkResp?.status === "success"}
+              appear
+              as={"div"}
+              className="w-full absolute inset-x-0"
+              enter="ease-out transform transition duration-500"
+              enterFrom="opacity-0 translate-y-[20%] scale-x-0"
+              enterTo="opacity-100 translate-y-0 scale-x-100"
+              leave="ease-in transform transition duration-300"
+              leaveFrom="opacity-100 translate-y-0 scale-x-100"
+              leaveTo="opacity-0 translate-y-[20%] scale-x-0"
+            >
+              <StatusPlaceholder
+                status="success"
+                title="Article has been submitted!"
+                desc={
+                  "Congratulation! We did it! Your beautifully written article has been added into our database for the world to read it!"
+                }
+                actions={[
+                  {
+                    label: "Write again",
+                    callback: () => {
+                      setNetWorkResp(undefined);
+                    },
+                  },
+                  {
+                    label: "Go to the article",
+                    callback: () => {
+                      submitArticle();
+                    },
+                  },
+                ]}
+              />
+            </Transition>
+          </>
+        )}
       </div>
-      <div className="flex flex-col gap-2 sm:gap-4">
-        <div className="tabs tabs-boxed w-full rounded-xl">
-          {tabs.map((e, idx) => {
-            return (
-              <a
-                key={idx}
-                className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl 
+
+      {!loading && !networkResp && (
+        <>
+          <div className="flex flex-col gap-2 sm:gap-4">
+            <div className="tabs tabs-boxed w-full rounded-xl">
+              {tabs.map((e, idx) => {
+                return (
+                  <a
+                    key={idx}
+                    className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl 
                 font-bold transition-colors gap-2
                 ${e.title === tab ? "tab-active" : ""}`}
-                onClick={() => setTab(e.title)}
+                    onClick={() => setTab(e.title)}
+                  >
+                    <span className="text-2xl">{e.icon}</span>
+                    <span className="first-letter:uppercase">{e.title}</span>
+                  </a>
+                );
+              })}
+            </div>
+            <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4">
+              <Transition
+                show={tab === "Write"}
+                as={Fragment}
+                enter="ease-out transform transition duration-[600ms]"
+                enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
+                enterTo="opacity-100 translate-x-0 scale-x-100"
+                leave="ease-in transform transition duration-300"
+                leaveFrom="opacity-100 translate-x-0 scale-x-100"
+                leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
               >
-                <span className="text-2xl">{e.icon}</span>
-                <span className="first-letter:uppercase">{e.title}</span>
-              </a>
-            );
-          })}
-        </div>
-        <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4">
-          <Transition
-            show={tab === "Write"}
-            as={Fragment}
-            enter="ease-out transition-all absolute duration-[600ms]"
-            enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
-            enterTo="opacity-100 translate-x-0 scale-x-100"
-            leave="ease-in transition-all absolute duration-300"
-            leaveFrom="opacity-100 translate-x-0 scale-x-100"
-            leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
-          >
-            <div className="flex w-full flex-col gap-4">
-              <span className="text-xl font-bold sm:text-2xl">Title</span>
-              <MainTextInput
-                scaleTo="md"
-                value={title}
-                placeholder="Very lucrative and straight-forward sentence..."
-                onChange={(ev) => editTitle(ev.target.value)}
-              />
-              <span className="text-xl font-bold sm:text-2xl">Description</span>
-              <MainTextAreaInput
-                placeholder="This article talks about something interesting..."
-                className="!h-32 max-h-32"
-                value={desc}
-                onChange={(ev) => editDesc(ev.target.value)}
-              />
-              <span className="text-xl font-bold sm:text-2xl">Content</span>
-              <MainTextAreaInput
-                className="min-h-[36rem] resize-none"
-                placeholder="Write the article's content"
-                value={content}
-                onChange={(ev) => editContent(ev.target.value)}
-              />
+                <div className="flex w-full flex-col gap-4">
+                  <span className="text-xl font-bold sm:text-2xl">Title</span>
+                  <MainTextInput
+                    scaleTo="md"
+                    value={title}
+                    placeholder="Very lucrative and straight-forward sentence..."
+                    onChange={(ev) => editTitle(ev.target.value)}
+                  />
+                  <span className="text-xl font-bold sm:text-2xl">
+                    Description
+                  </span>
+                  <MainTextAreaInput
+                    placeholder="This article talks about something interesting..."
+                    className="!h-32 max-h-32"
+                    value={desc}
+                    onChange={(ev) => editDesc(ev.target.value)}
+                  />
+                  <span className="text-xl font-bold sm:text-2xl">Content</span>
+                  <MainTextAreaInput
+                    className="min-h-[36rem] resize-none"
+                    placeholder="Write the article's content"
+                    value={content}
+                    onChange={(ev) => editContent(ev.target.value)}
+                  />
+                </div>
+              </Transition>
+              <Transition
+                as={Fragment}
+                appear
+                show={tab === "Preview"}
+                enter="ease-out transform transition duration-[600ms]"
+                enterFrom="opacity-0 translate-x-[50%] scale-x-0"
+                enterTo="opacity-100 translate-x-0 scale-x-100"
+                leave="ease-in transform transition duration-300"
+                leaveFrom="opacity-100 translate-x-0 scale-x-100"
+                leaveTo="opacity-0 translate-x-[50%] scale-x-0"
+              >
+                <div className="flex w-full flex-1 flex-row w-full">
+                  <WritingPanelPreview content={content} />
+                </div>
+              </Transition>
             </div>
-          </Transition>
-          <Transition
-            as={Fragment}
-            appear
-            show={tab === "Preview"}
-            enter="ease-out transition-all absolute duration-[600ms]"
-            enterFrom="opacity-0 translate-x-[50%] scale-x-0"
-            enterTo="opacity-100 translate-x-0 scale-x-100"
-            leave="ease-in transition-all absolute duration-300"
-            leaveFrom="opacity-100 translate-x-0 scale-x-100"
-            leaveTo="opacity-0 translate-x-[50%] scale-x-0"
-          >
-            <div className="flex w-full flex-1 flex-row w-full">
-              <WritingPanelPreview content={content} />
+            <div className="flex w-full flex-row flex-wrap justify-end gap-2 sm:gap-4">
+              <button
+                className="--btn-resp btn-outline btn"
+                onClick={() => {
+                  setContent("");
+                }}
+              >
+                Reset
+              </button>
+              <button
+                className="--btn-resp btn btn-primary"
+                onClick={() => {
+                  submitArticle();
+                }}
+              >
+                Submit Article
+              </button>
             </div>
-          </Transition>
-        </div>
-        <div className="flex w-full flex-row flex-wrap justify-end gap-2 sm:gap-4">
-          <button
-            className="--btn-resp btn-outline btn"
-            onClick={() => {
-              setContent("");
-            }}
-          >
-            Reset
-          </button>
-          <button
-            className="--btn-resp btn btn-primary"
-            onClick={() => {
-              // if (article) {
-              const draft: ArticleModel = {
-                title: title || LOREM.slice(0, 120),
-                desc: desc || LOREM.slice(121, LOREM.length),
-                content: encodeURIComponent(content),
-                thumbnail: `https://picsum.photos/id/${Math.floor(
-                  Math.random() * 10,
-                )}/500/300`,
-                author: "Munkrey Alf",
-                dateAdded: Date.now(),
-                dateUpdated: Date.now(),
-                deleted: 0,
-                duration: content.length / 200,
-                tags: ["Technology", "Photography"],
-              };
-              submitArticle(draft);
-              storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(draft));
-            }}
-          >
-            Submit Article
-          </button>
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

@@ -20,11 +20,11 @@ async function getArticleById({
 }: {
   callback?: (resp: MainNetworkResponse) => void;
 } = {}) {
-  callback?.({
-    data: null,
-    message: "Submitting your article...",
-    status: "loading",
-  });
+  // callback?.({
+  //   data: null,
+  //   message: "Submitting your article...",
+  //   status: "loading",
+  // });
   let data: null | any = null;
   // await waitFor(2000);
   try {
@@ -34,7 +34,7 @@ async function getArticleById({
         method: "GET",
       })
       .then((resp) => {
-        console.log(resp.data);
+        console.log(resp.data); 
         return resp;
       });
     data = result.data;
@@ -61,11 +61,11 @@ async function addArticle({
   article: ArticleModel;
   callback?: (resp: MainNetworkResponse) => void;
 }) {
-  callback?.({
-    data: null,
-    message: "Submitting your article...",
-    status: "loading",
-  });
+  // callback?.({
+  //   data: null,
+  //   message: "Submitting your article...",
+  //   status: "loading",
+  // });
 
   await waitFor(5000);
 
