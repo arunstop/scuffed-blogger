@@ -16,7 +16,7 @@ function MainContainer({ className, children }: MainContainerProps) {
       enterTo="opacity-100 translate-y-0 scale-x-100"
       entered="transform-none"
     >
-      <div
+      <main
         className={`mx-auto flex min-h-screen max-w-[60rem] 
       flex-col justify-start gap-4 bg-base-100 p-4 relative
       sm:gap-8 sm:p-8 overflow-hidden rounded-xl
@@ -25,7 +25,7 @@ function MainContainer({ className, children }: MainContainerProps) {
       `}
       >
         {children}
-      </div>
+      </main>
     </Transition>
   );
 }
