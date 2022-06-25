@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { firestore } from "../../../utils/backend/FirestoreApi";
+import { firestore } from "../../../utils/services/api/FirestoreApi";
 
 // type Data = {
 //   name: string;

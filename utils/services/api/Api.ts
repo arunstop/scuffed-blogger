@@ -1,6 +1,6 @@
-import { waitFor } from "../helpers/DelayHelpers";
-import { MainNetworkResponse } from "./../data/Main";
-import { ArticleModel } from "./../data/models/Article";
+import { waitFor } from "../../helpers/DelayHelpers";
+import { MainNetworkResponse } from "../../data/Main";
+import { ArticleModel } from "../../data/models/Article";
 import { axiosClient } from "./AxiosClient";
 // axios.get('/user?ID=12345')
 //   .then(function (response) {

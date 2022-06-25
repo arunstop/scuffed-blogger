@@ -1,4 +1,4 @@
-import { ArticleModel } from "./../data/models/Article";
+import { ArticleModel } from "../../data/models/Article";
 import { articleDb } from "./FirebaseClient";
 import { doc, getDoc, getDocs, setDoc } from "firebase/firestore/lite";
 
