@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import MainMarkdownContainer from "../main/MainMarkdownContainer";
-import MainSectionSkeleton from "../main/MainSectionSkeleton";
+import LoadingIndicator from "../placeholder/LoadingIndicator";
 
 function WritingPanelPreview({ content }: { content: string }) {
   const [loaded, setLoaded] = useState(false);
@@ -22,7 +22,7 @@ function WritingPanelPreview({ content }: { content: string }) {
         show={loaded}
         className="w-full"
         appear
-        enter="ease-out transition-all absolute duration-200 origin-right"
+        enter="ease-out transition-all absolute inset-x-0 duration-200 origin-right"
         enterFrom="opacity-50 scale-x-50"
         enterTo="opacity-100 scale-x-100"
       >
@@ -38,11 +38,11 @@ function WritingPanelPreview({ content }: { content: string }) {
         show={!loaded}
         className="w-full origin"
         appear
-        leave="ease-in transition-all absolute duration-200"
+        leave="ease-in transition-all absolute inset-x-0 duration-200"
         leaveFrom="opacity-100 scale-x-100"
         leaveTo="opacity-50 scale-x-0"
       >
-        <MainSectionSkeleton text="Loading preview..." spinner />
+        <LoadingIndicator text="Loading preview..." spinner/>
       </Transition>
     </div>
   );

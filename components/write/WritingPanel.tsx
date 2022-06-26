@@ -13,9 +13,8 @@ import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
 import { storageFind } from "../../utils/helpers/LocalStorage";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { Api } from "../../utils/services/api/Api";
-import MainTextAreaInput from "../input/MainTextAreaInput";
-import MainTextInput from "../input/MainTextInput";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
+import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
 
 const tabs: { icon: ReactNode; title: string }[] = [
@@ -31,9 +30,6 @@ const tabs: { icon: ReactNode; title: string }[] = [
 
 function WritingPanel() {
   const [article, setArticle] = useState<undefined | ArticleModel>();
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [content, setContent] = useState("");
   const [tab, setTab] = useState<string>("Write");
   const [loading, setLoading] = useState(false);
   const [networkResp, setNetWorkResp] = useState<MainNetworkResponse>();
@@ -52,29 +48,16 @@ function WritingPanel() {
     const dummyArticle = localArticle as any;
     if (dummyArticle) {
       setArticle(dummyArticle as ArticleModel);
-      setTitle(dummyArticle.title);
-      setDesc(dummyArticle.desc);
-      setContent(decodeURIComponent(dummyArticle.content));
     }
 
     return () => {};
   }, []);
 
-  const editTitle = useCallback((value: string) => {
-    setTitle(value);
-  }, []);
-  const editDesc = useCallback((value: string) => {
-    setDesc(value);
-  }, []);
-  const editContent = useCallback((value: string) => {
-    setContent(value);
-  }, []);
-
   const submitArticle = useCallback(async () => {
     const newArticle: ArticleModel = {
-      title: title || LOREM.slice(0, 120),
-      desc: desc || LOREM.slice(121, LOREM.length),
-      content: encodeURIComponent(content),
+      title: article?.title || LOREM.slice(0, 120),
+      desc: article?.desc || LOREM.slice(121, LOREM.length),
+      content: encodeURIComponent(article?.content || ""),
       thumbnail: `https://picsum.photos/id/${Math.floor(
         Math.random() * 10,
       )}/500/300`,
@@ -82,7 +65,7 @@ function WritingPanel() {
       dateAdded: Date.now(),
       dateUpdated: Date.now(),
       deleted: 0,
-      duration: content.length / 200,
+      duration: (article?.content.length || 0) / 200,
       tags: ["Technology", "Photography"],
     };
     // if (loading) return;
@@ -98,7 +81,7 @@ function WritingPanel() {
         // }
       },
     });
-  }, [content, desc, title]);
+  }, [article]);
 
   useEffect(() => {
     scrollToTop();
@@ -107,6 +90,7 @@ function WritingPanel() {
 
   return (
     <>
+      {/* {article?.content} */}
       {/* <div
         className="pointer-events-none fixed inset-x-0 bottom-0 z-[999] flex h-auto 
         min-h-[50vh] items-end justify-center p-2 sm:p-4 [&>*]:pointer-events-auto"
@@ -289,6 +273,7 @@ function WritingPanel() {
         >
           <>
             <div className="flex flex-col gap-2 sm:gap-4">
+              {/* TABS */}
               <div className="tabs tabs-boxed w-full rounded-xl">
                 {tabs.map((e, idx) => {
                   return (
@@ -305,66 +290,56 @@ function WritingPanel() {
                   );
                 })}
               </div>
-              <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4">
-                <Transition
-                  show={tab === "Write"}
-                  as={Fragment}
-                  enter="ease-out transform transition absolute inset-x-0 duration-500"
-                  enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
-                  enterTo="opacity-100 translate-x-0 scale-x-100"
-                  leave="ease-in transform transition absolute inset-x-0 duration-300"
-                  leaveFrom="opacity-100 translate-x-0 scale-x-100"
-                  leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
-                >
-                  <div className="flex w-full flex-col gap-4">
-                    <span className="text-xl font-bold sm:text-2xl">Title</span>
-                    <MainTextInput
-                      scaleTo="md"
-                      value={title}
-                      placeholder="Very lucrative and straight-forward sentence..."
-                      onChange={(ev) => editTitle(ev.target.value)}
+              {/* CONTENT */}
+              {!!article && (
+                <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4">
+                  <Transition
+                    show={tab === "Write"}
+                    as={"div"}
+                    className={"flex w-full flex-1 flex-row w-full"}
+                    enter="ease-out transform transition absolute inset-x-0 duration-500"
+                    enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
+                    enterTo="opacity-100 translate-x-0 scale-x-100"
+                    leave="ease-in transform transition absolute inset-x-0 duration-300"
+                    leaveFrom="opacity-100 translate-x-0 scale-x-100"
+                    leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
+                  >
+                    <WritingPanelForm
+                      article={article}
+                      setArticle={(title, desc, content) => {
+                        setArticle(
+                          (s) =>
+                            ({
+                              ...s,
+                              title,
+                              desc,
+                              content,
+                            } as ArticleModel),
+                        );
+                      }}
                     />
-                    <span className="text-xl font-bold sm:text-2xl">
-                      Description
-                    </span>
-                    <MainTextAreaInput
-                      placeholder="This article talks about something interesting..."
-                      className="!h-32 max-h-32"
-                      value={desc}
-                      onChange={(ev) => editDesc(ev.target.value)}
-                    />
-                    <span className="text-xl font-bold sm:text-2xl">
-                      Content
-                    </span>
-                    <MainTextAreaInput
-                      className="min-h-[36rem] resize-none"
-                      placeholder="Write the article's content"
-                      value={content}
-                      onChange={(ev) => editContent(ev.target.value)}
-                    />
-                  </div>
-                </Transition>
-                <Transition
-                  as={Fragment}
-                  appear
-                  show={tab === "Preview"}
-                  enter="ease-out transform transition absolute inset-x-0 duration-500"
-                  enterFrom="opacity-0 translate-x-[50%] scale-x-0"
-                  enterTo="opacity-100 translate-x-0 scale-x-100"
-                  leave="ease-in transform transition absolute inset-x-0 duration-300"
-                  leaveFrom="opacity-100 translate-x-0 scale-x-100"
-                  leaveTo="opacity-0 translate-x-[50%] scale-x-0"
-                >
-                  <div className="flex w-full flex-1 flex-row w-full">
-                    <WritingPanelPreview content={content} />
-                  </div>
-                </Transition>
-              </div>
+                  </Transition>
+                  <Transition
+                    as={"div"}
+                    className={"flex w-full flex-1 flex-row w-full"}
+                    appear
+                    show={tab === "Preview"}
+                    enter="ease-out transform transition absolute inset-x-0 duration-500"
+                    enterFrom="opacity-0 translate-x-[50%] scale-x-0"
+                    enterTo="opacity-100 translate-x-0 scale-x-100"
+                    leave="ease-in transform transition absolute inset-x-0 duration-300"
+                    leaveFrom="opacity-100 translate-x-0 scale-x-100"
+                    leaveTo="opacity-0 translate-x-[50%] scale-x-0"
+                  >
+                    <WritingPanelPreview content={article?.content || ""} />
+                  </Transition>
+                </div>
+              )}
               <div className="flex w-full flex-row flex-wrap justify-end gap-2 sm:gap-4">
                 <button
                   className="--btn-resp btn-outline btn"
                   onClick={() => {
-                    setContent("");
+                    // setContent("");
                   }}
                 >
                   Reset
