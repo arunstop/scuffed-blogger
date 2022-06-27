@@ -5,10 +5,10 @@ export interface MainModalProps {
 
 export type NetworkResponseStatus = "loading" | "success" | "error";
 
-export interface MainNetworkResponse{
+export interface MainNetworkResponse<T=unknown>{
   message: string;
   status: NetworkResponseStatus;
-  data: unknown;
+  data: T;
 }
 
 // CHECK FALSY
