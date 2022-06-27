@@ -2,6 +2,7 @@ import { isFalsy } from "../Main";
 import _ from "lodash";
 
 export interface ArticleModel {
+  id:string;
   title: string;
   desc: string;
   thumbnail: string;
@@ -22,6 +23,7 @@ export function isArticleModel(value: unknown) {
   if (isFalsy(value)) return false;
   // check if all required properties are satisfied
   const requiredPropsValid =
+    "id" in value &&
     "title" in value &&
     "desc" in value &&
     "thumbnail" in value &&
@@ -34,6 +36,7 @@ export function isArticleModel(value: unknown) {
     "deleted" in value;
   // list all properties
   const props = [
+    "id",
     "title",
     "desc",
     "thumbnail",
