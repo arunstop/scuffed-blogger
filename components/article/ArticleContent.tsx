@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
-import { KEY_ARTICLE_CONTENT } from "../../utils/helpers/Constants";
-import { storageFind } from "../../utils/services/local/LocalStorage";
 import MainMarkdownContainer from "../main/MainMarkdownContainer";
 
-function ArticleContent({ id }: { id: string }) {
-  const [article, setArticle] = useState<undefined | ArticleModel>();
-  useEffect(() => {
-    const dummyArticle = JSON.parse(storageFind(KEY_ARTICLE_CONTENT));
-    if (dummyArticle) setArticle(dummyArticle as ArticleModel);
-    return () => {};
-  }, []);
+function ArticleContent({ article }: { article: ArticleModel }) {
+  // const [article, setArticle] = useState<undefined | ArticleModel>();
+  // useEffect(() => {
+  //   const dummyArticle = JSON.parse(storageFind(KEY_ARTICLE_CONTENT));
+  //   if (dummyArticle) setArticle(dummyArticle as ArticleModel);
+  //   return () => {};
+  // }, []);
 
   console.log("render Article Content");
 
@@ -47,7 +45,7 @@ function ArticleContent({ id }: { id: string }) {
           architecto nobis.
         </span>
       </div>
-      <MainMarkdownContainer content={article?.content || ""} />
+      <MainMarkdownContainer content={decodeURIComponent(article?.content || "")} />
     </>
   );
 }

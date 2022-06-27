@@ -14,10 +14,12 @@ function MainPostSection() {
   const loadPosts = useCallback(async () => {
     // show loading indicator
     setLoading(true);
-    await mainApi.getArticleById({
+    await mainApi.getArticles({
       callback: (resp) => {
         // Cancel the process `status` = loading
         if (resp.status === "loading") return;
+        console.log(resp);
+
         // Proceed if `status` = error/success
         setLoading(false);
         setPosts({

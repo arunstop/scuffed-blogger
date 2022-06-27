@@ -1,8 +1,6 @@
+import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import React, {
-  useMemo
-} from "react";
+import React, { useMemo } from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleSectionAction from "../../components/article/ArticleActions";
 import ArticleContent from "../../components/article/ArticleContent";
@@ -11,26 +9,50 @@ import MainContainer from "../../components/main/MainContainer";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../components/main/MainUserLabel";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
+import { mainApi } from "../../utils/services/network/MainApi";
 
-function Article() {
-  const router = useRouter();
-  const { articleId } = router.query;
-  
+export const getServerSideProps: GetServerSideProps<{
+  article: ArticleModel;
+}> = async (context) => {
+  // SLUG ORDER
+  // 0 = User's id
+  // 1 = Tab/section
+
+  const slug = (context.query.articleId || "") as string;
+  // console.log(slug);
+
+  const article = (await mainApi.getArticleById({ id: slug })).data;
+  // const article = "";
+  // const article = await addArticle("HAHAHAHA");
+  // console.log(article);
+
+  return {
+    notFound: !article,
+    props: { article: article },
+  };
+};
+
+function Article({ article }: { article: ArticleModel }) {
+  // const router = useRouter();
+  // const { articleId } = router.query;
+  const articleId = article.id;
+
   // useEffect(() => {
   //   scrollToTop();
 
   //   return () => {};
   // }, [articleId]);
 
-  const title =
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit Laudantium itaque odit sed? Quibusdam quis nemo tempora";
+  // const title =
+  //   "Lorem ipsum dolor sit amet consectetur adipisicing elit Laudantium itaque odit sed? Quibusdam quis nemo tempora";
 
   const mzPage = useMemo(() => {
     return (
       <>
         <Head>
-          <title>{title + APP_NAME}</title>
+          <title>{`${article.title} - ${APP_NAME}`}</title>
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"
@@ -77,7 +99,7 @@ function Article() {
             />
           </div>
 
-          <ArticleContent id={articleId + ""} />
+          <ArticleContent article={article} />
 
           <ArticleSectionAction id={articleId + ""} />
 

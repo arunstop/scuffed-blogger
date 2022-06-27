@@ -22,6 +22,7 @@ import { mainApi } from "../../utils/services/network/MainApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
+import { strKebabify } from "../../utils/helpers/MainHelpers";
 
 const tabs: { icon: ReactNode; title: string }[] = [
   {
@@ -64,7 +65,7 @@ function WritingPanel() {
     const date = Date.now();
     const title = article?.title || "";
     const newArticle: ArticleModel = {
-      id: `${title.slice(0, 120)}-${date}`,
+      id: strKebabify(`${title.slice(0, 120)}-${date}`),
       title: article?.title || LOREM.slice(0, 120),
       desc: article?.desc || LOREM.slice(121, LOREM.length),
       content: encodeURIComponent(article?.content || ""),

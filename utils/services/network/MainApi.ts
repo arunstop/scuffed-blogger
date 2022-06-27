@@ -16,10 +16,45 @@ import { axiosClient } from "./AxiosClient";
 //   });
 
 async function getArticleById({
+  id,
   callback,
 }: {
-  callback?: (resp: MainNetworkResponse) => void;
-} = {}) {
+  id: string;
+  callback?: (resp: MainNetworkResponse<ArticleModel>) => void;
+}):Promise<MainNetworkResponse<ArticleModel>> {
+  // callback?.({
+  //   data: null,
+  //   message: "Submitting your article...",
+  //   status: "loading",
+  // });
+  console.log(id);
+  let data: null | any = null;
+  // await waitFor(2000);
+  try {
+    //   Call the endpoint
+    const result = await axiosClient
+      .get(`/api/article/${id}`, {
+        // .get(`/api/hello`, {
+        method: "GET",
+      })
+      .then((resp) => {
+        // console.log(resp.data);
+        return resp;
+      });
+    data = result.data;
+    callback?.(data);
+  } catch (error) {
+    callback?.(data);
+    // console.log(error);
+  }
+  return data;
+}
+
+async function getArticles({
+  callback,
+}: {
+  callback?: (resp: MainNetworkResponse<ArticleModel>) => void;
+}={}):Promise<MainNetworkResponse<ArticleModel>> {
   // callback?.({
   //   data: null,
   //   message: "Submitting your article...",
@@ -30,26 +65,19 @@ async function getArticleById({
   try {
     //   Call the endpoint
     const result = await axiosClient
-      .get("/api/hello", {
+      // .get(`/api/article/${id}`, {
+        .get(`/api/hello`, {
         method: "GET",
       })
       .then((resp) => {
-        console.log(resp.data); 
+        // console.log(resp.data);
         return resp;
       });
     data = result.data;
-    callback?.({
-      data: null,
-      message: data.data,
-      status: "success",
-    });
+    callback?.(data);
   } catch (error) {
-    callback?.({
-      data: null,
-      message: error + "",
-      status: "error",
-    });
-    console.log(error);
+    callback?.(data);
+    // console.log(error);
   }
   return data;
 }
@@ -74,19 +102,19 @@ async function addArticle({
   try {
     //   Call the endpoint
     const result = await axiosClient
-      // .post("/api/article/add", JSON.stringify(article), {
-      .post("/api/hello", JSON.stringify(article), {
+      .post("/api/article/add", JSON.stringify(article), {
+      // .post("/api/hello", JSON.stringify(article), {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
         },
       })
-      .then((resp) => {        
+      .then((resp) => {
         callback?.({
           data: resp.data,
           message: "Added to Database",
           status: "success",
         });
-        
+
         console.log(resp.data);
 
         return resp;
@@ -105,4 +133,4 @@ async function addArticle({
   return data;
 }
 
-export const mainApi = {getArticleById,addArticle};
+export const mainApi = { getArticleById,getArticles, addArticle };

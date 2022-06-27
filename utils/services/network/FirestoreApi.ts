@@ -1,6 +1,6 @@
-import { ArticleModel } from "../../data/models/ArticleModel";
 import { articleDb } from "./FirebaseClient";
 import { doc, getDoc, getDocs, setDoc } from "firebase/firestore/lite";
+import { ArticleModel } from "../../data/models/ArticleModel";
 
 async function getArticleAll() {
   const snapshot = await getDocs(articleDb);
@@ -22,7 +22,7 @@ async function getArticleById(id: string): Promise<ArticleModel | null> {
 
 async function addArticle(article: ArticleModel) {
   // Create new document reference
-  const newDocRef = doc(articleDb, Math.floor(Math.random() * 30) + "");
+  const newDocRef = doc(articleDb, article.id);
   // Add the data
   await setDoc(newDocRef, article);
 }
