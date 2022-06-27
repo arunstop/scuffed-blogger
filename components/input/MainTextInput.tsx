@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { MdClose } from "react-icons/md";
 import { BreakpointTypes } from "../../utils/data/UI";
-import { getScalingInput, getScalingInputIcon, getScalingInputClearIcon, getScalingIcon } from "../../utils/helpers/InputHelpers";
+import { getScalingInput, getScalingInputIcon, getScalingInputClearIcon, getScalingIcon } from "../../utils/helpers/InputStyleHelpers";
 
 type MainTextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   clearable?: boolean;

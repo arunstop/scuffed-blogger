@@ -8,7 +8,7 @@ import {
 } from "react-icons/md";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
 import { APP_NAME } from "../utils/helpers/Constants";
-import { routeTrimQuery } from "../utils/helpers/RouteHelpers";
+import { routeTrimQuery } from "../utils/helpers/MainHelpers";
 import { useHeaderBehavior } from "../utils/hooks/HeaderBehaviorHook";
 import { useSearchModalBehavior } from "../utils/hooks/SearchModalBehaviorHook";
 import MainHeaderBigSearchBar from "./main/MainHeaderBigSearchBar";

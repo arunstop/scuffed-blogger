@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ArticleModel } from "../../utils/data/models/Article";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
 interface WritingPanelFormProps {

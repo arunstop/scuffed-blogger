@@ -1,6 +1,6 @@
 import { waitFor } from "../../helpers/DelayHelpers";
 import { MainNetworkResponse } from "../../data/Main";
-import { ArticleModel } from "../../data/models/Article";
+import { ArticleModel } from "../../data/models/ArticleModel";
 import { axiosClient } from "./AxiosClient";
 // axios.get('/user?ID=12345')
 //   .then(function (response) {
@@ -105,4 +105,4 @@ async function addArticle({
   return data;
 }
 
-export const Api = {getArticleById,addArticle};
+export const mainApi = {getArticleById,addArticle};

@@ -8,11 +8,11 @@ import React, {
 } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
-import { ArticleModel } from "../../utils/data/models/Article";
+import { ArticleModel, isArticleModel } from "../../utils/data/models/ArticleModel";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
-import { storageFind } from "../../utils/helpers/LocalStorage";
+import { storageFind } from "../../utils/services/local/LocalStorage";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { Api } from "../../utils/services/api/Api";
+import { mainApi } from "../../utils/services/network/MainApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
@@ -46,7 +46,7 @@ function WritingPanel() {
       // console.log(localArticle);
     }
     const dummyArticle = localArticle as any;
-    if (dummyArticle) {
+    if (dummyArticle && isArticleModel(dummyArticle)) {
       setArticle(dummyArticle as ArticleModel);
     }
 
@@ -54,7 +54,10 @@ function WritingPanel() {
   }, []);
 
   const submitArticle = useCallback(async () => {
+    const date = Date.now();
+    const title = article?.title || "";
     const newArticle: ArticleModel = {
+      id: `${title.slice(0, 120)}-${date}`,
       title: article?.title || LOREM.slice(0, 120),
       desc: article?.desc || LOREM.slice(121, LOREM.length),
       content: encodeURIComponent(article?.content || ""),
@@ -62,8 +65,8 @@ function WritingPanel() {
         Math.random() * 10,
       )}/500/300`,
       author: "Munkrey Alf",
-      dateAdded: Date.now(),
-      dateUpdated: Date.now(),
+      dateAdded: date,
+      dateUpdated: date,
       deleted: 0,
       duration: (article?.content.length || 0) / 200,
       tags: ["Technology", "Photography"],
@@ -71,7 +74,7 @@ function WritingPanel() {
     // if (loading) return;
     setLoading(true);
 
-    await Api.addArticle({
+    await mainApi.addArticle({
       article: newArticle,
       callback: async (resp) => {
         setNetWorkResp(resp);

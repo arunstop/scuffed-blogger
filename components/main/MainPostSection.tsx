@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React, { useCallback, useEffect, useState } from "react";
-import { Api } from "../../utils/services/api/Api";
+import { mainApi } from "../../utils/services/network/MainApi";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import ErrorPlaceholder from "../placeholder/ErrorPlaceholder";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
@@ -14,7 +14,7 @@ function MainPostSection() {
   const loadPosts = useCallback(async () => {
     // show loading indicator
     setLoading(true);
-    await Api.getArticleById({
+    await mainApi.getArticleById({
       callback: (resp) => {
         // Cancel the process `status` = loading
         if (resp.status === "loading") return;

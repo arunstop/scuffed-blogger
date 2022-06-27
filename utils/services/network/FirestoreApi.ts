@@ -1,4 +1,4 @@
-import { ArticleModel } from "../../data/models/Article";
+import { ArticleModel } from "../../data/models/ArticleModel";
 import { articleDb } from "./FirebaseClient";
 import { doc, getDoc, getDocs, setDoc } from "firebase/firestore/lite";
 
@@ -9,12 +9,12 @@ async function getArticleAll() {
   return list;
 }
 
-async function getArticleById(id: string) {
+async function getArticleById(id: string): Promise<ArticleModel | null> {
   // Get the requested document
   const snapshot = await getDoc(doc(articleDb, id));
   // Check if it exists
   const article = snapshot.exists()
-    ? { id: snapshot.id, ...snapshot.data() }
+    ? { id: snapshot.id, ...snapshot.data() } as ArticleModel
     : null;
 
   return article;

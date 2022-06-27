@@ -1,5 +1,5 @@
 import { KEY_CLIENT_DARK_MODE } from "./Constants";
-import { storageSave } from "./LocalStorage";
+import { storageSave } from "../services/local/LocalStorage";
 
 export const getBodyEl = () => document.getElementsByTagName("BODY")[0];
 export const getHeaderEl = () => document.getElementById("header");

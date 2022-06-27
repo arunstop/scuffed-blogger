@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ArticleModel } from "../../utils/data/models/Article";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { KEY_ARTICLE_CONTENT } from "../../utils/helpers/Constants";
-import { storageFind } from "../../utils/helpers/LocalStorage";
+import { storageFind } from "../../utils/services/local/LocalStorage";
 import MainMarkdownContainer from "../main/MainMarkdownContainer";
 
 function ArticleContent({ id }: { id: string }) {

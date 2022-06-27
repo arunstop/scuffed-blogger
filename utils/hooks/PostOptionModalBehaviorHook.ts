@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import { routeTrimQuery } from "../helpers/RouteHelpers";
+import { routeTrimQuery } from "../helpers/MainHelpers";
 
 export function usePostOptionModalBehaviorHook() {
   const [optionModal, setOptionModal] = useState(false);
