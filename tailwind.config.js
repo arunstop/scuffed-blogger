@@ -3,7 +3,7 @@ module.exports = {
     "./pages/**/*.tsx",
     "./components/**/*.tsx",
     "./utils/**/*.tsx",
-    "./utils/helpers/InputHelpers.ts",
+    "./utils/helpers/*.ts",
   ],
   theme: {
     extend: {
