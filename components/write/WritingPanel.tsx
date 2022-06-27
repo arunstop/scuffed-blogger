@@ -8,9 +8,15 @@ import React, {
 } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
-import { ArticleModel, isArticleModel } from "../../utils/data/models/ArticleModel";
+import {
+  ArticleModel,
+  isArticleModel,
+} from "../../utils/data/models/ArticleModel";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
-import { storageFind } from "../../utils/services/local/LocalStorage";
+import {
+  storageFind,
+  storageSave,
+} from "../../utils/services/local/LocalStorage";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { mainApi } from "../../utils/services/network/MainApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
@@ -47,6 +53,7 @@ function WritingPanel() {
     }
     const dummyArticle = localArticle as any;
     if (dummyArticle && isArticleModel(dummyArticle)) {
+      // alert(dummyArticle);
       setArticle(dummyArticle as ArticleModel);
     }
 
@@ -70,7 +77,7 @@ function WritingPanel() {
       deleted: 0,
       duration: (article?.content.length || 0) / 200,
       tags: ["Technology", "Photography"],
-    };
+    };  
     // if (loading) return;
     setLoading(true);
 
@@ -82,6 +89,9 @@ function WritingPanel() {
         // await waitFor(4000);
         setLoading(false);
         // }
+        if (resp.status === "success") {
+          storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
+        }
       },
     });
   }, [article]);
@@ -294,50 +304,49 @@ function WritingPanel() {
                 })}
               </div>
               {/* CONTENT */}
-              {!!article && (
-                <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4">
-                  <Transition
-                    show={tab === "Write"}
-                    as={"div"}
-                    className={"flex w-full flex-1 flex-row w-full"}
-                    enter="ease-out transform transition absolute inset-x-0 duration-500"
-                    enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
-                    enterTo="opacity-100 translate-x-0 scale-x-100"
-                    leave="ease-in transform transition absolute inset-x-0 duration-300"
-                    leaveFrom="opacity-100 translate-x-0 scale-x-100"
-                    leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
-                  >
-                    <WritingPanelForm
-                      article={article}
-                      setArticle={(title, desc, content) => {
-                        setArticle(
-                          (s) =>
-                            ({
-                              ...s,
-                              title,
-                              desc,
-                              content,
-                            } as ArticleModel),
-                        );
-                      }}
-                    />
-                  </Transition>
-                  <Transition
-                    as={"div"}
-                    className={"flex w-full flex-1 flex-row w-full"}
-                    appear
-                    show={tab === "Preview"}
-                    enter="ease-out transform transition absolute inset-x-0 duration-500"
-                    enterFrom="opacity-0 translate-x-[50%] scale-x-0"
-                    enterTo="opacity-100 translate-x-0 scale-x-100"
-                    leave="ease-in transform transition absolute inset-x-0 duration-300"
-                    leaveFrom="opacity-100 translate-x-0 scale-x-100"
-                    leaveTo="opacity-0 translate-x-[50%] scale-x-0"
-                  >
-                    <WritingPanelPreview content={article?.content || ""} />
-                  </Transition>
-                </div>
-              )}
+
+              <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4">
+                <Transition
+                  show={tab === "Write"}
+                  as={"div"}
+                  className={"flex w-full flex-1 flex-row w-full"}
+                  enter="ease-out transform transition absolute inset-x-0 duration-500"
+                  enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
+                  enterTo="opacity-100 translate-x-0 scale-x-100"
+                  leave="ease-in transform transition absolute inset-x-0 duration-300"
+                  leaveFrom="opacity-100 translate-x-0 scale-x-100"
+                  leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
+                >
+                  <WritingPanelForm
+                    article={article}
+                    setArticle={(title, desc, content) => {
+                      setArticle(
+                        (s) =>
+                          ({
+                            ...s,
+                            title,
+                            desc,
+                            content,
+                          } as ArticleModel),
+                      );
+                    }}
+                  />
+                </Transition>
+                <Transition
+                  as={"div"}
+                  className={"flex w-full flex-1 flex-row w-full"}
+                  appear
+                  show={tab === "Preview"}
+                  enter="ease-out transform transition absolute inset-x-0 duration-500"
+                  enterFrom="opacity-0 translate-x-[50%] scale-x-0"
+                  enterTo="opacity-100 translate-x-0 scale-x-100"
+                  leave="ease-in transform transition absolute inset-x-0 duration-300"
+                  leaveFrom="opacity-100 translate-x-0 scale-x-100"
+                  leaveTo="opacity-0 translate-x-[50%] scale-x-0"
+                >
+                  <WritingPanelPreview content={article?.content || ""} />
+                </Transition>
+              </div>
               <div className="flex w-full flex-row flex-wrap justify-end gap-2 sm:gap-4">
                 <button
                   className="--btn-resp btn-outline btn"

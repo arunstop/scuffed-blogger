@@ -76,7 +76,8 @@ function Header() {
         </Link>
         {router.pathname !== "/auth" ? <MainHeaderBigSearchBar /> : null}
 
-        <div className="inline-flex items-center gap-2 sm:gap-4">
+        {/* RIGHT BUTTONS */}
+        <div className="inline-flex items-center gap-1 sm:gap-2 ">
           {router.pathname !== "/auth" && (
             <>
               <div className="block md:hidden">

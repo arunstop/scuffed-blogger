@@ -13,10 +13,12 @@ interface WritingPanelFormProps {
   //   editContent: (v: string) => void;
 }
 
-function WritingPanelForm({ article,setArticle }: WritingPanelFormProps) {
-  const [title, setTitle] = useState(article?.title||"");
-  const [desc, setDesc] = useState(article?.desc||"");
-  const [content, setContent] = useState(decodeURIComponent(article?.content||""));
+function WritingPanelForm({ article, setArticle }: WritingPanelFormProps) {
+  const [title, setTitle] = useState(article?.title || "");
+  const [desc, setDesc] = useState(article?.desc || "");
+  const [content, setContent] = useState(
+    decodeURIComponent(article?.content || ""),
+  );
   const editTitle = useCallback((value: string) => {
     setTitle(value);
   }, []);
@@ -30,6 +32,14 @@ function WritingPanelForm({ article,setArticle }: WritingPanelFormProps) {
   const submitArticleChange = useCallback(() => {
     setArticle(title, desc, content);
   }, [content, desc, title]);
+
+  useEffect(() => {
+    setTitle(article?.title || "");
+    setDesc(article?.desc || "");
+    setContent(decodeURIComponent(article?.content || ""));
+
+    return () => {};
+  }, [article]);
 
   useEffect(() => {
     return () => {
@@ -64,4 +74,11 @@ function WritingPanelForm({ article,setArticle }: WritingPanelFormProps) {
   );
 }
 
-export default React.memo(WritingPanelForm);
+export default React.memo(WritingPanelForm, (prev, next) => {
+  console.log(`${prev.article?.id} === ${next.article?.id}`);
+  // Check if the previous article is the same
+  // if it is the same => memoize/don't render
+  // if it is NOT the same => re-render
+  if(prev.article?.id !== next.article?.id) return false;
+  return true;
+});

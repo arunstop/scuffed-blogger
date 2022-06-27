@@ -21,7 +21,7 @@ function MainMarkdownContainer({
         // becase `.href` returns a full link
         // instead of the raw text inside of that attribute
         const rawHref = linkEl.getAttribute("href")||"";
-        console.log(rawHref);
+        // console.log(rawHref);
         // check if the href points to an `id`
         // or check if `target` attribute is not null already
         if (rawHref[0]==="#" || linkEl.getAttribute("target") !== null)
