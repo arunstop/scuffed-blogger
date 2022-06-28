@@ -40,6 +40,7 @@ function MainTextInput({
         ${clearIcon ? getScalingInputClearIcon(scaleTo) : ""}
         ${className}
         `}
+        placeholder={props.placeholder||". . . ."}
       />
       {icon && (
         <span
