@@ -7,7 +7,7 @@ import { Comment } from "../../utils/data/comment";
 import { LOREM } from "../../utils/helpers/Constants";
 import UserAvatar from "../user/UserAvatar";
 
-function ArticleComment({
+function ArticleCommentItem({
   id,
   text,
 }: // openOptionModal,
@@ -148,4 +148,4 @@ Comment & {
   );
 }
 
-export default React.memo(ArticleComment);
+export default React.memo(ArticleCommentItem);
