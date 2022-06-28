@@ -45,7 +45,9 @@ function ArticleContent({ article }: { article: ArticleModel }) {
           architecto nobis.
         </span>
       </div>
-      <MainMarkdownContainer content={decodeURIComponent(article?.content || "")} />
+      <MainMarkdownContainer
+        content={decodeURIComponent(article?.content || "")}
+      />
     </>
   );
 }

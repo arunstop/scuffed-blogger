@@ -101,14 +101,14 @@ function Article({ article }: { article: ArticleModel }) {
 
           <ArticleContent article={article} />
 
-          <ArticleSectionAction id={articleId + ""} />
+          <ArticleSectionAction article={article} />
 
           {/* Comment and Suggestion section */}
-          <ArticleMoreContent id={articleId + ""} />
+          <ArticleMoreContent article={article} />
         </MainContainer>
       </>
     );
-  }, [articleId]);
+  }, [article]);
 
   // console.log("render [articleId]");
   return <>{mzPage}</>;

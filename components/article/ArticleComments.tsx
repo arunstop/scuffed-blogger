@@ -1,7 +1,7 @@
 import React from "react";
 import { Comment } from "../../utils/data/comment";
 import { useArticleModalsBehaviorHook } from "../../utils/hooks/ArticleModalsBehaviorHook";
-import ArticleComment from "./ArticleComment";
+import ArticleCommentItem from "./ArticleCommentItem";
 import ArticleCommentOptionModal from "./ArticleCommentOptionModal";
 import ArticleCommentReplyModal from "./ArticleCommentReplyModal";
 
@@ -18,7 +18,7 @@ function ArticleComments({
   return (
     <>
       {comments.map((e, idx) => (
-        <ArticleComment
+        <ArticleCommentItem
           key={idx}
           id={e.id}
           text={e.text}

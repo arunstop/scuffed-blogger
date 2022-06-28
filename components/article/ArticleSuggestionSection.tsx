@@ -1,8 +1,9 @@
 import React from "react";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import PostItem from "../post/PostItem";
 import PostOptionModal from "../post/PostOptionModal";
 
-function ArticleSuggestionSection({ id }: { id: string }) {
+function ArticleSuggestionSection({ article }: { article: ArticleModel }) {
   return (
     <>
       <span className="text-xl sm:text-2xl font-bold">

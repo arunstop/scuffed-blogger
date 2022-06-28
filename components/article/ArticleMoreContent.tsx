@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import ArticleCommentSection from "../../components/article/ArticleCommentSection";
 import ArticleSuggestionSection from "../../components/article/ArticleSuggestionSection";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import useLazyScrollerHook from "../../utils/hooks/LazyScrollerHook";
-import MainSectionSkeleton from "../main/MainSectionSkeleton";
+import LoadingIndicator from "../placeholder/LoadingIndicator";
 
 // Supposed to serve as container of comment and suggestion section
-function ArticleMoreContent({ id }: { id: string }) {
+function ArticleMoreContent({ article }: { article: ArticleModel }) {
   const {
     load: loadCommentSection,
     setLoad: setLoadCommentSection,
@@ -23,20 +24,20 @@ function ArticleMoreContent({ id }: { id: string }) {
     setLoadSuggestionSection(false);
 
     return () => {};
-  }, [id]);
+  }, [article]);
 
   return (
     <>
       {loadCommentSection ? (
-        <ArticleCommentSection id={id} />
+        <ArticleCommentSection article={article} />
       ) : (
-        <MainSectionSkeleton ref={commentSectionRef} spinner text="Loading comments..." />
+        <LoadingIndicator ref={commentSectionRef} spinner text="Loading comments..." />
       )}
 
       {loadSuggestionSection ? (
-        <ArticleSuggestionSection id={id} />
+        <ArticleSuggestionSection article={article} />
       ) : (
-        <MainSectionSkeleton ref={suggestionSectionRef} spinner text="Loading related articles..." />
+        <LoadingIndicator ref={suggestionSectionRef} spinner text="Loading related articles..." />
       )}
     </>
   );

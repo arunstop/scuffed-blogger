@@ -6,6 +6,7 @@ import {
   MdThumbDown,
   MdThumbUp,
 } from "react-icons/md";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import ArticleReactionButton from "./ArticleReactionButton";
 
 const LikeButton = React.memo(function LikeButton() {
@@ -44,7 +45,7 @@ const DislikeButton = React.memo(function DislikeButton() {
   );
 });
 
-function ArticleSectionAction({ id }: { id: string }) {
+function ArticleSectionAction({ article }: { article: ArticleModel }) {
   return (
     <div className="flex flex-wrap gap-4 sm:justify-end">
       <div className="inline-flex w-full gap-4 sm:w-auto">

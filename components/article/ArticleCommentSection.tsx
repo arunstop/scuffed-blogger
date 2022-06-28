@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Comment } from "../../utils/data/comment";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import ArticleComments from "./ArticleComments";
 
 const egComments: Comment[] = [
@@ -11,7 +12,7 @@ const egComments: Comment[] = [
   { id: 6, text: "" },
 ];
 
-function ArticleCommentSection({ id }: { id: string }) {
+function ArticleCommentSection({ article }: { article: ArticleModel }) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<Comment[]>(egComments);
 
@@ -25,8 +26,8 @@ function ArticleCommentSection({ id }: { id: string }) {
             group-hover:rounded-[50%] sm:w-12 sm:border-2 z-0 transition-all"
           >
             <img
-              src={`https://api.lorem.space/image/face?hash=${id}`}
-              alt={`User ${id}`}
+              src={`https://api.lorem.space/image/face?hash=${article.id}`}
+              alt={`User ${article.id}`}
             />
           </div>
         </div>
