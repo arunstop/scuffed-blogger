@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Comment } from "../../utils/data/comment";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
+import MainTextAreaInput from "../input/MainTextAreaInput";
 import ArticleComments from "./ArticleComments";
 
 const egComments: Comment[] = [
@@ -32,14 +33,10 @@ function ArticleCommentSection({ article }: { article: ArticleModel }) {
           </div>
         </div>
         <div className="form-control flex-1 rounded-xl gap-4">
-          <textarea
-            className="textarea textarea-bordered rounded-xl h-24 text-base min-h-[12rem]
-            border-0 placeholder-shown:!outline-dashed
-            outline outline-1 !outline-offset-0 outline-base-content/20
-            focus:outline-base-content transition-all
-            "
-            placeholder="Add a comment..."
+          <MainTextAreaInput
             value={comment}
+            className="min-h-[12rem]"
+            placeholder="Add a comment..."
             onChange={(ev) => setComment(ev.target.value)}
           />
           <div className="flex justify-end w-full gap-2 sm:gap-4">
@@ -57,9 +54,7 @@ function ArticleCommentSection({ article }: { article: ArticleModel }) {
             <button
               className={`flex-1 sm:flex-none font-bold btn btn-primary 
               normal-case text-xl sm:w-48 --btn-resp
-              ${
-                comment.length !== 0 ? "" : "btn-disabled"
-              }`}
+              ${comment.length !== 0 ? "" : "btn-disabled"}`}
               onClick={() => {
                 setComments([
                   ...comments,
