@@ -88,7 +88,9 @@ function StatusPlaceholder({
 
         <p className="flex flex-col gap-1 text-center sm:gap-2">
           <span className="text-2xl font-black sm:text-3xl">{title}</span>
-          <span className="text-sm font-semibold sm:text-base">{desc}</span>
+          <span className="text-sm font-semibold sm:text-base whitespace-pre-line">
+            {desc}
+          </span>
         </p>
         {actions && actions.length && (
           <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4">
@@ -98,7 +100,7 @@ function StatusPlaceholder({
                 enter={`transform transition duration-500`}
                 enterFrom="opacity-50 scale-0"
                 enterTo="opacity-100 scale-100"
-                style={{ transitionDelay: `${(idx) * 200 + 500}ms` }}
+                style={{ transitionDelay: `${idx * 200 + 500}ms` }}
               >
                 <button className=" --btn-resp btn" onClick={e.callback}>
                   {e.label}
