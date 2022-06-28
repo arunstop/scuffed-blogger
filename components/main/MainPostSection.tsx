@@ -6,15 +6,16 @@ import ErrorPlaceholder from "../placeholder/ErrorPlaceholder";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import PostItem from "../post/PostItem";
 import PostOptionModal from "../post/PostOptionModal";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 
 function MainPostSection() {
-  const [posts, setPosts] = useState<MainNetworkResponse>();
+  const [posts, setPosts] = useState<MainNetworkResponse<ArticleModel[]|null>>();
   const [loading, setLoading] = useState(true);
   // const [status, setStatus] = useState<MainNetworkResponse>();
   const loadPosts = useCallback(async () => {
     // show loading indicator
     setLoading(true);
-    await mainApi.getArticles({
+    await mainApi.getArticleAll({
       callback: (resp) => {
         // Cancel the process `status` = loading
         if (resp.status === "loading") return;
@@ -22,13 +23,7 @@ function MainPostSection() {
 
         // Proceed if `status` = error/success
         setLoading(false);
-        setPosts({
-          ...resp,
-          data:
-            resp.status === "success"
-              ? Math.floor(Math.random() * 10) + 10
-              : resp.data,
-        });
+        setPosts(resp);
       },
     });
     // await waitFor(4000);
@@ -78,8 +73,8 @@ function MainPostSection() {
         {!loading && posts?.status === "success" && (
           <>
             <div className="flex flex-col gap-4 sm:gap-8" id="main-content">
-              {[...Array(posts.data)].map((e, idx) => (
-                <PostItem key={idx} post={{ id: Math.round(idx * 100) + "" }} />
+              {posts.data?.map((articleItem, idx) => (
+                <PostItem key={idx} article={articleItem} />
               ))}
             </div>
             <PostOptionModal />

@@ -28,12 +28,15 @@ function WritingPanelForm({ article, setArticle }: WritingPanelFormProps) {
   }, []);
 
   const submitArticleChange = useCallback(() => {
+    // check if states is valid
     if (!title && !desc && !content) return;
+    // if it does then update the article 
     setArticle(title || "", desc || "", content || "");
   }, [content, desc, title]);
 
   useEffect(() => {
     if (!article) return;
+    // initialize states
     setTitle(article.title);
     setDesc(article.desc);
     setContent(article.content);
@@ -78,8 +81,6 @@ function WritingPanelForm({ article, setArticle }: WritingPanelFormProps) {
 }
 
 export default React.memo(WritingPanelForm, (prev, next) => {
-  // console.log(`${prev.article?.id} === ${next.article?.id}`);
-  console.log(prev.article?.id === next.article?.id ? "SAME" : "DIFFERENT");
   // Check if the previous article is the same
   // if it is the same => memoize/don't render
   // if it is NOT the same => re-render

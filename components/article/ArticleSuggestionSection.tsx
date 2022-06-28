@@ -10,7 +10,7 @@ function ArticleSuggestionSection({ article }: { article: ArticleModel }) {
         More articles for you
       </span>
       {[...Array(10)].map((e, idx) => (
-        <PostItem key={idx} post={{ id: idx + "" }} />
+        <PostItem key={idx} article={article} />
       ))}
       <PostOptionModal />
     </>

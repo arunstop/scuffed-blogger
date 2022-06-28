@@ -2,20 +2,8 @@ import { waitFor } from "../../helpers/DelayHelpers";
 import { MainNetworkResponse } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { axiosClient } from "./AxiosClient";
-// axios.get('/user?ID=12345')
-//   .then(function (response) {
-//     // handle success
-//     console.log(response);
-//   })
-//   .catch(function (error) {
-//     // handle error
-//     console.log(error);
-//   })
-//   .then(function () {
-//     // always executed
-//   });
 
-async function getArticles({
+async function getArticleAll({
   callback,
 }: {
   callback?: (resp: MainNetworkResponse<ArticleModel[] | null>) => void;
@@ -134,4 +122,4 @@ async function addArticle({
   return data?.data || null;
 }
 
-export const mainApi = { getArticleById, getArticles, addArticle };
+export const mainApi = { getArticleById, getArticleAll, addArticle };

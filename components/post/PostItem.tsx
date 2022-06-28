@@ -8,16 +8,15 @@ import {
   MdStar,
   MdTrendingUp
 } from "react-icons/md";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import MainPostStatusChip from "../main/MainPostFilterChip";
 import MainUserPopup from "../main/MainPostUserPopup";
 import MainUserLabel from "../main/MainUserLabel";
 import PostLinker from "./PostLinker";
 
-interface Post {
-  id: string;
-}
+const randomId=()=>Math.floor(Math.random()*1000)+1;
 
-function PostItem({ post }: { post: Post }) {
+function PostItem({ article }: { article: ArticleModel }) {
   const router = useRouter();
   return (
     <div
@@ -27,14 +26,14 @@ function PostItem({ post }: { post: Post }) {
       "
     >
       <PostLinker
-        href={`/article/${post.id}`}
+        href={`/article/${article.id}`}
         className="relative aspect-square h-60 w-full overflow-hidden rounded-t-xl 
         rounded-bl-none bg-base-content sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none"
       >
         <img
           className="h-full w-full max-w-none object-cover transition-transform 
           duration-1000 group-hover:scale-[1.2]"
-          src={`https://picsum.photos/id/${post.id}/500/300`}
+          src={`https://picsum.photos/id/${randomId()}/500/300`}
           alt="Image"
           width={240}
           height={240}
@@ -61,10 +60,10 @@ function PostItem({ post }: { post: Post }) {
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="inline-flex items-center gap-4">
           <div className="dropdown-hover dropdown self-start sm:dropdown-end">
-            <MainUserLabel id={post.id} />
+            <MainUserLabel id={article.id} />
 
             <div tabIndex={0} className="dropdown-content pt-2">
-              <MainUserPopup id={post.id} />
+              <MainUserPopup id={article.id} />
             </div>
           </div>
 
@@ -73,7 +72,7 @@ function PostItem({ post }: { post: Post }) {
               pathname: router.asPath,
               
               query: {
-                postoption: post.id,
+                postoption: article.id,
               },
             }}
             shallow
@@ -88,7 +87,7 @@ function PostItem({ post }: { post: Post }) {
           </Link>
         </div>
 
-        <PostLinker href={`/article/${post.id}`}>
+        <PostLinker href={`/article/${article.id}`}>
           <h1 className="text-2xl font-black group-hover:underline sm:text-3xl">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit.
           </h1>
@@ -116,7 +115,7 @@ function PostItem({ post }: { post: Post }) {
               <MdBookmarkAdd />
             </span>
           </button>
-          <PostLinker href={`/article/${post.id}`}>
+          <PostLinker href={`/article/${article.id}`}>
             <button
               className="btn-neutral btn-outline btn btn-sm w-32
               text-lg font-bold normal-case opacity-80
