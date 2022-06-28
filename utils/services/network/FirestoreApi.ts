@@ -2,10 +2,10 @@ import { articleDb } from "./FirebaseClient";
 import { doc, getDoc, getDocs, setDoc } from "firebase/firestore/lite";
 import { ArticleModel } from "../../data/models/ArticleModel";
 
-async function getArticleAll() {
+async function getArticleAll(): Promise<ArticleModel[] | null> {
   const snapshot = await getDocs(articleDb);
-  console.log(snapshot);
-  const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  // console.log(snapshot);
+  const list = snapshot.docs.map((doc) => doc.data() as ArticleModel);
   return list;
 }
 
@@ -14,7 +14,7 @@ async function getArticleById(id: string): Promise<ArticleModel | null> {
   const snapshot = await getDoc(doc(articleDb, id));
   // Check if it exists
   const article = snapshot.exists()
-    ? { id: snapshot.id, ...snapshot.data() } as ArticleModel
+    ? ({ id: snapshot.id, ...snapshot.data() } as ArticleModel)
     : null;
 
   return article;
