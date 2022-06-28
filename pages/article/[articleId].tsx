@@ -23,15 +23,16 @@ export const getServerSideProps: GetServerSideProps<{
   const slug = (context.query.articleId || "") as string;
   // console.log(slug);
 
-  const article = (await mainApi.getArticleById({ id: slug })).data;
+  const article = await mainApi.getArticleById({ id: slug });
   // const article = "";
   // const article = await addArticle("HAHAHAHA");
   // console.log(article);
 
-  return {
-    notFound: !article,
-    props: { article: article },
-  };
+  if (!article)
+    return {
+      notFound: !article,
+    };
+  return { props: { article: article } };
 };
 
 function Article({ article }: { article: ArticleModel }) {
@@ -114,4 +115,4 @@ function Article({ article }: { article: ArticleModel }) {
   return <>{mzPage}</>;
 }
 
-export default Article;
+export default React.memo(Article);
