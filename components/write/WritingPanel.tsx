@@ -1,11 +1,6 @@
 import { Transition } from "@headlessui/react";
-import React, {
-  Fragment,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useRouter } from "next/router";
+import React, { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import {
@@ -13,16 +8,16 @@ import {
   isArticleModel,
 } from "../../utils/data/models/ArticleModel";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
+import { strKebabify } from "../../utils/helpers/MainHelpers";
+import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import {
   storageFind,
   storageSave,
 } from "../../utils/services/local/LocalStorage";
-import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { mainApi } from "../../utils/services/network/MainApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
-import { strKebabify } from "../../utils/helpers/MainHelpers";
 
 const tabs: { icon: ReactNode; title: string }[] = [
   {
@@ -39,7 +34,9 @@ function WritingPanel() {
   const [article, setArticle] = useState<undefined | ArticleModel>();
   const [tab, setTab] = useState<string>("Write");
   const [loading, setLoading] = useState(false);
-  const [networkResp, setNetWorkResp] = useState<MainNetworkResponse>();
+  const [networkResp, setNetWorkResp] =
+    useState<MainNetworkResponse<ArticleModel | null>>();
+  const router = useRouter();
 
   useEffect(() => {
     // console.log("test");
@@ -52,10 +49,13 @@ function WritingPanel() {
       }
       // console.log(localArticle);
     }
-    const dummyArticle = localArticle as any;
-    if (dummyArticle && isArticleModel(dummyArticle)) {
+    if (localArticle && isArticleModel(localArticle)) {
       // alert(dummyArticle);
-      setArticle(dummyArticle as ArticleModel);
+      const formattedArticle = localArticle as unknown as ArticleModel;
+      setArticle({
+        ...formattedArticle,
+        content: decodeURIComponent(formattedArticle.content),
+      });
     }
 
     return () => {};
@@ -78,8 +78,8 @@ function WritingPanel() {
       deleted: 0,
       duration: (article?.content.length || 0) / 200,
       tags: ["Technology", "Photography"],
-    };  
-    // if (loading) return;
+    };
+
     setLoading(true);
 
     await mainApi.addArticle({
@@ -104,7 +104,7 @@ function WritingPanel() {
 
   return (
     <>
-      {/* {article?.content} */}
+      {/* {article?.content.length || "-"} */}
       {/* <div
         className="pointer-events-none fixed inset-x-0 bottom-0 z-[999] flex h-auto 
         min-h-[50vh] items-end justify-center p-2 sm:p-4 [&>*]:pointer-events-auto"
@@ -221,8 +221,8 @@ function WritingPanel() {
           >
             <StatusPlaceholder
               status="error"
-              title="Oops something fishy just happened..."
-              desc={`Sorry that this just happened :(. ${networkResp?.message} and saying : ${networkResp?.data}`}
+              title="Oops something wrong just happened..."
+              desc={`Sorry that this just happened :(\n${networkResp?.message}`}
               actions={[
                 {
                   label: "Go back",
@@ -256,7 +256,7 @@ function WritingPanel() {
               status="success"
               title="Article has been submitted!"
               desc={
-                "Congratulation! We did it! Your beautifully written article has been added into our database for the world to read it!"
+                "Congratulation! We did it!\nYour beautifully written article has been added into our database for the world to read it!"
               }
               actions={[
                 {
@@ -269,7 +269,8 @@ function WritingPanel() {
                 {
                   label: "Go to the article",
                   callback: () => {
-                    submitArticle();
+                    if (!networkResp?.data) return;
+                    router.push(`/article/${networkResp.data.id}`);
                   },
                 },
               ]}
@@ -306,11 +307,11 @@ function WritingPanel() {
               </div>
               {/* CONTENT */}
 
-              <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4">
+              <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4 w-full">
                 <Transition
                   show={tab === "Write"}
-                  as={"div"}
-                  className={"flex w-full flex-1 flex-row w-full"}
+
+                  as={Fragment}
                   enter="ease-out transform transition absolute inset-x-0 duration-500"
                   enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
                   enterTo="opacity-100 translate-x-0 scale-x-100"
@@ -318,6 +319,8 @@ function WritingPanel() {
                   leaveFrom="opacity-100 translate-x-0 scale-x-100"
                   leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
                 >
+                  <div className="min-w-full">
+
                   <WritingPanelForm
                     article={article}
                     setArticle={(title, desc, content) => {
@@ -332,11 +335,11 @@ function WritingPanel() {
                       );
                     }}
                   />
+                  </div>
                 </Transition>
                 <Transition
-                  as={"div"}
-                  className={"flex w-full flex-1 flex-row w-full"}
                   appear
+                  as={Fragment}
                   show={tab === "Preview"}
                   enter="ease-out transform transition absolute inset-x-0 duration-500"
                   enterFrom="opacity-0 translate-x-[50%] scale-x-0"
@@ -345,7 +348,9 @@ function WritingPanel() {
                   leaveFrom="opacity-100 translate-x-0 scale-x-100"
                   leaveTo="opacity-0 translate-x-[50%] scale-x-0"
                 >
+                  <div className="min-w-full">
                   <WritingPanelPreview content={article?.content || ""} />
+                  </div>
                 </Transition>
               </div>
               <div className="flex w-full flex-row flex-wrap justify-end gap-2 sm:gap-4">
