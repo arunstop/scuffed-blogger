@@ -1,7 +1,39 @@
-import { articleDb } from "./FirebaseClient";
+import { createErrorResponse, MainNetworkResponse } from "./../../data/Main";
+import { createUserWithEmailAndPassword, User } from "firebase/auth";
 import { doc, getDoc, getDocs, setDoc } from "firebase/firestore/lite";
+import { createSuccessResponse } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
+import { firebase } from "./FirebaseClient";
 
+const articleDb = firebase.db.article;
+const auth = firebase.auth;
+
+export interface UserAuth {
+  email: string;
+  password: string;
+}
+
+// auth
+async function registerUser({
+  email,
+  password,
+}: UserAuth): Promise<MainNetworkResponse<User | null>> {
+  try {
+    const userCred = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
+    return createSuccessResponse<User>(
+      "User has been registered to the database",
+      userCred.user,
+    );
+  } catch (error) {
+    return createErrorResponse(error + "");
+  }
+}
+
+// article
 async function getArticleAll(): Promise<ArticleModel[] | null> {
   const snapshot = await getDocs(articleDb);
   // console.log(snapshot);
@@ -28,3 +60,4 @@ async function addArticle(article: ArticleModel) {
 }
 
 export const firestore = { getArticleAll, getArticleById, addArticle };
+export const firebaseAuth = { registerUser };
