@@ -8,18 +8,16 @@ type MainTextAreaInputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 //   icon?: ReactNode;
 // }
 
-function MainTextAreaInput({
-  // icon,
-  // clearable = false,
-  // clearIcon = false,
-  // clearAction = () => {},
-  ...props
-}: MainTextAreaInputProps) {
+const MainTextAreaInput = React.forwardRef<
+  HTMLTextAreaElement,
+  MainTextAreaInputProps
+>(({ ...props }, ref) => {
   return (
     <label
       className={`input-group-sm input-group relative rounded-xl sm:input-group-md`}
     >
       <textarea
+        ref={ref}
         {...props}
         className={`peer textarea w-full !rounded-xl text-sm md:text-base
         !outline !outline-base-content/100 !outline-1 !outline-offset-0
@@ -32,10 +30,12 @@ function MainTextAreaInput({
         px-2 md:px-4 py-1 md:py-2
         ${props.className}
         `}
-        placeholder={props.placeholder||". . . ."}
+        placeholder={props.placeholder || ". . . ."}
       />
     </label>
   );
-}
+});
+
+MainTextAreaInput.displayName = "MainTextAreaInput";
 
 export default MainTextAreaInput;
