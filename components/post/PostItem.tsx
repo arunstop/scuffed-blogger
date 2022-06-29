@@ -6,7 +6,7 @@ import {
   MdForum,
   MdMoreHoriz,
   MdStar,
-  MdTrendingUp
+  MdTrendingUp,
 } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import MainPostStatusChip from "../main/MainPostFilterChip";
@@ -14,7 +14,7 @@ import MainUserPopup from "../main/MainPostUserPopup";
 import MainUserLabel from "../main/MainUserLabel";
 import PostLinker from "./PostLinker";
 
-const randomId=()=>Math.floor(Math.random()*1000)+1;
+const randomId = () => Math.floor(Math.random() * 1000) + 1;
 
 function PostItem({ article }: { article: ArticleModel }) {
   const router = useRouter();
@@ -70,7 +70,7 @@ function PostItem({ article }: { article: ArticleModel }) {
           <Link
             href={{
               pathname: router.asPath,
-              
+
               query: {
                 postoption: article.id,
               },
