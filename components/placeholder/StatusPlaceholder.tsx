@@ -11,7 +11,7 @@ interface StatusPlaceholderAction {
   callback: () => void;
 }
 
-interface StatusPlaceholderProps {
+export interface StatusPlaceholderProps {
   title: string;
   desc: string;
   status: NetworkResponseStatus;
