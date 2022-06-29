@@ -23,8 +23,8 @@ export default async function handler(
       );
   // if valid, add to database
   const registeredUser = await firebaseAuth.registerUser({
-    email: email as string,
-    password: password as string,
+    email: email,
+    password: password,
   });
   return res.status(200).json(registeredUser);
 }
