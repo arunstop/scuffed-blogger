@@ -22,7 +22,7 @@ function PostItem({ article }: { article: ArticleModel }) {
     <div
       className="group flex w-full flex-col rounded-xl bg-primary
       bg-opacity-10 shadow-lg ring-1 ring-base-content/20 transition-all
-      hover:bg-opacity-40 sm:flex-row
+      hover:bg-opacity-40 sm:flex-row sm:min-h-[20rem]
       "
     >
       <PostLinker
@@ -88,14 +88,12 @@ function PostItem({ article }: { article: ArticleModel }) {
         </div>
 
         <PostLinker href={`/article/${article.id}`}>
-          <h1 className="text-2xl font-black group-hover:underline sm:text-3xl">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+          <h1 className="text-2xl font-black group-hover:underline sm:text-3xl line-clamp-2">
+            {`${article.title}`}
           </h1>
         </PostLinker>
-        <span className="text-base sm:text-lg">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
-          commodi? Suscipit illum maxime, repellat inventore et distinctio
-          porro.
+        <span className="text-base sm:text-lg line-clamp-3">
+         {`${article.desc}`}
         </span>
         <div className="flex flex-wrap gap-2 text-sm font-light sm:text-base">
           <span className="">2d ago</span>
@@ -104,7 +102,8 @@ function PostItem({ article }: { article: ArticleModel }) {
           <span className="font-black">&middot;</span>
           <span className="">Technology</span>
         </div>
-        <div className="flex flex-row items-center justify-end gap-2 sm:gap-4">
+        {/* Action */}
+        <div className="flex flex-row items-center mt-auto justify-end gap-2 sm:gap-4">
           <button
             className="btn-neutral btn-outline btn btn-sm btn-circle
             font-bold normal-case opacity-80

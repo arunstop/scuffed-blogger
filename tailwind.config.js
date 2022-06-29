@@ -19,7 +19,7 @@ module.exports = {
       // }
     },
   },
-  plugins: [require("@tailwindcss/typography"), require("daisyui")],
+  plugins: [require("@tailwindcss/typography"),require("@tailwindcss/line-clamp"), require("daisyui")],
   darkMode: "class",
   // DAISY UI CONFIG
   daisyui: {
