@@ -129,27 +129,7 @@ function Header() {
                 </Link>
               )}
 
-              {loggedIn && (
-                <a>
-                  <button
-                    className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
-                  text-lg sm:text-xl
-                  ${scrolledToTop ? "btn-primary" : "btn-outline"}
-                  `}
-                    style={
-                      {
-                        // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
-                        // color: scrolledToTop ? "hsl(var(--p))" : "",
-                      }
-                    }
-                    onClick={() => {
-                      authAction.unsetUser();
-                    }}
-                  >
-                    Log out
-                  </button>
-                </a>
-              )}
+              
 
               {!loggedIn && (
                 <Link href="/auth" passHref>
@@ -173,6 +153,27 @@ function Header() {
               )}
             </>
           )}
+          {loggedIn && (
+                <a>
+                  <button
+                    className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
+                  text-lg sm:text-xl
+                  ${scrolledToTop ? "btn-primary" : "btn-outline"}
+                  `}
+                    style={
+                      {
+                        // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
+                        // color: scrolledToTop ? "hsl(var(--p))" : "",
+                      }
+                    }
+                    onClick={() => {
+                      authAction.unsetUser();
+                    }}
+                  >
+                    Log out
+                  </button>
+                </a>
+              )}
           <label className="swap btn btn-ghost  swap-rotate btn-sm btn-circle sm:btn-md">
             <input
               type="checkbox"

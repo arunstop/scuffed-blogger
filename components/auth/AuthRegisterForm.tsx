@@ -30,8 +30,7 @@ function AuthRegisterForm({
       newLoading: true,
       newPlaceHolder: {
         title: "Processing your registration...",
-        desc: `Hold up for a moment, we are registering your information into our database, 
-          checking things left right and center as usual, you know the drill`,
+        desc: "Hold up for a moment, we are registering your information into our database, checking things left right and center as usual, you know the drill",
         status: "loading",
         actions: [
           {
