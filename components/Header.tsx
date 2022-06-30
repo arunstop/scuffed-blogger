@@ -46,7 +46,7 @@ function Header() {
   useHeaderBehavior(scrollToTopCallback);
 
   const { searchModal, closeSearchModal } = useSearchModalBehavior();
-  const { loggedIn, authState } = useAuthCtx();
+  const { loggedIn, authState, authAction } = useAuthCtx();
 
   // const [searchModal, setSearchModal] = useState(false);
   // const closeSearchModal = useCallback(() => {
@@ -143,7 +143,7 @@ function Header() {
                       }
                     }
                     onClick={() => {
-                      console.log(authState.user);
+                      authAction.unsetUser();
                     }}
                   >
                     Log out
