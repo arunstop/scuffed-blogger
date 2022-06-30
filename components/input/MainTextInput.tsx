@@ -1,12 +1,11 @@
+import { Transition } from "@headlessui/react";
 import React, { ReactNode } from "react";
 import { MdClose } from "react-icons/md";
 import { BreakpointTypes } from "../../utils/data/UI";
 import {
-  getScalingInput,
-  getScalingInputIcon,
-  getScalingInputClearIcon,
-  getScalingIcon,
+  getScalingIcon, getScalingInput, getScalingInputClearIcon, getScalingInputIcon
 } from "../../utils/helpers/InputStyleHelpers";
+import { transitionScaleY } from "../../utils/helpers/UiTransitionHelpers";
 
 type MainTextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   clearable?: boolean;
@@ -38,7 +37,7 @@ const MainTextInput = React.forwardRef<
     ref,
   ) => {
     return (
-      <div className="w-full flex-col">
+      <div className="flex w-full flex-col gap-1 sm:gap-2">
         <label
           className={`input-group-sm input-group relative rounded-xl sm:input-group-md`}
         >
@@ -94,11 +93,12 @@ const MainTextInput = React.forwardRef<
             </span>
           )}
         </label>
-        {!!errorMsg && (
-          <span className=" text-sm sm:text-base text-error pl-9 sm:pl-12">
+
+        <Transition show={!!errorMsg} appear {...transitionScaleY()}>
+          <span className="text-sm sm:text-base text-error font-semibold pl-9 sm:pl-12">
             {errorMsg}
           </span>
-        )}
+        </Transition>
       </div>
     );
   },

@@ -49,16 +49,15 @@ function getStyle(
     };
 }
 
-function StatusPlaceholder({
-  title,
-  desc,
-  status,
-  actions,
-}: StatusPlaceholderProps) {
+const StatusPlaceholder = React.forwardRef<
+  HTMLDivElement,
+  React.PropsWithChildren<StatusPlaceholderProps>
+>(({ title, desc, status, actions }, ref) => {
   const style = getStyle(status);
   return (
     <Transition appear show>
       <div
+        ref={ref}
         className={`mx-auto my-4 flex min-w-[50%] flex-col 
       items-center justify-center gap-2 rounded-[10%] bg-gradient-to-r
       from-transparent ${style.gradientVia} ${style.gradientViaDark} to-transparent py-2 px-4 pb-4 text-center  sm:my-8 sm:max-w-2xl
@@ -112,6 +111,8 @@ function StatusPlaceholder({
       </div>
     </Transition>
   );
-}
+});
+
+StatusPlaceholder.displayName = "StatusPlacholder";
 
 export default StatusPlaceholder;

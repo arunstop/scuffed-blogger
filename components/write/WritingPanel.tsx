@@ -38,8 +38,8 @@ function WritingPanel() {
     useState<MainNetworkResponse<ArticleModel | null>>();
   const router = useRouter();
 
+  // Get locally saved/drafted article
   useEffect(() => {
-    // console.log("test");
     let localArticle = storageFind(KEY_ARTICLE_CONTENT);
     if (localArticle) {
       try {
@@ -47,10 +47,8 @@ function WritingPanel() {
       } catch {
         localArticle = "null";
       }
-      // console.log(localArticle);
     }
     if (localArticle && isArticleModel(localArticle)) {
-      // alert(dummyArticle);
       const formattedArticle = localArticle as unknown as ArticleModel;
       setArticle({
         ...formattedArticle,
@@ -97,6 +95,7 @@ function WritingPanel() {
     });
   }, [article]);
 
+  // Scroll to top everytime there is action
   useEffect(() => {
     scrollToTop();
     return () => {};
