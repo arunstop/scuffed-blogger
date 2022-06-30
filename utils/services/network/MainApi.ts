@@ -1,7 +1,39 @@
-import { waitFor } from "../../helpers/DelayHelpers";
+import { User } from "firebase/auth";
+import { RegisterFields } from "../../../components/auth/AuthRegisterForm";
 import { MainNetworkResponse } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { axiosClient } from "./AxiosClient";
+
+async function getDummy({
+  callback,
+}: {
+  callback?: (resp: MainNetworkResponse<string | null>) => void;
+} = {}): Promise<string | null> {
+  let data: MainNetworkResponse<string | null> | null = null;
+
+  try {
+    //   Call the endpoint
+    const result = await axiosClient
+      // .get(`/api/article/all`, {
+      .get(`/api/hello`, {
+        method: "GET",
+      })
+      .then((resp) => {
+        // console.log(resp.data);
+        return resp;
+      });
+    data = result.data;
+    callback?.(data!);
+  } catch (error) {
+    callback?.({
+      data: null,
+      message: `${error}`,
+      status: "error",
+    });
+    // console.log(error);
+  }
+  return data?.data || null;
+}
 
 async function getArticleAll({
   callback,
@@ -26,7 +58,7 @@ async function getArticleAll({
   } catch (error) {
     callback?.({
       data: null,
-      message: `Error just occured, stating : ${error}`,
+      message: `${error}`,
       status: "error",
     });
     // console.log(error);
@@ -65,7 +97,7 @@ async function getArticleById({
   } catch (error) {
     callback?.({
       data: null,
-      message: `Error just occured, stating : ${error}`,
+      message: `${error}`,
       status: "error",
     });
     // console.log(error);
@@ -82,13 +114,8 @@ async function addArticle({
   article: ArticleModel;
   callback?: (resp: MainNetworkResponse<ArticleModel | null>) => void;
 }): Promise<ArticleModel | null> {
-  // callback?.({
-  //   data: null,
-  //   message: "Submitting your article...",
-  //   status: "loading",
-  // });
 
-  await waitFor(5000);
+  // await waitFor(5000);
 
   let data: MainNetworkResponse<ArticleModel | null> | null = null;
 
@@ -111,7 +138,7 @@ async function addArticle({
   } catch (error) {
     callback?.({
       data: null,
-      message: `Error just occured, stating : ${error}`,
+      message: `${error}`,
       status: "error",
     });
 
@@ -122,4 +149,42 @@ async function addArticle({
   return data?.data || null;
 }
 
-export const mainApi = { getArticleById, getArticleAll, addArticle };
+async function registerUser({
+  fields,
+  callback,
+}: {
+  fields: RegisterFields;
+  callback?: (resp: MainNetworkResponse<User | null>) => void;
+}){
+
+  let data: MainNetworkResponse<User | null> | null = null;
+
+  try {
+    //   Call the endpoint
+    const result = await axiosClient
+      .post("/api/auth/register", JSON.stringify(fields), {
+        // .post("/api/hello", JSON.stringify(article), {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      })
+      .then((resp) => {
+        return resp;
+      });
+
+    data = result.data as MainNetworkResponse<User | null>;
+    callback?.(data);
+  } catch (error) {
+    callback?.({
+      data: null,
+      message: `${error}`,
+      status: "error",
+    });
+  }
+  // Returns data if it exist
+  // returns null otherwise
+  return data?.data || null;
+
+}
+
+export const mainApi = { getDummy,getArticleById, getArticleAll, addArticle,registerUser };
