@@ -58,7 +58,7 @@ function WritingPanelForm({ article, setArticle }: WritingPanelFormProps) {
       <span className="text-xl font-bold sm:text-2xl">Title</span>
       <MainTextInput
         scaleTo="md"
-        value={title}
+        value={title||""}
         placeholder="Very lucrative and straight-forward sentence..."
         onChange={(ev) => editTitle(ev.target.value)}
       />
@@ -66,14 +66,14 @@ function WritingPanelForm({ article, setArticle }: WritingPanelFormProps) {
       <MainTextAreaInput
         placeholder="This article talks about something interesting..."
         className="!h-32 max-h-32"
-        value={desc}
+        value={desc||""}
         onChange={(ev) => editDesc(ev.target.value)}
       />
       <span className="text-xl font-bold sm:text-2xl">Content</span>
       <MainTextAreaInput
         className="min-h-[36rem] resize-none"
         placeholder="Write the article's content"
-        value={content}
+        value={content||""}
         onChange={(ev) => editContent(ev.target.value)}
       />
     </div>
