@@ -6,6 +6,7 @@ import {
   MdOutlineLightMode,
   MdSearch,
 } from "react-icons/md";
+import { useAuthCtx } from "../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
 import { APP_NAME } from "../utils/helpers/Constants";
 import { routeTrimQuery } from "../utils/helpers/MainHelpers";
@@ -45,6 +46,7 @@ function Header() {
   useHeaderBehavior(scrollToTopCallback);
 
   const { searchModal, closeSearchModal } = useSearchModalBehavior();
+  const { loggedIn, authState } = useAuthCtx();
 
   // const [searchModal, setSearchModal] = useState(false);
   // const closeSearchModal = useCallback(() => {
@@ -105,7 +107,7 @@ function Header() {
                   </a>
                 </Link>
               </div>
-                        
+
               {router.pathname !== "/write" && (
                 <Link href="/write" passHref>
                   <a>
@@ -127,7 +129,7 @@ function Header() {
                 </Link>
               )}
 
-              <Link href="/auth" passHref>
+              {loggedIn && (
                 <a>
                   <button
                     className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
@@ -140,11 +142,35 @@ function Header() {
                         // color: scrolledToTop ? "hsl(var(--p))" : "",
                       }
                     }
+                    onClick={() => {
+                      console.log(authState.user);
+                    }}
                   >
-                    Join now
+                    Log out
                   </button>
                 </a>
-              </Link>
+              )}
+
+              {!loggedIn && (
+                <Link href="/auth" passHref>
+                  <a>
+                    <button
+                      className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
+                  text-lg sm:text-xl
+                  ${scrolledToTop ? "btn-primary" : "btn-outline"}
+                  `}
+                      style={
+                        {
+                          // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
+                          // color: scrolledToTop ? "hsl(var(--p))" : "",
+                        }
+                      }
+                    >
+                      Join now
+                    </button>
+                  </a>
+                </Link>
+              )}
             </>
           )}
           <label className="swap btn btn-ghost  swap-rotate btn-sm btn-circle sm:btn-md">

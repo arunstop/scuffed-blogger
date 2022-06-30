@@ -4,6 +4,7 @@ import NextNProgress from "nextjs-progressbar";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "../styles/globals.css";
+import { AuthProvider } from "../utils/contexts/auth/AuthProvider";
 import { UiProvider } from "../utils/contexts/ui/UiProvider";
 import { useRouteChange } from "../utils/hooks/RouteChangeHook";
 
@@ -14,18 +15,20 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <Script src="/ThemeInitializer.js" strategy="beforeInteractive" />
 
-      <UiProvider>
-        <NextNProgress
-          color="hsl(var(--pc))"
-          startPosition={0.4}
-          stopDelayMs={200}
-          height={6}
-          showOnShallow={false}
-        />
-        <Header/>
-        <Component {...pageProps} />
-        <Footer/>
-      </UiProvider>
+      <AuthProvider>
+        <UiProvider>
+          <NextNProgress
+            color="hsl(var(--pc))"
+            startPosition={0.4}
+            stopDelayMs={200}
+            height={6}
+            showOnShallow={false}
+          />
+          <Header />
+          <Component {...pageProps} />
+          <Footer />
+        </UiProvider>
+      </AuthProvider>
     </>
   );
 }
