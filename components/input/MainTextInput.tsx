@@ -52,7 +52,7 @@ const MainTextInput = React.forwardRef<
             placeholder-shown:!outline-dashed
             ${
               !error
-                ? "!outline-base-content/20 focus:!outline-base-content"
+                ? "focus:!outline-base-content placeholder-shown:!outline-base-content/20"
                 : "text-error !outline-error !outline-dashed"
             }
           ${getScalingInput(scaleTo)}
