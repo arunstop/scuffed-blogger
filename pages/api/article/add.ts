@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { firestore } from "../../../utils/services/network/FirestoreApi";
+import { firebaseApi } from "../../../utils/services/network/FirestoreApi";
 import {
   ArticleModel,
   isArticleModel,
@@ -26,7 +26,7 @@ export default async function handler(
     }
     // check if body is valid
     if (newArticle && isArticleModel(newArticle)) {
-      await firestore.addArticle(newArticle).then((e) => e);
+      await firebaseApi.addArticle(newArticle).then((e) => e);
       return res
         .status(200)
         .json({

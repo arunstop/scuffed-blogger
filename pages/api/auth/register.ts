@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import {
   createErrorResponse
 } from "../../../utils/data/Main";
-import { firebaseAuth } from "./../../../utils/services/network/FirestoreApi";
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,9 +21,9 @@ export default async function handler(
         ),
       );
   // if valid, add to database
-  const registeredUser = await firebaseAuth.registerUser({
-    email: email,
-    password: password,
-  });
-  return res.status(200).json(registeredUser);
+  // const registeredUser = await firebaseAuth.registerUser({
+  //   email: email,
+  //   password: password,
+  // });
+  // return res.status(200).json(registeredUser);
 }

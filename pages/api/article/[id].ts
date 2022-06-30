@@ -2,7 +2,7 @@ import { ArticleModel } from "./../../../utils/data/models/ArticleModel";
 import { MainNetworkResponse } from "./../../../utils/data/Main";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { firestore } from "../../../utils/services/network/FirestoreApi";
+import { firebaseApi } from "../../../utils/services/network/FirestoreApi";
 
 // type Data = {
 //   name: string;
@@ -17,7 +17,7 @@ export default async function handler(
   if (!id) return res.status(500);
   // only proceed if the method is `GET`
   if (req.method === "GET") {
-    const requestedArticle = await firestore.getArticleById(id as string).then(
+    const requestedArticle = await firebaseApi.getArticleById(id as string).then(
       (e) =>
         ({
           message: e
