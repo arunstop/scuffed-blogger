@@ -1,12 +1,13 @@
+import { RegisterFields } from "./../../../components/auth/AuthRegisterForm";
 import { createErrorResponse, MainNetworkResponse } from "./../../data/Main";
 import { createUserWithEmailAndPassword, User } from "firebase/auth";
 import { doc, getDoc, getDocs, setDoc } from "firebase/firestore/lite";
 import { createSuccessResponse } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
-import { firebase } from "./FirebaseClient";
+import { firebaseClient } from "./FirebaseClient";
 
-const articleDb = firebase.db.article;
-const auth = firebase.auth;
+const articleDb = firebaseClient.db.article;
+const auth = firebaseClient.auth;
 
 export interface UserAuth {
   email: string;
@@ -15,22 +16,32 @@ export interface UserAuth {
 
 // auth
 async function registerUser({
-  email,
-  password,
-}: UserAuth): Promise<MainNetworkResponse<User | null>> {
+  fields,
+  callback,
+}: {
+  fields: RegisterFields;
+  callback?: (resp: MainNetworkResponse<User | null>) => void;
+}): Promise<User | null> {
+  let data: User | null = null;
+
   try {
     const userCred = await createUserWithEmailAndPassword(
       auth,
-      email,
-      password,
+      fields.email,
+      fields.password,
     );
-    return createSuccessResponse<User>(
-      "User has been registered to the database",
-      userCred.user,
+
+    data = userCred.user;
+    callback?.(
+      createSuccessResponse<User>(
+        "User has been registered to the database",
+        data,
+      ),
     );
   } catch (error) {
-    return createErrorResponse(error + "");
+    callback?.(createErrorResponse(error + ""));
   }
+  return data;
 }
 
 // article
@@ -59,5 +70,5 @@ async function addArticle(article: ArticleModel) {
   await setDoc(newDocRef, article);
 }
 
-export const firestore = { getArticleAll, getArticleById, addArticle };
-export const firebaseAuth = { registerUser };
+export const firebaseApi = { getArticleAll, getArticleById, addArticle,registerUser };
+
