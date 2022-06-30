@@ -1,6 +1,9 @@
-import React, { useCallback, useState } from "react";
+import { Transition } from "@headlessui/react";
+import { User } from "firebase/auth";
+import React, { Fragment, useCallback, useState } from "react";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { APP_NAME } from "../../utils/helpers/Constants";
+import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import GradientBackground from "../main/GradientBackground";
@@ -16,7 +19,7 @@ export type AuthFormTypes = "LOGIN" | "REGISTER" | "RESET_PW";
 interface SetStatusPropsProps {
   newLoading: boolean;
   newPlaceHolder: StatusPlaceholderProps;
-  newNetResp?: MainNetworkResponse<string | null>;
+  newNetResp?: MainNetworkResponse<User | null>;
 }
 export interface AuthFormProps {
   changeForm: (form: AuthFormTypes) => void;
@@ -25,14 +28,15 @@ export interface AuthFormProps {
     newPlaceHolder,
     newNetResp,
   }: SetStatusPropsProps) => void;
-  cancelActions: () => void;
+  cancelActions: (onlyLoading: boolean) => void;
 }
 function AuthPanel() {
   const [form, setForm] = useState<AuthFormTypes>("LOGIN");
-  const [placeholder, setPlaceholder] = useState<StatusPlaceholderProps>();
+  // const [loading, setPlaceholder] = useState<StatusPlaceholderProps>();
   const { loading, setLoading, netResp, setNetResp } = useNetworkAction<
-    string | null
-  >();
+    StatusPlaceholderProps | null,
+    StatusPlaceholderProps | null
+  >({ value: false, data: null });
 
   const changeForm = useCallback((selectedForm: AuthFormTypes) => {
     scrollToTop(true);
@@ -41,16 +45,23 @@ function AuthPanel() {
 
   const setAction = useCallback(
     ({ newLoading, newPlaceHolder, newNetResp }: SetStatusPropsProps) => {
-      setLoading(newLoading);
-      setPlaceholder(newPlaceHolder);
-      if (newNetResp) setNetResp(newNetResp);
+      setLoading((prev) => {
+        return {
+          value: newLoading,
+          data: prev.data ? prev.data : newPlaceHolder,
+        };
+      });
+      // if (newLoading) setPlaceholder(newPlaceHolder);
+      if (newNetResp) setNetResp({ ...newNetResp, data: newPlaceHolder });
     },
-    [placeholder],
+    [loading],
   );
 
-  const cancelActions = useCallback(() => {
-    setLoading(false);
-    setPlaceholder(undefined);
+  const cancelActions = useCallback((onlyLoading: boolean) => {
+    // alert(loading);
+    setLoading({ value: false, data: null });
+    // setNetResp(undefined);
+    // if (!onlyLoading) setPlaceholder(undefined);
   }, []);
 
   const renderTitle = () => {
@@ -81,22 +92,76 @@ function AuthPanel() {
     }
   };
   return (
-    <div className="relative z-0 overflow-hidden rounded-xl min-h-screen">
-      {!loading && !placeholder && <GradientBackground />}
-      <div className="mx-auto flex w-full flex-col gap-4 p-4 sm:max-w-md sm:gap-8 sm:p-8 md:max-w-lg lg:max-w-xl">
+    <div className="relative z-0 min-h-screen overflow-hidden rounded-xl">
+      <Transition
+        show={!loading.value && !loading.data}
+        enter="transition-opacity duration-500"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-500"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        <GradientBackground />
+      </Transition>
+
+      <div className=" min-h-full mx-auto flex w-full flex-col p-4 sm:max-w-md sm:p-8 md:max-w-lg lg:max-w-xl">
         <span className="my-1 text-center text-2xl font-black text-primary-content sm:my-3 sm:text-3xl">
           {renderTitle()}
+          {/* {(placeholder?.status||"")} */}
         </span>
+        <Transition
+          appear
+          show={loading.value}
+          as={Fragment}
+          {...transitionPullV({
+            enter: "absolute inset-x-0 w-full",
+            entered: "absolute inset-x-0",
+            leave: "absolute inset-x-0 w-full",
+          })}
+        >
+          <StatusPlaceholder {...loading.data!} />
+        </Transition>
 
-        {loading && placeholder && <StatusPlaceholder {...placeholder} />}
-        {!loading && netResp?.status === "error" && placeholder && (
-          <StatusPlaceholder {...placeholder} />
-        )}
-        {!loading && netResp?.status === "success" && placeholder && (
-          <StatusPlaceholder {...placeholder} />
-        )}
-        {!loading && !placeholder && (
-          <div className="form-control  gap-4 sm:gap-8">
+        <Transition
+          appear
+          show={!loading.value && netResp?.status === "error" && !!loading.data}
+          as={Fragment}
+          {...transitionPullV({
+            enter: "absolute inset-x-0 w-full",
+            entered: "absolute inset-x-0",
+            leave: "absolute inset-x-0 w-full",
+          })}
+        >
+          {netResp && <StatusPlaceholder {...netResp.data!} />}
+        </Transition>
+
+        <Transition
+          appear
+          show={
+            !loading.value && netResp?.status === "success" && !!loading.data
+          }
+          as={Fragment}
+          {...transitionPullV({
+            enter: "absolute inset-x-0 w-full",
+            entered: "absolute inset-x-0",
+            leave: "absolute inset-x-0 w-full",
+          })}
+        >
+          {netResp && <StatusPlaceholder {...netResp.data!} />}
+        </Transition>
+
+        <Transition
+          appear
+          show={!loading.value && !loading.data}
+          as={"div"}
+          {...transitionPullV({
+            // enter: " w-full",
+            // entered: "",
+            // leave: " w-full",
+          })}
+        >
+          <div className="form-control mt-4 sm:mt-8 gap-4 sm:gap-8">
             {form === "LOGIN" && (
               <AuthLoginForm
                 setAction={setAction}
@@ -120,7 +185,7 @@ function AuthPanel() {
             )}
             <AuthSocialSection />
           </div>
-        )}
+        </Transition>
       </div>
     </div>
   );

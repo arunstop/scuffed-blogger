@@ -1,12 +1,13 @@
+import { User } from "firebase/auth";
 import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
+import { MainNetworkResponse } from "../../utils/data/Main";
+import { mainApi } from "../../utils/services/network/MainApi";
 import MainTextInput from "../input/MainTextInput";
 import { AuthFormProps } from "./AuthPanel";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { waitFor } from "../../utils/helpers/DelayHelpers";
-import { createErrorResponse } from "../../utils/data/Main";
 
-interface InputFields {
+export interface RegisterFields {
   email: string;
   password: string;
 }
@@ -21,7 +22,7 @@ function AuthRegisterForm({
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<InputFields>({ mode: "onChange" });
+  } = useForm<RegisterFields>({ mode: "onChange" });
 
   function actionLoading() {
     setAction({
@@ -33,7 +34,7 @@ function AuthRegisterForm({
         status: "loading",
         actions: [
           {
-            callback: cancelActions,
+            callback: () => cancelActions(true),
             label: "Cancel",
           },
         ],
@@ -41,47 +42,47 @@ function AuthRegisterForm({
     });
   }
 
-  function actionError(data: InputFields) {
+  function actionError(
+    resp: MainNetworkResponse<User | null>,
+    tryAgain: () => void,
+  ) {
     setAction({
       newLoading: false,
-      newNetResp: createErrorResponse("Well something happened..."),
+      newNetResp: resp,
       newPlaceHolder: {
         title: "Something weird happened...",
-        desc: `Sorry that this happened. But an error has occured, stating:\nError, something something something`,
+        desc: `Sorry that this happened. But an error has occured, stating: ${resp.message}`,
         status: "error",
         actions: [
           {
-            callback: cancelActions,
+            callback: () => cancelActions(false),
             label: "Cancel",
           },
           {
-            callback: () => onSubmit(data),
+            callback: tryAgain,
             label: "Try again",
-          },
-          {
-            callback: actionSuccess,
-            label: "Not really",
           },
         ],
       },
     });
   }
 
-  function actionSuccess() {
+  function actionSuccess(resp: MainNetworkResponse<User | null>) {
     setAction({
-      newLoading: true,
+      newLoading: false,
+      newNetResp: resp,
       newPlaceHolder: {
         title: "Registration completed!",
-        desc: `Welcome to Tuturku! When thoughts meet each other. Well that was smooth, wasn't it? 
-        Explore our articles or you can write your own.`,
+        desc: "Welcome to Tuturku! When thoughts meet each other.\n\
+        Well that was smooth, wasn't it? Explore our articles or you can write your own.",
         status: "success",
         actions: [
           {
-            callback: cancelActions,
+            callback: () => cancelActions(false),
             label: "Explore",
           },
           {
-            callback: cancelActions,
+            callback: () => cancelActions(false),
             label: "Write my first article",
           },
         ],
@@ -90,15 +91,24 @@ function AuthRegisterForm({
   }
   // console.log(watch("email"));
 
-  const onSubmit: SubmitHandler<InputFields> = async (data) => {
+  const onSubmit: SubmitHandler<RegisterFields> = async (data) => {
     actionLoading();
-    await waitFor(3000);
-    actionError(data);
+    // await waitFor(5000);
+    await mainApi
+      .registerUser({
+        fields: data,
+        callback: (resp) => {
+          // if error
+          if (resp.status === "error")
+            return actionError(resp, () => onSubmit(data));
+          // if success
+          if (resp.status === "success") return actionSuccess(resp);
+        },
+      })
+      .then((e) => {
+        console.log(e);
+      });
   };
-  // const confirm = (ev: React.FormEvent<HTMLFormElement>) => {
-  //   ev.preventDefault();
-  //   alert("sd");
-  // };
 
   return (
     <form
