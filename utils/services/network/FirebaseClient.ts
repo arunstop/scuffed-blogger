@@ -37,3 +37,4 @@ export const firebaseClient = {
   auth,
   db: { article },
 };
+export const firebaseAuth = auth;
