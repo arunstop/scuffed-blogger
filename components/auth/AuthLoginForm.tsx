@@ -1,3 +1,4 @@
+import { FirebaseError } from "firebase/app";
 import { User } from "firebase/auth";
 import { useRouter } from "next/router";
 import React from "react";
@@ -9,6 +10,7 @@ import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { firebaseClient } from "../../utils/services/network/FirebaseClient";
 import { firebaseApi } from "../../utils/services/network/FirestoreApi";
 import MainTextInput from "../input/MainTextInput";
+import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";
 
 export interface RegisterFields {
@@ -21,12 +23,13 @@ function AuthRegisterForm({
   setAction,
   cancelActions,
 }: AuthFormProps) {
-
   const router = useRouter();
   const {
     register,
     handleSubmit,
     watch,
+    reset,
+    setError,
     formState: { errors },
   } = useForm<RegisterFields>({ mode: "onChange" });
 
@@ -48,31 +51,66 @@ function AuthRegisterForm({
   }
 
   function actionError(
-    resp: MainNetworkResponse<User | null>,
+    resp: MainNetworkResponse<FirebaseError>,
     tryAgain: () => void,
   ) {
+    let title, desc;
+    const actions: StatusPlaceholderAction[] = [
+      {
+        callback: () => cancelActions(false),
+        label: "Back",
+      },
+    ];
+    const errorCode = resp.data.code;
+    if (errorCode === "auth/user-not-found") {
+      title = "User not found";
+      desc = `Sorry we couldn't authenticate you in, because the credential that you used is invalid.`;
+      reset();
+      actions.push({
+        callback: () => {
+          cancelActions(false);
+          changeForm("REGISTER");
+        },
+        label: "Register instead",
+      });
+    } else if (errorCode === "auth/wrong-password") {
+      title = "Invalid password";
+      desc =
+        `Sorry we have to deny your authentication attempt because you just used a wrong password for the matching email. Please use the matching email and password. ` +
+        `Alternatively you can reset your password if you forget it`;
+      actions.push({
+        callback: () => {
+          cancelActions(false);
+          changeForm("RESET_PW");
+        },
+        label: "Reset my password",
+      });
+      setError("password", {
+        message: "Invalid password for the matching email",
+      });
+    } else if (errorCode === "auth/network-request-failed") {
+      title = "Failed to connect to the server";
+      desc = `There is no internet connection to connect you to our server. Please ensure that you have an active internet connection, or maybe your connection speed is too low.`;
+      actions.push({
+        callback: tryAgain,
+        label: "Try again",
+      });
+    }
+
     setAction({
       newLoading: false,
       newNetResp: resp,
       newPlaceHolder: {
-        title: "Invalid credential",
-        desc: `Sorry we couldn't proceed you in, because the credential that you used is invalid, stating: ${resp.message}`,
+        title: title || "Something weird happened...",
+        desc:
+          `${desc ? desc + "\n" : ""}- - - -\n${resp.message}` || resp.message,
         status: "error",
-        actions: [
-          {
-            callback: () => cancelActions(false),
-            label: "Cancel",
-          },
-          {
-            callback: tryAgain,
-            label: "Try again",
-          },
-        ],
+        actions: actions,
       },
     });
   }
 
-  function actionSuccess(resp: MainNetworkResponse<User | null>) {
+  function actionSuccess(resp: MainNetworkResponse<User>) {
     setAction({
       newLoading: false,
       newNetResp: resp,
@@ -99,15 +137,17 @@ function AuthRegisterForm({
     actionLoading();
     await waitFor(1000);
     await firebaseApi
-      .signInUser({
+      .authLoginUser({
         fields: data,
         callback: (resp) => {
           // if error
           if (resp.status === "error")
-            return actionError(resp, () => onSubmit(data));
+            return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
+              onSubmit(data),
+            );
           // if success
           if (resp.status === "success") {
-            actionSuccess(resp);
+            actionSuccess(resp as MainNetworkResponse<User>);
             router.push("/write");
           }
         },

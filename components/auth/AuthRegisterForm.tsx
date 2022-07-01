@@ -1,12 +1,13 @@
+import { FirebaseError } from "firebase/app";
 import { User } from "firebase/auth";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
-import { firebaseClient } from "../../utils/services/network/FirebaseClient";
 import { firebaseApi } from "../../utils/services/network/FirestoreApi";
 import MainTextInput from "../input/MainTextInput";
+import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";
 
 export interface RegisterFields {
@@ -44,26 +45,45 @@ function AuthRegisterForm({
   }
 
   function actionError(
-    resp: MainNetworkResponse<User | null>,
+    resp: MainNetworkResponse<FirebaseError>,
     tryAgain: () => void,
   ) {
+    let title, desc;
+    const actions: StatusPlaceholderAction[] = [
+      {
+        callback: () => cancelActions(false),
+        label: "Back",
+      },
+    ];
+    const errorCode = resp.data.code;
+    if (errorCode === "auth/email-already-in-use") {
+      title = "User already exists";
+      desc = `The email that you just used is already recorded in our database, if you are the owner of this account please login instead, if not try to use another credential.`;
+      actions.push({
+        callback: () => {
+          cancelActions(false);
+          changeForm("LOGIN");
+        },
+        label: "Login instead",
+      });
+    } else if (errorCode === "auth/network-request-failed") {
+      title = "Failed to connect to the server";
+      desc = `There is no internet connection to connect you to our server. Please ensure that you have an active internet connection, or maybe your connection speed is too low.`;
+      actions.push({
+        callback: tryAgain,
+        label: "Try again",
+      });
+    }
+
     setAction({
       newLoading: false,
       newNetResp: resp,
       newPlaceHolder: {
-        title: "Something weird happened...",
-        desc: `Sorry that this happened. But an error has occured, stating: ${resp.message}`,
+        title: title || "Something weird happened...",
+        desc:
+          `${desc ? desc + "\n" : ""}- - - -\n${resp.message}` || resp.message,
         status: "error",
-        actions: [
-          {
-            callback: () => cancelActions(false),
-            label: "Cancel",
-          },
-          {
-            callback: tryAgain,
-            label: "Try again",
-          },
-        ],
+        actions: actions,
       },
     });
   }
@@ -96,22 +116,23 @@ function AuthRegisterForm({
     actionLoading();
     await waitFor(1000);
     await firebaseApi
-      .registerUser({
+      .authRegisterUser({
         fields: data,
         callback: (resp) => {
           // if error
           if (resp.status === "error")
-            return actionError(resp, () => onSubmit(data));
+            return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
+              onSubmit(data),
+            );
           // if success
-          if (resp.status === "success") return actionSuccess(resp);
+          if (resp.status === "success")
+            return actionSuccess(resp as MainNetworkResponse<User>);
         },
       })
       .then((e) => {
         console.log(e);
       });
   };
-
-  console.log(firebaseClient.auth.currentUser);
 
   return (
     <form

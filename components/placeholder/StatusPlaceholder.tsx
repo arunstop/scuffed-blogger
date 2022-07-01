@@ -6,7 +6,7 @@ import { MdWorkspaces } from "react-icons/md";
 import { NetworkResponseStatus } from "../../utils/data/Main";
 
 // INTERFACES
-interface StatusPlaceholderAction {
+export interface StatusPlaceholderAction {
   label: string;
   callback: () => void;
 }

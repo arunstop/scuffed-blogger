@@ -1,6 +1,8 @@
 import { Transition } from "@headlessui/react";
+import { FirebaseError } from "firebase/app";
 import { User } from "firebase/auth";
 import React, { Fragment, useCallback, useState } from "react";
+import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
@@ -19,7 +21,7 @@ export type AuthFormTypes = "LOGIN" | "REGISTER" | "RESET_PW";
 interface SetStatusPropsProps {
   newLoading: boolean;
   newPlaceHolder: StatusPlaceholderProps;
-  newNetResp?: MainNetworkResponse<User | null>;
+  newNetResp?: MainNetworkResponse<User|FirebaseError | null>;
 }
 export interface AuthFormProps {
   changeForm: (form: AuthFormTypes) => void;
@@ -32,6 +34,7 @@ export interface AuthFormProps {
 }
 function AuthPanel() {
   const [form, setForm] = useState<AuthFormTypes>("LOGIN");
+  const {loggedIn} = useAuthCtx();
   // const [loading, setPlaceholder] = useState<StatusPlaceholderProps>();
   const { loading, setLoading, netResp, setNetResp } = useNetworkAction<
     StatusPlaceholderProps | null,
@@ -45,6 +48,7 @@ function AuthPanel() {
 
   const setAction = useCallback(
     ({ newLoading, newPlaceHolder, newNetResp }: SetStatusPropsProps) => {
+      scrollToTop(true);
       setLoading((prev) => {
         return {
           value: newLoading,
@@ -58,7 +62,7 @@ function AuthPanel() {
   );
 
   const cancelActions = useCallback((onlyLoading: boolean) => {
-    // alert(loading);
+    scrollToTop(true);
     setLoading({ value: false, data: null });
     // setNetResp(undefined);
     // if (!onlyLoading) setPlaceholder(undefined);
@@ -160,6 +164,7 @@ function AuthPanel() {
             // entered: "",
             // leave: " w-full",
           })}
+          unmount={false}
         >
           <div className="form-control mt-4 sm:mt-8 gap-4 sm:gap-8">
             {form === "LOGIN" && (
@@ -167,7 +172,7 @@ function AuthPanel() {
                 setAction={setAction}
                 changeForm={changeForm}
                 cancelActions={cancelActions}
-              />
+              />  
             )}
             {form === "REGISTER" && (
               <AuthRegisterForm
