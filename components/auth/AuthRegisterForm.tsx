@@ -3,6 +3,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
+import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { firebaseClient } from "../../utils/services/network/FirebaseClient";
 import { firebaseApi } from "../../utils/services/network/FirestoreApi";
 import MainTextInput from "../input/MainTextInput";
@@ -93,7 +94,7 @@ function AuthRegisterForm({
 
   const onSubmit: SubmitHandler<RegisterFields> = async (data) => {
     actionLoading();
-    // await waitFor(5000);
+    await waitFor(1000);
     await firebaseApi
       .registerUser({
         fields: data,
