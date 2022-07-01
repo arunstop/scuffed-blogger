@@ -63,7 +63,7 @@ function AuthRegisterForm({
     const errorCode = resp.data.code;
     if (errorCode === "auth/user-not-found") {
       title = "User not found";
-      desc = `Sorry we couldn't authenticate you in, because the credential that you used is invalid.`;
+      desc = `Sorry we couldn't authenticate you in, because the credential that you used is invalid. Please enter the correct emaila and password combination`;
       reset();
       actions.push({
         callback: () => {
