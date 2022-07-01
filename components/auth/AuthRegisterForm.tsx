@@ -1,5 +1,6 @@
 import { FirebaseError } from "firebase/app";
 import { User } from "firebase/auth";
+import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
@@ -20,6 +21,9 @@ function AuthRegisterForm({
   setAction,
   cancelActions,
 }: AuthFormProps) {
+
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -103,7 +107,9 @@ function AuthRegisterForm({
             label: "Explore",
           },
           {
-            callback: () => cancelActions(false),
+            callback: () => {
+              router.push("/write");
+            },
             label: "Write my first article",
           },
         ],
