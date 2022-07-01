@@ -3,7 +3,10 @@ import React, { ReactNode } from "react";
 import { MdClose } from "react-icons/md";
 import { BreakpointTypes } from "../../utils/data/UI";
 import {
-  getScalingIcon, getScalingInput, getScalingInputClearIcon, getScalingInputIcon
+  getScalingIcon,
+  getScalingInput,
+  getScalingInputClearIcon,
+  getScalingInputIcon,
 } from "../../utils/helpers/InputStyleHelpers";
 import { transitionScaleY } from "../../utils/helpers/UiTransitionHelpers";
 
@@ -94,10 +97,16 @@ const MainTextInput = React.forwardRef<
           )}
         </label>
 
-        <Transition show={!!errorMsg} appear {...transitionScaleY()}>
-          <span className="text-sm sm:text-base text-error font-semibold pl-9 sm:pl-12">
-            {errorMsg}
-          </span>
+        <Transition
+          show={!!errorMsg}
+          appear
+          {...transitionScaleY({
+            enter: "origin-top",
+          })}
+          as={"div"}
+          className="text-sm sm:text-base text-error font-semibold pl-9 sm:pl-12"
+        >
+          {errorMsg}
         </Transition>
       </div>
     );
