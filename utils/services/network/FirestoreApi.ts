@@ -1,3 +1,4 @@
+import { FirebaseError } from "firebase/app";
 import { RegisterFields } from "./../../../components/auth/AuthRegisterForm";
 import { createErrorResponse, MainNetworkResponse } from "./../../data/Main";
 import {
@@ -18,14 +19,14 @@ export interface UserAuth {
 }
 
 // auth
-async function registerUser({
+async function authRegisterUser({
   fields,
   callback,
 }: {
   fields: RegisterFields;
-  callback?: (resp: MainNetworkResponse<User | null>) => void;
-}): Promise<User | null> {
-  let data: User | null = null;
+  callback?: (resp: MainNetworkResponse<User | FirebaseError | null>) => void;
+}): Promise<User | FirebaseError | null> {
+  let data: User | FirebaseError | null = null;
 
   try {
     const userCred = await createUserWithEmailAndPassword(
@@ -42,19 +43,21 @@ async function registerUser({
       ),
     );
   } catch (error) {
-    callback?.(createErrorResponse(error + ""));
+    callback?.(
+      createErrorResponse<FirebaseError>(error + "", error as FirebaseError),
+    );
   }
   return data;
 }
 
-async function signInUser({
+async function authLoginUser({
   fields,
   callback,
 }: {
   fields: RegisterFields;
-  callback?: (resp: MainNetworkResponse<User | null>) => void;
-}): Promise<User | null> {
-  let data: User | null = null;
+  callback?: (resp: MainNetworkResponse<User | FirebaseError | null>) => void;
+}): Promise<User | FirebaseError | null> {
+  let data: User | FirebaseError | null = null;
 
   try {
     const userCred = await signInWithEmailAndPassword(
@@ -71,10 +74,32 @@ async function signInUser({
       ),
     );
   } catch (error) {
-    callback?.(createErrorResponse(error + ""));
+    // console.log((error as FirebaseError).code);
+    // console.log((error as FirebaseError).message);
+    callback?.(
+      createErrorResponse<FirebaseError>(error + "", error as FirebaseError),
+    );
   }
   return data;
 }
+
+// async function authCheckUserExistence({
+//   email,
+//   callback,
+// }:{
+//   email:string,
+//   callback?:(resp:MainNetworkResponse<string|null>)=>void,
+// }):Promise<string|null>{
+//   let data: string | null = null;
+//   try{
+//     const existingUser = await
+//   }catch(error){
+//     callback?.(createErrorResponse(error+""))
+//   }
+
+//   return data;
+
+// };
 
 // article
 async function getArticleAll(): Promise<ArticleModel[] | null> {
@@ -106,6 +131,6 @@ export const firebaseApi = {
   getArticleAll,
   getArticleById,
   addArticle,
-  registerUser,
-  signInUser,
+  authRegisterUser,
+  authLoginUser,
 };
