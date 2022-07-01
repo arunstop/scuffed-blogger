@@ -23,9 +23,14 @@ export interface MainNetworkResponse<T = unknown> {
 }
 
 // FACTORY
-export const createErrorResponse = (
+export const createErrorResponse = <T = null>(
   message: string,
-): MainNetworkResponse<null> => ({ status: "error", data: null, message });
+  data?: T,
+): MainNetworkResponse<T | null> => ({
+  status: "error",
+  data: data ? data : null,
+  message,
+});
 
 export const createSuccessResponse = <T>(
   message: string,
