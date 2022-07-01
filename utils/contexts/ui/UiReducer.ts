@@ -1,4 +1,4 @@
-import { UiActionTypes, UiState } from "../../data/types/UiTypes";
+import { UiActionTypes, UiState } from "../../data/contexts/UiTypes";
 
 export const UI_REDUCER = (state: UiState, action: UiActionTypes): UiState => {
   const type = action.type;

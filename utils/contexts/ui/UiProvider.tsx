@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useReducer } from "react";
-import { UiAction, UiContextProps } from "../../data/types/UiTypes";
+import { UiAction, UiContextProps } from "../../data/contexts/UiTypes";
 import {
   initClientDarkMode,
   toggleClientDarkMode,
