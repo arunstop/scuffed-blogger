@@ -1,9 +1,9 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
-import { User } from "firebase/auth";
 import React, { Fragment, useCallback, useState } from "react";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { MainNetworkResponse } from "../../utils/data/Main";
+import { UserModel } from "../../utils/data/models/UserModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
@@ -21,7 +21,7 @@ export type AuthFormTypes = "LOGIN" | "REGISTER" | "RESET_PW";
 interface SetStatusPropsProps {
   newLoading: boolean;
   newPlaceHolder: StatusPlaceholderProps;
-  newNetResp?: MainNetworkResponse<User|FirebaseError | null>;
+  newNetResp?: MainNetworkResponse<UserModel | FirebaseError | null>;
 }
 export interface AuthFormProps {
   changeForm: (form: AuthFormTypes) => void;
@@ -34,7 +34,7 @@ export interface AuthFormProps {
 }
 function AuthPanel() {
   const [form, setForm] = useState<AuthFormTypes>("LOGIN");
-  const {loggedIn} = useAuthCtx();
+  const { loggedIn } = useAuthCtx();
   // const [loading, setPlaceholder] = useState<StatusPlaceholderProps>();
   const { loading, setLoading, netResp, setNetResp } = useNetworkAction<
     StatusPlaceholderProps | null,
@@ -52,13 +52,13 @@ function AuthPanel() {
       setLoading((prev) => {
         return {
           value: newLoading,
-          data: prev.data ? prev.data : newPlaceHolder,
+          data: newLoading ? newPlaceHolder : prev.data,
         };
       });
       // if (newLoading) setPlaceholder(newPlaceHolder);
       if (newNetResp) setNetResp({ ...newNetResp, data: newPlaceHolder });
     },
-    [loading],
+    [],
   );
 
   const cancelActions = useCallback((onlyLoading: boolean) => {
@@ -172,7 +172,7 @@ function AuthPanel() {
                 setAction={setAction}
                 changeForm={changeForm}
                 cancelActions={cancelActions}
-              />  
+              />
             )}
             {form === "REGISTER" && (
               <AuthRegisterForm

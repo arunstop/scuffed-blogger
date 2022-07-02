@@ -1,10 +1,12 @@
 import { FirebaseError } from "firebase/app";
-import { User } from "firebase/auth";
 import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
-import { MainNetworkResponse } from "../../utils/data/Main";
+import {
+  MainNetworkResponse
+} from "../../utils/data/Main";
+import { UserModel } from "../../utils/data/models/UserModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { firebaseApi } from "../../utils/services/network/FirestoreApi";
@@ -32,20 +34,21 @@ function AuthRegisterForm({
     formState: { errors },
   } = useForm<RegisterFields>({ mode: "onChange" });
 
-  function actionLoading() {
+  function actionLoading(title = "", desc = "") {
     setAction({
       newLoading: true,
       newPlaceHolder: {
-        title: "Signing you in...",
-        desc: `Hold on tight! You will proceed once we made sure that your credential matches any record in our database.`,
+        title: title || "Processing your registration...",
+        desc: desc ||`Hold on tight! You will proceed once we made sure that your credential matches any record in our database.`,
         status: "loading",
         actions: [
           {
-            callback: () => cancelActions(true),
+            callback: () => cancelActions(false),
             label: "Cancel",
           },
         ],
       },
+      // newNetResp:netCreateLoadingResponse(""),
     });
   }
 
@@ -109,7 +112,7 @@ function AuthRegisterForm({
     });
   }
 
-  function actionSuccess(resp: MainNetworkResponse<User>) {
+  function actionSuccess(resp: MainNetworkResponse<UserModel>) {
     setAction({
       newLoading: false,
       newNetResp: resp,
@@ -138,7 +141,16 @@ function AuthRegisterForm({
     await firebaseApi
       .authLoginUser({
         fields: data,
-        callback: (resp) => {
+        callback: async (resp) => {
+          // if loading
+          if (resp.status === "loading") {
+            // cancelActions(true);
+            return actionLoading(
+              "Adding your information into our database",
+              "We have just authenticated you into our system. Now wait for a moment as we adding your complete information into our database.",
+            );
+          } 
+          else await waitFor(2000);
           // if error
           if (resp.status === "error")
             return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
@@ -146,7 +158,7 @@ function AuthRegisterForm({
             );
           // if success
           if (resp.status === "success") {
-            actionSuccess(resp as MainNetworkResponse<User>);
+            actionSuccess(resp as MainNetworkResponse<UserModel>);
             router.push("/write");
           }
         },

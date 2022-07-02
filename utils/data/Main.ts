@@ -23,6 +23,15 @@ export interface MainNetworkResponse<T = unknown> {
 }
 
 // FACTORY
+export const netCreateLoadingResponse = <T = null>(
+  message?: string,
+  data?: T,
+): MainNetworkResponse<T | null> => ({
+  status: "loading",
+  data: data ? data : null,
+  message:message||"",
+});
+
 export const createErrorResponse = <T = null>(
   message: string,
   data?: T,

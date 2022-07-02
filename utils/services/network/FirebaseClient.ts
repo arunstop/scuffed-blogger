@@ -32,9 +32,10 @@ const auth = getAuth(app);
 
 // Databases
 export const article = collection(firestore, "articles");
+export const user = collection(firestore, "users");
 
 export const firebaseClient = {
   auth,
-  db: { article },
+  db: { article,user },
 };
 export const firebaseAuth = auth;

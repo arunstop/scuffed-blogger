@@ -1,10 +1,10 @@
 import { FirebaseError } from "firebase/app";
-import { User } from "firebase/auth";
 import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
+import { UserModel } from "../../utils/data/models/UserModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { firebaseApi } from "../../utils/services/network/FirestoreApi";
 import MainTextInput from "../input/MainTextInput";
@@ -21,7 +21,6 @@ function AuthRegisterForm({
   setAction,
   cancelActions,
 }: AuthFormProps) {
-
   const router = useRouter();
 
   const {
@@ -31,20 +30,23 @@ function AuthRegisterForm({
     formState: { errors },
   } = useForm<RegisterFields>({ mode: "onChange" });
 
-  function actionLoading() {
+  function actionLoading(title = "", desc = "") {
     setAction({
       newLoading: true,
       newPlaceHolder: {
-        title: "Processing your registration...",
-        desc: "Hold up for a moment, we are registering your information into our database, checking things left right and center as usual, you know the drill",
+        title: title || "Processing your registration...",
+        desc:
+          desc ||
+          "Hold up for a moment, we are registering your information into our database, checking things left right and center as usual, you know the drill",
         status: "loading",
         actions: [
           {
-            callback: () => cancelActions(true),
+            callback: () => cancelActions(false),
             label: "Cancel",
           },
         ],
       },
+      // newNetResp:netCreateLoadingResponse(""),
     });
   }
 
@@ -92,7 +94,7 @@ function AuthRegisterForm({
     });
   }
 
-  function actionSuccess(resp: MainNetworkResponse<User | null>) {
+  function actionSuccess(resp: MainNetworkResponse<UserModel | null>) {
     setAction({
       newLoading: false,
       newNetResp: resp,
@@ -120,11 +122,21 @@ function AuthRegisterForm({
 
   const onSubmit: SubmitHandler<RegisterFields> = async (data) => {
     actionLoading();
-    await waitFor(1000);
+    await waitFor(2000);
     await firebaseApi
       .authRegisterUser({
         fields: data,
-        callback: (resp) => {
+        callback: async (resp) => {
+          // if loading
+          if (resp.status === "loading") {
+            // cancelActions(true);
+            return actionLoading(
+              "Adding your information into our database",
+              "We have just authenticated you into our system. Now wait for a moment as we adding your complete information into our database.",
+            );
+          } 
+          // wait for a bit if it is not loading
+          else await waitFor(2000);
           // if error
           if (resp.status === "error")
             return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
@@ -132,7 +144,7 @@ function AuthRegisterForm({
             );
           // if success
           if (resp.status === "success")
-            return actionSuccess(resp as MainNetworkResponse<User>);
+            return actionSuccess(resp as MainNetworkResponse<UserModel>);
         },
       })
       .then((e) => {
