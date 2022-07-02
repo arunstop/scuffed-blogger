@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {
-  createErrorResponse
+  netCreateErrorResponse
 } from "../../../utils/data/Main";
 
 export default async function handler(
@@ -9,14 +9,14 @@ export default async function handler(
 ) {
   // Proceed only POST
   if (req.method !== "POST")
-    return res.status(500).json(createErrorResponse("Only POST allowed"));
+    return res.status(500).json(netCreateErrorResponse("Only POST allowed"));
   // check if requred parameters are valid
   const { email, password } = <{ email: string; password: string }>req.body;
   if (!email || !password)
     return res
       .status(200)
       .json(
-        createErrorResponse(
+        netCreateErrorResponse(
           "Required parameters: Email or Password is invalid",
         ),
       );

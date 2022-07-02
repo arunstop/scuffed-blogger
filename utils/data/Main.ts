@@ -32,7 +32,7 @@ export const netCreateLoadingResponse = <T = null>(
   message:message||"",
 });
 
-export const createErrorResponse = <T = null>(
+export const netCreateErrorResponse = <T = null>(
   message: string,
   data?: T,
 ): MainNetworkResponse<T | null> => ({
@@ -41,7 +41,7 @@ export const createErrorResponse = <T = null>(
   message,
 });
 
-export const createSuccessResponse = <T>(
+export const netCreateSuccessResponse = <T>(
   message: string,
   data: T,
 ): MainNetworkResponse<T> => ({ status: "success", data: data, message });
