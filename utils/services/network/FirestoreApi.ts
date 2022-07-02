@@ -212,8 +212,8 @@ async function addUser({
       ),
     );
   } catch (error) {
-    // Show success
-    console.log(error);
+    // Show error
+    // console.log(error);
     callback?.(
       createErrorResponse<AddUserProps>(error + "", error as FirebaseError),
     );
