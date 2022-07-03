@@ -137,7 +137,6 @@ function AuthRegisterForm({
 
   const onSubmit: SubmitHandler<RegisterFields> = async (data) => {
     actionLoading();
-    await waitFor(2000);
     await firebaseApi
       .authLoginUser({
         fields: data,
@@ -149,7 +148,8 @@ function AuthRegisterForm({
               "Retrieving your data from our database",
               "The credential you entered matched a record in our database. Hold up for a bit ase we are retrieving the data for you.",
             );
-          } else await waitFor(2000);
+          }
+          await waitFor(1000);
           // if error
           if (resp.status === "error")
             return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
