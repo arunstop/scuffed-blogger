@@ -23,6 +23,35 @@ interface SetStatusPropsProps {
   newPlaceHolder: StatusPlaceholderProps;
   newNetResp?: MainNetworkResponse<UserModel | FirebaseError | null>;
 }
+
+const renderTitle = (form:string) => {
+  switch (form) {
+    case "LOGIN":
+      return (
+        <>
+          <span className="">Login to </span>
+          <span className="text-base-content">{APP_NAME}</span>
+        </>
+      );
+    case "REGISTER":
+      return (
+        <>
+          <span className="">Create a </span>
+          <span className="text-base-content">{APP_NAME} </span>
+          <span className="">account</span>
+        </>
+      );
+    case "RESET_PW":
+      return (
+        <>
+          <span className="">Reset Password</span>
+        </>
+      );
+    default:
+      break;
+  }
+};
+
 export interface AuthFormProps {
   changeForm: (form: AuthFormTypes) => void;
   setAction: ({
@@ -68,33 +97,7 @@ function AuthPanel() {
     // if (!onlyLoading) setPlaceholder(undefined);
   }, []);
 
-  const renderTitle = () => {
-    switch (form) {
-      case "LOGIN":
-        return (
-          <>
-            <span className="">Login to </span>
-            <span className="text-base-content">{APP_NAME}</span>
-          </>
-        );
-      case "REGISTER":
-        return (
-          <>
-            <span className="">Create a </span>
-            <span className="text-base-content">{APP_NAME} </span>
-            <span className="">account</span>
-          </>
-        );
-      case "RESET_PW":
-        return (
-          <>
-            <span className="">Reset Password</span>
-          </>
-        );
-      default:
-        break;
-    }
-  };
+  
   return (
     <div className="relative z-0 min-h-screen overflow-hidden rounded-xl">
       <Transition
@@ -111,7 +114,7 @@ function AuthPanel() {
 
       <div className=" min-h-full mx-auto flex w-full flex-col p-4 sm:max-w-md sm:p-8 md:max-w-lg lg:max-w-xl">
         <span className="my-1 text-center text-2xl font-black text-primary-content sm:my-3 sm:text-3xl">
-          {renderTitle()}
+          {renderTitle(form)}
           {/* {(placeholder?.status||"")} */}
         </span>
         <Transition
