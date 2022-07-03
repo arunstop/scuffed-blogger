@@ -3,9 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdLock } from "react-icons/md";
-import {
-  MainNetworkResponse
-} from "../../utils/data/Main";
+import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
@@ -38,8 +36,10 @@ function AuthRegisterForm({
     setAction({
       newLoading: true,
       newPlaceHolder: {
-        title: title || "Processing your registration...",
-        desc: desc ||`Hold on tight! You will proceed once we made sure that your credential matches any record in our database.`,
+        title: title || "Processing your authentication...",
+        desc:
+          desc ||
+          `Hold up a little bit, we are checking whether your credential matched any data in our database. This will be quick.`,
         status: "loading",
         actions: [
           {
@@ -66,7 +66,7 @@ function AuthRegisterForm({
     const errorCode = resp.data.code;
     if (errorCode === "auth/user-not-found") {
       title = "User not found";
-      desc = `Sorry we couldn't authenticate you in, because the credential that you used is invalid. Please enter the correct emaila and password combination`;
+      desc = `Sorry we couldn't authenticate you in, because the credential that you used is invalid. Please enter the correct email and password combination`;
       reset();
       actions.push({
         callback: () => {
@@ -118,18 +118,18 @@ function AuthRegisterForm({
       newNetResp: resp,
       newPlaceHolder: {
         title: "Sign in completed!",
-        desc: "Welcome back! Fancy seeing you here again. Wonder what you are up to this time. Reading more articles would be nice, or maybe you want write them instead?",
+        desc: "Welcome back! Fancy seeing you here again. Wonder what you are up to this time. Redirecting you to the main page....",
         status: "success",
-        actions: [
-          {
-            callback: () => cancelActions(false),
-            label: "Explore",
-          },
-          {
-            callback: () => cancelActions(false),
-            label: "Write my first article",
-          },
-        ],
+        // actions: [
+        //   {
+        //     callback: () => cancelActions(false),
+        //     label: "Explore",
+        //   },
+        //   {
+        //     callback: () => cancelActions(false),
+        //     label: "Write my first article",
+        //   },
+        // ],
       },
     });
   }
@@ -137,7 +137,7 @@ function AuthRegisterForm({
 
   const onSubmit: SubmitHandler<RegisterFields> = async (data) => {
     actionLoading();
-    await waitFor(1000);
+    await waitFor(2000);
     await firebaseApi
       .authLoginUser({
         fields: data,
@@ -146,11 +146,10 @@ function AuthRegisterForm({
           if (resp.status === "loading") {
             // cancelActions(true);
             return actionLoading(
-              "Adding your information into our database",
-              "We have just authenticated you into our system. Now wait for a moment as we adding your complete information into our database.",
+              "Retrieving your data from our database",
+              "The credential you entered matched a record in our database. Hold up for a bit ase we are retrieving the data for you.",
             );
-          } 
-          else await waitFor(2000);
+          } else await waitFor(2000);
           // if error
           if (resp.status === "error")
             return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
@@ -159,6 +158,7 @@ function AuthRegisterForm({
           // if success
           if (resp.status === "success") {
             actionSuccess(resp as MainNetworkResponse<UserModel>);
+            await waitFor(2000);
             router.push("/write");
           }
         },

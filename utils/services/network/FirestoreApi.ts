@@ -1,17 +1,24 @@
 import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  User,
 } from "firebase/auth";
-import { doc, getDoc, getDocs, setDoc } from "firebase/firestore/lite";
-import { createSuccessResponse } from "../../data/Main";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore/lite";
+import { netCreateSuccessResponse } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
 import { RegisterFields } from "./../../../components/auth/AuthRegisterForm";
 import {
-  createErrorResponse,
   MainNetworkResponse,
-  netCreateLoadingResponse
+  netCreateErrorResponse,
+  netCreateLoadingResponse,
 } from "./../../data/Main";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 
@@ -23,44 +30,31 @@ export interface UserAuth {
   password: string;
 }
 
-type AuthRegisterUserProps = UserModel | FirebaseError | null;
+type AuthUserProps = UserModel | null | FirebaseError;
 // auth
 async function authRegisterUser({
   fields,
   callback,
 }: {
   fields: RegisterFields;
-  callback?: (resp: MainNetworkResponse<AuthRegisterUserProps>) => void;
-}): Promise<AuthRegisterUserProps> {
-  let data: AuthRegisterUserProps = null;
+  callback?: (resp: MainNetworkResponse<AuthUserProps>) => void;
+}): Promise<AuthUserProps> {
+  let data: AuthUserProps = null;
 
   try {
     // Show a loading state still,
     // because the system need to add yet another data to the `USER DB`
-    callback?.(
-      netCreateLoadingResponse(
-        "Adding your information into our database...",
-        null,
-      ),
-    );
 
-    // creating user in `AUTH DB`
-    const userCred = await createUserWithEmailAndPassword(
-      firebaseAuth,
-      fields.email,
-      fields.password,
-    );
-
-    data = createUserModel({ firebaseUser: JSON.parse(JSON.stringify(userCred.user)) });
-    // await waitFor(1000);
     // Adding the user
-    await addUser({
-      user: data,
+    data = await addUser({
+      user: createUserModel({
+        email: fields.email,
+      }),
       callback: (resp) => {
         // Show success
         if (resp.status === "error") {
           callback?.(
-            createErrorResponse<FirebaseError>(
+            netCreateErrorResponse<FirebaseError>(
               resp.message,
               resp.data as FirebaseError,
             ),
@@ -69,7 +63,7 @@ async function authRegisterUser({
         // Show error
         else if (resp.status === "success") {
           callback?.(
-            createSuccessResponse<UserModel>(
+            netCreateSuccessResponse<UserModel>(
               "User has been registered to the database",
               data as UserModel,
             ),
@@ -77,9 +71,60 @@ async function authRegisterUser({
         }
       },
     });
+
+    // Do not proceed if failed/
+    // mostly because of existing user
+    if (data === null) return null;
+
+    callback?.(
+      netCreateLoadingResponse("Getting your data from our database...", null),
+    );
+
+    let authData: User | null = null;
+
+    try {
+      const userCred = await createUserWithEmailAndPassword(
+        firebaseAuth,
+        fields.email,
+        fields.password,
+      );
+      authData = userCred.user;
+    } catch (error) {
+      authData = null;
+      callback?.(
+        netCreateErrorResponse<FirebaseError>(
+          error + "",
+          error as FirebaseError,
+        ),
+      );
+    }
+
+    if (authData === null) return null;
+
+    // Adding the complete user information to user database
+    const editUserRef = doc(userDb, authData?.email || "");
+    data = {
+      ...(data as UserModel),
+      firebaseUser: authData as User,
+    };
+    await updateDoc(
+      editUserRef,
+      JSON.parse(
+        JSON.stringify(data),
+      ),
+    );
+
+    // data = ;
+
+    // creating user in `AUTH DB`
+    // const userCred = await createUserWithEmailAndPassword(
+    //   firebaseAuth,
+    //   fields.email,
+    //   fields.password,
+    // );
   } catch (error) {
     callback?.(
-      createErrorResponse<FirebaseError>(error + "", error as FirebaseError),
+      netCreateErrorResponse<FirebaseError>(error + "", error as FirebaseError),
     );
   }
   return data;
@@ -90,37 +135,31 @@ async function authLoginUser({
   callback,
 }: {
   fields: RegisterFields;
-  callback?: (resp: MainNetworkResponse<AuthRegisterUserProps>) => void;
-}): Promise<AuthRegisterUserProps> {
-  let data: AuthRegisterUserProps = null;
+  callback?: (resp: MainNetworkResponse<AuthUserProps>) => void;
+}): Promise<AuthUserProps> {
+  let data: AuthUserProps = null;
 
   try {
-    // Show a loading state still,
-    // because the system need to add yet another data to the `USER DB`
-    callback?.(
-      netCreateLoadingResponse(
-        "Adding your information into our database...",
-        null,
-      ),
-    );
-
-    // creating user in `AUTH DB`
+    // sign in the user
     const userCred = await signInWithEmailAndPassword(
       firebaseAuth,
       fields.email,
       fields.password,
     );
 
-    data = createUserModel({ firebaseUser: JSON.parse(JSON.stringify(userCred.user)) });
-    // await waitFor(1000);
-    // Adding the user
-    await addUser({
-      user: data,
+    // Show a loading state still,
+    // because the system need to add yet another data to the `USER DB`
+    callback?.(
+      netCreateLoadingResponse("Getting your data from our database...", null),
+    );
+
+    data = await getUser({
+      uid: userCred.user.uid,
       callback: (resp) => {
         // Show success
         if (resp.status === "error") {
           callback?.(
-            createErrorResponse<FirebaseError>(
+            netCreateErrorResponse<FirebaseError>(
               resp.message,
               resp.data as FirebaseError,
             ),
@@ -129,39 +168,23 @@ async function authLoginUser({
         // Show error
         else if (resp.status === "success") {
           callback?.(
-            createSuccessResponse<UserModel>(
-              "User has been registered to the database",
+            netCreateSuccessResponse<UserModel>(
+              "Successfully signed in",
               data as UserModel,
             ),
           );
         }
       },
     });
+    // await waitFor(1000);
+    // Adding the user
   } catch (error) {
     callback?.(
-      createErrorResponse<FirebaseError>(error + "", error as FirebaseError),
+      netCreateErrorResponse<FirebaseError>(error + "", error as FirebaseError),
     );
   }
   return data;
 }
-
-// async function authCheckUserExistence({
-//   email,
-//   callback,
-// }:{
-//   email:string,
-//   callback?:(resp:MainNetworkResponse<string|null>)=>void,
-// }):Promise<string|null>{
-//   let data: string | null = null;
-//   try{
-//     const existingUser = await
-//   }catch(error){
-//     callback?.(createErrorResponse(error+""))
-//   }
-
-//   return data;
-
-// };
 
 // article
 async function getArticleAll(): Promise<ArticleModel[] | null> {
@@ -189,24 +212,25 @@ async function addArticle(article: ArticleModel) {
   await setDoc(newDocRef, article);
 }
 
-type AddUserProps = UserModel | FirebaseError | null;
+type AddUserCallbackProps = UserModel | null | FirebaseError;
+type AddUserProps = UserModel | null;
 async function addUser({
   user,
   callback,
 }: {
   user: UserModel;
-  callback?: (resp: MainNetworkResponse<AddUserProps>) => void;
+  callback?: (resp: MainNetworkResponse<AddUserCallbackProps>) => void;
 }): Promise<AddUserProps> {
   let data: AddUserProps = null;
   try {
     // Create new data with its id
-    const newUserRef = doc(userDb, user.firebaseUser?.uid);
+    const newUserRef = doc(userDb, user.email);
     // Adding to the database
-    await setDoc(newUserRef, user); 
+    await setDoc(newUserRef, JSON.parse(JSON.stringify(user)));
     data = user;
     // Show success
     callback?.(
-      createSuccessResponse<AddUserProps>(
+      netCreateSuccessResponse<AddUserCallbackProps>(
         "User has been added to the database",
         user,
       ),
@@ -215,7 +239,47 @@ async function addUser({
     // Show error
     // console.log(error);
     callback?.(
-      createErrorResponse<AddUserProps>(error + "", error as FirebaseError),
+      netCreateErrorResponse<AddUserCallbackProps>(
+        error + "",
+        error as FirebaseError,
+      ),
+    );
+  }
+  return data;
+}
+
+type GetUserCallbackProps = UserModel | null | FirebaseError;
+type GetUserProps = UserModel | null;
+async function getUser({
+  uid,
+  callback,
+}: {
+  uid: string;
+  callback?: (resp: MainNetworkResponse<GetUserCallbackProps>) => void;
+}): Promise<UserModel | null> {
+  let data: GetUserProps = null;
+  try {
+    // Get user from database
+    const snapshot = await getDoc(doc(userDb, uid));
+    // Check if exists
+    const user = snapshot.exists() ? (snapshot.data() as UserModel) : null;
+
+    data = user;
+    // Show success
+    callback?.(
+      netCreateSuccessResponse<GetUserCallbackProps>(
+        "User has been added to the database",
+        user,
+      ),
+    );
+  } catch (error) {
+    // Show error
+    // console.log(error);
+    callback?.(
+      netCreateErrorResponse<GetUserCallbackProps>(
+        error + "",
+        error as FirebaseError,
+      ),
     );
   }
   return data;

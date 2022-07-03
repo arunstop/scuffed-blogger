@@ -62,7 +62,10 @@ function AuthRegisterForm({
       },
     ];
     const errorCode = resp.data.code;
-    if (errorCode === "auth/email-already-in-use") {
+    if (
+      errorCode === "auth/email-already-in-use" ||
+      errorCode === "permission-denied"
+    ) {
       title = "User already exists";
       desc = `The email that you just used is already recorded in our database, if you are the owner of this account please login instead, if not try to use another credential.`;
       actions.push({
@@ -134,7 +137,7 @@ function AuthRegisterForm({
               "Adding your information into our database",
               "We have just authenticated you into our system. Now wait for a moment as we adding your complete information into our database.",
             );
-          } 
+          }
           // wait for a bit if it is not loading
           else await waitFor(2000);
           // if error

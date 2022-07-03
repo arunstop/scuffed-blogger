@@ -1,5 +1,6 @@
 import { User } from "firebase/auth";
 export interface UserModel {
+  email:string;
   name: string;
   username: string;
   avatar?: string;
@@ -27,6 +28,7 @@ export interface UserModel {
 }
 
 export const createUserModel = ({
+  email="e@mail.com",
   name = "Dummy",
   username = "dummy_handle",
   avatar = "",
@@ -40,6 +42,7 @@ export const createUserModel = ({
 }: Partial<UserModel>): UserModel => {
   return {
     name: name,
+    email:email,
     username: username,
     avatar: avatar,
     list: {
