@@ -23,7 +23,7 @@ export interface MainNetworkResponse<T = unknown> {
 }
 
 // FACTORY
-export const netCreateLoadingResponse = <T = null>(
+export const netLoading = <T = null>(
   message?: string,
   data?: T,
 ): MainNetworkResponse<T | null> => ({
@@ -32,7 +32,7 @@ export const netCreateLoadingResponse = <T = null>(
   message:message||"",
 });
 
-export const netCreateErrorResponse = <T = null>(
+export const netError = <T = null>(
   message: string,
   data?: T,
 ): MainNetworkResponse<T | null> => ({
@@ -41,7 +41,7 @@ export const netCreateErrorResponse = <T = null>(
   message,
 });
 
-export const netCreateSuccessResponse = <T>(
+export const netSuccess = <T>(
   message: string,
   data: T,
 ): MainNetworkResponse<T> => ({ status: "success", data: data, message });
