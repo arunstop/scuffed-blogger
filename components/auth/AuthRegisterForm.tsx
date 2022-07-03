@@ -27,6 +27,7 @@ function AuthRegisterForm({
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<RegisterFields>({ mode: "onChange" });
 
@@ -50,6 +51,7 @@ function AuthRegisterForm({
     });
   }
 
+  // Show error based on the error-code
   function actionError(
     resp: MainNetworkResponse<FirebaseError>,
     tryAgain: () => void,
@@ -97,6 +99,7 @@ function AuthRegisterForm({
     });
   }
 
+  // Show success
   function actionSuccess(resp: MainNetworkResponse<UserModel | null>) {
     setAction({
       newLoading: false,
