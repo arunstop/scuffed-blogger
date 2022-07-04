@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import { RegisterFields } from "../../../components/auth/AuthRegisterForm";
+import { AuthRegisterProps } from "../../../components/auth/AuthRegisterForm";
 import { MainNetworkResponse } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { axiosClient } from "./AxiosClient";
@@ -153,7 +153,7 @@ async function registerUser({
   fields,
   callback,
 }: {
-  fields: RegisterFields;
+  fields: AuthRegisterProps;
   callback?: (resp: MainNetworkResponse<User | null>) => void;
 }){
 

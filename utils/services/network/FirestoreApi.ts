@@ -11,15 +11,12 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore/lite";
+import { LoginFields } from "../../../components/auth/AuthLoginForm";
 import { netSuccess } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
-import { RegisterFields } from "./../../../components/auth/AuthRegisterForm";
-import {
-  MainNetworkResponse,
-  netError,
-  netLoading,
-} from "./../../data/Main";
+import { AuthRegisterProps } from "./../../../components/auth/AuthRegisterForm";
+import { MainNetworkResponse, netError, netLoading } from "./../../data/Main";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 
 const articleDb = firebaseClient.db.article;
@@ -32,10 +29,10 @@ async function authRegisterUser({
   fields,
   callback,
 }: {
-  fields: RegisterFields;
+  fields: AuthRegisterProps;
   callback?: (resp: MainNetworkResponse<AuthUserProps>) => void;
 }): Promise<AuthUserProps> {
-  let data: AuthUserProps = null;
+ let data: AuthUserProps = null;
 
   try {
     // Show a loading state still,
@@ -44,16 +41,13 @@ async function authRegisterUser({
     // Adding the user
     data = await createUser({
       user: createUserModel({
-        email: fields.email,
+        ...fields,
       }),
       callback: (resp) => {
         // Show success
         if (resp.status === "error") {
           callback?.(
-            netError<FirebaseError>(
-              resp.message,
-              resp.data as FirebaseError,
-            ),
+            netError<FirebaseError>(resp.message, resp.data as FirebaseError),
           );
         }
         // Show error
@@ -72,9 +66,7 @@ async function authRegisterUser({
     // mostly because of existing user
     if (data === null) return null;
 
-    callback?.(
-      netLoading("Getting your data from our database...", null),
-    );
+    callback?.(netLoading("Getting your data from our database...", null));
 
     let authData: User | null = null;
 
@@ -87,12 +79,7 @@ async function authRegisterUser({
       authData = userCred.user;
     } catch (error) {
       authData = null;
-      callback?.(
-        netError<FirebaseError>(
-          error + "",
-          error as FirebaseError,
-        ),
-      );
+      callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
     }
 
     if (authData === null) return null;
@@ -106,18 +93,10 @@ async function authRegisterUser({
       updateUser(data);
     } catch (error) {
       data = null;
-      callback?.(
-        netError<FirebaseError>(
-          error + "",
-          error as FirebaseError,
-        ),
-      );
+      callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
     }
-    
   } catch (error) {
-    callback?.(
-      netError<FirebaseError>(error + "", error as FirebaseError),
-    );
+    callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
   }
   return data;
 }
@@ -127,7 +106,7 @@ async function authLoginUser({
   fields,
   callback,
 }: {
-  fields: RegisterFields;
+  fields: LoginFields;
   callback?: (resp: MainNetworkResponse<AuthUserProps>) => void;
 }): Promise<AuthUserProps> {
   let data: AuthUserProps = null;
@@ -152,19 +131,13 @@ async function authLoginUser({
         // Show success
         if (resp.status === "error") {
           callback?.(
-            netError<FirebaseError>(
-              resp.message,
-              resp.data as FirebaseError,
-            ),
+            netError<FirebaseError>(resp.message, resp.data as FirebaseError),
           );
         }
         // Show error
         else if (resp.status === "success") {
           callback?.(
-            netSuccess<UserModel>(
-              "Successfully signed in",
-              data as UserModel,
-            ),
+            netSuccess<UserModel>("Successfully signed in", data as UserModel),
           );
         }
       },
@@ -172,9 +145,7 @@ async function authLoginUser({
     // await waitFor(1000);
     // Adding the user
   } catch (error) {
-    callback?.(
-      netError<FirebaseError>(error + "", error as FirebaseError),
-    );
+    callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
   }
   return data;
 }
@@ -236,10 +207,7 @@ async function getUser({
     // Show error
     // console.log(error);
     callback?.(
-      netError<GetUserCallbackProps>(
-        error + "",
-        error as FirebaseError,
-      ),
+      netError<GetUserCallbackProps>(error + "", error as FirebaseError),
     );
   }
   return data;
@@ -273,10 +241,7 @@ async function createUser({
     // Show error
     // console.log(error);
     callback?.(
-      netError<AddUserCallbackProps>(
-        error + "",
-        error as FirebaseError,
-      ),
+      netError<AddUserCallbackProps>(error + "", error as FirebaseError),
     );
   }
   return data;

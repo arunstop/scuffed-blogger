@@ -2,7 +2,7 @@ import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { MdEmail, MdLock } from "react-icons/md";
+import { MdEmail, MdVpnKey } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
@@ -12,7 +12,7 @@ import MainTextInput from "../input/MainTextInput";
 import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";
 
-export interface RegisterFields {
+export interface LoginFields {
   email: string;
   password: string;
 }
@@ -30,7 +30,7 @@ function AuthRegisterForm({
     reset,
     setError,
     formState: { errors },
-  } = useForm<RegisterFields>({ mode: "onChange" });
+  } = useForm<LoginFields>({ mode: "onChange" });
 
   function actionLoading(title = "", desc = "") {
     setAction({
@@ -135,7 +135,7 @@ function AuthRegisterForm({
   }
   // console.log(watch("email"));
 
-  const onSubmit: SubmitHandler<RegisterFields> = async (data) => {
+  const onSubmit: SubmitHandler<LoginFields> = async (data) => {
     actionLoading();
     await firebaseApi
       .authLoginUser({
@@ -180,7 +180,7 @@ function AuthRegisterForm({
         {...register("email", {
           required: { value: true, message: "Email cannot be empty" },
           pattern: {
-            value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,64}$/,
             message: "Email requires a valid format",
           },
         })}
@@ -190,7 +190,7 @@ function AuthRegisterForm({
       <MainTextInput
         type="password"
         placeholder="Password..."
-        icon={<MdLock />}
+        icon={<MdVpnKey />}
         {...register("password", {
           required: { value: true, message: "Password cannot be empty" },
           minLength: {

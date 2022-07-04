@@ -2,7 +2,7 @@ import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { MdEmail, MdLock } from "react-icons/md";
+import { MdEmail, MdFormatColorText, MdOutlineVpnKey, MdVpnKey } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
@@ -11,9 +11,16 @@ import MainTextInput from "../input/MainTextInput";
 import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";
 
-export interface RegisterFields {
+export interface RegisterFormFields {
   email: string;
   password: string;
+  cPassword: string;
+  name: string;
+}
+export interface AuthRegisterProps {
+  email: string;
+  password: string;
+  name: string;
 }
 
 function AuthRegisterForm({
@@ -28,14 +35,15 @@ function AuthRegisterForm({
     handleSubmit,
     watch,
     reset,
+    getValues,
     formState: { errors },
-  } = useForm<RegisterFields>({ mode: "onChange" });
+  } = useForm<RegisterFormFields>({ mode: "onChange" });
 
   function actionLoading(title = "", desc = "") {
     setAction({
       newLoading: true,
       newPlaceHolder: {
-        title: title || "Processing your registration...",
+        title: title || "Processing your registration",
         desc:
           desc ||
           "Hold up for a moment, we are registering your information into our database, checking things left right and center as usual, you know the drill",
@@ -90,7 +98,7 @@ function AuthRegisterForm({
       newLoading: false,
       newNetResp: resp,
       newPlaceHolder: {
-        title: title || "Something weird happened...",
+        title: title || "Something weird happened",
         desc:
           `${desc ? desc + "\n" : ""}- - - -\n${resp.message}` || resp.message,
         status: "error",
@@ -126,12 +134,12 @@ function AuthRegisterForm({
   }
   // console.log(watch("email"));
 
-  const onSubmit: SubmitHandler<RegisterFields> = async (data) => {
+  const onSubmit: SubmitHandler<RegisterFormFields> = async (data) => {
     actionLoading();
     await waitFor(2000);
     await firebaseApi
       .authRegisterUser({
-        fields: data,
+        fields: {...data,email:data.email.toLowerCase()},
         callback: async (resp) => {
           // if loading
           if (resp.status === "loading") {
@@ -164,13 +172,37 @@ function AuthRegisterForm({
       onSubmit={handleSubmit(onSubmit)}
     >
       <MainTextInput
+        type="text"
+        placeholder="Name"
+        icon={<MdFormatColorText />}
+        {...register("name", {
+          required: { value: true, message: "Name cannot be empty" },
+          minLength: {
+            value: 2,
+            message: "Name requires min. 2 characters",
+          },
+          // pattern: {
+          //   // value: /^(?:[\p{L}\p{Mn}\p{Pd}\\'\x{2019}]+[\p{L}\p{Mn}\p{Pd}\\'\x{2019}]+\s?)+$/gmis,
+          //   value:/^[a-zA-Z ]$/,
+          //   message: "Name can only contain letters",
+          // },
+          validate: {
+            kontol: (value) =>
+              /\d/.test(value) ? "Cannot contains numbers" : true,
+          },
+        })}
+        error={!!errors.name}
+        errorMsg={errors.name?.message}
+      />
+
+      <MainTextInput
         type="email"
-        placeholder="Email..."
+        placeholder="Email"
         icon={<MdEmail />}
         {...register("email", {
           required: { value: true, message: "Email cannot be empty" },
           pattern: {
-            value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,64}$/,
             message: "Email requires a valid format",
           },
         })}
@@ -179,8 +211,8 @@ function AuthRegisterForm({
       />
       <MainTextInput
         type="password"
-        placeholder="Password..."
-        icon={<MdLock />}
+        placeholder="Password"
+        icon={<MdOutlineVpnKey />}
         {...register("password", {
           required: { value: true, message: "Password cannot be empty" },
           minLength: {
@@ -190,6 +222,26 @@ function AuthRegisterForm({
         })}
         error={!!errors.password}
         errorMsg={errors.password?.message}
+      />
+      <MainTextInput
+        type="password"
+        placeholder="Confirm Password"
+        icon={<MdVpnKey />}
+        {...register("cPassword", {
+          required: { value: true, message: "Password cannot be empty" },
+          minLength: {
+            value: 8,
+            message: "Password should be 8 characters minimum",
+          },
+          validate: {
+            differentPassword: (value) =>
+              value !== getValues().password
+                ? "Passwords should be the same"
+                : true,
+          },
+        })}
+        error={!!errors.cPassword}
+        errorMsg={errors.cPassword?.message}
       />
 
       <button className="btn --btn-resp btn-primary text-lg font-bold sm:text-xl">
