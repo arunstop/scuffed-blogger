@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FirebaseError } from "firebase/app";
+import { UploadTaskSnapshot } from "firebase/storage";
+import React from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {
   MdAdd,
   MdAlternateEmail,
@@ -7,28 +9,63 @@ import {
   MdNotes,
   MdPerson,
 } from "react-icons/md";
+import { firebaseApi } from "../../utils/services/network/FirestoreApi";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
 
-interface SetupProfileFormFields {
+export interface SetupProfileFormFields {
   username: string;
-  avatar: string;
+  avatar: FileList;
   bio: string;
   desc: string;
 }
+
+// function imgPreviewStyleHelper(empty: boolean, error: boolean) {
+//   if (empty) {
+//     return "border-dashed border-base-content hover:border-base-content/100";
+//   } else {
+//     return error
+//       ? "border-dashed border-error"
+//       : "border-solid border-base-content";
+//   }
+// }
 
 function ProfileSetupForm() {
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
+    resetField,
+    getValues,
+    watch,
+    control,
+    clearErrors,
+    setError,
   } = useForm<SetupProfileFormFields>({ mode: "onChange" });
 
-  const [avatar, setAvatar] = useState<File>();
+  const avatar = watch("avatar")?.[0];
 
   const onSubmit: SubmitHandler<SetupProfileFormFields> = async (data) => {
-    console.log(data);
+    firebaseApi.uploadImage({
+      fields: data,
+      callback: (resp) => {
+        if (resp.status === "loading") {
+          const progress = resp.data as UploadTaskSnapshot;
+          console.log(progress);
+        }
+        if (resp.status === "error") {
+          const progress = resp.data as FirebaseError;
+          console.log(progress);
+        }
+        if (resp.status === "success") {
+          const progress = resp.data as string;
+          console.log(`Upload file successful : ${progress}`);
+        }
+      },
+    });
   };
+
   return (
     <>
       <form
@@ -42,15 +79,21 @@ function ProfileSetupForm() {
           >
             <span
               className={`group relative h-36 w-36 transform cursor-pointer overflow-hidden rounded-[50%]
-              border-2   transition-[border-radius] duration-500
-              hover:rounded-xl  sm:h-48 
+              border-2   transition-[border-radius] duration-300
+              hover:rounded-xl  sm:h-48
               sm:w-48 sm:border-4 md:h-60 md:w-60 lg:h-72 lg:w-72
-              ${avatar ? "border-solid border-base-content": "border-dashed border-base-content/20 hover:border-base-content/100"}
+              
+              ${
+                errors.avatar
+                  ? "border-dashed border-error"
+                  : !avatar
+                  ? "border-dashed border-base-content/20 hover:border-base-content/100"
+                  : "border-solid border-base-content"
+              }
               `}
-
             >
               <img
-                className="h-full w-full max-w-none object-cover transition-all"
+                className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-125 duration-300"
                 src={
                   avatar
                     ? URL.createObjectURL(avatar)
@@ -70,38 +113,113 @@ function ProfileSetupForm() {
               </div>
             </span>
             <span
-              className="--btn-resp btn btn-link p-0 !text-base font-bold text-primary-content sm:!text-lg"
+              className={`--btn-resp btn btn-link p-0 !text-base font-bold sm:!text-lg ${
+                errors.avatar ? "text-error" : "text-base-content"
+              }`}
               tabIndex={-1}
             >
-              {avatar ? "Change the profile picture":"Add a profile picture"}
+              {errors.avatar
+                ? errors.avatar.message
+                : avatar
+                ? "Change the profile picture"
+                : "Add a profile picture"}
             </span>
-            <input
-              type={"file"}
-              className="hidden"
-              accept="image/png, image/gif, image/jpeg"
-              onChange={(e) => {
-                if (!e.target.files?.[0]) return;
-                const file = e.target.files[0];
-                const validImgTypes = ["image/png", "image/gif", "image/jpeg"];
-                // check the files is an image
-                if (!validImgTypes.includes(file.type))
-                  return alert("Invalid image file type");
-                // only accept file lower than 2MB
-                if (file.size > 2e6)
-                  return alert("File cannot be more than 2MB");
-                setAvatar(file);
-              }}
+            <Controller
+              render={({
+                formState,
+                field: { ref, name, onChange, onBlur },
+              }) => (
+                <input
+                  id="input-avatar"
+                  type={"file"}
+                  className="hidden"
+                  accept="image/png, image/gif, image/jpeg"
+                  // onChange={(event) => {
+                  //   props.
+                  // }}
+                  ref={ref}
+                  name={name}
+                  onBlur={onBlur}
+                  onChange={(ev) => {
+                    const files = ev.target.files;
+                    if (!files?.length) return;
+                    const file = files[0];
+                    const validImgTypes = [
+                      "image/png",
+                      "image/gif",
+                      "image/jpeg",
+                    ];
+                    if (!validImgTypes.includes(file.type)) {
+                      // resetField("avatar");
+                      return setError("avatar", {
+                        type: "forbiddenFileType",
+                        message: "Invalid image file type",
+                      });
+                    }
+
+                    if (file.size > 2e6) {
+                      // resetField("avatar");
+                      return setError("avatar", {
+                        type: "exceededFileSize",
+                        message: "File cannot be more than 2MB",
+                      });
+                    }
+
+                    onChange(ev.target.files);
+                  }}
+                />
+              )}
+              control={control}
+              name="avatar"
             />
           </label>
-          {avatar && <span
-            className="--btn-resp btn btn-link p-0 !text-base font-bold text-error sm:!text-lg"
-            onClick={() => {
-              setAvatar(undefined);
-            }}
-            tabIndex={-1}
-          >
-            Cancel
-          </span>}
+          {/* States component for `avatar` field */}
+          {/* If no errors and not empty */}
+          {!errors.avatar && avatar && (
+            <span
+              className="btn btn-outline --btn-resp"
+              onClick={() => {
+                resetField("avatar");
+              }}
+              tabIndex={-1}
+            >
+              Cancel
+            </span>
+          )}
+          {/* If error */}
+          {errors.avatar &&
+            (avatar ? (
+             <div className="flex flex-wrap gap-2">
+              <span
+                className="btn btn-outline --btn-resp"
+                onClick={() => {
+                  document.getElementById("input-avatar")?.click();
+                }}
+                tabIndex={-1}
+              >
+                Change
+              </span>
+              <span
+                className="btn btn-outline --btn-resp"
+                onClick={() => {
+                  resetField("avatar");
+                }}
+                tabIndex={-1}
+              >
+                Undo
+              </span>
+             </div>
+            ) : (
+              <span
+                className="btn btn-outline --btn-resp"
+                onClick={() => {
+                  resetField("avatar");
+                }}
+                tabIndex={-1}
+              >
+                Cancel
+              </span>
+            ))}
         </div>
         <MainTextInput
           type="text"
