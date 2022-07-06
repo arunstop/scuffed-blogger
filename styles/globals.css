@@ -92,7 +92,7 @@
 
 /* Custom responsive class */
 .--btn-resp{
-  @apply btn-sm sm:btn-md text-lg sm:text-xl min-w-[4.5rem] sm:min-w-[6rem]
+  @apply btn-sm sm:btn-md text-base sm:text-lg min-w-[4.5rem] sm:min-w-[6rem]
 }
 
 .--btn-base{
