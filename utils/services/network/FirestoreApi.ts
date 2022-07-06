@@ -11,12 +11,24 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore/lite";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+  UploadTaskSnapshot,
+} from "firebase/storage";
+import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
-import { netSuccess } from "../../data/Main";
+import { SetupProfileFormFields } from "../../../components/profile/ProfileSetupForm";
+import {
+  MainNetworkResponse,
+  netError,
+  netSuccess,
+  netLoading,
+} from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
 import { AuthRegisterProps } from "./../../../components/auth/AuthRegisterForm";
-import { MainNetworkResponse, netError, netLoading } from "./../../data/Main";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 
 const articleDb = firebaseClient.db.article;
@@ -32,7 +44,7 @@ async function authRegisterUser({
   fields: AuthRegisterProps;
   callback?: (resp: MainNetworkResponse<AuthUserProps>) => void;
 }): Promise<AuthUserProps> {
- let data: AuthUserProps = null;
+  let data: AuthUserProps = null;
 
   try {
     // Show a loading state still,
@@ -247,10 +259,58 @@ async function createUser({
   return data;
 }
 
+// Updates user's data
 async function updateUser(user: UserModel) {
   // Updating user in the database
   const editUserRef = doc(userDb, user.email || "");
   await updateDoc(editUserRef, JSON.parse(JSON.stringify(user)));
+}
+
+type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
+// Upload file
+async function uploadImage({
+  fields,
+  callback,
+}: {
+  fields: SetupProfileFormFields;
+  callback?: (resp: MainNetworkResponse<UploadFileProps>) => void;
+}): Promise<UploadFileProps> {
+  console.log(fields);
+  if (!fields.avatar.length) return null;
+  let data: UploadFileProps = null;
+  const file = fields.avatar[0];
+  // Splitting the name by with .  then get the last item
+  // which results the extension of the file
+  const extension = file.name.split(".").pop();
+  // Getting new name with id
+  const newName = `${nanoid(24)}.${extension}`;
+  const imageRef = ref(firebaseClient.storage, `images/${newName}`);
+  // Uploading the file
+  const uploadTask = uploadBytesResumable(imageRef, file);
+  uploadTask.on(
+    "state_changed",
+    // handle progress change
+    (snapshot) => {
+      callback?.(
+        netLoading<UploadTaskSnapshot>("Uploading your avatar...", snapshot),
+      );
+      // console.log(snapshot);
+    },
+    // handle failed upload
+    (error) => {
+      callback?.(
+        netError("Oops something doesn't seem right", error as FirebaseError),
+      );
+      // console.log(error);
+    },
+    // handle success
+    async () => {
+      data = await getDownloadURL(uploadTask.snapshot.ref);
+      callback?.(netSuccess<string>("", data));
+      // console.log(data);
+    },
+  );
+  return data;
 }
 
 export const firebaseApi = {
@@ -260,4 +320,5 @@ export const firebaseApi = {
   addUser: createUser,
   authRegisterUser,
   authLoginUser,
+  uploadImage,
 };
