@@ -269,16 +269,14 @@ async function updateUser(user: UserModel) {
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file
 async function uploadImage({
-  fields,
+  file,
   callback,
 }: {
-  fields: SetupProfileFormFields;
+  file: File;
   callback?: (resp: MainNetworkResponse<UploadFileProps>) => void;
 }): Promise<UploadFileProps> {
-  console.log(fields);
-  if (!fields.avatar.length) return null;
   let data: UploadFileProps = null;
-  const file = fields.avatar[0];
+  // const file = fields.avatar[0];
   // Splitting the name by with .  then get the last item
   // which results the extension of the file
   const extension = file.name.split(".").pop();
@@ -299,7 +297,7 @@ async function uploadImage({
     // handle failed upload
     (error) => {
       callback?.(
-        netError("Oops something doesn't seem right", error as FirebaseError),
+        netError("Error when uploading the image", error as FirebaseError),
       );
       // console.log(error);
     },
@@ -313,6 +311,32 @@ async function uploadImage({
   return data;
 }
 
+type UpdateProfileProps = null | FirebaseError | UserModel;
+async function updateProfile({
+  fields,
+  callback,
+}: {
+  fields: SetupProfileFormFields;
+  callback?: (resp: MainNetworkResponse<UpdateProfileProps>) => void;
+}): Promise<UpdateProfileProps> {
+  let data: UpdateProfileProps = null;
+  try {
+    const dummyUserModel = createUserModel({
+      username: fields.username,
+      bio: fields.bio,
+      desc: fields.desc,
+    });
+
+    await updateUser(dummyUserModel);
+    data = dummyUserModel;
+
+    callback?.(netSuccess<UserModel>("Update Profile successful", data));
+  } catch (error) {
+    callback?.(netError("Error when updating profile", error as FirebaseError));
+  }
+  return data;
+}
+
 export const firebaseApi = {
   getArticleAll,
   getArticleById,
@@ -321,4 +345,5 @@ export const firebaseApi = {
   authRegisterUser,
   authLoginUser,
   uploadImage,
+  updateProfile,
 };
