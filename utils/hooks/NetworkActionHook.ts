@@ -53,7 +53,7 @@ export function useNetworkAction<T1, T2 = undefined>(
         // Assign the data from the previous one.
         return { ...(prev as any), value: false };
       });
-      setNetResp(undefined);
+      // setNetResp(undefined);
     },
     clearResp: () => {
       setLoading((prev) => {

@@ -7,9 +7,8 @@ import {
   MdAlternateEmail,
   MdEdit,
   MdNotes,
-  MdPerson
+  MdPerson,
 } from "react-icons/md";
-import { LOREM } from "../../utils/helpers/Constants";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
@@ -19,7 +18,7 @@ import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
 import GradientBackground from "../main/GradientBackground";
 import StatusPlaceholder, {
-  StatusPlaceholderProps
+  StatusPlaceholderProps,
 } from "../placeholder/StatusPlaceholder";
 
 export interface SetupProfileFormFields {
@@ -117,7 +116,7 @@ function ProfileSetupForm() {
                 {
                   label: "Cancel",
                   callback: () => {
-                    clearResp();
+                    setLoading({ value: false, data: null });
                   },
                 },
               ],
@@ -173,7 +172,7 @@ function ProfileSetupForm() {
           <div className="absolute flex flex-col w-full z-10">
             <Transition
               appear
-              show={isLoading  && !hasLoaded}
+              show={isLoading && !hasLoaded}
               as={"div"}
               className={"absolute inset-x-0"}
               {...transitionPullV({
@@ -189,7 +188,9 @@ function ProfileSetupForm() {
 
             <Transition
               appear
-              show={!loading.value && netResp?.status === "error" && !!loading.data}
+              show={
+                !loading.value && netResp?.status === "error" && !!loading.data
+              }
               as={"div"}
               className={"absolute inset-x-0"}
               {...transitionPullV({
@@ -198,19 +199,11 @@ function ProfileSetupForm() {
                 leave: " w-full",
               })}
             >
-              <StatusPlaceholder
-                status="error"
-                title="Error1"
-                desc={LOREM}
-                actions={[
-                  {
-                    label: "Cancel",
-                    callback: () => {
-                      clearResp();
-                    },
-                  },
-                ]}
-              />
+              {netResp && (
+                <StatusPlaceholder
+                  {...(netResp?.data as StatusPlaceholderProps)}
+                />
+              )}
             </Transition>
 
             {/*<Transition
