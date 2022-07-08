@@ -1,15 +1,15 @@
-import { User } from "firebase/auth";
+import { UserModel } from "../models/UserModel";
 export interface AuthContextProps {
   state: AuthState;
   action: AuthAction;
 }
 
 export interface AuthState {
-  user: User|null;
+  user: UserModel|null;
 }
 
 export interface AuthAction {
-  setUser: (user: User) => void;
+  setUser: (user: UserModel) => void;
   unsetUser: () => void;
   // setReplyingCommentId: (id: string | number|null) => void;
 }
@@ -17,7 +17,7 @@ export interface AuthAction {
 export type AuthActionTypes =
   | {
       type: "SET_USER";
-      payload: { user: User };
+      payload: { user: UserModel };
     }
   | {
       type: "UNSET_USER";

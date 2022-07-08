@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useReducer } from "react";
+import { ReactNode, useReducer } from "react";
 import { AuthAction, AuthContextProps } from "../../data/contexts/AuthTypes";
 import { firebaseAuth } from "../../services/network/FirebaseClient";
 import { authContext } from "./AuthContext";
@@ -30,11 +30,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     action: action,
   };
 
-  useEffect(() => {
-    firebaseAuth.onAuthStateChanged((user) => {
-      if (user) return action.setUser(user);
-    });
-  }, []);
+  // useEffect(() => {
+  //   firebaseAuth.onAuthStateChanged((user) => {
+  //     if (user) return action.setUser(user);
+  //   });
+  // }, []);
 
   return <authContext.Provider value={value}>{children}</authContext.Provider>;
 };
