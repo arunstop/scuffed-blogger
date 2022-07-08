@@ -41,8 +41,8 @@ export function useNetworkAction<T1, T2 = undefined>(
     // not Loading
     // check if user has attempted to do network action
     isLoading: loading.value,
-    isError: !!loading.data && netResp?.status === "error",
-    isSuccess: netResp?.status === "success",
+    isError: !loading.value&& !!loading.data && netResp?.status === "error",
+    isSuccess: !loading.value&&  !!loading.data && netResp?.status === "success",
     hasLoaded: !!loading.data && !!netResp?.data,
     loading,
     // stop loading

@@ -121,8 +121,6 @@ async function authLoginUser({
   fields: LoginFields;
   callback?: (resp: MainNetworkResponse<AuthUserProps>) => void;
 }): Promise<AuthUserProps> {
-  let data: AuthUserProps = null;
-
   try {
     // sign in the user
     const userCred = await signInWithEmailAndPassword(
@@ -130,36 +128,32 @@ async function authLoginUser({
       fields.email,
       fields.password,
     );
-
-    // Show a loading state still,
-    // because the system need to add yet another data to the `USER DB`
-    // callback?.(
-    //   netCreateLoadingResponse("Getting your data from our database...", null),
-    // );
-
-    data = await getUser({
-      uid: userCred.user.uid,
-      callback: (resp) => {
-        // Show success
-        if (resp.status === "error") {
-          callback?.(
-            netError<FirebaseError>(resp.message, resp.data as FirebaseError),
-          );
-        }
-        // Show error
-        else if (resp.status === "success") {
-          callback?.(
-            netSuccess<UserModel>("Successfully signed in", data as UserModel),
-          );
-        }
-      },
-    });
-    // await waitFor(1000);
-    // Adding the user
+    // if success then get the user data
+    if (!userCred.user.email) {
+      callback?.(netError("Error when loggin in"));
+      return null;
+    }
+    // get the user data
+    try {
+      const userData = await getUser(userCred.user.email);
+      if (userData === null) {
+        callback?.(netError("Cannot find the requested user data"));
+        return null;
+      }
+      callback?.(netSuccess<UserModel>("Successfully signed in", userData));
+      return userData;
+    } catch (error) {
+      callback?.(
+        netError<FirebaseError>("Error when loggin in", error as FirebaseError),
+      );
+      return null;
+    }
   } catch (error) {
-    callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
+    callback?.(
+      netError<FirebaseError>("Error when loggin in", error as FirebaseError),
+    );
+    return null;
   }
-  return data;
 }
 
 // @return all articles
@@ -193,36 +187,46 @@ async function addArticle(article: ArticleModel) {
 type GetUserCallbackProps = UserModel | null | FirebaseError;
 type GetUserProps = UserModel | null;
 // @return UserModel if exists
-async function getUser({
-  uid,
-  callback,
-}: {
-  uid: string;
-  callback?: (resp: MainNetworkResponse<GetUserCallbackProps>) => void;
-}): Promise<UserModel | null> {
-  let data: GetUserProps = null;
-  try {
-    // Get user from database
-    const snapshot = await getDoc(doc(userDb, uid));
-    // Check if exists
-    const user = snapshot.exists() ? (snapshot.data() as UserModel) : null;
+// async function getUser({
+//   email,
+//   callback,
+// }: {
+//   email: string;
+//   callback?: (resp: MainNetworkResponse<GetUserCallbackProps>) => void;
+// }): Promise<UserModel | null> {
+//   let data: GetUserProps = null;
+//   try {
+//     // Get user from database
+//     const snapshot = await getDoc(doc(userDb, email));
+//     // Check if exists
+//     const user = snapshot.exists() ? (snapshot.data() as UserModel) : null;
 
-    data = user;
-    // Show success
-    callback?.(
-      netSuccess<GetUserCallbackProps>(
-        "User has been added to the database",
-        user,
-      ),
-    );
-  } catch (error) {
-    // Show error
-    // console.log(error);
-    callback?.(
-      netError<GetUserCallbackProps>(error + "", error as FirebaseError),
-    );
-  }
-  return data;
+//     data = user;
+//     // Show success
+//     callback?.(
+//       netSuccess<GetUserCallbackProps>(
+//         "User has been added to the database",
+//         user,
+//       ),
+//     );
+//   } catch (error) {
+//     // Show error
+//     // console.log(error);
+//     callback?.(
+//       netError<GetUserCallbackProps>(
+//         "Error when getting user data",
+//         error as FirebaseError,
+//       ),
+//     );
+//   }
+//   return data;
+// }
+
+async function getUser(email: string): Promise<UserModel | null> {
+  // Get user from database
+  const snapshot = await getDoc(doc(userDb, email));
+  // Check if exists
+  return snapshot.exists() ? (snapshot.data() as UserModel) : null;
 }
 
 type AddUserCallbackProps = UserModel | null | FirebaseError;
@@ -274,8 +278,8 @@ async function uploadImage({
 }: {
   file: File;
   callback?: (resp: MainNetworkResponse<UploadFileProps>) => void;
-}): Promise<UploadFileProps> {
-  let data: UploadFileProps = null;
+}): Promise<string> {
+  let data = "";
   // const file = fields.avatar[0];
   // Splitting the name by with .  then get the last item
   // which results the extension of the file
@@ -314,27 +318,43 @@ async function uploadImage({
 type UpdateProfileProps = null | FirebaseError | UserModel;
 async function updateProfile({
   fields,
+  user,
   callback,
 }: {
   fields: SetupProfileFormFields;
+  user: UserModel;
   callback?: (resp: MainNetworkResponse<UpdateProfileProps>) => void;
 }): Promise<UpdateProfileProps> {
-  let data: UpdateProfileProps = null;
+  let updatedUserData = {
+    ...user,
+    username: fields.username,
+    bio: fields.bio,
+    desc: fields.desc,
+  };
+  // Upload image if there is one
+  if (fields.avatar) {
+    try {
+      const imageUrl = await uploadImage({ file: fields.avatar[0] });
+      if (imageUrl) updatedUserData = { ...updatedUserData, avatar: imageUrl };
+    } catch (error) {
+      callback?.(
+        netError("Error when updating profile", error as FirebaseError),
+      );
+      return null;
+    }
+  }
+
+  // Update overall User Data
   try {
-    const dummyUserModel = createUserModel({
-      username: fields.username,
-      bio: fields.bio,
-      desc: fields.desc,
-    });
-
-    await updateUser(dummyUserModel);
-    data = dummyUserModel;
-
-    callback?.(netSuccess<UserModel>("Update Profile successful", data));
+    await updateUser(updatedUserData);
+    callback?.(
+      netSuccess<UserModel>("Success updating profile", updatedUserData),
+    );
+    return updatedUserData;
   } catch (error) {
     callback?.(netError("Error when updating profile", error as FirebaseError));
+    return null;
   }
-  return data;
 }
 
 export const firebaseApi = {

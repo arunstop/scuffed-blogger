@@ -9,6 +9,8 @@ import {
   MdNotes,
   MdPerson,
 } from "react-icons/md";
+import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
+import { UserModel } from "../../utils/data/models/UserModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
@@ -60,14 +62,15 @@ function ProfileSetupForm() {
     clearResp,
     hasLoaded,
     netResp,
+    isSuccess,
   } = useNetworkAction<
     StatusPlaceholderProps | null,
     StatusPlaceholderProps | null
   >({ value: false, data: null });
-  // const [loading, setLoading] = useState(false);
-  // const [error1, setError1] = useState(false);
-  // const [success, setSuccess] = useState(false);
-
+  const {
+    authState: { user },
+    authAction,
+  } = useAuthCtx();
   const onSubmit: SubmitHandler<SetupProfileFormFields> = async (data) => {
     clearResp();
     setLoading({
@@ -80,74 +83,76 @@ function ProfileSetupForm() {
           {
             label: "Cancel",
             callback: () => {
-              stopLoading();
+              clearResp();
             },
           },
         ],
       },
     });
-    console.log(loading);
+    // console.log(loading);
 
     // setLoading(true);
 
     scrollToTop(true);
-    await firebaseApi.updateProfile({
-      fields: data,
-      callback: async (resp) => {
-        scrollToTop(true);
-        await waitFor(1000);
-        // if (resp.status !== "loading") setLoading({ value: false, data: null });
-        // setLoading((prev) => {
-        //   return { value: false, data: prev.data };
-        // });
-        // setLoading(false);
+    if (!user) return;
+    await firebaseApi
+      .updateProfile({
+        fields: data,
+        user: user,
+        callback: async (resp) => {
+          console.log(resp);
+          scrollToTop(true);
+          await waitFor(1000);
 
-        if (resp.status === "error") {
-          const progress = resp.data as FirebaseError;
-          console.log(progress);
-          stopLoading();
-          setNetResp({
-            ...resp,
-            data: {
-              title: "Oops something happened.",
-              desc: progress.message,
-              status: "error",
-              actions: [
-                {
-                  label: "Cancel",
-                  callback: () => {
-                    setLoading({ value: false, data: null });
+          if (resp.status === "error") {
+            const progress = resp.data as FirebaseError;
+            // console.log(progress);
+            stopLoading();
+            setNetResp({
+              ...resp,
+              data: {
+                title: "Oops something happened.",
+                desc: progress.message,
+                status: "error",
+                actions: [
+                  {
+                    label: "Cancel",
+                    callback: () => {
+                      setLoading({ value: false, data: null });
+                    },
                   },
-                },
-              ],
-            },
-          });
-          // setError1(true);
-        }
-        if (resp.status === "success") {
-          // const progress = resp.data as UserModel;
-          // console.log(`Upload file successful : ${progress}`);
-          // setSuccess(true);
-          setNetResp({
-            ...resp,
-            data: {
-              title: "Registration completed!",
-              desc: "Welcome to Tuturku! When thoughts meet each other.\n\
-            Well that was smooth, wasn't it? Explore our articles or you can write your own.",
-              status: "success",
-              actions: [
-                {
-                  label: "Cancel",
-                  callback: () => {
-                    setLoading({ value: false, data: null });
+                ],
+              },
+            });
+            // setError1(true);
+          }
+          if (resp.status === "success") {
+            // const progress = resp.data as UserModel;
+            // console.log(`Upload file successful : ${progress}`);
+            // setSuccess(true);
+            stopLoading();
+            setNetResp({
+              ...resp,
+              data: {
+                title: "Setup Complete!",
+                desc: "Choose youre desired topic! Let us know what kind of articles you want us to show you.",
+                status: "success",
+                actions: [
+                  {
+                    label: "Cancel",
+                    callback: () => {
+                      setLoading({ value: false, data: null });
+                    },
                   },
-                },
-              ],
-            },
-          });
-        }
-      },
-    });
+                ],
+              },
+            });
+          }
+        },
+      })
+      .then((e) => {
+        authAction.setUser(e as UserModel);
+      });
   };
 
   return (
@@ -188,9 +193,25 @@ function ProfileSetupForm() {
 
             <Transition
               appear
-              show={
-                !loading.value && netResp?.status === "error" && !!loading.data
-              }
+              show={isError}
+              as={"div"}
+              className={"absolute inset-x-0"}
+              {...transitionPullV({
+                enter: " w-full",
+                entered: "",
+                leave: " w-full",
+              })}
+            >
+              {netResp && (
+                <StatusPlaceholder
+                  {...(netResp?.data as StatusPlaceholderProps)}
+                />
+              )}
+            </Transition>
+
+            <Transition
+              appear
+              show={isSuccess}
               as={"div"}
               className={"absolute inset-x-0"}
               {...transitionPullV({
