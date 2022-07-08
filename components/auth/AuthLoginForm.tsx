@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdVpnKey } from "react-icons/md";
+import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
@@ -31,6 +32,8 @@ function AuthRegisterForm({
     setError,
     formState: { errors },
   } = useForm<LoginFields>({ mode: "onChange" });
+
+  const { authAction } = useAuthCtx();
 
   function actionLoading(title = "", desc = "") {
     setAction({
@@ -120,16 +123,16 @@ function AuthRegisterForm({
         title: "Sign in completed!",
         desc: "Welcome back! Fancy seeing you here again. Wonder what you are up to this time. Redirecting you to the main page....",
         status: "success",
-        // actions: [
-        //   {
-        //     callback: () => cancelActions(false),
-        //     label: "Explore",
-        //   },
-        //   {
-        //     callback: () => cancelActions(false),
-        //     label: "Write my first article",
-        //   },
-        // ],
+        actions: [
+          {
+            callback: () => cancelActions(false),
+            label: "Explore",
+          },
+          // {
+          //   callback: () => cancelActions(false),
+          //   label: "Write my first article",
+          // },
+        ],
       },
     });
   }
@@ -157,14 +160,13 @@ function AuthRegisterForm({
             );
           // if success
           if (resp.status === "success") {
-            actionSuccess(resp as MainNetworkResponse<UserModel>);
-            await waitFor(2000);
-            router.push("/write");
+            const respUser = resp as MainNetworkResponse<UserModel>;
+            actionSuccess(respUser);
           }
         },
       })
       .then((e) => {
-        console.log(e);
+        authAction.setUser((e as UserModel));
       });
   };
 
