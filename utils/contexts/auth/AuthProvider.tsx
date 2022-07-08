@@ -1,6 +1,9 @@
 import { useRouter } from "next/router";
-import { ReactNode, useReducer } from "react";
+import { ReactNode, useEffect, useReducer } from "react";
 import { AuthAction, AuthContextProps } from "../../data/contexts/AuthTypes";
+import { UserModel } from "../../data/models/UserModel";
+import { KEY_AUTH_USER } from "../../helpers/Constants";
+import { storageFind, storageSave } from "../../services/local/LocalStorage";
 import { firebaseAuth } from "../../services/network/FirebaseClient";
 import { authContext } from "./AuthContext";
 import { AUTH_INIT } from "./AuthInitializer";
@@ -13,7 +16,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const action: AuthAction = {
     setUser: (user) => {
       dispatch({ type: "SET_USER", payload: { user } });
-      // toggleClientDarkMode(newVal);
+      storageSave(KEY_AUTH_USER, encodeURIComponent(JSON.stringify(user)));
     },
     unsetUser: () => {
       dispatch({ type: "UNSET_USER" });
@@ -30,11 +33,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     action: action,
   };
 
-  // useEffect(() => {
-  //   firebaseAuth.onAuthStateChanged((user) => {
-  //     if (user) return action.setUser(user);
-  //   });
-  // }, []);
+  useEffect(() => {
+    try {
+      const localAuthUser = JSON.parse(
+        decodeURIComponent(storageFind(KEY_AUTH_USER)),
+      );
+      action.setUser(localAuthUser as UserModel);
+    } catch (error) {
+      console.log("no local user auth");
+    }
+  }, []);
 
   return <authContext.Provider value={value}>{children}</authContext.Provider>;
 };
