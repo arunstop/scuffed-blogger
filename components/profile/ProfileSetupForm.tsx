@@ -1,5 +1,6 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
+import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {
@@ -30,17 +31,8 @@ export interface SetupProfileFormFields {
   desc: string;
 }
 
-// function imgPreviewStyleHelper(empty: boolean, error: boolean) {
-//   if (empty) {
-//     return "border-dashed border-base-content hover:border-base-content/100";
-//   } else {
-//     return error
-//       ? "border-dashed border-error"
-//       : "border-solid border-base-content";
-//   }
-// }
-
 function ProfileSetupForm() {
+  const router = useRouter();
   const {
     register,
     formState: { errors },
@@ -50,8 +42,11 @@ function ProfileSetupForm() {
     control,
     clearErrors,
     setError,
+    reset: resetForm,
   } = useForm<SetupProfileFormFields>({ mode: "onChange" });
+
   const avatar = watch("avatar")?.[0];
+
   const {
     loading,
     isError,
@@ -67,10 +62,12 @@ function ProfileSetupForm() {
     StatusPlaceholderProps | null,
     StatusPlaceholderProps | null
   >({ value: false, data: null });
+
   const {
     authState: { user },
     authAction,
   } = useAuthCtx();
+
   const onSubmit: SubmitHandler<SetupProfileFormFields> = async (data) => {
     clearResp();
     setLoading({
@@ -94,7 +91,7 @@ function ProfileSetupForm() {
     // setLoading(true);
 
     scrollToTop(true);
-    if (!user) return;
+    if (!user) return alert("Not Logged in");
     await firebaseApi
       .updateProfile({
         fields: data,
@@ -151,7 +148,9 @@ function ProfileSetupForm() {
         },
       })
       .then((e) => {
+        resetForm();
         authAction.setUser(e as UserModel);
+        router.push("/profile/choosetopic");
       });
   };
 
@@ -226,32 +225,6 @@ function ProfileSetupForm() {
                 />
               )}
             </Transition>
-
-            {/*<Transition
-              appear
-              show={success}
-              as={"div"}
-              className={"absolute inset-x-0"}
-              {...transitionPullV({
-                enter: " w-full",
-                entered: "",
-                leave: " w-full",
-              })}
-            >
-              <StatusPlaceholder
-                status="success"
-                title="Success"
-                desc={LOREM}
-                actions={[
-                  {
-                    label: "Cancel",
-                    callback: () => {
-                      setSuccess(false);
-                    },
-                  },
-                ]}
-              />
-            </Transition> */}
           </div>
 
           <Transition

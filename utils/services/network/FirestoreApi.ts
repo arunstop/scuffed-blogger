@@ -307,11 +307,15 @@ async function uploadImage({
     },
     // handle success
     async () => {
-      data = await getDownloadURL(uploadTask.snapshot.ref);
+      // data = await getDownloadURL(uploadTask.snapshot.ref);
       callback?.(netSuccess<string>("", data));
       // console.log(data);
     },
   );
+  await uploadTask.then(async (e) => {
+    data = await getDownloadURL(uploadTask.snapshot.ref);
+  });
+
   return data;
 }
 
@@ -335,6 +339,7 @@ async function updateProfile({
   if (fields.avatar) {
     try {
       const imageUrl = await uploadImage({ file: fields.avatar[0] });
+      console.log("imageUrl : " + imageUrl);
       if (imageUrl) updatedUserData = { ...updatedUserData, avatar: imageUrl };
     } catch (error) {
       callback?.(
