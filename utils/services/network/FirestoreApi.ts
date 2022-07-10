@@ -2,29 +2,26 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
+  User
 } from "firebase/auth";
 import {
   doc,
   getDoc,
   getDocs,
   setDoc,
-  updateDoc,
+  updateDoc
 } from "firebase/firestore/lite";
 import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
-  UploadTaskSnapshot,
+  UploadTaskSnapshot
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
-import { SetupProfileFormFields } from "../../../components/profile/ProfileSetupForm";
 import {
   MainNetworkResponse,
-  netError,
-  netSuccess,
-  netLoading,
+  netError, netLoading, netSuccess
 } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
@@ -321,24 +318,24 @@ async function uploadImage({
 
 type UpdateProfileProps = null | FirebaseError | UserModel;
 async function updateProfile({
-  fields,
+  file,
   user,
   callback,
 }: {
-  fields: SetupProfileFormFields;
+  file?: FileList;
   user: UserModel;
   callback?: (resp: MainNetworkResponse<UpdateProfileProps>) => void;
 }): Promise<UpdateProfileProps> {
   let updatedUserData = {
     ...user,
-    username: fields.username,
-    bio: fields.bio,
-    desc: fields.desc,
+    username: user.username,
+    bio: user.bio,
+    desc: user.desc,
   };
   // Upload image if there is one
-  if (fields.avatar) {
+  if (file) {
     try {
-      const imageUrl = await uploadImage({ file: fields.avatar[0] });
+      const imageUrl = await uploadImage({ file: file[0] });
       console.log("imageUrl : " + imageUrl);
       if (imageUrl) updatedUserData = { ...updatedUserData, avatar: imageUrl };
     } catch (error) {

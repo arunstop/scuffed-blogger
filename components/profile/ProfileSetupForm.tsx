@@ -1,5 +1,6 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
+import _ from "lodash";
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -94,8 +95,8 @@ function ProfileSetupForm() {
     if (!user) return alert("Not Logged in");
     await firebaseApi
       .updateProfile({
-        fields: data,
-        user: user,
+        file: data.avatar,
+        user: { ...user, ..._.omit(data, ["avatar"]) },
         callback: async (resp) => {
           console.log(resp);
           scrollToTop(true);
@@ -239,27 +240,27 @@ function ProfileSetupForm() {
           >
             <form
               className="form-control mx-auto flex w-full flex-col gap-4 p-4 sm:max-w-md sm:gap-8 
-      sm:p-8 md:max-w-lg lg:max-w-xl"
+              sm:p-8 md:max-w-lg lg:max-w-xl"
               onSubmit={handleSubmit(onSubmit)}
             >
               <div className="flex flex-col items-center">
                 <label
                   className="pointer-events-none flex flex-col items-center 
-          [&>*]:pointer-events-auto"
+                  [&>*]:pointer-events-auto"
                 >
                   <span
                     className={`group relative h-36 w-36 transform cursor-pointer overflow-hidden rounded-[50%]
-            border-2   transition-[border-radius] duration-300
-            hover:rounded-xl  sm:h-48
-            sm:w-48 sm:border-4 md:h-60 md:w-60 lg:h-72 lg:w-72
-            ${
-              errors.avatar
-                ? "border-dashed border-error"
-                : !avatar
-                ? "border-dashed border-base-content/20 hover:border-base-content/100"
-                : "border-solid border-base-content"
-            }
-            `}
+                    border-2   transition-[border-radius] duration-300
+                    hover:rounded-xl  sm:h-48
+                    sm:w-48 sm:border-4 md:h-60 md:w-60 lg:h-72 lg:w-72
+                    ${
+                      errors.avatar
+                        ? "border-dashed border-error"
+                        : !avatar
+                        ? "border-dashed border-base-content/20 hover:border-base-content/100"
+                        : "border-solid border-base-content"
+                    }
+                    `}
                   >
                     <img
                       className="h-full w-full max-w-none object-cover transition-transform duration-300 group-hover:scale-125"
@@ -271,8 +272,8 @@ function ProfileSetupForm() {
                     />
                     <div
                       className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-black/0 
-              opacity-0 transition-[opacity,background-color] duration-500 
-              group-hover:bg-black/60 group-hover:opacity-100"
+                      opacity-0 transition-[opacity,background-color] duration-500 
+                    group-hover:bg-black/60 group-hover:opacity-100"
                     >
                       {avatar ? (
                         <MdEdit className="text-4xl text-white sm:text-5xl" />

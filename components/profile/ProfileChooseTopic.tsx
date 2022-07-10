@@ -1,11 +1,15 @@
 import { Transition } from "@headlessui/react";
+import { FirebaseError } from "firebase/app";
 import React, { Fragment } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
+import { UserModel } from "../../utils/data/models/UserModel";
 import { LOREM } from "../../utils/helpers/Constants";
+import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
+import { firebaseApi } from "../../utils/services/network/FirestoreApi";
 import GradientBackground from "../main/GradientBackground";
 import StatusPlaceholder, {
   StatusPlaceholderProps,
@@ -73,65 +77,64 @@ function ProfileChooseTopic() {
 
     scrollToTop(true);
     if (!user) return alert("Not Logged in");
-    // await firebaseApi
-    //   .updateProfile({
-    //     fields: data,
-    //     user: user,
-    //     callback: async (resp) => {
-    //       console.log(resp);
-    //       scrollToTop(true);
-    //       await waitFor(1000);
+    await firebaseApi
+      .updateProfile({
+        user: { ...user, list: { ...user.list!, topics: data.topics } },
+        callback: async (resp) => {
+          console.log(resp);
+          scrollToTop(true);
+          await waitFor(1000);
 
-    //       if (resp.status === "error") {
-    //         const progress = resp.data as FirebaseError;
-    //         // console.log(progress);
-    //         stopLoading();
-    //         setNetResp({
-    //           ...resp,
-    //           data: {
-    //             title: "Oops something happened.",
-    //             desc: progress.message,
-    //             status: "error",
-    //             actions: [
-    //               {
-    //                 label: "Cancel",
-    //                 callback: () => {
-    //                   setLoading({ value: false, data: null });
-    //                 },
-    //               },
-    //             ],
-    //           },
-    //         });
-    //         // setError1(true);
-    //       }
-    //       if (resp.status === "success") {
-    //         // const progress = resp.data as UserModel;
-    //         // console.log(`Upload file successful : ${progress}`);
-    //         // setSuccess(true);
-    //         stopLoading();
-    //         setNetResp({
-    //           ...resp,
-    //           data: {
-    //             title: "Setup Complete!",
-    //             desc: "Choose youre desired topic! Let us know what kind of articles you want us to show you.",
-    //             status: "success",
-    //             actions: [
-    //               {
-    //                 label: "Cancel",
-    //                 callback: () => {
-    //                   setLoading({ value: false, data: null });
-    //                 },
-    //               },
-    //             ],
-    //           },
-    //         });
-    //       }
-    //     },
-    //   })
-    //   .then((e) => {
-    //     resetForm();
-    //     authAction.setUser(e as UserModel);
-    //   });
+          if (resp.status === "error") {
+            const progress = resp.data as FirebaseError;
+            // console.log(progress);
+            stopLoading();
+            setNetResp({
+              ...resp,
+              data: {
+                title: "Oops something happened.",
+                desc: progress.message,
+                status: "error",
+                actions: [
+                  {
+                    label: "Cancel",
+                    callback: () => {
+                      setLoading({ value: false, data: null });
+                    },
+                  },
+                ],
+              },
+            });
+            // setError1(true);
+          }
+          if (resp.status === "success") {
+            // const progress = resp.data as UserModel;
+            // console.log(`Upload file successful : ${progress}`);
+            // setSuccess(true);
+            stopLoading();
+            setNetResp({
+              ...resp,
+              data: {
+                title: "Setup Complete!",
+                desc: "Choose youre desired topic! Let us know what kind of articles you want us to show you.",
+                status: "success",
+                actions: [
+                  {
+                    label: "Cancel",
+                    callback: () => {
+                      setLoading({ value: false, data: null });
+                    },
+                  },
+                ],
+              },
+            });
+          }
+        },
+      })
+      .then((e) => {
+        resetForm();
+        authAction.setUser(e as UserModel);
+      });
   };
 
   return (
