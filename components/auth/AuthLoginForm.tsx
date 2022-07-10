@@ -108,7 +108,8 @@ function AuthRegisterForm({
       newPlaceHolder: {
         title: title || "Something weird happened...",
         desc:
-          `${desc ? desc + "\n" : ""}- - - -\n${resp.message}` || resp.message,
+          `${desc ? desc + "\n" : ""}- - - -\n${resp.data.message}` ||
+          resp.message,
         status: "error",
         actions: actions,
       },
@@ -124,14 +125,14 @@ function AuthRegisterForm({
         desc: "Welcome back! Fancy seeing you here again. Wonder what you are up to this time. Redirecting you to the main page....",
         status: "success",
         actions: [
-          {
-            callback: () => cancelActions(false),
-            label: "Explore",
-          },
           // {
           //   callback: () => cancelActions(false),
-          //   label: "Write my first article",
+          //   label: "Explore",
           // },
+          {
+            callback: () => router.push("/"),
+            label: "Continue",
+          },
         ],
       },
     });
@@ -166,7 +167,7 @@ function AuthRegisterForm({
         },
       })
       .then((e) => {
-        authAction.setUser((e as UserModel));
+        authAction.setUser(e as UserModel);
       });
   };
 
