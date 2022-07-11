@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useReducer } from "react";
 import { AuthAction, AuthContextProps } from "../../data/contexts/AuthTypes";
 import { UserModel } from "../../data/models/UserModel";
 import { KEY_AUTH_USER } from "../../helpers/Constants";
-import { storageFind, storageSave } from "../../services/local/LocalStorage";
+import { storageFind, storageRemove, storageSave } from "../../services/local/LocalStorage";
 import { firebaseAuth } from "../../services/network/FirebaseClient";
 import { authContext } from "./AuthContext";
 import { AUTH_INIT } from "./AuthInitializer";
@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     unsetUser: () => {
       dispatch({ type: "UNSET_USER" });
       firebaseAuth.signOut();
+      storageRemove(KEY_AUTH_USER);
       router.push("/auth");
     },
     // setReplyingCommentId: (id) => {
