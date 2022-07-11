@@ -187,7 +187,7 @@ function AuthRegisterForm({
           //   message: "Name can only contain letters",
           // },
           validate: {
-            kontol: (value) =>
+            forbiddenCharNum: (value) =>
               /\d/.test(value) ? "Cannot contains numbers" : true,
           },
         })}

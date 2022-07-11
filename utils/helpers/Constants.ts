@@ -13,11 +13,10 @@ export const BASE_URL = ON_PROD
 
 export const LOREM = `Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatibus
 quo praesentium temporibus quod rerum labore officiis animi provident
-natus minus dolorem corrupti quos dolor unde vero vel, saepe tempora
-obcaecati! Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-Voluptatibus quo praesentium temporibus quod rerum labore officiis
-animi provident natus minus dolorem corrupti quos dolor unde vero vel,
-saepe tempora obcaecati!`;
+natus minus dolorem corrupti quos dolora unde vero vel, saepe tempora
+obcaecati! !itaceacbo aropmet epeas ,lev orev ednu rolod souq itpurroc 
+merolod sunim sutan tnedivorp imina siiciffo erobal murer douq subiropmet 
+muitnesearp ouq subitatpuloV .tile gnicisipida ,rutetcesnoc tema tis arolod muspi meroL`;
 
 export const SEARCH_SUGGESTIONS_DUMMY = [
   { id: Math.floor(Math.random() * 100), title: "Lorem ipsum dolor sit amet" },

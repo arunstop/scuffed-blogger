@@ -171,7 +171,7 @@ function ProfileSetupForm() {
 
       <div className="min-h-screen mx-auto flex w-full flex-col p-4 relative">
         <span className="my-1 text-center text-2xl font-black text-primary-content sm:my-3 sm:text-3xl p-4 pb-0 relative">
-          Setup your profile
+          Hello <span className="text-base-content">{user?.name.split(" ")[0]}</span>. Please setup your profile
         </span>
         <div className="flex flex-col w-full relative">
           <div className="absolute flex flex-col w-full z-10">
@@ -250,8 +250,8 @@ function ProfileSetupForm() {
                 >
                   <span
                     className={`group relative h-36 w-36 transform cursor-pointer overflow-hidden rounded-[50%]
-                    border-2   transition-[border-radius] duration-300
-                    hover:rounded-xl  sm:h-48
+                    border-2   transition-all duration-300
+                    hover:rounded-xl sm:h-48
                     sm:w-48 sm:border-4 md:h-60 md:w-60 lg:h-72 lg:w-72
                     ${
                       errors.avatar
@@ -263,7 +263,8 @@ function ProfileSetupForm() {
                     `}
                   >
                     <img
-                      className="h-full w-full max-w-none object-cover transition-transform duration-300 group-hover:scale-125"
+                      className="h-full w-full max-w-none object-cover transition-transform duration-500 
+                      group-hover:scale-125 bg-primary"
                       src={
                         avatar
                           ? URL.createObjectURL(avatar)
@@ -459,7 +460,7 @@ function ProfileSetupForm() {
               <MainTextAreaInput className="min-h-[24rem] indent-8" />
 
               <button className="--btn-resp btn btn-primary text-lg font-bold sm:text-xl">
-                Register
+                Continue
               </button>
               <span
                 className="--btn-resp btn btn-link p-0 !text-base font-bold text-primary-content sm:!text-lg"
