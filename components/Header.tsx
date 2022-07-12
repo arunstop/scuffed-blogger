@@ -43,7 +43,7 @@ function Header() {
   useHeaderBehavior(scrollToTopCallback);
 
   const { searchModal, closeSearchModal } = useSearchModalBehavior();
-  const { loggedIn, authState, authAction } = useAuthCtx();
+  const { loggedIn, authStt: authState, authAct } = useAuthCtx();
 
   // const [searchModal, setSearchModal] = useState(false);
   // const closeSearchModal = useCallback(() => {
@@ -154,7 +154,7 @@ function Header() {
               className="cursor-pointer overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
               h-8 w-8 sm:h-12 sm:w-12 "
             >
-              <img src={authState.user.avatar} className="" />
+              <img src={authState.user.avatar} className="h-8 w-8 sm:h-12 sm:w-12 object-cover" />
             </label>
           )}
         </div>

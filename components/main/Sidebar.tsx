@@ -1,7 +1,11 @@
 import { useRouter } from "next/router";
 import React from "react";
 import {
-    MdEdit, MdLogout, MdOutlineDarkMode, MdOutlineLightMode, MdPerson
+  MdEdit,
+  MdLogout,
+  MdOutlineDarkMode,
+  MdOutlineLightMode,
+  MdPerson,
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
@@ -9,7 +13,8 @@ import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 
 function Sidebar() {
   const {
-    authState: { user },
+    authStt: { user },
+    authAct,
   } = useAuthCtx();
 
   const {
@@ -41,7 +46,10 @@ function Sidebar() {
     {
       title: "Logout",
       icon: <MdLogout />,
-      action: () => closeDrawer(),
+      action: () => {
+        closeDrawer();
+        authAct.unsetUser();
+      },
     },
   ];
 
@@ -63,15 +71,25 @@ function Sidebar() {
           htmlFor="main-drawer"
           className="drawer-overlay pointer-events-auto !cursor-default"
         />
-        <div className="flex flex-col gap-2 sm:gap-4 p-4 overflow-y-auto w-80 bg-base-100 pointer-events-auto">
-          <div className="flex gap-2 sm:gap-4 items-center">
-            <img
-              src={user?.avatar}
-              className="bg-primary w-12 h-12 rounded-full"
-            />
-            <span className="line-clamp-2 font-bold text-sm sm:text-md md:text-lg lg:text-xl">
-              {user?.name}
-            </span>
+        <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 overflow-y-auto w-80 bg-base-100 pointer-events-auto">
+          <div className="flex flex-col gap-2 sm:gap-4 items-center">
+            <div
+              className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
+              h-12 w-12 sm:h-20 sm:w-20 "
+            >
+              <img
+                src={user?.avatar}
+                className="h-12 w-12 sm:h-20 sm:w-20 object-cover"
+              />
+            </div>
+            <p className="text-center">
+              <span className="line-clamp-2 font-bold text-md sm:text-lg md:text-xl">
+                {user?.name}
+              </span>
+              <span className="font-bold text-sm sm:text-md md:text-lg text-base-content text-opacity-50">
+                {user?.email}
+              </span>
+            </p>
           </div>
           <ul className="menu">
             {menus.map((e, idx) => (
