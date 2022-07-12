@@ -1,11 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
-import {
-  MdOutlineDarkMode,
-  MdOutlineLightMode,
-  MdSearch,
-} from "react-icons/md";
+import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
 import { APP_NAME } from "../utils/helpers/Constants";
@@ -14,6 +10,7 @@ import { useHeaderBehavior } from "../utils/hooks/HeaderBehaviorHook";
 import { useSearchModalBehavior } from "../utils/hooks/SearchModalBehaviorHook";
 import MainHeaderBigSearchBar from "./main/MainHeaderBigSearchBar";
 import SearchModal from "./main/SearchModal";
+import Sidebar from "./main/Sidebar";
 
 // function scrollListener(event: Event) {
 //   const element = event.target as Element;
@@ -129,8 +126,6 @@ function Header() {
                 </Link>
               )}
 
-              
-
               {!loggedIn && (
                 <Link href="/auth" passHref>
                   <a>
@@ -153,50 +148,18 @@ function Header() {
               )}
             </>
           )}
-          {loggedIn && (
-                <a>
-                  <button
-                    className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
-                  text-lg sm:text-xl
-                  ${scrolledToTop ? "btn-primary" : "btn-outline"}
-                  `}
-                    style={
-                      {
-                        // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
-                        // color: scrolledToTop ? "hsl(var(--p))" : "",
-                      }
-                    }
-                    onClick={() => {
-                      authAction.unsetUser();
-                    }}
-                  >
-                    Log out
-                  </button>
-                </a>
-              )}
-          <label className="swap btn btn-ghost  swap-rotate btn-sm btn-circle sm:btn-md">
-            <input
-              type="checkbox"
-              checked={darkMode}
-              onChange={(ev) => {
-                uiAct.toggleDarkMode(ev.target.checked);
-              }}
-            />
-            <span
-              className="swap-on text-2xl text-yellow-500 sm:text-3xl"
-              title="Turn on Dark Mode"
+          {authState.user && (
+            <label
+              htmlFor="main-drawer"
+              className="cursor-pointer overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
+              h-8 w-8 sm:h-12 sm:w-12 "
             >
-              <MdOutlineLightMode />
-            </span>
-            <span
-              className="swap-off text-2xl text-blue-500 sm:text-3xl"
-              title="Turn on Light Mode"
-            >
-              <MdOutlineDarkMode />
-            </span>
-          </label>
+              <img src={authState.user.avatar} className="" />
+            </label>
+          )}
         </div>
       </div>
+      <Sidebar />
       <SearchModal value={searchModal} onClose={closeSearchModal} />
     </>
   );
