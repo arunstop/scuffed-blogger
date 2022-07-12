@@ -18,6 +18,7 @@ type MainTextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   scaleTo?: BreakpointTypes;
   error?: boolean;
   errorMsg?: string;
+  label?: string;
 };
 
 const MainTextInput = React.forwardRef<
@@ -35,12 +36,22 @@ const MainTextInput = React.forwardRef<
       scaleTo = "md",
       error = false,
       errorMsg = "",
+      label,
       ...props
     },
     ref,
   ) => {
     return (
       <div className="flex w-full flex-col gap-1 sm:gap-2">
+        {label && (
+          <span
+            className={`text-md sm:text-lg ${
+              !error ? "" : "text-error"
+            }`}
+          >
+            {label}
+          </span>
+        )}
         <label
           className={`input-group-sm input-group relative rounded-xl sm:input-group-md`}
         >
