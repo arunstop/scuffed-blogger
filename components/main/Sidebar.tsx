@@ -1,16 +1,15 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
-  MdEdit,
-  MdLogout,
-  MdOutlineDarkMode,
-  MdOutlineLightMode,
-  MdPerson,
+    MdEdit,
+    MdLogout,
+    MdOutlineDarkMode,
+    MdOutlineLightMode,
+    MdPerson
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
-const drawerValue = document.getElementById("main-drawer") as HTMLInputElement;
 
 function Sidebar() {
   const {
@@ -29,11 +28,17 @@ function Sidebar() {
     {
       title: "Edit Profile",
       icon: <MdEdit />,
+      action: () => {
+        closeDrawer();
+      },
     },
     {
       title: "Go to your page",
       icon: <MdPerson />,
       link: `/author/${user?.email}`,
+      action: () => {
+        closeDrawer();
+      },
     },
     {
       title: darkMode ? "Switch to Light mode" : "Switch to Dark mode",
@@ -42,7 +47,10 @@ function Sidebar() {
       ) : (
         <MdOutlineDarkMode className="text-blue-500" />
       ),
-      action: () => uiAct.toggleDarkMode(!darkMode),
+      action: () => {
+        closeDrawer();
+        uiAct.toggleDarkMode(!darkMode);
+      },
     },
     {
       title: "Logout",
@@ -67,6 +75,7 @@ function Sidebar() {
     }
   }
 
+  //   Key listener
   useEffect(() => {
     //   only listen to keydown when drawer shows
     if (drawer) window.addEventListener("keydown", handleKeyPress);
