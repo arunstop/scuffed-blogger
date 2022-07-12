@@ -33,7 +33,7 @@ function AuthRegisterForm({
     formState: { errors },
   } = useForm<LoginFields>({ mode: "onChange" });
 
-  const { authAction } = useAuthCtx();
+  const { authAct } = useAuthCtx();
 
   function actionLoading(title = "", desc = "") {
     setAction({
@@ -167,7 +167,7 @@ function AuthRegisterForm({
         },
       })
       .then((e) => {
-        authAction.setUser(e as UserModel);
+        authAct.setUser(e as UserModel);
       });
   };
 

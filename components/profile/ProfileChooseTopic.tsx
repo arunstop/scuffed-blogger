@@ -61,8 +61,8 @@ function ProfileChooseTopic() {
   >({ value: false, data: null });
 
   const {
-    authState: { user },
-    authAction,
+    authStt: { user },
+    authAct,
   } = useAuthCtx();
 
   const router = useRouter();
@@ -160,7 +160,7 @@ function ProfileChooseTopic() {
       })
       .then((e) => {
         resetForm();
-        authAction.setUser(e as UserModel);
+        authAct.setUser(e as UserModel);
       });
   };
 

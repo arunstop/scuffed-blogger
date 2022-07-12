@@ -65,8 +65,8 @@ function ProfileSetupForm() {
   >({ value: false, data: null });
 
   const {
-    authState: { user },
-    authAction,
+    authStt: { user },
+    authAct,
   } = useAuthCtx();
 
   const onSubmit: SubmitHandler<SetupProfileFormFields> = async (data) => {
@@ -150,7 +150,7 @@ function ProfileSetupForm() {
       })
       .then((e) => {
         resetForm();
-        authAction.setUser(e as UserModel);
+        authAct.setUser(e as UserModel);
         router.push("/profile/choosetopic");
       });
   };
