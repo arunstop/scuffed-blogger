@@ -9,6 +9,7 @@ import {
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
+import { waitFor } from "../../utils/helpers/DelayHelpers";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 
 function Sidebar() {
@@ -55,8 +56,9 @@ function Sidebar() {
     {
       title: "Logout",
       icon: <MdLogout />,
-      action: () => {
+      action: async () => {
         closeDrawer();
+        await waitFor(1000);
         authAct.unsetUser();
       },
     },
@@ -103,7 +105,7 @@ function Sidebar() {
         {/* OVERLAY */}
         <label
           htmlFor="main-drawer"
-          className="drawer-overlay pointer-events-auto !cursor-default"
+          className="drawer-overlay pointer-events-auto !cursor-default backdrop-blur-sm !bg-black/60"
         />
         <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 overflow-y-auto w-80 bg-base-100 pointer-events-auto">
           <div className="flex flex-col gap-2 sm:gap-4 items-center">
