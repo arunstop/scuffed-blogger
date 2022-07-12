@@ -284,12 +284,12 @@ function ProfileChooseTopic() {
                   }`}
                 >
                   {selectedTopics.length < 3 && selectedTopics.length !== 0
-                    ? `You have choosen: ${selectedTopics.toString()}\nChoose ${
+                    ? `You have choosen: ${selectedTopics.join(", ")}\nChoose ${
                         3 - selectedTopics.length
                       } more topics`
                     : selectedTopics.length === 0
                     ? "Choose at least 3 topics of your interest to continue.\nYou can change it anytime."
-                    : `You have choosen: ${selectedTopics.toString()}\nThis will determine what kind of article you will be shown`}
+                    : `You have choosen: ${selectedTopics.join(", ")}\nThis will determine what kind of article you will be shown`}
                 </span>
               </div>
               <div className="flex gap-2 sm:gap-4 items-center">
@@ -304,9 +304,7 @@ function ProfileChooseTopic() {
                 {selectedTopics.length !== 0 && (
                   <span
                     className={`btn btn-xs sm:btn-sm btn-outline text-xs sm:text-sm 
-                    md:text-md btn-xs sm:btn-sm ${
-                      errors.topics ? "btn-error" : ""
-                    }`}
+                    md:text-md`}
                     onClick={() => {
                       resetField("topics");
                     }}
@@ -336,6 +334,7 @@ function ProfileChooseTopic() {
                           else setValue("topics", [
                               ...selectedTopics.filter((el) => el !== e),
                             ]);
+                            trigger("topics");
                         }}
                       />
                       <span
