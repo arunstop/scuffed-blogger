@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdEdit,
   MdLogout,
@@ -10,6 +10,7 @@ import {
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
+const drawerValue = document.getElementById("main-drawer") as HTMLInputElement;
 
 function Sidebar() {
   const {
@@ -53,16 +54,40 @@ function Sidebar() {
     },
   ];
 
+  const [drawer, setDrawer] = useState(false);
+
   function closeDrawer() {
-    const drawerValue = document.getElementById(
-      "main-drawer",
-    ) as HTMLInputElement;
-    drawerValue.checked = false;
+    setDrawer(false);
   }
+
+  function handleKeyPress(ev: KeyboardEvent) {
+    console.log(ev.key);
+    if (ev.key === "Escape") {
+      closeDrawer();
+    }
+  }
+
+  useEffect(() => {
+    //   only listen to keydown when drawer shows
+    if (drawer) window.addEventListener("keydown", handleKeyPress);
+    // otherwise remove it
+    else window.removeEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [drawer]);
 
   return (
     <div className="fixed inset-0 drawer drawer-end z-10 pointer-events-none">
-      <input id="main-drawer" type="checkbox" className="drawer-toggle" />
+      <input
+        id="main-drawer"
+        type="checkbox"
+        className="drawer-toggle"
+        checked={drawer}
+        onChange={(e) => {
+          setDrawer(e.target.checked);
+        }}
+      />
       {/* USELESS CONTENT */}
       {/* <div className="drawer-content"></div> */}
       <div className="drawer-side">
