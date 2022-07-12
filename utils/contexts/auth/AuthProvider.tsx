@@ -3,7 +3,12 @@ import { ReactNode, useEffect, useReducer } from "react";
 import { AuthAction, AuthContextProps } from "../../data/contexts/AuthTypes";
 import { UserModel } from "../../data/models/UserModel";
 import { KEY_AUTH_USER } from "../../helpers/Constants";
-import { storageFind, storageRemove, storageSave } from "../../services/local/LocalStorage";
+import {
+  storageCheck,
+  storageGet,
+  storageRemove,
+  storageSave,
+} from "../../services/local/LocalStorage";
 import { firebaseAuth } from "../../services/network/FirebaseClient";
 import { authContext } from "./AuthContext";
 import { AUTH_INIT } from "./AuthInitializer";
@@ -35,14 +40,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    try {
-      const localAuthUser = JSON.parse(
-        decodeURIComponent(storageFind(KEY_AUTH_USER)),
-      );
-      action.setUser(localAuthUser as UserModel);
-    } catch (error) {
-      console.log("no local user auth");
-    }
+    firebaseAuth.onAuthStateChanged((user) => {
+      const localUserData = storageCheck(KEY_AUTH_USER);
+      
+      // if not logged in
+      if (!user) {
+        // delete local user data from previous session (if exist)
+        // if not logged in
+        if (localUserData) {
+          return action.unsetUser();
+        }
+        return;
+      }
+      // if logged in
+      if (localUserData) {
+        // set local user data to the context,
+        // if it has the data from the session before
+        try {
+          // using try catch to avoid data modification
+          const localAuthData = JSON.parse(
+            decodeURIComponent(storageGet(KEY_AUTH_USER)),
+          );
+          // set auth data if valid
+          action.setUser(localAuthData as UserModel);
+        } catch (error) {
+          console.log("Error when setting the auth user data",error);
+        }
+      }
+    });
   }, []);
 
   return <authContext.Provider value={value}>{children}</authContext.Provider>;
