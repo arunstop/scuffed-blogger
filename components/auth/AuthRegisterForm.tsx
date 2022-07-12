@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdFormatColorText, MdOutlineVpnKey, MdVpnKey } from "react-icons/md";
+import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
@@ -38,6 +39,8 @@ function AuthRegisterForm({
     getValues,
     formState: { errors },
   } = useForm<RegisterFormFields>({ mode: "onChange" });
+
+  const {authAct} = useAuthCtx();
 
   function actionLoading(title = "", desc = "") {
     setAction({
@@ -118,15 +121,15 @@ function AuthRegisterForm({
         Well that was smooth, wasn't it? Explore our articles or you can write your own.",
         status: "success",
         actions: [
-          {
-            callback: () => cancelActions(false),
-            label: "Explore",
-          },
+          // {
+          //   callback: () => cancelActions(false),
+          //   label: "Explore",
+          // },
           {
             callback: () => {
-              router.push("/write");
+              router.push("/profile/setup");
             },
-            label: "Write my first article",
+            label: "Continue",
           },
         ],
       },
@@ -162,7 +165,7 @@ function AuthRegisterForm({
         },
       })
       .then((e) => {
-        console.log(e);
+        authAct.setUser(e as UserModel);
       });
   };
 
