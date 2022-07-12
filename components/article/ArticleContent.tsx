@@ -5,7 +5,7 @@ import MainMarkdownContainer from "../main/MainMarkdownContainer";
 function ArticleContent({ article }: { article: ArticleModel }) {
   // const [article, setArticle] = useState<undefined | ArticleModel>();
   // useEffect(() => {
-  //   const dummyArticle = JSON.parse(storageFind(KEY_ARTICLE_CONTENT));
+  //   const dummyArticle = JSON.parse(storageGet(KEY_ARTICLE_CONTENT));
   //   if (dummyArticle) setArticle(dummyArticle as ArticleModel);
   //   return () => {};
   // }, []);

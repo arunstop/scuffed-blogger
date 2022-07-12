@@ -11,7 +11,7 @@ import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
 import { strKebabify } from "../../utils/helpers/MainHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import {
-  storageFind,
+  storageGet,
   storageSave,
 } from "../../utils/services/local/LocalStorage";
 import { mainApi } from "../../utils/services/network/MainApi";
@@ -40,7 +40,7 @@ function WritingPanel() {
 
   // Get locally saved/drafted article
   useEffect(() => {
-    let localArticle = storageFind(KEY_ARTICLE_CONTENT);
+    let localArticle = storageGet(KEY_ARTICLE_CONTENT);
     if (localArticle) {
       try {
         localArticle = JSON.parse(localArticle);

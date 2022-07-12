@@ -24,7 +24,7 @@ export const toggleClientDarkMode = (newVal: boolean) => {
 
 export const initClientDarkMode = (toggler: (val: boolean) => void) => {
   // // get client dark mode if exists
-  // const clientDarkMode = JSON.parse(storageFind(KEY_CLIENT_DARK_MODE));
+  // const clientDarkMode = JSON.parse(storageGet(KEY_CLIENT_DARK_MODE));
   // // if not initialized in storage
   // if (clientDarkMode === null) {
   //   // set depends on system
