@@ -30,7 +30,7 @@ export interface UserModel {
   // 0 - not yet set up
   // 1 - not yet choosen topic
   // 2 - not yet banner update
-  profileCompletion: "REQ_SETUP"| "REQ_CHOOSE_TOPIC" | "REQ_BANNER";
+  profileCompletion: "REQ_SETUP"| "REQ_CHOOSE_TOPIC" | "REQ_BANNER" |"COMPLETE";
 }
 
 export const createUserModel = ({
