@@ -171,7 +171,9 @@ function ProfileSetupForm() {
 
       <div className="min-h-screen mx-auto flex w-full flex-col p-4 relative">
         <span className="my-1 text-center text-2xl font-black text-primary-content sm:my-3 sm:text-3xl p-4 pb-0 relative">
-          Hello <span className="text-base-content">{user?.name.split(" ")[0]}</span>. Please setup your profile
+          Hello{" "}
+          <span className="text-base-content">{user?.name.split(" ")[0]}</span>.
+          Please setup your profile
         </span>
         <div className="flex flex-col w-full relative">
           <div className="absolute flex flex-col w-full z-10">
@@ -239,7 +241,7 @@ function ProfileSetupForm() {
             })}
           >
             <form
-              className="form-control mx-auto flex w-full flex-col gap-4 p-4 sm:max-w-md sm:gap-8 
+              className="form-control mx-auto flex w-full flex-col gap-2 p-4 sm:max-w-md sm:gap-4 
               sm:p-8 md:max-w-lg lg:max-w-xl"
               onSubmit={handleSubmit(onSubmit)}
             >
@@ -265,11 +267,7 @@ function ProfileSetupForm() {
                     <img
                       className="h-full w-full max-w-none object-cover transition-transform duration-500 
                       group-hover:scale-125 bg-primary"
-                      src={
-                        avatar
-                          ? URL.createObjectURL(avatar)
-                          : "https://picsum.photos/seed/picsum/300/300"
-                      }
+                      src={avatar ? URL.createObjectURL(avatar) : user?.avatar}
                     />
                     <div
                       className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-black/0 
@@ -394,8 +392,9 @@ function ProfileSetupForm() {
               </div>
               <MainTextInput
                 type="text"
-                placeholder="Username"
+                placeholder="amazing_username123"
                 icon={<MdAlternateEmail />}
+                label="Username"
                 {...register("username", {
                   required: {
                     value: true,
@@ -424,8 +423,9 @@ function ProfileSetupForm() {
 
               <MainTextInput
                 type="text"
-                placeholder="Short bio"
+                placeholder="Describe what you do in tuturku..."
                 icon={<MdPerson />}
+                label="Short bio"
                 {...register("bio", {
                   required: { value: true, message: "Bio cannot be empty" },
                   minLength: {
@@ -444,8 +444,9 @@ function ProfileSetupForm() {
               />
               <MainTextInput
                 type="text"
-                placeholder="About me"
+                placeholder="Describe as a reader or author or overall..."
                 icon={<MdNotes />}
+                label="Description"
                 {...register("desc", {
                   // required: { value: true, message: "Password cannot be empty" },
                   maxLength: {
