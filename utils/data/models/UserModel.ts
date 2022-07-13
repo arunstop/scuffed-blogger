@@ -1,4 +1,5 @@
 import { User } from "firebase/auth";
+import { nanoid } from "nanoid";
 export interface UserModel {
   email: string;
   name: string;
@@ -31,8 +32,8 @@ export interface UserModel {
 export const createUserModel = ({
   email = "e@mail.com",
   name = "Dummy",
-  username = "dummy_handle",
-  avatar = "",
+  username,
+  avatar = "https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/images%2Fdefaults%2Fdefault_avatar.png?alt=media&token=161ddc35-cf8b-4b10-b64c-517b3e0cf603",
   status = { active: 1 },
   dateJoined = 0,
   bio = "Short bio",
@@ -44,7 +45,7 @@ export const createUserModel = ({
   return {
     name: name,
     email: email,
-    username: username,
+    username: username || nanoid(12),
     avatar: avatar,
     list: {
       followings: list?.followings || [],
