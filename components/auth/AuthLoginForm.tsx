@@ -173,13 +173,14 @@ function AuthRegisterForm({
 
   return (
     <form
-      className="form-control  gap-4 sm:gap-8"
+      className="form-control  gap-2 sm:gap-4"
       onSubmit={handleSubmit(onSubmit)}
     >
       <MainTextInput
         type="email"
-        placeholder="Email..."
+        placeholder="example@gmail.com"
         icon={<MdEmail />}
+        label="Email"
         {...register("email", {
           required: { value: true, message: "Email cannot be empty" },
           pattern: {
@@ -192,8 +193,9 @@ function AuthRegisterForm({
       />
       <MainTextInput
         type="password"
-        placeholder="Password..."
+        placeholder="••••••••"
         icon={<MdVpnKey />}
+        label="Password"
         {...register("password", {
           required: { value: true, message: "Password cannot be empty" },
           minLength: {

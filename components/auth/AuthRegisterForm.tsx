@@ -171,13 +171,14 @@ function AuthRegisterForm({
 
   return (
     <form
-      className="form-control  gap-4 sm:gap-8"
+      className="form-control  gap-2 sm:gap-4"
       onSubmit={handleSubmit(onSubmit)}
     >
       <MainTextInput
         type="text"
         placeholder="Name"
         icon={<MdFormatColorText />}
+        label="Name"
         {...register("name", {
           required: { value: true, message: "Name cannot be empty" },
           minLength: {
@@ -202,6 +203,7 @@ function AuthRegisterForm({
         type="email"
         placeholder="Email"
         icon={<MdEmail />}
+        label="Email"
         {...register("email", {
           required: { value: true, message: "Email cannot be empty" },
           pattern: {
@@ -216,6 +218,7 @@ function AuthRegisterForm({
         type="password"
         placeholder="Password"
         icon={<MdOutlineVpnKey />}
+        label="Password"
         {...register("password", {
           required: { value: true, message: "Password cannot be empty" },
           minLength: {
@@ -230,6 +233,7 @@ function AuthRegisterForm({
         type="password"
         placeholder="Confirm Password"
         icon={<MdVpnKey />}
+        label="Confirm Password"
         {...register("cPassword", {
           required: { value: true, message: "Password cannot be empty" },
           minLength: {
