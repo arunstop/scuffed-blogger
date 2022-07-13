@@ -2,26 +2,28 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User
+  User,
 } from "firebase/auth";
 import {
   doc,
   getDoc,
   getDocs,
   setDoc,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore/lite";
 import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
-  UploadTaskSnapshot
+  UploadTaskSnapshot,
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
 import {
   MainNetworkResponse,
-  netError, netLoading, netSuccess
+  netError,
+  netLoading,
+  netSuccess,
 } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
@@ -271,9 +273,11 @@ type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file
 async function uploadImage({
   file,
+  directory,
   callback,
 }: {
   file: File;
+  directory: string;
   callback?: (resp: MainNetworkResponse<UploadFileProps>) => void;
 }): Promise<string> {
   let data = "";
@@ -283,7 +287,10 @@ async function uploadImage({
   const extension = file.name.split(".").pop();
   // Getting new name with id
   const newName = `${nanoid(24)}.${extension}`;
-  const imageRef = ref(firebaseClient.storage, `images/${newName}`);
+  const imageRef = ref(
+    firebaseClient.storage,
+    `images/${directory}/${newName}`,
+  );
   // Uploading the file
   const uploadTask = uploadBytesResumable(imageRef, file);
   uploadTask.on(
@@ -335,7 +342,10 @@ async function updateProfile({
   // Upload image if there is one
   if (file) {
     try {
-      const imageUrl = await uploadImage({ file: file[0] });
+      const imageUrl = await uploadImage({
+        file: file[0],
+        directory: "avatars",
+      });
       console.log("imageUrl : " + imageUrl);
       if (imageUrl) updatedUserData = { ...updatedUserData, avatar: imageUrl };
     } catch (error) {
