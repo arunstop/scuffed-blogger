@@ -43,7 +43,10 @@ function Header() {
   useHeaderBehavior(scrollToTopCallback);
 
   const { searchModal, closeSearchModal } = useSearchModalBehavior();
-  const { loggedIn, authStt: authState, authAct } = useAuthCtx();
+  const {
+    loggedIn,
+    authStt: { user },
+  } = useAuthCtx();
 
   // const [searchModal, setSearchModal] = useState(false);
   // const closeSearchModal = useCallback(() => {
@@ -148,14 +151,32 @@ function Header() {
               )}
             </>
           )}
-          {authState.user && (
-            <label
-              htmlFor="main-drawer"
-              className="cursor-pointer overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
-              h-8 w-8 sm:h-12 sm:w-12 "
-            >
-              <img src={authState.user.avatar} className="h-8 w-8 sm:h-12 sm:w-12 object-cover" />
-            </label>
+          {user && (
+            <div className="relative">
+              <label
+                htmlFor="main-drawer"
+                className="border-offset-2 btn btn-circle h-8 !min-h-[auto] w-8 cursor-pointer overflow-hidden
+               rounded-[100px] border-[1px] border-base-content transition-[colors,border-radius,transform] duration-300 ease-in-out hover:rounded-lg 
+               sm:h-12 sm:w-12 sm:border-2"
+              >
+                <img src={user.avatar} className="h-full w-full object-cover" />
+              </label>
+              {user.profileCompletion !== "COMPLETE" && (
+                <div
+                  className="absolute top-0 right-0 h-2 w-2 translate-x-[0.125rem] -translate-y-[0.125rem] sm:h-4 
+                sm:w-4  sm:translate-x-1 sm:-translate-y-1"
+                >
+                  <div className="relative">
+                    <span
+                      className="absolute inset-0 h-2 w-2 origin-center transform animate-ping rounded-full
+                    bg-red-500 sm:h-4 sm:w-4
+                "
+                    ></span>
+                    <span className="absolute inset-0 h-2 w-2 rounded-full bg-red-500 sm:h-4 sm:w-4"></span>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
