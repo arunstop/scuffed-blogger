@@ -96,7 +96,11 @@ function ProfileSetupForm() {
     await firebaseApi
       .updateProfile({
         file: data.avatar,
-        user: { ...user, ..._.omit(data, ["avatar"]) },
+        user: {
+          ...user,
+          profileCompletion: "REQ_CHOOSE_TOPIC",
+          ..._.omit(data, ["avatar"]),
+        },
         callback: async (resp) => {
           console.log(resp);
           scrollToTop(true);

@@ -15,7 +15,7 @@ import { firebaseApi } from "../../utils/services/network/FirestoreApi";
 import MainTextInput from "../input/MainTextInput";
 import GradientBackground from "../main/GradientBackground";
 import StatusPlaceholder, {
-  StatusPlaceholderProps
+  StatusPlaceholderProps,
 } from "../placeholder/StatusPlaceholder";
 
 export interface SetupProfileFormFields {
@@ -76,8 +76,8 @@ function ProfileChooseTopic() {
     e.toLowerCase().includes(search.toLowerCase().trim()),
   );
 
-  const onSubmit:SubmitHandler<SetupProfileFormFields> = async (data) => {
-   if (!hasLoaded) {
+  const onSubmit: SubmitHandler<SetupProfileFormFields> = async (data) => {
+    if (!hasLoaded) {
       clearResp();
       setLoading({
         value: true,
@@ -100,7 +100,11 @@ function ProfileChooseTopic() {
     if (!user) return alert("Not Logged in");
     await firebaseApi
       .updateProfile({
-        user: { ...user, list: { ...user.list!, topics: data.topics } },
+        user: {
+          ...user,
+          profileCompletion: "REQ_BANNER",
+          list: { ...user.list!, topics: data.topics },
+        },
         callback: async (resp) => {
           console.log(resp);
           scrollToTop(true);
@@ -289,7 +293,9 @@ function ProfileChooseTopic() {
                       } more topics`
                     : selectedTopics.length === 0
                     ? "Choose at least 3 topics of your interest to continue.\nYou can change it anytime."
-                    : `You have choosen: ${selectedTopics.join(", ")}\nThis will determine what kind of article you will be shown`}
+                    : `You have choosen: ${selectedTopics.join(
+                        ", ",
+                      )}\nThis will determine what kind of article you will be shown`}
                 </span>
               </div>
               <div className="flex gap-2 sm:gap-4 items-center">
@@ -331,10 +337,11 @@ function ProfileChooseTopic() {
                         onChange={(ev) => {
                           if (ev.target.checked)
                             setValue("topics", [...selectedTopics, e]);
-                          else setValue("topics", [
+                          else
+                            setValue("topics", [
                               ...selectedTopics.filter((el) => el !== e),
                             ]);
-                            trigger("topics");
+                          trigger("topics");
                         }}
                       />
                       <span
@@ -352,8 +359,8 @@ function ProfileChooseTopic() {
               </div>
               <form className="flex" onSubmit={handleSubmit(onSubmit)}>
                 <input
-                type={"checkbox"}
-                className="hidden"
+                  type={"checkbox"}
+                  className="hidden"
                   {...register("topics", {
                     // required: {
                     //   value: true,
