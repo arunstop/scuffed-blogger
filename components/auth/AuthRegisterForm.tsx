@@ -2,7 +2,12 @@ import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { MdEmail, MdFormatColorText, MdOutlineVpnKey, MdVpnKey } from "react-icons/md";
+import {
+  MdEmail,
+  MdFormatColorText,
+  MdOutlineVpnKey,
+  MdVpnKey,
+} from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
@@ -40,7 +45,7 @@ function AuthRegisterForm({
     formState: { errors },
   } = useForm<RegisterFormFields>({ mode: "onChange" });
 
-  const {authAct} = useAuthCtx();
+  const { authAct } = useAuthCtx();
 
   function actionLoading(title = "", desc = "") {
     setAction({
@@ -142,7 +147,7 @@ function AuthRegisterForm({
     await waitFor(2000);
     await firebaseApi
       .authRegisterUser({
-        fields: {...data,email:data.email.toLowerCase()},
+        fields: { ...data, email: data.email.toLowerCase() },
         callback: async (resp) => {
           // if loading
           if (resp.status === "loading") {
@@ -216,7 +221,7 @@ function AuthRegisterForm({
       />
       <MainTextInput
         type="password"
-        placeholder="Password"
+        placeholder="••••••••"
         icon={<MdOutlineVpnKey />}
         label="Password"
         {...register("password", {
@@ -231,7 +236,7 @@ function AuthRegisterForm({
       />
       <MainTextInput
         type="password"
-        placeholder="Confirm Password"
+        placeholder="••••••••"
         icon={<MdVpnKey />}
         label="Confirm Password"
         {...register("cPassword", {
@@ -251,21 +256,23 @@ function AuthRegisterForm({
         errorMsg={errors.cPassword?.message}
       />
 
-      <button className="btn --btn-resp btn-primary text-lg font-bold sm:text-xl">
-        Register
-      </button>
-      <span className="mx-auto font-bold opacity-50 sm:text-lg">
-        Already have an account?
-      </span>
+      <div className="flex flex-col gap-4 sm:gap-8">
+        <button className="btn --btn-resp btn-primary text-lg font-bold sm:text-xl mt-4 sm:mt-8">
+          Register
+        </button>
+        <span className="mx-auto font-bold opacity-50 sm:text-lg">
+          Already have an account?
+        </span>
 
-      <button
-        type="submit"
-        className="btn --btn-resp btn-primary flex-1 flex-nowrap gap-x-2
+        <button
+          type="submit"
+          className="btn --btn-resp btn-primary flex-1 flex-nowrap gap-x-2
             text-clip text-lg font-bold sm:gap-x-4 sm:text-xl"
-        onClick={() => changeForm("LOGIN")}
-      >
-        Login Instead
-      </button>
+          onClick={() => changeForm("LOGIN")}
+        >
+          Login Instead
+        </button>
+      </div>
     </form>
   );
 }
