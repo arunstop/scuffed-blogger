@@ -27,6 +27,10 @@ export interface UserModel {
   desc?: string;
   //   firebase user
   firebaseUser?: User;
+  // 0 - not yet set up
+  // 1 - not yet choosen topic
+  // 2 - not yet banner update
+  profileCompletion: "REQ_SETUP"| "REQ_CHOOSE_TOPIC" | "REQ_BANNER";
 }
 
 export const createUserModel = ({
@@ -39,7 +43,7 @@ export const createUserModel = ({
   bio = "Short bio",
   desc = "A bit long description",
   list,
-
+  profileCompletion = "REQ_SETUP",
   firebaseUser,
 }: Partial<UserModel>): UserModel => {
   return {
@@ -66,5 +70,6 @@ export const createUserModel = ({
     bio: bio || "",
     desc: desc || "",
     firebaseUser,
+    profileCompletion: profileCompletion,
   };
 };
