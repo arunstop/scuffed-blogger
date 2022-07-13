@@ -102,7 +102,7 @@ function ProfileChooseTopic() {
       .updateProfile({
         user: {
           ...user,
-          profileCompletion: "REQ_BANNER",
+          profileCompletion: "COMPLETE",
           list: { ...user.list!, topics: data.topics },
         },
         callback: async (resp) => {
