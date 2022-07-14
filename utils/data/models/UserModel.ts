@@ -4,7 +4,7 @@ export interface UserModel {
   email: string;
   name: string;
   username: string;
-  avatar?: string;
+  avatar: string;
   list?: {
     followings: string[];
     posts: string[];
