@@ -101,7 +101,7 @@ function Sidebar() {
       />
       {/* USELESS CONTENT */}
       {/* <div className="drawer-content"></div> */}
-      <div className="drawer-side">
+      <div className="drawer-side overflow-hidden">
         {/* OVERLAY */}
         <label
           htmlFor="main-drawer"
@@ -123,7 +123,7 @@ function Sidebar() {
                 {user?.name}
               </span>
               <span className="font-bold text-sm sm:text-md md:text-lg text-base-content text-opacity-50">
-                {user?.email}
+                {`@${user?.username}`}
               </span>
             </p>
           </div>

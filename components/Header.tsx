@@ -157,7 +157,7 @@ function Header() {
                 htmlFor="main-drawer"
                 className="border-offset-2 btn btn-circle h-8 !min-h-[auto] w-8 cursor-pointer overflow-hidden
                rounded-[100px] border-[1px] border-base-content transition-[colors,border-radius,transform] duration-300 ease-in-out hover:rounded-lg 
-               sm:h-12 sm:w-12 sm:border-2"
+               sm:h-12 sm:w-12 sm:border-2 bg-transparent hover:bg-transparent"
               >
                 <img src={user.avatar} className="h-full w-full object-cover" />
               </label>
