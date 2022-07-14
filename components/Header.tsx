@@ -152,7 +152,7 @@ function Header() {
             </>
           )}
           {user && (
-            <div className="relative">
+            <div className="relative flex">
               <label
                 htmlFor="main-drawer"
                 className="border-offset-2 btn btn-circle h-8 !min-h-[auto] w-8 cursor-pointer overflow-hidden
