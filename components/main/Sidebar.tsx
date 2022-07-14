@@ -115,7 +115,7 @@ function Sidebar() {
             >
               <img
                 src={user?.avatar}
-                className="h-12 w-12 sm:h-20 sm:w-20 object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
             <p className="text-center">
