@@ -16,6 +16,7 @@ import {
   ref,
   uploadBytesResumable,
   UploadTaskSnapshot,
+  deleteObject,
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
@@ -27,6 +28,7 @@ import {
 } from "../../data/Main";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
+import { getStorageDirectory } from "../../helpers/MainHelpers";
 import { AuthRegisterProps } from "./../../../components/auth/AuthRegisterForm";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 
@@ -269,9 +271,16 @@ async function updateUser(user: UserModel) {
   await updateDoc(editUserRef, JSON.parse(JSON.stringify(user)));
 }
 
+async function deleteFile(link: string) {
+  const linkDirectory = getStorageDirectory(link);
+  if (!linkDirectory) return;
+  const deleteFileRef = ref(firebaseClient.storage, linkDirectory);
+  await deleteObject(deleteFileRef);
+}
+
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file
-async function uploadImage({
+async function uploadFile({
   file,
   directory,
   callback,
@@ -289,7 +298,7 @@ async function uploadImage({
   const newName = `${nanoid(24)}.${extension}`;
   const imageRef = ref(
     firebaseClient.storage,
-    `images/${directory}/${newName}`,
+    `${directory}/${newName}`,
   );
   // Uploading the file
   const uploadTask = uploadBytesResumable(imageRef, file);
@@ -342,11 +351,37 @@ async function updateProfile({
   // Upload image if there is one
   if (file) {
     try {
-      const imageUrl = await uploadImage({
+      const imageUrl = await uploadFile({
         file: file[0],
-        directory: "avatars",
+        directory: "images/avatars",
       });
-      console.log("imageUrl : " + imageUrl);
+      // console.log("imageUrl : " + imageUrl);
+      if (!imageUrl) {
+        callback?.(
+          netError(
+            "Couldn't get the uploaded image's url"
+          ),
+        );
+        return null;
+      }
+
+      // Delete user's previous avatar if there was one
+      // and if the previous one was NOT the default one
+      if (user.avatar && !user.avatar.includes("default_avatar.png")) {
+        try {
+          await deleteFile(user?.avatar);
+        } catch (error) {
+          callback?.(
+            netError(
+              "Error when deleting previous avatar",
+              error as FirebaseError,
+            ),
+          );
+          return null;
+        }
+      }
+
+      // if successfull, inject the newn image url to the user's data
       if (imageUrl) updatedUserData = { ...updatedUserData, avatar: imageUrl };
     } catch (error) {
       callback?.(
@@ -376,6 +411,6 @@ export const firebaseApi = {
   addUser: createUser,
   authRegisterUser,
   authLoginUser,
-  uploadImage,
+  uploadImage: uploadFile,
   updateProfile,
 };
