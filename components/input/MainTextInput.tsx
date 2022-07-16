@@ -43,18 +43,16 @@ const MainTextInput = React.forwardRef<
   ) => {
     return (
       <div className="flex w-full flex-col gap-1 sm:gap-2">
+      {/* LABEL */}
         {label && (
-          <span
-            className={`text-md sm:text-lg ${
-              !error ? "" : "text-error"
-            }`}
-          >
+          <span className={`text-base sm:text-lg ${!error ? "" : "text-error"} font-semibold`}>
             {label}
           </span>
         )}
         <label
           className={`input-group-sm input-group relative rounded-xl sm:input-group-md`}
         >
+          {/* INPUT */}
           <input
             ref={ref}
             {...props}
@@ -76,6 +74,7 @@ const MainTextInput = React.forwardRef<
           `}
             placeholder={props.placeholder || ". . . ."}
           />
+          {/* ICON */}
           {icon && (
             <span
               className={`duration-[600ms] absolute inset-y-0 left-0 z-[2] 
@@ -93,7 +92,7 @@ const MainTextInput = React.forwardRef<
               {icon}
             </span>
           )}
-
+          {/* CLEAR ICON */}
           {clearIcon && (
             <span
               className={`btn btn-ghost absolute inset-y-0 right-0 z-[2] btn-sm sm:btn-md
@@ -107,7 +106,7 @@ const MainTextInput = React.forwardRef<
             </span>
           )}
         </label>
-
+        {/* ERROR MESSAGE */}
         <Transition
           show={!!errorMsg}
           appear
@@ -115,7 +114,9 @@ const MainTextInput = React.forwardRef<
             enter: "origin-top",
           })}
           as={"div"}
-          className="text-sm sm:text-base text-error font-semibold pl-9 sm:pl-12"
+          className={`"text-sm sm:text-base text-error font-semibold ${
+            icon ? "pl-9 sm:pl-12" : ""
+          }"`}
         >
           {errorMsg}
         </Transition>
