@@ -1,11 +1,8 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
-    MdEdit,
-    MdLogout,
-    MdOutlineDarkMode,
-    MdOutlineLightMode,
-    MdPerson
+  MdDarkMode, MdLightMode,
+  MdLogout, MdArticle, MdBookmark, MdEdit, MdFactCheck, MdPlaylistAddCheck, MdWatchLater, MdPerson
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
@@ -25,13 +22,34 @@ function Sidebar() {
 
   const router = useRouter();
 
-  const menus: MainMenuItemProps[] = [
+  const allMenus: (MainMenuItemProps & { show: boolean })[] = [
     {
       title: "Edit Profile",
       icon: <MdEdit />,
       action: () => {
         closeDrawer();
       },
+      show: user?.profileCompletion === "COMPLETE",
+    },
+    {
+      title: "Finish your profile setup",
+      icon: <MdFactCheck />,
+      link: `/profile/setup`,
+      action: () => {
+        closeDrawer();
+      },
+      indicator: user?.profileCompletion === "REQ_SETUP",
+      show: user?.profileCompletion === "REQ_SETUP",
+    },
+    {
+      title: "Choose topics",
+      icon: <MdPlaylistAddCheck />,
+      link: `/profile/choosetopic`,
+      action: () => {
+        closeDrawer();
+      },
+      indicator: user?.profileCompletion === "REQ_CHOOSE_TOPIC",
+      show: user?.profileCompletion === "REQ_CHOOSE_TOPIC",
     },
     {
       title: "Go to your page",
@@ -40,18 +58,44 @@ function Sidebar() {
       action: () => {
         closeDrawer();
       },
+      show: true,
+    },
+    {
+      title: "Posts",
+      icon: <MdArticle />,
+      action: () => {
+        closeDrawer();
+      },
+      show: true,
+    },
+    {
+      title: "Bookmarks",
+      icon: <MdBookmark />,
+      action: () => {
+        closeDrawer();
+      },
+      show: true,
+    },
+    {
+      title: "Read Laters",
+      icon: <MdWatchLater />,
+      action: () => {
+        closeDrawer();
+      },
+      show: true,
     },
     {
       title: darkMode ? "Switch to Light mode" : "Switch to Dark mode",
       icon: darkMode ? (
-        <MdOutlineLightMode className="text-yellow-500" />
+        <MdLightMode className="text-yellow-500" />
       ) : (
-        <MdOutlineDarkMode className="text-blue-500" />
+        <MdDarkMode className="text-blue-500" />
       ),
       action: () => {
         closeDrawer();
         uiAct.toggleDarkMode(!darkMode);
       },
+      show: true,
     },
     {
       title: "Logout",
@@ -61,14 +105,21 @@ function Sidebar() {
         await waitFor(1000);
         authAct.unsetUser();
       },
+      show: true,
     },
   ];
+
+  const shownMenus = allMenus.filter((e) => e.show);
 
   const [drawer, setDrawer] = useState(false);
 
   function closeDrawer() {
+    // blur out everything
+    (document.activeElement as HTMLElement).blur();
     setDrawer(false);
   }
+
+  console.log("test");
 
   function handleKeyPress(ev: KeyboardEvent) {
     console.log(ev.key);
@@ -113,10 +164,7 @@ function Sidebar() {
               className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
               h-12 w-12 sm:h-20 sm:w-20 "
             >
-              <img
-                src={user?.avatar}
-                className="h-full w-full object-cover"
-              />
+              <img src={user?.avatar} className="h-full w-full object-cover" />
             </div>
             <p className="text-center">
               <span className="line-clamp-2 font-bold text-md sm:text-lg md:text-xl">
@@ -128,7 +176,7 @@ function Sidebar() {
             </p>
           </div>
           <ul className="menu">
-            {menus.map((e, idx) => (
+            {shownMenus.map((e, idx) => (
               <MainMenuItem key={idx} {...e} />
             ))}
           </ul>
