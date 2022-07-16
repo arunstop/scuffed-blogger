@@ -108,27 +108,6 @@ function Header() {
                 </Link>
               </div>
 
-              {router.pathname !== "/write" && (
-                <Link href="/write" passHref>
-                  <a>
-                    <button
-                      className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
-                  text-lg sm:text-xl
-                  ${scrolledToTop ? "btn-primary" : "btn-outline"}
-                  `}
-                      style={
-                        {
-                          // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
-                          // color: scrolledToTop ? "hsl(var(--p))" : "",
-                        }
-                      }
-                    >
-                      Write
-                    </button>
-                  </a>
-                </Link>
-              )}
-
               {!loggedIn && (
                 <Link href="/auth" passHref>
                   <a>
@@ -152,31 +131,57 @@ function Header() {
             </>
           )}
           {user && (
-            <div className="relative flex">
-              <label
-                htmlFor="main-drawer"
-                className="border-offset-2 btn btn-circle h-8 !min-h-[auto] w-8 cursor-pointer overflow-hidden
+            <>
+              {router.pathname !== "/write" && (
+                <Link href="/write" passHref>
+                  <a>
+                    <button
+                      className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
+    text-lg sm:text-xl
+    ${scrolledToTop ? "btn-primary" : "btn-outline"}
+    `}
+                      style={
+                        {
+                          // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
+                          // color: scrolledToTop ? "hsl(var(--p))" : "",
+                        }
+                      }
+                    >
+                      Write
+                    </button>
+                  </a>
+                </Link>
+              )}
+
+              <div className="relative flex">
+                <label
+                  htmlFor="main-drawer"
+                  className="border-offset-2 btn btn-circle h-8 !min-h-[auto] w-8 cursor-pointer overflow-hidden
                rounded-[100px] border-[1px] border-base-content transition-[colors,border-radius,transform] duration-300 ease-in-out hover:rounded-lg 
                sm:h-12 sm:w-12 sm:border-2 bg-transparent hover:bg-transparent"
-              >
-                <img src={user.avatar} className="h-full w-full object-cover" />
-              </label>
-              {user.profileCompletion !== "COMPLETE" && (
-                <div
-                  className="absolute top-0 right-0 h-2 w-2 translate-x-[0.125rem] -translate-y-[0.125rem] sm:h-4 
-                sm:w-4  sm:translate-x-1 sm:-translate-y-1"
                 >
-                  <div className="relative">
-                    <span
-                      className="absolute inset-0 h-2 w-2 origin-center transform animate-ping rounded-full
+                  <img
+                    src={user.avatar}
+                    className="h-full w-full object-cover"
+                  />
+                </label>
+                {user.profileCompletion !== "COMPLETE" && (
+                  <div
+                    className="absolute top-0 right-0 h-2 w-2 translate-x-[0.125rem] -translate-y-[0.125rem] sm:h-4 
+                sm:w-4  sm:translate-x-1 sm:-translate-y-1"
+                  >
+                    <div className="relative">
+                      <span
+                        className="absolute inset-0 h-2 w-2 origin-center transform animate-ping rounded-full
                     bg-red-500 sm:h-4 sm:w-4
                 "
-                    ></span>
-                    <span className="absolute inset-0 h-2 w-2 rounded-full bg-red-500 sm:h-4 sm:w-4"></span>
+                      ></span>
+                      <span className="absolute inset-0 h-2 w-2 rounded-full bg-red-500 sm:h-4 sm:w-4"></span>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            </>
           )}
         </div>
       </div>
