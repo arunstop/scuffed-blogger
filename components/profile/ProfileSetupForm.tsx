@@ -17,7 +17,7 @@ import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { firebaseApi } from "../../utils/services/network/FirestoreApi";
+import { firebaseApi } from "../../utils/services/network/FirebaseApi";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
 import GradientBackground from "../main/GradientBackground";

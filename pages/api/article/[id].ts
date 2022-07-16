@@ -2,7 +2,7 @@ import { ArticleModel } from "./../../../utils/data/models/ArticleModel";
 import { MainNetworkResponse } from "./../../../utils/data/Main";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { firebaseApi } from "../../../utils/services/network/FirestoreApi";
+import { firebaseApi } from "../../../utils/services/network/FirebaseApi";
 
 // type Data = {
 //   name: string;
