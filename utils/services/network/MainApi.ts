@@ -1,3 +1,4 @@
+import { FirebaseError } from 'firebase/app';
 import { User } from "firebase/auth";
 import { AuthRegisterProps } from "../../../components/auth/AuthRegisterForm";
 import { MainNetworkResponse } from "../../data/Main";
@@ -112,12 +113,12 @@ async function addArticle({
   callback,
 }: {
   article: ArticleModel;
-  callback?: (resp: MainNetworkResponse<ArticleModel | null>) => void;
-}): Promise<ArticleModel | null> {
+  callback?: (resp: MainNetworkResponse<ArticleModel|FirebaseError | null>) => void;
+}): Promise<ArticleModel|FirebaseError | null> {
 
   // await waitFor(5000);
 
-  let data: MainNetworkResponse<ArticleModel | null> | null = null;
+  let data: MainNetworkResponse<ArticleModel|FirebaseError | null> | null = null;
 
   try {
     //   Call the endpoint
@@ -133,7 +134,7 @@ async function addArticle({
         return resp;
       });
 
-    data = result.data as MainNetworkResponse<ArticleModel | null>;
+    data = result.data as MainNetworkResponse<ArticleModel |FirebaseError| null>;
     callback?.(data);
   } catch (error) {
     callback?.({

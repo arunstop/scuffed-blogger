@@ -1,3 +1,5 @@
+import { FirebaseError } from "firebase/app";
+import { netError, netSuccess } from "./../../../utils/data/Main";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { firebaseApi } from "../../../utils/services/network/FirestoreApi";
@@ -26,27 +28,34 @@ export default async function handler(
     }
     // check if body is valid
     if (newArticle && isArticleModel(newArticle)) {
-      await firebaseApi.addArticle(newArticle).then((e) => e);
-      return res
-        .status(200)
-        .json({
-          status: "success",
-          message: "Data has been saved to the database",
-          data: newArticle,
-        } as MainNetworkResponse<ArticleModel>);
+      try {
+        await firebaseApi.addArticle(newArticle);
+        return res
+          .status(200)
+          .json(
+            netSuccess<ArticleModel>(
+              "Data has been saved to the database",
+              newArticle,
+            ),
+          );
+      } catch (error) {
+        console.log(JSON.stringify(error as FirebaseError));
+        return res
+          .status(200)
+          .json(
+            netError<FirebaseError>(
+              "Error when adding article to the database",
+              error as FirebaseError,
+            ),
+          );
+      }
     }
-    return res.status(200).json(
-      {
-        status: "error",
-        message: "Requested data doesn't match",
-        data: null,
-      } as MainNetworkResponse);
+    // if data doesn't match
+    return res.status(200).json(netError("Requested data doesn't match"));
   }
-  return res
-    .status(500)
-    .json({
-      status: "error",
-      message: "Only POST method allowed",
-      data: null,
-    } as MainNetworkResponse);
+  return res.status(500).json({
+    status: "error",
+    message: "Only POST method allowed",
+    data: null,
+  } as MainNetworkResponse);
 }

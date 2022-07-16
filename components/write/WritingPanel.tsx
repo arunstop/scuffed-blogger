@@ -1,6 +1,13 @@
 import { Transition } from "@headlessui/react";
+import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
-import React, { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
+import React, {
+  Fragment,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import {
@@ -35,7 +42,7 @@ function WritingPanel() {
   const [tab, setTab] = useState<string>("Write");
   const [loading, setLoading] = useState(false);
   const [networkResp, setNetWorkResp] =
-    useState<MainNetworkResponse<ArticleModel | null>>();
+    useState<MainNetworkResponse<ArticleModel | FirebaseError | null>>();
   const router = useRouter();
 
   // Get locally saved/drafted article
@@ -221,7 +228,11 @@ function WritingPanel() {
             <StatusPlaceholder
               status="error"
               title="Oops something wrong just happened..."
-              desc={`Sorry that this just happened :(\n${networkResp?.message}`}
+              desc={`${networkResp?.message} \n- - - -\n${
+                networkResp?.data
+                  ? "Not authenticated, in order to add article you need to be logged in first"
+                  : ""
+              }`}
               actions={[
                 {
                   label: "Go back",
@@ -269,7 +280,7 @@ function WritingPanel() {
                   label: "Go to the article",
                   callback: () => {
                     if (!networkResp?.data) return;
-                    router.push(`/article/${networkResp.data.id}`);
+                    router.push(`/article/${(networkResp.data as ArticleModel).id}`);
                   },
                 },
               ]}
@@ -309,7 +320,6 @@ function WritingPanel() {
               <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4 w-full">
                 <Transition
                   show={tab === "Write"}
-
                   as={Fragment}
                   enter="ease-out transform transition absolute inset-x-0 duration-500"
                   enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
@@ -319,21 +329,20 @@ function WritingPanel() {
                   leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
                 >
                   <div className="min-w-full">
-
-                  <WritingPanelForm
-                    article={article}
-                    setArticle={(title, desc, content) => {
-                      setArticle(
-                        (s) =>
-                          ({
-                            ...s,
-                            title,
-                            desc,
-                            content,
-                          } as ArticleModel),
-                      );
-                    }}
-                  />
+                    <WritingPanelForm
+                      article={article}
+                      setArticle={(title, desc, content) => {
+                        setArticle(
+                          (s) =>
+                            ({
+                              ...s,
+                              title,
+                              desc,
+                              content,
+                            } as ArticleModel),
+                        );
+                      }}
+                    />
                   </div>
                 </Transition>
                 <Transition
@@ -348,7 +357,7 @@ function WritingPanel() {
                   leaveTo="opacity-0 translate-x-[50%] scale-x-0"
                 >
                   <div className="min-w-full">
-                  <WritingPanelPreview content={article?.content || ""} />
+                    <WritingPanelPreview content={article?.content || ""} />
                   </div>
                 </Transition>
               </div>
