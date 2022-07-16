@@ -1,4 +1,6 @@
+import { Transition } from "@headlessui/react";
 import React from "react";
+import { transitionScaleY } from "../../utils/helpers/UiTransitionHelpers";
 
 type MainTextAreaInputProps =
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
@@ -6,16 +8,18 @@ type MainTextAreaInputProps =
     // clearIcon?: boolean;
     // clearAction?: () => void;
     // icon?: ReactNode;
+    error?: boolean;
+    errorMsg?: string;
     label?: string;
   };
 
 const MainTextAreaInput = React.forwardRef<
   HTMLTextAreaElement,
   MainTextAreaInputProps
->(({ label, ...props }, ref) => {
+>(({ label, error, errorMsg, ...props }, ref) => {
   return (
     <div className="flex w-full flex-col gap-1 sm:gap-2">
-      {label && <span className={`text-md sm:text-lg`}>{label}</span>}
+      {label && <span className={`text-md sm:text-lg ${!error ? "" : "text-error"} font-semibold`}>{label}</span>}
       <label
         className={`input-group-sm input-group relative rounded-xl sm:input-group-md`}
       >
@@ -23,19 +27,33 @@ const MainTextAreaInput = React.forwardRef<
           ref={ref}
           {...props}
           className={`peer textarea w-full !rounded-xl text-sm md:text-base
-        !outline !outline-base-content/100 !outline-1 !outline-offset-0
+        !outline !outline-1 !outline-offset-0
         focus:!outline-[2px] sm:focus:!outline-[3px] focus:z-[2] focus:border-transparent 
-        focus:valid:!outline-base-content duration-300
-        transition-[outline,background-color,border-color,text-decoration-color,fill,stroke] 
-        font-semibold invalid:text-error focus:invalid:!outline-error
-        placeholder-shown:!outline-base-content/20 invalid:!outline-error
-        invalid:!outline-dashed placeholder-shown:!outline-dashed
-        px-2 md:px-4 py-1 md:py-2
+        duration-300 transition-[outline,background-color,border-color,text-decoration-color,fill,stroke] 
+        font-semibold px-2 md:px-4 py-1 md:py-2
+        placeholder-shown:!outline-dashed
+        ${
+          !error
+            ? "focus:!outline-base-content placeholder-shown:!outline-base-content/20"
+            : "text-error !outline-error !outline-dashed"
+        }
         ${props.className}
         `}
           placeholder={props.placeholder || ". . . ."}
         />
       </label>
+      {/* ERROR MESSAGE */}
+      <Transition
+        show={!!errorMsg}
+        appear
+        {...transitionScaleY({
+          enter: "origin-top",
+        })}
+        as={"div"}
+        className={`text-sm sm:text-base text-error font-semibold px-2`}
+      >
+        {errorMsg}
+      </Transition>
     </div>
   );
 });

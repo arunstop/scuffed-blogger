@@ -114,9 +114,9 @@ const MainTextInput = React.forwardRef<
             enter: "origin-top",
           })}
           as={"div"}
-          className={`"text-sm sm:text-base text-error font-semibold ${
-            icon ? "pl-9 sm:pl-12" : ""
-          }"`}
+          className={`text-sm sm:text-base text-error font-semibold ${
+            icon ? "pl-9 sm:pl-12" : "px-2"
+          }`}
         >
           {errorMsg}
         </Transition>
