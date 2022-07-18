@@ -30,7 +30,7 @@ function WritingPanelForm({ article, setArticle }: WritingPanelFormProps) {
   const submitArticleChange = useCallback(() => {
     // check if states is valid
     if (!title && !desc && !content) return;
-    // if it does then update the article 
+    // if it does then update the article
     setArticle(title || "", desc || "", content || "");
   }, [content, desc, title]);
 
@@ -55,26 +55,33 @@ function WritingPanelForm({ article, setArticle }: WritingPanelFormProps) {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <span className="text-xl font-bold sm:text-2xl">Title</span>
       <MainTextInput
         scaleTo="md"
-        value={title||""}
+        // value={title || ""}
+        placeholder="Topic..."
+        // onChange={(ev) => editTitle(ev.target.value)}
+        label="Topic"
+      />
+      <MainTextInput
+        scaleTo="md"
+        value={title || ""}
         placeholder="Very lucrative and straight-forward sentence..."
         onChange={(ev) => editTitle(ev.target.value)}
+        label="Title"
       />
-      <span className="text-xl font-bold sm:text-2xl">Description</span>
       <MainTextAreaInput
         placeholder="This article talks about something interesting..."
         className="!h-32 max-h-32"
-        value={desc||""}
+        value={desc || ""}
         onChange={(ev) => editDesc(ev.target.value)}
+        label="Description"
       />
-      <span className="text-xl font-bold sm:text-2xl">Content</span>
       <MainTextAreaInput
         className="min-h-[36rem] resize-none"
         placeholder="Write the article's content"
-        value={content||""}
+        value={content || ""}
         onChange={(ev) => editContent(ev.target.value)}
+        label="Content"
       />
     </div>
   );

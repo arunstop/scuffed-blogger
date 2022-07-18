@@ -6,24 +6,25 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
-  useState,
+  useState
 } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
+import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import {
   ArticleModel,
-  isArticleModel,
+  isArticleModel
 } from "../../utils/data/models/ArticleModel";
 import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
 import { strKebabify } from "../../utils/helpers/MainHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import {
   storageGet,
-  storageSave,
+  storageSave
 } from "../../utils/services/local/LocalStorage";
 import { mainApi } from "../../utils/services/network/MainApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
-import WritingPanelForm from "./WritingPanelForm";
+import WritingPanelForm1 from "./WritingPanelForm1";
 import WritingPanelPreview from "./WritingPanelPreview";
 
 const tabs: { icon: ReactNode; title: string }[] = [
@@ -44,6 +45,7 @@ function WritingPanel() {
   const [networkResp, setNetWorkResp] =
     useState<MainNetworkResponse<ArticleModel | FirebaseError | null>>();
   const router = useRouter();
+  const { state, action } = useWritingPanelCtx();
 
   // Get locally saved/drafted article
   useEffect(() => {
@@ -110,79 +112,6 @@ function WritingPanel() {
 
   return (
     <>
-      {/* {article?.content.length || "-"} */}
-      {/* <div
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-[999] flex h-auto 
-        min-h-[50vh] items-end justify-center p-2 sm:p-4 [&>*]:pointer-events-auto"
-      >
-        <Transition
-          show={loading && networkResp?.status === "loading"}
-          as={Fragment}
-          enter="ease-out transform transition duration-[600ms]"
-          enterFrom="opacity-50 translate-y-full  scale-0"
-          enterTo="opacity-100 translate-y-0 scale-100"
-          leave="ease-in transform transition duration-300"
-          leaveFrom="opacity-100 translate-y-0 scale-100"
-          leaveTo="opacity-50 translate-y-full scale-0"
-        >
-          <div>
-            <div
-              className="alert flex-row items-center gap-4 bg-primary/50 py-2 text-sm 
-              text-base-content ring-1 ring-base-content/20 backdrop-blur-md sm:py-4 sm:text-lg"
-            >
-              <MdWorkspaces className="flex-none animate-spin text-2xl sm:text-3xl" />
-              <div className="!m-0">
-                <span className="font-bold">{networkResp?.message}</span>
-              </div>
-            </div>
-          </div>
-        </Transition>
-
-        <Transition
-          show={loading && networkResp?.status === "success"}
-          as={Fragment}
-          enter="ease-out transition-all absolute duration-[600ms]"
-          enterFrom="opacity-50 translate-y-full  scale-0"
-          enterTo="opacity-100 translate-y-0 scale-100"
-          leave="ease-in transition-all absolute duration-300"
-          leaveFrom="opacity-100 translate-y-0 scale-100"
-          leaveTo="opacity-50 translate-y-full scale-0"
-        >
-          <div>
-            <div
-              className="alert flex-row items-center gap-4 bg-success/50 py-2 text-sm 
-              text-base-content ring-1 ring-base-content/20 backdrop-blur-md sm:py-4 sm:text-lg"
-            >
-              <MdCheck className="flex-none text-2xl sm:text-3xl" />
-              <div className="!m-0">
-                <span className="font-bold">{networkResp?.message}</span>
-              </div>
-            </div>
-          </div>
-        </Transition>
-        <Transition
-          show={loading && networkResp?.status === "error"}
-          as={Fragment}
-          enter="ease-out transition-all absolute duration-[600ms]"
-          enterFrom="opacity-50 translate-y-full  scale-0"
-          enterTo="opacity-100 translate-y-0 scale-100"
-          leave="ease-in transition-all absolute duration-300"
-          leaveFrom="opacity-100 translate-y-0 scale-100"
-          leaveTo="opacity-50 translate-y-full scale-0"
-        >
-          <div>
-            <div
-              className="alert flex-row items-center gap-4 bg-error/50 py-2 text-sm 
-              text-base-content ring-1 ring-base-content/20 backdrop-blur-md sm:py-4 sm:text-lg"
-            >
-              <MdClose className="flex-none text-2xl sm:text-3xl" />
-              <div className="!m-0">
-                <span className="font-bold">{networkResp?.data as string}</span>
-              </div>
-            </div>
-          </div>
-        </Transition>
-      </div> */}
       <div className="text-4xl sm:text-5xl font-bold">Write Article</div>
 
       <div className="min-w-full relative">
@@ -280,7 +209,9 @@ function WritingPanel() {
                   label: "Go to the article",
                   callback: () => {
                     if (!networkResp?.data) return;
-                    router.push(`/article/${(networkResp.data as ArticleModel).id}`);
+                    router.push(
+                      `/article/${(networkResp.data as ArticleModel).id}`,
+                    );
                   },
                 },
               ]}
@@ -324,12 +255,14 @@ function WritingPanel() {
                   enter="ease-out transform transition absolute inset-x-0 duration-500"
                   enterFrom="opacity-0 -translate-x-[50%] scale-x-0 "
                   enterTo="opacity-100 translate-x-0 scale-x-100"
+                  entered="static"
                   leave="ease-in transform transition absolute inset-x-0 duration-300"
                   leaveFrom="opacity-100 translate-x-0 scale-x-100"
                   leaveTo="opacity-0 -translate-x-[50%] scale-x-0"
+                  unmount={false}
                 >
                   <div className="min-w-full">
-                    <WritingPanelForm
+                    {/* <WritingPanelForm
                       article={article}
                       setArticle={(title, desc, content) => {
                         setArticle(
@@ -342,7 +275,8 @@ function WritingPanel() {
                             } as ArticleModel),
                         );
                       }}
-                    />
+                    /> */}
+                    <WritingPanelForm1 previewing={tab === "Preview"}/>
                   </div>
                 </Transition>
                 <Transition
@@ -357,7 +291,9 @@ function WritingPanel() {
                   leaveTo="opacity-0 translate-x-[50%] scale-x-0"
                 >
                   <div className="min-w-full">
-                    <WritingPanelPreview content={article?.content || ""} />
+                    <WritingPanelPreview
+                      content={state.formData?.content || ""}
+                    />
                   </div>
                 </Transition>
               </div>

@@ -2,7 +2,7 @@ import { isFalsy } from "../Main";
 import _ from "lodash";
 
 export interface ArticleModel {
-  id:string;
+  id: string;
   title: string;
   desc: string;
   thumbnail: string;
@@ -11,6 +11,7 @@ export interface ArticleModel {
   dateAdded: number;
   dateUpdated: number;
   duration: number;
+  topics?: string[];
   tags: string[];
   deleted: number;
   community?: string;

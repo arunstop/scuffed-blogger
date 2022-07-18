@@ -2,6 +2,7 @@ import Head from "next/head";
 import React from "react";
 import MainContainer from "../components/main/MainContainer";
 import WritingPanel from "../components/write/WritingPanel";
+import { WritingPanelProvider } from "../utils/contexts/writingPanel/WritingPanelProvider";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
 // export const getServerSideProps: GetServerSideProps<{ xd: any }> = async (
@@ -25,7 +26,7 @@ import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 //   };
 // };
 // function Write({ xd }: { xd: any }) {
-  function Write() {
+function Write() {
   return (
     <>
       <Head>
@@ -34,7 +35,9 @@ import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
         <meta name="description" content={APP_DESC} />
       </Head>
       <MainContainer className="">
-        <WritingPanel />
+        <WritingPanelProvider>
+          <WritingPanel />
+        </WritingPanelProvider>
       </MainContainer>
     </>
   );
