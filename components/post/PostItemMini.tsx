@@ -56,8 +56,8 @@ function PostItemMini({ post }: { post: Post }) {
         <Link href={`/article/${post.id}`} passHref>
           <a>
             <h1 className="text-xl font-black group-hover:underline sm:text-2xl">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem
+              ipsum dolor sit amet, consectetur adipisicing elit.
             </h1>
           </a>
         </Link>
