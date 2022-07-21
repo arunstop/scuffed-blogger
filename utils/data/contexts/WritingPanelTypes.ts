@@ -5,17 +5,25 @@ export interface WritingPanelContextProps {
 
 export interface WritingPanelState {
   formData: WritingPanelFormProps | null;
+  tab: WritingPanelTabTypes;
 }
+
+export type WritingPanelTabTypes = "Preview" | "Write";
 
 export interface WritingPanelAction {
   setFormData: (data: WritingPanelFormProps) => void;
-  // setReplyingCommentId: (id: string | number|null) => void;
+  setTab: (data: WritingPanelTabTypes) => void;
 }
 
-export type WritingPanelActionTypes = {
-  type: "SET_FORM_DATA";
-  payload: { data: WritingPanelFormProps };
-};
+export type WritingPanelActionTypes =
+  | {
+      type: "SET_FORM_DATA";
+      payload: { data: WritingPanelFormProps };
+    }
+  | {
+      type: "SET_TAB";
+      payload: { data: WritingPanelTabTypes };
+    };
 // | {
 //     type: "SET_REPLYING_COMMENT_ID";
 //     payload: { id: string | number | null };
@@ -46,5 +54,5 @@ export interface WritingPanelFormProps {
 // };
 
 export const getWritingPanelInit = (): WritingPanelState => {
-  return { formData: null };
+  return { formData: null, tab: "Write" };
 };

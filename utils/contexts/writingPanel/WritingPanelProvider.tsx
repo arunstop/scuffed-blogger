@@ -22,8 +22,15 @@ export const WritingPanelProvider = ({ children }: { children: ReactNode }) => {
   );
   const action: WritingPanelAction = {
     setFormData: (data) => {
-      dispatch({ type: "SET_FORM_DATA", payload: { data: data } });
+      const processedData: WritingPanelFormProps = {
+        ...data,
+        content: encodeURIComponent(data.content),
+      };
+      dispatch({ type: "SET_FORM_DATA", payload: { data: processedData } });
       storageSave(KEY_ARTICLE_DRAFT, JSON.stringify(data));
+    },
+    setTab: (data) => {
+      dispatch({ type: "SET_TAB", payload: { data: data } });
     },
     // setReplyingCommentId: (id) => {
     //   dispatch({ type: "SET_REPLYING_COMMENT_ID", payload: { id } });
@@ -36,7 +43,7 @@ export const WritingPanelProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    if(state.formData) return;
+    if (state.formData) return;
     if (storageCheck(KEY_ARTICLE_DRAFT)) {
       try {
         const localArticleDraft = JSON.parse(

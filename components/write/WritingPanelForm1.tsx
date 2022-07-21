@@ -7,7 +7,13 @@ import { WritingPanelFormProps } from "../../utils/data/contexts/WritingPanelTyp
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
 
-function WritingPanelForm1({ previewing }: { previewing: boolean }) {
+function WritingPanelForm1({
+  previewing,
+  submit,
+}: {
+  previewing: boolean;
+  submit: () => void;
+}) {
   const {
     register,
     watch,
@@ -34,8 +40,8 @@ function WritingPanelForm1({ previewing }: { previewing: boolean }) {
     trigger();
     if (!isValid) return alert("form is invalid");
     // proceed if so
-    const data = getValues();
-    console.log(data);
+    action.setFormData(getValues());
+    submit();
   };
 
   useEffect(() => {
@@ -46,7 +52,7 @@ function WritingPanelForm1({ previewing }: { previewing: boolean }) {
   }, [previewing]);
 
   return (
-    <>
+    <div className="flex w-full flex-col gap-4 sm:gap-8">
       <form
         className="flex w-full flex-col gap-4 sm:gap-8"
         onSubmit={handleSubmit(onSubmit)}
@@ -67,7 +73,6 @@ function WritingPanelForm1({ previewing }: { previewing: boolean }) {
           error={!!errors.title}
           errorMsg={errors.title?.message || ""}
         />
-
         <div className="flex flex-col gap-1 sm:gap-2">
           <span className={`text-base sm:text-lg font-semibold`}>
             Thumbnail
@@ -85,7 +90,8 @@ function WritingPanelForm1({ previewing }: { previewing: boolean }) {
               `}
             >
               <img
-                className="h-full w-full cursor-pointer object-cover transition-transform duration-500 group-hover:scale-125"
+                className={`h-full w-full cursor-pointer object-cover transition-transform duration-500 
+                group-hover:scale-125`}
                 src={
                   thumbnail
                     ? URL.createObjectURL(thumbnail)
@@ -95,13 +101,15 @@ function WritingPanelForm1({ previewing }: { previewing: boolean }) {
               />
 
               <div
-                className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-black/0 
-                transition-[opacity,background-color] duration-500 group-hover:bg-black/60 group-hover:opacity-100
-                group
+                className="group pointer-events-none absolute inset-0 z-10 flex items-center justify-center 
+                bg-black/0 transition-[opacity,background-color] duration-500 group-hover:bg-black/60
+                group-hover:opacity-100
                 "
               >
-                <div className="flex items-center justify-center rounded-full bg-black/60 p-2 group-hover:scale-125
-                duration-700 transition-transform">
+                <div
+                  className="flex items-center justify-center rounded-full bg-black/60 p-2 transition-transform
+                duration-700 group-hover:scale-125"
+                >
                   {thumbnail ? (
                     <MdEdit className="text-3xl text-white sm:text-4xl" />
                   ) : (
@@ -248,7 +256,7 @@ function WritingPanelForm1({ previewing }: { previewing: boolean }) {
           className="min-h-[36rem] resize-none"
           placeholder="Write the article's content"
           label="Content"
-          defaultValue={formData?.content || ""}
+          defaultValue={decodeURIComponent(formData?.content || "")}
           {...register("content", {
             required: { value: true, message: "Content can not be empty" },
             minLength: {
@@ -281,7 +289,7 @@ function WritingPanelForm1({ previewing }: { previewing: boolean }) {
           Submit Article
         </button>
       </div>
-    </>
+    </div>
   );
 }
 

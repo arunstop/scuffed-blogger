@@ -1,33 +1,22 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
+import { nanoid } from "nanoid";
 import { useRouter } from "next/router";
-import React, {
-  Fragment,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState
-} from "react";
+import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
+import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
+import { WritingPanelTabTypes } from "../../utils/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse } from "../../utils/data/Main";
-import {
-  ArticleModel,
-  isArticleModel
-} from "../../utils/data/models/ArticleModel";
-import { KEY_ARTICLE_CONTENT, LOREM } from "../../utils/helpers/Constants";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { strKebabify } from "../../utils/helpers/MainHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import {
-  storageGet,
-  storageSave
-} from "../../utils/services/local/LocalStorage";
 import { mainApi } from "../../utils/services/network/MainApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm1 from "./WritingPanelForm1";
 import WritingPanelPreview from "./WritingPanelPreview";
 
-const tabs: { icon: ReactNode; title: string }[] = [
+const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [
   {
     icon: <MdEdit />,
     title: "Write",
@@ -39,43 +28,28 @@ const tabs: { icon: ReactNode; title: string }[] = [
 ];
 
 function WritingPanel() {
-  const [article, setArticle] = useState<undefined | ArticleModel>();
-  const [tab, setTab] = useState<string>("Write");
   const [loading, setLoading] = useState(false);
   const [networkResp, setNetWorkResp] =
     useState<MainNetworkResponse<ArticleModel | FirebaseError | null>>();
   const router = useRouter();
-  const { state, action } = useWritingPanelCtx();
-
-  // Get locally saved/drafted article
-  useEffect(() => {
-    let localArticle = storageGet(KEY_ARTICLE_CONTENT);
-    if (localArticle) {
-      try {
-        localArticle = JSON.parse(localArticle);
-      } catch {
-        localArticle = "null";
-      }
-    }
-    if (localArticle && isArticleModel(localArticle)) {
-      const formattedArticle = localArticle as unknown as ArticleModel;
-      setArticle({
-        ...formattedArticle,
-        content: decodeURIComponent(formattedArticle.content),
-      });
-    }
-
-    return () => {};
-  }, []);
+  const {
+    state: { formData ,tab},
+    action: wpAction,
+  } = useWritingPanelCtx();
+  const { loggedIn } = useAuthCtx();
 
   const submitArticle = useCallback(async () => {
+
+    // terminate the process if formData is null
+    // OR not logged in
+    if (!formData || !loggedIn) return;
+    // proceed if not
     const date = Date.now();
-    const title = article?.title || "";
     const newArticle: ArticleModel = {
-      id: strKebabify(`${title.slice(0, 120)}-${date}`),
-      title: article?.title || LOREM.slice(0, 120),
-      desc: article?.desc || LOREM.slice(121, LOREM.length),
-      content: encodeURIComponent(article?.content || ""),
+      id: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
+      title: formData.title,
+      desc: formData.desc,
+      content: encodeURIComponent(formData.content),
       thumbnail: `https://picsum.photos/id/${Math.floor(
         Math.random() * 10,
       )}/500/300`,
@@ -83,8 +57,9 @@ function WritingPanel() {
       dateAdded: date,
       dateUpdated: date,
       deleted: 0,
-      duration: (article?.content.length || 0) / 200,
-      tags: ["Technology", "Photography"],
+      duration: (formData.content.length || 0) / 200,
+      tags: [...formData.tags.split(",").map((e) => e.trim())],
+      topics: [...formData.topics.split(",").map((e) => e.trim())],
     };
 
     setLoading(true);
@@ -97,12 +72,12 @@ function WritingPanel() {
         // await waitFor(4000);
         setLoading(false);
         // }
-        if (resp.status === "success") {
-          storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
-        }
+        // if (resp.status === "success") {
+        //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
+        // }
       },
     });
-  }, [article]);
+  }, [formData,loggedIn]);
 
   // Scroll to top everytime there is action
   useEffect(() => {
@@ -112,14 +87,14 @@ function WritingPanel() {
 
   return (
     <>
-      <div className="text-4xl sm:text-5xl font-bold">Write Article</div>
+      <div className="text-4xl font-bold sm:text-5xl">Write Article</div>
 
-      <div className="min-w-full relative">
+      <div className="relative min-w-full">
         <Transition
           show={loading}
           appear
           as={"div"}
-          className="w-full absolute inset-x-0"
+          className="absolute inset-x-0 w-full"
           enter="ease-out transform transition duration-500"
           enterFrom="opacity-0 translate-y-[20%] scale-x-0"
           enterTo="opacity-100 translate-y-0 scale-x-100"
@@ -146,7 +121,7 @@ function WritingPanel() {
             show={!loading && networkResp?.status === "error"}
             appear
             as={"div"}
-            className="w-full absolute inset-x-0"
+            className="absolute inset-x-0 w-full"
             enter="ease-out transform transition duration-500"
             enterFrom="opacity-0 translate-y-[20%] scale-x-0"
             enterTo="opacity-100 translate-y-0 scale-x-100"
@@ -183,7 +158,7 @@ function WritingPanel() {
             show={!loading && networkResp?.status === "success"}
             appear
             as={"div"}
-            className="w-full absolute inset-x-0"
+            className="absolute inset-x-0 w-full"
             enter="ease-out transform transition duration-500"
             enterFrom="opacity-0 translate-y-[20%] scale-x-0"
             enterTo="opacity-100 translate-y-0 scale-x-100"
@@ -201,7 +176,7 @@ function WritingPanel() {
                 {
                   label: "Write again",
                   callback: () => {
-                    setTab("Write");
+                    wpAction.setTab("Write");
                     setNetWorkResp(undefined);
                   },
                 },
@@ -236,9 +211,9 @@ function WritingPanel() {
                     <a
                       key={idx}
                       className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl 
-                  font-bold transition-colors gap-2
-                  ${e.title === tab ? "tab-active" : ""}`}
-                      onClick={() => setTab(e.title)}
+                      font-bold transition-colors gap-2
+                      ${e.title === tab ? "tab-active" : ""}`}
+                      onClick={() => wpAction.setTab(e.title)}
                     >
                       <span className="text-2xl">{e.icon}</span>
                       <span className="first-letter:uppercase">{e.title}</span>
@@ -248,7 +223,7 @@ function WritingPanel() {
               </div>
               {/* CONTENT */}
 
-              <div className="relative flex min-h-screen flex-row gap-2 sm:gap-4 w-full">
+              <div className="relative flex min-h-screen w-full flex-row gap-2 sm:gap-4">
                 <Transition
                   show={tab === "Write"}
                   as={Fragment}
@@ -276,7 +251,10 @@ function WritingPanel() {
                         );
                       }}
                     /> */}
-                    <WritingPanelForm1 previewing={tab === "Preview"}/>
+                    <WritingPanelForm1
+                      previewing={tab === "Preview"}
+                      submit={submitArticle}
+                    />
                   </div>
                 </Transition>
                 <Transition
@@ -292,7 +270,8 @@ function WritingPanel() {
                 >
                   <div className="min-w-full">
                     <WritingPanelPreview
-                      content={state.formData?.content || ""}
+                      content={formData?.content || ""}
+                      submit={submitArticle}
                     />
                   </div>
                 </Transition>
