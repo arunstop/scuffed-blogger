@@ -25,7 +25,7 @@ module.exports = {
     semi: "error",
     "no-unused-vars": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
-    "max-len": ["error", { code: 180, ignoreComments: true }],
+    "max-len": ["warn", { code: 120, ignoreComments: true }],
     "unused-imports/no-unused-imports": "error",
     "comma-dangle": [
       "error",
