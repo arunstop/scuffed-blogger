@@ -44,7 +44,7 @@ function Header() {
 
   const { searchModal, closeSearchModal } = useSearchModalBehavior();
   const {
-    loggedIn,
+    isLoggedIn,
     authStt: { user },
   } = useAuthCtx();
 
@@ -108,7 +108,7 @@ function Header() {
                 </Link>
               </div>
 
-              {!loggedIn && (
+              {!isLoggedIn && (
                 <Link href="/auth" passHref>
                   <a>
                     <button
@@ -185,7 +185,7 @@ function Header() {
           )}
         </div>
       </div>
-      <Sidebar />
+      {isLoggedIn && <Sidebar />}
       <SearchModal value={searchModal} onClose={closeSearchModal} />
     </>
   );
