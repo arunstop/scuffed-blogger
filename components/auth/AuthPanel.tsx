@@ -63,7 +63,7 @@ export interface AuthFormProps {
 }
 function AuthPanel() {
   const [form, setForm] = useState<AuthFormTypes>("LOGIN");
-  const { loggedIn } = useAuthCtx();
+  const { isLoggedIn } = useAuthCtx();
   // const [loading, setPlaceholder] = useState<StatusPlaceholderProps>();
   const { loading, setLoading, netResp, setNetResp } = useNetworkAction<
     StatusPlaceholderProps | null,

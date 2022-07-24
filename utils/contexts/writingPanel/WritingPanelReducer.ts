@@ -10,7 +10,10 @@ export const writingPanelReducer = (
   const type = action.type;
   switch (type) {
     case "SET_FORM_DATA": {
-      return { formData: action.payload.data };
+      return { ...state, formData: action.payload.data };
+    }
+    case "SET_TAB": {
+      return { ...state, tab: action.payload.data };
     }
     // case "SET_REPLYING_COMMENT_ID": {
     //   return { ...state, replyingCommentId: action.payload.id };

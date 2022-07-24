@@ -36,13 +36,13 @@ function WritingPanel() {
     state: { formData ,tab},
     action: wpAction,
   } = useWritingPanelCtx();
-  const { loggedIn } = useAuthCtx();
+  const { isLoggedIn } = useAuthCtx();
 
   const submitArticle = useCallback(async () => {
 
     // terminate the process if formData is null
     // OR not logged in
-    if (!formData || !loggedIn) return;
+    if (!formData || !isLoggedIn) return;
     // proceed if not
     const date = Date.now();
     const newArticle: ArticleModel = {
@@ -77,7 +77,7 @@ function WritingPanel() {
         // }
       },
     });
-  }, [formData,loggedIn]);
+  }, [formData,isLoggedIn]);
 
   // Scroll to top everytime there is action
   useEffect(() => {
@@ -275,24 +275,6 @@ function WritingPanel() {
                     />
                   </div>
                 </Transition>
-              </div>
-              <div className="flex w-full flex-row flex-wrap justify-end gap-2 sm:gap-4">
-                <button
-                  className="--btn-resp btn-outline btn"
-                  onClick={() => {
-                    // setContent("");
-                  }}
-                >
-                  Reset
-                </button>
-                <button
-                  className="--btn-resp btn btn-primary"
-                  onClick={() => {
-                    submitArticle();
-                  }}
-                >
-                  Submit Article
-                </button>
               </div>
             </div>
           </>

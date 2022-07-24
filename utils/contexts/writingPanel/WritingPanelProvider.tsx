@@ -27,6 +27,7 @@ export const WritingPanelProvider = ({ children }: { children: ReactNode }) => {
         content: encodeURIComponent(data.content),
       };
       dispatch({ type: "SET_FORM_DATA", payload: { data: processedData } });
+      console.log(processedData);
       storageSave(KEY_ARTICLE_DRAFT, JSON.stringify(data));
     },
     setTab: (data) => {

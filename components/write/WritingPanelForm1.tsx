@@ -15,6 +15,11 @@ function WritingPanelForm1({
   submit: () => void;
 }) {
   const {
+    state: { formData },
+    action,
+  } = useWritingPanelCtx();
+
+  const {
     register,
     watch,
     handleSubmit,
@@ -24,16 +29,11 @@ function WritingPanelForm1({
     control,
     formState: { isValid, errors },
     resetField,
+    reset,
   } = useForm<WritingPanelFormProps>({
     mode: "onChange",
   });
-
   const thumbnail = watch("thumbnail")?.[0];
-
-  const {
-    state: { formData },
-    action,
-  } = useWritingPanelCtx();
 
   const onSubmit = () => {
     //   check if form is valid
@@ -44,9 +44,18 @@ function WritingPanelForm1({
     submit();
   };
 
+  // set the values of form
   useEffect(() => {
-    const formData = getValues();
-    if (previewing) action.setFormData(formData);
+    if (formData) reset(formData);
+  }, [formData]);
+
+  // set contexts formData before previewing
+  useEffect(() => {
+    // do nothing if formData in context is null
+    if (!formData) return;
+    const data = getValues();
+    // console.log(data);
+    if (previewing) action.setFormData(data);
 
     return () => {};
   }, [previewing]);
@@ -62,7 +71,6 @@ function WritingPanelForm1({
           placeholder="Title..."
           // onChange={(ev) => editTitle(ev.target.value)}
           label="Title"
-          defaultValue={formData?.title || ""}
           {...register("title", {
             required: { value: true, message: "Title can not be empty" },
             minLength: {
@@ -203,7 +211,6 @@ function WritingPanelForm1({
           placeholder="This article talks about something interesting..."
           className="!h-32 max-h-32"
           label="Description"
-          defaultValue={formData?.desc || ""}
           {...register("desc", {
             required: { value: true, message: "Desc can not be empty" },
             minLength: {
@@ -222,7 +229,6 @@ function WritingPanelForm1({
             placeholder="Topic..."
             // onChange={(ev) => editTitle(ev.target.value)}
             label="Topic"
-            defaultValue={formData?.topics || ""}
             {...register("topics", {
               required: { value: true, message: "Topics can not be empty" },
               minLength: {
@@ -239,7 +245,6 @@ function WritingPanelForm1({
             placeholder="Tags..."
             // onChange={(ev) => editTitle(ev.target.value)}
             label="Tags"
-            defaultValue={formData?.tags || ""}
             {...register("tags", {
               required: { value: true, message: "Tags can not be empty" },
               minLength: {
@@ -256,7 +261,6 @@ function WritingPanelForm1({
           className="min-h-[36rem] resize-none"
           placeholder="Write the article's content"
           label="Content"
-          defaultValue={decodeURIComponent(formData?.content || "")}
           {...register("content", {
             required: { value: true, message: "Content can not be empty" },
             minLength: {
