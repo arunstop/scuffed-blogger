@@ -10,6 +10,7 @@ import { WritingPanelTabTypes } from "../../utils/data/contexts/WritingPanelType
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { strKebabify } from "../../utils/helpers/MainHelpers";
+import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { mainApi } from "../../utils/services/network/MainApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
@@ -86,7 +87,7 @@ function WritingPanel() {
   }, [loading, networkResp]);
 
   return (
-    <>
+    <Transition  appear as="div" className={`flex flex-col justify-start gap-4 sm:gap-8 w-full`} {...transitionPullV()}>
       <div className="text-4xl font-bold sm:text-5xl">Write Article</div>
 
       <div className="relative min-w-full">
@@ -280,7 +281,7 @@ function WritingPanel() {
           </>
         </Transition>
       </div>
-    </>
+    </Transition>
   );
 }
 export default WritingPanel;

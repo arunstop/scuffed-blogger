@@ -38,7 +38,7 @@ function WritingPanelForm1({
   const onSubmit = () => {
     //   check if form is valid
     trigger();
-    if (!isValid) return alert("form is invalid");
+    if (!isValid) return;
     // proceed if so
     action.setFormData(getValues());
     submit();
