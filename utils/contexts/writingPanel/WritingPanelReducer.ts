@@ -15,6 +15,9 @@ export const writingPanelReducer = (
     case "SET_TAB": {
       return { ...state, tab: action.payload.data };
     }
+    case "CLEAR_FORM_DATA":{
+      return {...state,formData:null};
+    }
     // case "SET_REPLYING_COMMENT_ID": {
     //   return { ...state, replyingCommentId: action.payload.id };
     // }

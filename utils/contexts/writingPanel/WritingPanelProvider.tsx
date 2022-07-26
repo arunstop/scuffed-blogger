@@ -9,6 +9,7 @@ import { KEY_ARTICLE_DRAFT } from "../../helpers/Constants";
 import {
   storageCheck,
   storageGet,
+  storageRemove,
   storageSave,
 } from "../../services/local/LocalStorage";
 import { WritingPanelContext } from "./WritingPanelContext";
@@ -29,6 +30,10 @@ export const WritingPanelProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: "SET_FORM_DATA", payload: { data: processedData } });
       console.log(processedData);
       storageSave(KEY_ARTICLE_DRAFT, JSON.stringify(data));
+    },
+    clearFormData:()=>{
+      dispatch({type:"CLEAR_FORM_DATA"});
+      storageRemove(KEY_ARTICLE_DRAFT);
     },
     setTab: (data) => {
       dispatch({ type: "SET_TAB", payload: { data: data } });

@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { authContext } from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
 export const useAuthCtx = () => {
-  const { state, action } = useContext(authContext);
+  const { state, action } = useContext(AuthContext);
   return { authStt: state, authAct: action, isLoggedIn: !!state.user };
 };

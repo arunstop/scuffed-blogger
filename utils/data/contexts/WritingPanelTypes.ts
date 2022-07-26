@@ -12,6 +12,7 @@ export type WritingPanelTabTypes = "Preview" | "Write";
 
 export interface WritingPanelAction {
   setFormData: (data: WritingPanelFormProps) => void;
+  clearFormData: () => void;
   setTab: (data: WritingPanelTabTypes) => void;
 }
 
@@ -19,6 +20,9 @@ export type WritingPanelActionTypes =
   | {
       type: "SET_FORM_DATA";
       payload: { data: WritingPanelFormProps };
+    }
+    | {
+      type: "CLEAR_FORM_DATA";
     }
   | {
       type: "SET_TAB";

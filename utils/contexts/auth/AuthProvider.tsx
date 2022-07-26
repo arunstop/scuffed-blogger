@@ -10,9 +10,10 @@ import {
   storageSave,
 } from "../../services/local/LocalStorage";
 import { firebaseAuth } from "../../services/network/FirebaseClient";
-import { authContext } from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 import { AUTH_INIT } from "./AuthInitializer";
 import { authReducer } from "./AuthReducer";
+import {setCookie,destroyCookie} from "nookies";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
@@ -20,13 +21,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INIT);
   const action: AuthAction = {
     setUser: (user) => {
+      // update state
       dispatch({ type: "SET_USER", payload: { user } });
-      storageSave(KEY_AUTH_USER, encodeURIComponent(JSON.stringify(user)));
+      // set cookie
+      const strUser = encodeURIComponent(JSON.stringify(user));
+      setCookie(undefined, "USER_AUTH_COOKIE", strUser, {
+        path: "/",
+        maxAge: 30 * 24 * 60 * 60,
+      });
+      // set storage
+      storageSave(KEY_AUTH_USER, strUser);
     },
     unsetUser: () => {
+      // unset user in context
       dispatch({ type: "UNSET_USER" });
+      // signout firebase
       firebaseAuth.signOut();
+      // destroy cookie
+      destroyCookie(undefined, "USER_AUTH_COOKIE");
+      // remove local storage
       storageRemove(KEY_AUTH_USER);
+      // navigate to auth
       router.push("/auth");
     },
     // setReplyingCommentId: (id) => {
@@ -42,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     firebaseAuth.onAuthStateChanged((user) => {
       const localUserData = storageCheck(KEY_AUTH_USER);
-      
+
       // if not logged in
       if (!user) {
         // delete local user data from previous session (if exist)
@@ -64,11 +79,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // set auth data if valid
           action.setUser(localAuthData as UserModel);
         } catch (error) {
-          console.log("Error when setting the auth user data",error);
+          console.log("Error when setting the auth user data", error);
         }
       }
     });
   }, []);
 
-  return <authContext.Provider value={value}>{children}</authContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

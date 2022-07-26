@@ -34,7 +34,7 @@ export function isArticleModel(value: unknown) {
     "dateUpdated" in value &&
     "duration" in value &&
     "tags" in value &&
-    "deleted" in value;
+    "deleted" in value; 
   // list all properties
   const props = [
     "id",
@@ -47,6 +47,7 @@ export function isArticleModel(value: unknown) {
     "dateUpdated",
     "duration",
     "tags",
+    "topics",
     "deleted",
     "community",
   ];

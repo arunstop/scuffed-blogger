@@ -13,7 +13,7 @@ import { strKebabify } from "../../utils/helpers/MainHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { mainApi } from "../../utils/services/network/MainApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
-import WritingPanelForm1 from "./WritingPanelForm1";
+import WritingPanelForm1 from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
 
 const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [
