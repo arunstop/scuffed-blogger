@@ -74,7 +74,7 @@ function Header() {
             //     : undefined
             // }
           >
-            {APP_NAME + parseCookies(KEY_AUTH_USER)}
+            {APP_NAME + parseCookies(undefined,KEY_AUTH_USER)}
           </a>
         </Link>
         {router.pathname !== "/auth" ? <MainHeaderBigSearchBar /> : null}
