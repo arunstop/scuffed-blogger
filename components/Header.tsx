@@ -4,13 +4,14 @@ import React, { useCallback, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
-import { APP_NAME } from "../utils/helpers/Constants";
+import { APP_NAME, KEY_AUTH_USER } from "../utils/helpers/Constants";
 import { routeTrimQuery } from "../utils/helpers/MainHelpers";
 import { useHeaderBehavior } from "../utils/hooks/HeaderBehaviorHook";
 import { useSearchModalBehavior } from "../utils/hooks/SearchModalBehaviorHook";
 import MainHeaderBigSearchBar from "./main/MainHeaderBigSearchBar";
 import SearchModal from "./main/SearchModal";
 import Sidebar from "./main/Sidebar";
+import {parseCookies} from 'nookies';
 
 // function scrollListener(event: Event) {
 //   const element = event.target as Element;
@@ -73,7 +74,7 @@ function Header() {
             //     : undefined
             // }
           >
-            {APP_NAME}
+            {APP_NAME + parseCookies(KEY_AUTH_USER)}
           </a>
         </Link>
         {router.pathname !== "/auth" ? <MainHeaderBigSearchBar /> : null}
