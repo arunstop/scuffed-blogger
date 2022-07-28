@@ -39,7 +39,7 @@ export interface WritingPanelFormProps {
   topics: string;
   tags: string;
   content: string;
-  thumbnail?: FileList;
+  thumbnail: FileList;
 }
 
 // factory
