@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { MdEdit, MdAdd } from "react-icons/md";
+import { MdAdd, MdEdit } from "react-icons/md";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
 import { WritingPanelFormProps } from "../../utils/data/contexts/WritingPanelTypes";
 // import { RegisterFormFields } from "../auth/AuthRegisterForm";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
 
-function WritingPanelForm1({
+function WritingPanelForm({
   previewing,
   submit,
 }: {
@@ -41,13 +41,12 @@ function WritingPanelForm1({
     if (!isValid) return;
     // proceed if so
     action.setFormData(getValues());
+    // console.log(getValues());
     submit();
-    action.clearFormData();
   };
 
   // set the values of form
   useEffect(() => {
-    console.log(formData);
     if (formData)
       reset({
         ...formData,
@@ -58,11 +57,8 @@ function WritingPanelForm1({
 
   // set contexts formData before previewing
   useEffect(() => {
-    // do nothing if formData in context is null
-    if (!formData) return;
-    const data = getValues();
-    // console.log(data);
-    if (previewing) action.setFormData(data);
+    // set state if previewing
+    if (previewing) action.setFormData(getValues());
 
     return () => {};
   }, [previewing]);
@@ -305,4 +301,4 @@ function WritingPanelForm1({
   );
 }
 
-export default React.memo(WritingPanelForm1);
+export default React.memo(WritingPanelForm);

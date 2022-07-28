@@ -1,17 +1,16 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../utils/contexts/ui/UiHook";
-import { APP_NAME, KEY_AUTH_USER } from "../utils/helpers/Constants";
+import { APP_NAME } from "../utils/helpers/Constants";
 import { routeTrimQuery } from "../utils/helpers/MainHelpers";
 import { useHeaderBehavior } from "../utils/hooks/HeaderBehaviorHook";
 import { useSearchModalBehavior } from "../utils/hooks/SearchModalBehaviorHook";
 import MainHeaderBigSearchBar from "./main/MainHeaderBigSearchBar";
 import SearchModal from "./main/SearchModal";
 import Sidebar from "./main/Sidebar";
-import {parseCookies} from 'nookies';
 
 // function scrollListener(event: Event) {
 //   const element = event.target as Element;
@@ -74,7 +73,7 @@ function Header() {
             //     : undefined
             // }
           >
-            {APP_NAME + parseCookies(undefined,KEY_AUTH_USER)}
+            {APP_NAME}
           </a>
         </Link>
         {router.pathname !== "/auth" ? <MainHeaderBigSearchBar /> : null}
@@ -138,9 +137,9 @@ function Header() {
                   <a>
                     <button
                       className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate
-    text-lg sm:text-xl
-    ${scrolledToTop ? "btn-primary" : "btn-outline"}
-    `}
+                      text-lg sm:text-xl
+                      ${scrolledToTop ? "btn-primary" : "btn-outline"}
+                      `}
                       style={
                         {
                           // borderColor: scrolledToTop ? "hsl(var(--p))" : "",
@@ -158,8 +157,8 @@ function Header() {
                 <label
                   htmlFor="main-drawer"
                   className="border-offset-2 btn btn-circle h-8 !min-h-[auto] w-8 cursor-pointer overflow-hidden
-               rounded-[100px] border-[1px] border-base-content transition-[colors,border-radius,transform] duration-300 ease-in-out hover:rounded-lg 
-               sm:h-12 sm:w-12 sm:border-2 bg-transparent hover:bg-transparent"
+                  rounded-[100px] border-[1px] border-base-content transition-[colors,border-radius,transform] duration-300 ease-in-out hover:rounded-lg 
+                  sm:h-12 sm:w-12 sm:border-2 bg-transparent hover:bg-transparent"
                 >
                   <img
                     src={user.avatar}
@@ -169,13 +168,12 @@ function Header() {
                 {user.profileCompletion !== "COMPLETE" && (
                   <div
                     className="absolute top-0 right-0 h-2 w-2 translate-x-[0.125rem] -translate-y-[0.125rem] sm:h-4 
-                sm:w-4  sm:translate-x-1 sm:-translate-y-1"
+                    sm:w-4  sm:translate-x-1 sm:-translate-y-1"
                   >
                     <div className="relative">
                       <span
                         className="absolute inset-0 h-2 w-2 origin-center transform animate-ping rounded-full
-                    bg-red-500 sm:h-4 sm:w-4
-                "
+                      bg-red-500 sm:h-4 sm:w-4"
                       ></span>
                       <span className="absolute inset-0 h-2 w-2 rounded-full bg-red-500 sm:h-4 sm:w-4"></span>
                     </div>
