@@ -1,6 +1,5 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
-import { nanoid } from "nanoid";
 import { useRouter } from "next/router";
 import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
@@ -9,10 +8,9 @@ import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPan
 import { WritingPanelTabTypes } from "../../utils/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
-import { strKebabify } from "../../utils/helpers/MainHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { mainApi } from "../../utils/services/network/MainApi";
+import { firebaseApi } from "../../utils/services/network/FirebaseApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
@@ -37,7 +35,7 @@ function WritingPanel() {
     state: { formData, tab },
     action,
   } = useWritingPanelCtx();
-  const { isLoggedIn } = useAuthCtx();
+  const { authStt, isLoggedIn } = useAuthCtx();
 
   const submitArticle = useCallback(
     async () => {
@@ -45,28 +43,28 @@ function WritingPanel() {
       // OR not logged in
       if (!formData || !isLoggedIn) return;
       // proceed if not
-      const date = Date.now();
-      const newArticle: ArticleModel = {
-        id: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
-        title: formData.title,
-        desc: formData.desc,
-        content: encodeURIComponent(formData.content),
-        thumbnail: `https://picsum.photos/id/${Math.floor(
-          Math.random() * 10,
-        )}/500/300`,
-        author: "Munkrey Alf",
-        dateAdded: date,
-        dateUpdated: date,
-        deleted: 0,
-        duration: (formData.content.length || 0) / 200,
-        tags: [...formData.tags.split(",").map((e) => e.trim())],
-        topics: [...formData.topics.split(",").map((e) => e.trim())],
-      };
+      // const date = Date.now();
+      // const newArticle: ArticleModel = {
+      //   id: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
+      //   title: formData.title,
+      //   desc: formData.desc,
+      //   content: encodeURIComponent(formData.content),
+      //   thumbnail: `https://picsum.photos/id/${Math.floor(
+      //     Math.random() * 10,
+      //   )}/500/300`,
+      //   author: authStt.user!.email,
+      //   dateAdded: date,
+      //   dateUpdated: date,
+      //   deleted: 0,
+      //   duration: (formData.content.length || 0) / 200,
+      //   tags: [...formData.tags.split(",").map((e) => e.trim())],
+      //   topics: [...formData.topics.split(",").map((e) => e.trim())],
+      // };
 
       setLoading(true);
 
-      await mainApi.addArticle({
-        article: newArticle,
+      await firebaseApi.addArticle1({
+        data: formData,
         callback: async (resp) => {
           if (resp.status === "success") action.clearFormData();
           setNetWorkResp(resp);
@@ -113,7 +111,7 @@ function WritingPanel() {
         >
           <StatusPlaceholder
             status="loading"
-            title="Submitting article..."
+            title={`${networkResp?.message}`}
             desc={
               "Adding your beautifully written article into our database. Please wait for a moment, this will be very quick"
             }

@@ -2,31 +2,36 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User
+  User,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore/lite";
 import {
-  doc, setDoc
-} from "firebase/firestore/lite";
-import {
-  deleteObject, getDownloadURL,
+  deleteObject,
+  getDownloadURL,
   ref,
   uploadBytesResumable,
-  UploadTaskSnapshot
+  UploadTaskSnapshot,
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
 import { AuthRegisterProps } from "../../../components/auth/AuthRegisterForm";
+import { WritingPanelFormProps } from "../../data/contexts/WritingPanelTypes";
 import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../data/Main";
-import { ArticleModel } from "../../data/models/ArticleModel";
+import { ArticleModel, toArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
 import { getStorageDirectory } from "../../helpers/MainHelpers";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
-import { fsGetArticleAll, fsGetArticleById, fsGetUser, fsUpdateUser } from "./FirestoreApi";
+import {
+  fsGetArticleAll,
+  fsGetArticleById,
+  fsGetUser,
+  fsUpdateUser,
+} from "./FirestoreApi";
 
 const articleDb = firebaseClient.db.article;
 const userDb = firebaseClient.db.user;
@@ -161,6 +166,61 @@ async function addArticle(article: ArticleModel) {
   await setDoc(newDocRef, article);
 }
 
+// Adding article, now using direct firebaseClient
+interface AddArticleProps {
+  data: WritingPanelFormProps;
+  callback?: (
+    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
+  ) => void;
+}
+
+async function addArticle1({
+  data,
+  callback,
+}: AddArticleProps): Promise<ArticleModel | null> {
+  // TODO: Add article with its thumbnail
+  // generate article
+  const article = toArticleModel(data);
+
+  // upload the article
+  try {
+    // add article first
+    await addArticle(article);
+    
+    // upload thumbnail if there is one
+    const thumbnail = data.thumbnail;
+    if (thumbnail) {
+      try {
+        callback?.(
+          netLoading<ArticleModel>("Uploading the thumbnail", article),
+        );
+        // uploading thumbnail
+        const thumbnailUrl = await uploadFile({
+          file: thumbnail[0],
+          directory: "/thumbnails",
+        });
+        // create new article with newly added thumbnail url
+        const newArticle = { ...article, thumbnail: thumbnailUrl };
+        callback?.(
+          netSuccess<ArticleModel>("Success creating article", newArticle),
+        );
+        return newArticle;
+      } catch (error) {
+        callback?.(
+          netError("Error when creating thumbnail", error as FirebaseError),
+        );
+        return null;
+      }
+    }
+    // if no thumbnail, then just return the default generated article
+    netSuccess<ArticleModel>("Success creating article", article);
+    return article;
+  } catch (error) {
+    callback?.(netError("Error when creating article", error as FirebaseError));
+    return null;
+  }
+}
+
 type GetUserCallbackProps = UserModel | null | FirebaseError;
 type GetUserProps = UserModel | null;
 // @return UserModel if exists
@@ -199,8 +259,6 @@ type GetUserProps = UserModel | null;
 //   return data;
 // }
 
-
-
 type AddUserCallbackProps = UserModel | null | FirebaseError;
 type AddUserProps = UserModel | null;
 // @return UserModel if exists
@@ -235,8 +293,6 @@ async function createUser({
   return data;
 }
 
-
-
 async function deleteFile(link: string) {
   const linkDirectory = getStorageDirectory(link);
   if (!linkDirectory) return;
@@ -246,6 +302,7 @@ async function deleteFile(link: string) {
 
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file
+// @Returns the download url
 async function uploadFile({
   file,
   directory,
@@ -262,10 +319,7 @@ async function uploadFile({
   const extension = file.name.split(".").pop();
   // Getting new name with id
   const newName = `${nanoid(24)}.${extension}`;
-  const imageRef = ref(
-    firebaseClient.storage,
-    `${directory}/${newName}`,
-  );
+  const imageRef = ref(firebaseClient.storage, `${directory}/${newName}`);
   // Uploading the file
   const uploadTask = uploadBytesResumable(imageRef, file);
   uploadTask.on(
@@ -323,11 +377,7 @@ async function updateProfile({
       });
       // console.log("imageUrl : " + imageUrl);
       if (!imageUrl) {
-        callback?.(
-          netError(
-            "Couldn't get the uploaded image's url"
-          ),
-        );
+        callback?.(netError("Couldn't get the uploaded image's url"));
         return null;
       }
 
@@ -374,6 +424,7 @@ export const firebaseApi = {
   getArticleAll: fsGetArticleAll,
   getArticleById: fsGetArticleById,
   addArticle,
+  addArticle1,
   addUser: createUser,
   authRegisterUser,
   authLoginUser,
