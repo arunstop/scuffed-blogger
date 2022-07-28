@@ -34,51 +34,54 @@ function WritingPanel() {
     useState<MainNetworkResponse<ArticleModel | FirebaseError | null>>();
   const router = useRouter();
   const {
-    state: { formData ,tab},
-    action: wpAction,
+    state: { formData, tab },
+    action,
   } = useWritingPanelCtx();
   const { isLoggedIn } = useAuthCtx();
 
-  const submitArticle = useCallback(async () => {
+  const submitArticle = useCallback(
+    async () => {
+      // terminate the process if formData is null
+      // OR not logged in
+      if (!formData || !isLoggedIn) return;
+      // proceed if not
+      const date = Date.now();
+      const newArticle: ArticleModel = {
+        id: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
+        title: formData.title,
+        desc: formData.desc,
+        content: encodeURIComponent(formData.content),
+        thumbnail: `https://picsum.photos/id/${Math.floor(
+          Math.random() * 10,
+        )}/500/300`,
+        author: "Munkrey Alf",
+        dateAdded: date,
+        dateUpdated: date,
+        deleted: 0,
+        duration: (formData.content.length || 0) / 200,
+        tags: [...formData.tags.split(",").map((e) => e.trim())],
+        topics: [...formData.topics.split(",").map((e) => e.trim())],
+      };
 
-    // terminate the process if formData is null
-    // OR not logged in
-    if (!formData || !isLoggedIn) return;
-    // proceed if not
-    const date = Date.now();
-    const newArticle: ArticleModel = {
-      id: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
-      title: formData.title,
-      desc: formData.desc,
-      content: encodeURIComponent(formData.content),
-      thumbnail: `https://picsum.photos/id/${Math.floor(
-        Math.random() * 10,
-      )}/500/300`,
-      author: "Munkrey Alf",
-      dateAdded: date,
-      dateUpdated: date,
-      deleted: 0,
-      duration: (formData.content.length || 0) / 200,
-      tags: [...formData.tags.split(",").map((e) => e.trim())],
-      topics: [...formData.topics.split(",").map((e) => e.trim())],
-    };
+      setLoading(true);
 
-    setLoading(true);
-
-    await mainApi.addArticle({
-      article: newArticle,
-      callback: async (resp) => {
-        setNetWorkResp(resp);
-        // if (resp.status !== "loading") {
-        // await waitFor(4000);
-        setLoading(false);
-        // }
-        // if (resp.status === "success") {
-        //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
-        // }
-      },
-    });
-  }, [formData,isLoggedIn]);
+      await mainApi.addArticle({
+        article: newArticle,
+        callback: async (resp) => {
+          if (resp.status === "success") action.clearFormData();
+          setNetWorkResp(resp);
+          // if (resp.status !== "loading") {
+          // await waitFor(4000);
+          setLoading(false);
+          // }
+          // if (resp.status === "success") {
+          //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
+          // }
+        },
+      });
+    },
+    [formData, isLoggedIn],
+  );
 
   // Scroll to top everytime there is action
   useEffect(() => {
@@ -87,7 +90,12 @@ function WritingPanel() {
   }, [loading, networkResp]);
 
   return (
-    <Transition  appear as="div" className={`flex flex-col justify-start gap-4 sm:gap-8 w-full`} {...transitionPullV()}>
+    <Transition
+      appear
+      as="div"
+      className={`flex flex-col justify-start gap-4 sm:gap-8 w-full`}
+      {...transitionPullV()}
+    >
       <div className="text-4xl font-bold sm:text-5xl">Write Article</div>
 
       <div className="relative min-w-full">
@@ -177,7 +185,7 @@ function WritingPanel() {
                 {
                   label: "Write again",
                   callback: () => {
-                    wpAction.setTab("Write");
+                    action.setTab("Write");
                     setNetWorkResp(undefined);
                   },
                 },
@@ -214,7 +222,7 @@ function WritingPanel() {
                       className={`tab tab-lg flex-1 sm:flex-none  text-lg sm:text-xl !rounded-xl 
                       font-bold transition-colors gap-2
                       ${e.title === tab ? "tab-active" : ""}`}
-                      onClick={() => wpAction.setTab(e.title)}
+                      onClick={() => action.setTab(e.title)}
                     >
                       <span className="text-2xl">{e.icon}</span>
                       <span className="first-letter:uppercase">{e.title}</span>
