@@ -23,16 +23,24 @@ export const WritingPanelProvider = ({ children }: { children: ReactNode }) => {
   );
   const action: WritingPanelAction = {
     setFormData: (data) => {
+      // encoding content
       const processedData: WritingPanelFormProps = {
         ...data,
         content: encodeURIComponent(data.content),
       };
+      // set state
       dispatch({ type: "SET_FORM_DATA", payload: { data: processedData } });
-      // console.log(processedData);
-      storageSave(KEY_ARTICLE_DRAFT, JSON.stringify(data));
+      // save to local
+      storageSave(
+        KEY_ARTICLE_DRAFT,
+        JSON.stringify({
+          ...data,
+          thumbnail: undefined,
+        } as WritingPanelFormProps),
+      );
     },
-    clearFormData:()=>{
-      dispatch({type:"CLEAR_FORM_DATA"});
+    clearFormData: () => {
+      dispatch({ type: "CLEAR_FORM_DATA" });
       storageRemove(KEY_ARTICLE_DRAFT);
     },
     setTab: (data) => {

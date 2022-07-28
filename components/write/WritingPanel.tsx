@@ -14,7 +14,7 @@ import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { mainApi } from "../../utils/services/network/MainApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
-import WritingPanelForm1 from "./WritingPanelForm";
+import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
 
 const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [
@@ -260,7 +260,7 @@ function WritingPanel() {
                         );
                       }}
                     /> */}
-                    <WritingPanelForm1
+                    <WritingPanelForm
                       previewing={tab === "Preview"}
                       submit={submitArticle}
                     />
