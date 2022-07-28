@@ -1,5 +1,8 @@
 import { isFalsy } from "../Main";
 import _ from "lodash";
+import { WritingPanelFormProps } from "../contexts/WritingPanelTypes";
+import { nanoid } from "nanoid";
+import { strKebabify } from "../../helpers/MainHelpers";
 
 export interface ArticleModel {
   id: string;
@@ -34,7 +37,7 @@ export function isArticleModel(value: unknown) {
     "dateUpdated" in value &&
     "duration" in value &&
     "tags" in value &&
-    "deleted" in value; 
+    "deleted" in value;
   // list all properties
   const props = [
     "id",
@@ -58,4 +61,25 @@ export function isArticleModel(value: unknown) {
   // if all required props are satisfied
   // and no other unrequired value, returns true
   return requiredPropsValid === true && unrequiredPropsValid === true;
+}
+
+// turn `WritingPanelFormProps` into `ArticleModel`
+// by extracting their component
+export function toArticleModel(formData: WritingPanelFormProps): ArticleModel {
+  const date = Date.now();
+
+  return {
+    id: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
+    title: formData.title,
+    desc: formData.desc,
+    content: encodeURIComponent(formData.content),
+    thumbnail: ``,
+    author: "Munkrey Alf",
+    dateAdded: date,
+    dateUpdated: date,
+    deleted: 0,
+    duration: (formData.content.length || 0) / 200,
+    tags: [...formData.tags.split(",").map((e) => e.trim())],
+    topics: [...formData.topics.split(",").map((e) => e.trim())],
+  };
 }
