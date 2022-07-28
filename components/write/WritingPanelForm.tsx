@@ -45,19 +45,14 @@ function WritingPanelForm({
     submit();
   };
 
-  // set the values of form formData (state) set with article draft
+  // set the values of form
   useEffect(() => {
-    console.log("current form",getValues("thumbnail"));
     if (formData)
-      {
-    console.log("ctx",formData.thumbnail);
-
-        reset({
-          ...formData,
-          content: decodeURIComponent(formData.content),
-        });
-
-      }
+      reset({
+        ...formData,
+        content: decodeURIComponent(formData.content),
+        thumbnail: undefined,
+      });
   }, [formData]);
 
   // set contexts formData before previewing
