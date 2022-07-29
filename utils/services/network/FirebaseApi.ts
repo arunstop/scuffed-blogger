@@ -186,6 +186,7 @@ async function addArticle1({
   try {
     // add article first
     await addArticle(article);
+    console.log(article);
     
     // upload thumbnail if there is one
     const thumbnail = data.thumbnail;
@@ -201,6 +202,7 @@ async function addArticle1({
         });
         // create new article with newly added thumbnail url
         const newArticle = { ...article, thumbnail: thumbnailUrl };
+        
         callback?.(
           netSuccess<ArticleModel>("Success creating article", newArticle),
         );
@@ -212,8 +214,9 @@ async function addArticle1({
         return null;
       }
     }
+
     // if no thumbnail, then just return the default generated article
-    netSuccess<ArticleModel>("Success creating article", article);
+    callback?.(netSuccess<ArticleModel>("Success creating article", article));
     return article;
   } catch (error) {
     callback?.(netError("Error when creating article", error as FirebaseError));

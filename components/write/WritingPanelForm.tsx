@@ -12,7 +12,7 @@ function WritingPanelForm({
   submit,
 }: {
   previewing: boolean;
-  submit: () => void;
+  submit: (data?:WritingPanelFormProps) => void;
 }) {
   const {
     state: { formData },
@@ -42,7 +42,7 @@ function WritingPanelForm({
     // proceed if so
     action.setFormData(getValues());
     // console.log(getValues());
-    submit();
+    submit(getValues());
   };
 
   // set the values of form formData (state) set with article draft
