@@ -186,7 +186,7 @@ async function addArticle1({
   try {
     // add article first
     await addArticle(article);
-    console.log(article);
+    // console.log(article);
     
     // upload thumbnail if there is one
     const thumbnail = data.thumbnail;
@@ -200,9 +200,14 @@ async function addArticle1({
           file: thumbnail[0],
           directory: "/thumbnails",
         });
+        console.log("thumbnailUrl",thumbnailUrl);
+        if (!thumbnailUrl) {
+          callback?.(netError("Couldn't get the uploaded image's url"));
+          return null;
+        }
         // create new article with newly added thumbnail url
         const newArticle = { ...article, thumbnail: thumbnailUrl };
-        
+        console.log(newArticle);
         callback?.(
           netSuccess<ArticleModel>("Success creating article", newArticle),
         );
@@ -400,7 +405,7 @@ async function updateProfile({
         }
       }
 
-      // if successfull, inject the newn image url to the user's data
+      // if successful, inject the new image url to the user's data
       if (imageUrl) updatedUserData = { ...updatedUserData, avatar: imageUrl };
     } catch (error) {
       callback?.(

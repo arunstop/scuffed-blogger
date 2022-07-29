@@ -5,7 +5,10 @@ import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
-import { WritingPanelFormProps, WritingPanelTabTypes } from "../../utils/data/contexts/WritingPanelTypes";
+import {
+  WritingPanelFormProps,
+  WritingPanelTabTypes,
+} from "../../utils/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
@@ -38,40 +41,41 @@ function WritingPanel() {
   } = useWritingPanelCtx();
   const { authStt, isLoggedIn } = useAuthCtx();
 
-  const submitArticle = useCallback(async (data?:WritingPanelFormProps) => {
+  const submitArticle = useCallback(
+    async (data?: WritingPanelFormProps) => {
+      // Auth required
+      if (!isLoggedIn) return;
 
-    // Auth required
-    if(!isLoggedIn) return;
-    
-    // if param data exist (data from form), use it
-    // if not use the current formData state from WritingPanel context
-    const processedData = data || formData;
+      // if param data exist (data from form), use it
+      // if not use the current formData state from WritingPanel context
+      const processedData = data || formData;
 
-    // terminate the processedData is empty
-    if (!processedData) return;
+      // terminate the processedData is empty
+      if (!processedData) return;
 
+      setLoading(true);
+      setNetWorkResp(netLoading("Creating your well written article ;)"));
 
-    setLoading(true);
-    setNetWorkResp(netLoading("Creating your well written article ;)"));
-
-    await firebaseApi.addArticle1({
-      data: processedData,
-      callback: async (resp) => {
-        // change loading state, if it's loading, no need to wait
-        if(resp.status !== "loading") await waitFor(2000);
-        // if it success, clear the formData state
-        if (resp.status === "success") action.clearFormData();
-        setNetWorkResp(resp);
-        // if (resp.status !== "loading") {
-        // await waitFor(4000);
-        setLoading(false);
-        // }
-        // if (resp.status === "success") {
-        //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
-        // }
-      },
-    });
-  }, [formData, isLoggedIn]);
+      await firebaseApi.addArticle1({
+        data: processedData,
+        callback: async (resp) => {
+          // change loading state, if it's loading, no need to wait
+          if (resp.status !== "loading") await waitFor(2000);
+          // if it success, clear the formData state
+          if (resp.status === "success") action.clearFormData();
+          setNetWorkResp(resp);
+          // if (resp.status !== "loading") {
+          // await waitFor(4000);
+          if (resp.status !== "loading") setLoading(false);
+          // }
+          // if (resp.status === "success") {
+          //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
+          // }
+        },
+      });
+    },
+    [formData, isLoggedIn],
+  );
 
   // Scroll to top everytime there is action
   useEffect(() => {
