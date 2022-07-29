@@ -1,7 +1,15 @@
-import { doc, getDoc, getDocs, updateDoc } from "firebase/firestore/lite";
+import { doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore/lite";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { UserModel } from "../../data/models/UserModel";
 import { firebaseClient } from "./FirebaseClient";
+
+
+// =============================
+// IMPORTANT : converting JSON stringify and then parse again 
+// is to remove undefined on JSON format because firebase hates it
+// this syntax => JSON.parse(JSON.stringify(article))
+// 
+// =============================
 
 const articleDb = firebaseClient.db.article;
 const userDb = firebaseClient.db.user;
@@ -38,4 +46,16 @@ export async function fsGetArticleById(id: string): Promise<ArticleModel | null>
     : null;
 
   return article;
+}
+
+// Adds an article to database
+export async function fsArticleAdd(article: ArticleModel){
+  const ref = doc(articleDb,article.id);
+  await setDoc(ref,article);
+}
+
+// Updates an article in database
+export async function fsArticleUpdate(article: ArticleModel){
+  const ref = doc(articleDb,article.id);
+  await updateDoc(ref,JSON.parse(JSON.stringify(article)));
 }

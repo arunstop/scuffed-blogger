@@ -27,6 +27,7 @@ import { createUserModel, UserModel } from "../../data/models/UserModel";
 import { getStorageDirectory } from "../../helpers/MainHelpers";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 import {
+  fsArticleUpdate,
   fsGetArticleAll,
   fsGetArticleById,
   fsGetUser,
@@ -187,7 +188,7 @@ async function addArticle1({
     // add article first
     await addArticle(article);
     // console.log(article);
-    
+
     // upload thumbnail if there is one
     const thumbnail = data.thumbnail;
     if (thumbnail) {
@@ -200,18 +201,35 @@ async function addArticle1({
           file: thumbnail[0],
           directory: "/thumbnails",
         });
-        console.log("thumbnailUrl",thumbnailUrl);
+
         if (!thumbnailUrl) {
           callback?.(netError("Couldn't get the uploaded image's url"));
           return null;
         }
+
         // create new article with newly added thumbnail url
-        const newArticle = { ...article, thumbnail: thumbnailUrl };
-        console.log(newArticle);
-        callback?.(
-          netSuccess<ArticleModel>("Success creating article", newArticle),
-        );
-        return newArticle;
+        const articleWithThumbnail = { ...article, thumbnail: thumbnailUrl };
+        
+        // update the said article in database
+        try {
+          await fsArticleUpdate(articleWithThumbnail);
+          callback?.(
+            netSuccess<ArticleModel>(
+              "Success creating article",
+              articleWithThumbnail,
+            ),
+          );
+          return articleWithThumbnail;
+        } catch (error) {
+          callback?.(
+            netError(
+              "Error when applying thumbnail to database",
+              error as FirebaseError,
+            ),
+          );
+          return null;
+        }
+
       } catch (error) {
         callback?.(
           netError("Error when creating thumbnail", error as FirebaseError),
