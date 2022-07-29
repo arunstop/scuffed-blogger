@@ -5,9 +5,10 @@ import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
-import { WritingPanelTabTypes } from "../../utils/data/contexts/WritingPanelTypes";
-import { MainNetworkResponse } from "../../utils/data/Main";
+import { WritingPanelFormProps, WritingPanelTabTypes } from "../../utils/data/contexts/WritingPanelTypes";
+import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
+import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { firebaseApi } from "../../utils/services/network/FirebaseApi";
@@ -37,49 +38,40 @@ function WritingPanel() {
   } = useWritingPanelCtx();
   const { authStt, isLoggedIn } = useAuthCtx();
 
-  const submitArticle = useCallback(
-    async () => {
-      // terminate the process if formData is null
-      // OR not logged in
-      if (!formData || !isLoggedIn) return;
-      // proceed if not
-      // const date = Date.now();
-      // const newArticle: ArticleModel = {
-      //   id: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
-      //   title: formData.title,
-      //   desc: formData.desc,
-      //   content: encodeURIComponent(formData.content),
-      //   thumbnail: `https://picsum.photos/id/${Math.floor(
-      //     Math.random() * 10,
-      //   )}/500/300`,
-      //   author: authStt.user!.email,
-      //   dateAdded: date,
-      //   dateUpdated: date,
-      //   deleted: 0,
-      //   duration: (formData.content.length || 0) / 200,
-      //   tags: [...formData.tags.split(",").map((e) => e.trim())],
-      //   topics: [...formData.topics.split(",").map((e) => e.trim())],
-      // };
+  const submitArticle = useCallback(async (data?:WritingPanelFormProps) => {
 
-      setLoading(true);
+    // Auth required
+    if(!isLoggedIn) return;
+    
+    // if param data exist (data from form), use it
+    // if not use the current formData state from WritingPanel context
+    const processedData = data || formData;
 
-      await firebaseApi.addArticle1({
-        data: formData,
-        callback: async (resp) => {
-          if (resp.status === "success") action.clearFormData();
-          setNetWorkResp(resp);
-          // if (resp.status !== "loading") {
-          // await waitFor(4000);
-          setLoading(false);
-          // }
-          // if (resp.status === "success") {
-          //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
-          // }
-        },
-      });
-    },
-    [formData, isLoggedIn],
-  );
+    // terminate the processedData is empty
+    if (!processedData) return;
+
+
+    setLoading(true);
+    setNetWorkResp(netLoading("Creating your well written article ;)"));
+
+    await firebaseApi.addArticle1({
+      data: processedData,
+      callback: async (resp) => {
+        // change loading state, if it's loading, no need to wait
+        if(resp.status !== "loading") await waitFor(2000);
+        // if it success, clear the formData state
+        if (resp.status === "success") action.clearFormData();
+        setNetWorkResp(resp);
+        // if (resp.status !== "loading") {
+        // await waitFor(4000);
+        setLoading(false);
+        // }
+        // if (resp.status === "success") {
+        //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
+        // }
+      },
+    });
+  }, [formData, isLoggedIn]);
 
   // Scroll to top everytime there is action
   useEffect(() => {
@@ -118,7 +110,9 @@ function WritingPanel() {
             actions={[
               {
                 label: "Cancel",
-                callback: () => {},
+                callback: () => {
+                  setLoading(false);
+                },
               },
             ]}
           />
@@ -177,7 +171,7 @@ function WritingPanel() {
               status="success"
               title="Article has been submitted!"
               desc={
-                "Congratulation! We did it!\nYour beautifully written article has been added into our database for the world to read it!"
+                "Congratulations! We did it!\nYour beautifully written article has been added into our database for the world to read it!"
               }
               actions={[
                 {
