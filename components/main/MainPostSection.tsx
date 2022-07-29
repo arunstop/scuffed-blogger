@@ -15,7 +15,7 @@ function MainPostSection() {
   const loadPosts = useCallback(async () => {
     // show loading indicator
     setLoading(true);
-    await mainApi.getArticleAll({
+    await mainApi.mainArticleGetAll({
       callback: (resp) => {
         // Cancel the process `status` = loading
         if (resp.status === "loading") return;

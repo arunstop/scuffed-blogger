@@ -21,13 +21,9 @@ export const getServerSideProps: GetServerSideProps<{
   // 1 = Tab/section
 
   const slug = (context.query.articleId || "") as string;
-  // console.log(slug);
 
-  const article = await mainApi.getArticleById({ id: slug });
-  // const article = "";
-  // const article = await addArticle("HAHAHAHA");
-  // console.log(article);
-
+  const article = await mainApi.mainArticleGetById({ id: slug });
+ 
   if (!article)
     return {
       notFound: !article,

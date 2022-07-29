@@ -5,27 +5,6 @@ import WritingPanel from "../components/write/WritingPanel";
 import { WritingPanelProvider } from "../utils/contexts/writingPanel/WritingPanelProvider";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
-// export const getServerSideProps: GetServerSideProps<{ xd: any }> = async (
-//   context,
-// ) => {
-//   // SLUG ORDER
-//   // 0 = User's id
-//   // 1 = Tab/section
-
-//   const slug = context.query.authorslug || [];
-//   const author = slug[0];
-//   const tab = slug[1] || "post";
-
-//   // const article = await Api.getArticleById();
-//   const article = "";
-//   // const article = await addArticle("HAHAHAHA");
-//   // console.log(tab);
-
-//   return {
-//     props: { xd: article },
-//   };
-// };
-// function Write({ xd }: { xd: any }) {
 function Write() {
   return (
     <>

@@ -2,15 +2,14 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
+  User
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore/lite";
 import {
-  deleteObject,
   getDownloadURL,
   ref,
   uploadBytesResumable,
-  UploadTaskSnapshot,
+  UploadTaskSnapshot
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
@@ -20,19 +19,16 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess,
+  netSuccess
 } from "../../data/Main";
 import { ArticleModel, toArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
-import { getStorageDirectory } from "../../helpers/MainHelpers";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 import {
-  fsArticleUpdate,
-  fsGetArticleAll,
-  fsGetArticleById,
-  fsGetUser,
-  fsUpdateUser,
-} from "./FirestoreApi";
+  fsArticleAdd, fsArticleUpdate, fsUserGetByEmail,
+  fsUserUpdate
+} from "./FirestoreModules";
+import { stFileDelete } from "./StorageModules";
 
 const articleDb = firebaseClient.db.article;
 const userDb = firebaseClient.db.user;
@@ -40,7 +36,7 @@ const userDb = firebaseClient.db.user;
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;
 // @returns complete user information if successfull
-async function authRegisterUser({
+export async function fbUserRegister({
   fields,
   callback,
 }: {
@@ -54,7 +50,7 @@ async function authRegisterUser({
     // because the system need to add yet another data to the `USER DB`
 
     // Adding the user
-    data = await createUser({
+    data = await fbUserAdd({
       user: createUserModel({
         ...fields,
       }),
@@ -105,7 +101,7 @@ async function authRegisterUser({
       firebaseUser: authData as User,
     };
     try {
-      fsUpdateUser(data);
+      fsUserUpdate(data);
     } catch (error) {
       data = null;
       callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
@@ -117,7 +113,7 @@ async function authRegisterUser({
 }
 
 // @returns complete user information if successfull
-async function authLoginUser({
+export async function fbUserLogin({
   fields,
   callback,
 }: {
@@ -138,7 +134,7 @@ async function authLoginUser({
     }
     // get the user data
     try {
-      const userData = await fsGetUser(userCred.user.email);
+      const userData = await fsUserGetByEmail(userCred.user.email);
       if (userData === null) {
         callback?.(netError("Cannot find the requested user data"));
         return null;
@@ -159,14 +155,6 @@ async function authLoginUser({
   }
 }
 
-// Adds an article to database
-async function addArticle(article: ArticleModel) {
-  // Create new document reference
-  const newDocRef = doc(articleDb, article.id);
-  // Add the data
-  await setDoc(newDocRef, article);
-}
-
 // Adding article, now using direct firebaseClient
 interface AddArticleProps {
   data: WritingPanelFormProps;
@@ -175,7 +163,7 @@ interface AddArticleProps {
   ) => void;
 }
 
-async function addArticle1({
+export async function fbArticleAdd({
   data,
   callback,
 }: AddArticleProps): Promise<ArticleModel | null> {
@@ -186,7 +174,7 @@ async function addArticle1({
   // upload the article
   try {
     // add article first
-    await addArticle(article);
+    await fsArticleAdd(article);
     // console.log(article);
 
     // upload thumbnail if there is one
@@ -249,7 +237,7 @@ async function addArticle1({
 type GetUserCallbackProps = UserModel | null | FirebaseError;
 type GetUserProps = UserModel | null;
 // @return UserModel if exists
-// async function getUser({
+export // async function getUser({
 //   email,
 //   callback,
 // }: {
@@ -287,7 +275,7 @@ type GetUserProps = UserModel | null;
 type AddUserCallbackProps = UserModel | null | FirebaseError;
 type AddUserProps = UserModel | null;
 // @return UserModel if exists
-async function createUser({
+export async function fbUserAdd({
   user,
   callback,
 }: {
@@ -318,17 +306,10 @@ async function createUser({
   return data;
 }
 
-async function deleteFile(link: string) {
-  const linkDirectory = getStorageDirectory(link);
-  if (!linkDirectory) return;
-  const deleteFileRef = ref(firebaseClient.storage, linkDirectory);
-  await deleteObject(deleteFileRef);
-}
-
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file
 // @Returns the download url
-async function uploadFile({
+export async function uploadFile({
   file,
   directory,
   callback,
@@ -378,7 +359,7 @@ async function uploadFile({
 }
 
 type UpdateProfileProps = null | FirebaseError | UserModel;
-async function updateProfile({
+export async function fbUpdateUser({
   file,
   user,
   callback,
@@ -410,7 +391,7 @@ async function updateProfile({
       // and if the previous one was NOT the default one
       if (user.avatar && !user.avatar.includes("default_avatar.png")) {
         try {
-          await deleteFile(user?.avatar);
+          await stFileDelete(user?.avatar);
         } catch (error) {
           callback?.(
             netError(
@@ -434,7 +415,7 @@ async function updateProfile({
 
   // Update overall User Data
   try {
-    await fsUpdateUser(updatedUserData);
+    await fsUserUpdate(updatedUserData);
     callback?.(
       netSuccess<UserModel>("Success updating profile", updatedUserData),
     );
@@ -444,15 +425,3 @@ async function updateProfile({
     return null;
   }
 }
-
-export const firebaseApi = {
-  getArticleAll: fsGetArticleAll,
-  getArticleById: fsGetArticleById,
-  addArticle,
-  addArticle1,
-  addUser: createUser,
-  authRegisterUser,
-  authLoginUser,
-  uploadImage: uploadFile,
-  updateProfile,
-};

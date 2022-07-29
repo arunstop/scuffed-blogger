@@ -23,13 +23,13 @@ const articleDb = firebaseClient.db.article;
 const userDb = firebaseClient.db.user;
 
 // Updates user's data
-export async function fsUpdateUser(user: UserModel) {
+export async function fsUserUpdate(user: UserModel) {
   // Updating user in the database
   const editUserRef = doc(userDb, user.email || "");
   return await updateDoc(editUserRef, toJsonFriendly(user));
 }
 
-export async function fsGetUser(email: string): Promise<UserModel | null> {
+export async function fsUserGetByEmail(email: string): Promise<UserModel | null> {
   // Get user from database
   const snapshot = await getDoc(doc(userDb, email));
   // Check if exists
@@ -37,7 +37,7 @@ export async function fsGetUser(email: string): Promise<UserModel | null> {
 }
 
 // @return all articles
-export async function fsGetArticleAll(): Promise<ArticleModel[] | null> {
+export async function fsArticleGetAll(): Promise<ArticleModel[] | null> {
   const snapshot = await getDocs(articleDb);
   // console.log(snapshot);
   const list = snapshot.docs.map((doc) => doc.data() as ArticleModel);
@@ -45,7 +45,7 @@ export async function fsGetArticleAll(): Promise<ArticleModel[] | null> {
 }
 
 // @return an article based on `id`
-export async function fsGetArticleById(
+export async function fsArticleGetById(
   id: string,
 ): Promise<ArticleModel | null> {
   // Get the requested document
@@ -87,3 +87,5 @@ export async function fsArticleUpdate(
   // if NO, then update the whole document
   return await updateDoc(ref, toJsonFriendly(article));
 }
+
+

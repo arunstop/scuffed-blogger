@@ -2,12 +2,12 @@ import { FirebaseError } from "firebase/app";
 import { netError, netSuccess } from "./../../../utils/data/Main";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { firebaseApi } from "../../../utils/services/network/FirebaseApi";
+import { MainNetworkResponse } from "../../../utils/data/Main";
 import {
   ArticleModel,
-  isArticleModel,
+  isArticleModel
 } from "../../../utils/data/models/ArticleModel";
-import { MainNetworkResponse } from "../../../utils/data/Main";
+import { fsArticleAdd } from "../../../utils/services/network/FirestoreModules";
 
 // type Data = {
 //   name: string;
@@ -29,7 +29,7 @@ export default async function handler(
     // check if body is valid
     if (newArticle && isArticleModel(newArticle)) {
       try {
-        await firebaseApi.addArticle(newArticle);
+        await fsArticleAdd(newArticle);
         return res
           .status(200)
           .json(
