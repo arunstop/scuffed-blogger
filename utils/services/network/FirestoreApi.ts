@@ -1,14 +1,22 @@
-import { doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore/lite";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore/lite";
+import _ from "lodash";
 import { ArticleModel } from "../../data/models/ArticleModel";
 import { UserModel } from "../../data/models/UserModel";
+import { toJsonFriendly } from "../../helpers/MainHelpers";
 import { firebaseClient } from "./FirebaseClient";
 
-
 // =============================
-// IMPORTANT : converting JSON stringify and then parse again 
-// is to remove undefined on JSON format because firebase hates it
-// this syntax => JSON.parse(JSON.stringify(article))
-// 
+// IMPORTANT : converting JSON stringify and then parse again
+// is to bypass a type error that said firebase recognize custom type e.g. `ArticleModel`
+// also to remove undefined on JSON format because firebase hates it
+// this syntax =>
+//
 // =============================
 
 const articleDb = firebaseClient.db.article;
@@ -18,7 +26,7 @@ const userDb = firebaseClient.db.user;
 export async function fsUpdateUser(user: UserModel) {
   // Updating user in the database
   const editUserRef = doc(userDb, user.email || "");
-  await updateDoc(editUserRef, JSON.parse(JSON.stringify(user)));
+  return await updateDoc(editUserRef, toJsonFriendly(user));
 }
 
 export async function fsGetUser(email: string): Promise<UserModel | null> {
@@ -37,7 +45,9 @@ export async function fsGetArticleAll(): Promise<ArticleModel[] | null> {
 }
 
 // @return an article based on `id`
-export async function fsGetArticleById(id: string): Promise<ArticleModel | null> {
+export async function fsGetArticleById(
+  id: string,
+): Promise<ArticleModel | null> {
   // Get the requested document
   const snapshot = await getDoc(doc(articleDb, id));
   // Check if it exists
@@ -49,13 +59,31 @@ export async function fsGetArticleById(id: string): Promise<ArticleModel | null>
 }
 
 // Adds an article to database
-export async function fsArticleAdd(article: ArticleModel){
-  const ref = doc(articleDb,article.id);
-  await setDoc(ref,article);
+export async function fsArticleAdd(article: ArticleModel) {
+  const ref = doc(articleDb, article.id);
+  return await setDoc(ref, article);
 }
 
 // Updates an article in database
-export async function fsArticleUpdate(article: ArticleModel){
-  const ref = doc(articleDb,article.id);
-  await updateDoc(ref,JSON.parse(JSON.stringify(article)));
+export async function fsArticleUpdate(
+  article: ArticleModel,
+  // only accept ArticleModel keys
+  fields?: (keyof ArticleModel)[],
+) {
+  const ref = doc(articleDb, article.id);
+  // check if fields are valid and specified
+  // if YES, then update only the fields
+  if (fields) {
+    // mapping `fields` param to the its matching data on the `article` param
+    const filledFields = fields.map((key, idx) => ({ [key]: article[key] }));
+    // turning the array into object
+    const updatedFields = _.reduce(
+      filledFields, // array
+      (array, currentField) => ({ ...array, ...currentField }), // iterator
+      {},
+    );
+    return await updateDoc(ref, updatedFields);
+  }
+  // if NO, then update the whole document
+  return await updateDoc(ref, toJsonFriendly(article));
 }

@@ -209,10 +209,10 @@ async function addArticle1({
 
         // create new article with newly added thumbnail url
         const articleWithThumbnail = { ...article, thumbnail: thumbnailUrl };
-        
+
         // update the said article in database
         try {
-          await fsArticleUpdate(articleWithThumbnail);
+          await fsArticleUpdate(articleWithThumbnail, ["thumbnail"]);
           callback?.(
             netSuccess<ArticleModel>(
               "Success creating article",
@@ -229,7 +229,6 @@ async function addArticle1({
           );
           return null;
         }
-
       } catch (error) {
         callback?.(
           netError("Error when creating thumbnail", error as FirebaseError),
