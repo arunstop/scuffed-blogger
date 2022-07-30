@@ -36,7 +36,7 @@ async function getDummy({
   return data?.data || null;
 }
 
-async function getArticleAll({
+async function mainArticleGetAll({
   callback,
 }: {
   callback?: (resp: MainNetworkResponse<ArticleModel[] | null>) => void;
@@ -67,7 +67,7 @@ async function getArticleAll({
   return data?.data || null;
 }
 
-async function getArticleById({
+async function mainArticleGetById({
   id,
   callback,
 }: {
@@ -188,4 +188,4 @@ async function registerUser({
 
 }
 
-export const mainApi = { getDummy,getArticleById, getArticleAll, addArticle,registerUser };
+export const mainApi = { getDummy,mainArticleGetById, mainArticleGetAll, addArticle,registerUser };

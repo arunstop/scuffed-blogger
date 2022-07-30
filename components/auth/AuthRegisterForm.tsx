@@ -1,18 +1,17 @@
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
-import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   MdEmail,
   MdFormatColorText,
   MdOutlineVpnKey,
-  MdVpnKey,
+  MdVpnKey
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
-import { firebaseApi } from "../../utils/services/network/FirebaseApi";
+import { fbUserRegister } from "../../utils/services/network/FirebaseApi";
 import MainTextInput from "../input/MainTextInput";
 import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";
@@ -145,8 +144,7 @@ function AuthRegisterForm({
   const onSubmit: SubmitHandler<RegisterFormFields> = async (data) => {
     actionLoading();
     await waitFor(2000);
-    await firebaseApi
-      .authRegisterUser({
+    await fbUserRegister({
         fields: { ...data, email: data.email.toLowerCase() },
         callback: async (resp) => {
           // if loading

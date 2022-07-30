@@ -7,14 +7,14 @@ import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
 import {
   WritingPanelFormProps,
-  WritingPanelTabTypes,
+  WritingPanelTabTypes
 } from "../../utils/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { firebaseApi } from "../../utils/services/network/FirebaseApi";
+import { fbArticleAdd } from "../../utils/services/network/FirebaseApi";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
@@ -56,7 +56,7 @@ function WritingPanel() {
       setLoading(true);
       setNetWorkResp(netLoading("Creating your well written article ;)"));
 
-      await firebaseApi.addArticle1({
+      await fbArticleAdd({
         data: processedData,
         callback: async (resp) => {
           // change loading state, if it's loading, no need to wait

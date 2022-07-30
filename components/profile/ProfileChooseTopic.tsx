@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
-import React, { Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
@@ -11,11 +11,11 @@ import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { firebaseApi } from "../../utils/services/network/FirebaseApi";
+import { fbUpdateUser } from "../../utils/services/network/FirebaseApi";
 import MainTextInput from "../input/MainTextInput";
 import GradientBackground from "../main/GradientBackground";
 import StatusPlaceholder, {
-  StatusPlaceholderProps,
+  StatusPlaceholderProps
 } from "../placeholder/StatusPlaceholder";
 
 export interface SetupProfileFormFields {
@@ -98,8 +98,7 @@ function ProfileChooseTopic() {
     }
 
     if (!user) return alert("Not Logged in");
-    await firebaseApi
-      .updateProfile({
+    await fbUpdateUser({
         user: {
           ...user,
           profileCompletion: "COMPLETE",

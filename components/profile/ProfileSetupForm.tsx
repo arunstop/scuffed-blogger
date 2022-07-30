@@ -2,14 +2,14 @@ import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
 import _ from "lodash";
 import { useRouter } from "next/router";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {
   MdAdd,
   MdAlternateEmail,
   MdEdit,
   MdNotes,
-  MdPerson,
+  MdPerson
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { UserModel } from "../../utils/data/models/UserModel";
@@ -17,12 +17,12 @@ import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { firebaseApi } from "../../utils/services/network/FirebaseApi";
+import { fbUpdateUser } from "../../utils/services/network/FirebaseApi";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
 import GradientBackground from "../main/GradientBackground";
 import StatusPlaceholder, {
-  StatusPlaceholderProps,
+  StatusPlaceholderProps
 } from "../placeholder/StatusPlaceholder";
 
 export interface SetupProfileFormFields {
@@ -93,8 +93,7 @@ function ProfileSetupForm() {
 
     scrollToTop(true);
     if (!user) return alert("Not Logged in");
-    await firebaseApi
-      .updateProfile({
+    await fbUpdateUser({
         file: data.avatar,
         user: {
           ...user,
