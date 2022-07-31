@@ -2,14 +2,14 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User
+  User,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore/lite";
 import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
-  UploadTaskSnapshot
+  UploadTaskSnapshot,
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
@@ -19,19 +19,21 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../data/Main";
 import { ArticleModel, toArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 import {
-  fsArticleAdd, fsArticleUpdate, fsUserGetByEmail,
-  fsUserUpdate
+  fsArticleAdd,
+  fsArticleUpdate,
+  fsUserGetByEmail,
+  fsUserUpdate,
 } from "./FirestoreModules";
 import { stFileDelete } from "./StorageModules";
 
-const articleDb = firebaseClient.db.article;
-const userDb = firebaseClient.db.user;
+const articleDb = firebaseClient.collections.article;
+const userDb = firebaseClient.collections.user;
 
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;
@@ -64,10 +66,9 @@ export async function fbUserRegister({
         // Show error
         else if (resp.status === "success") {
           callback?.(
-            netSuccess<UserModel>(
-              "User has been registered to the database",
-              data as UserModel,
-            ),
+            netSuccess<UserModel>("User has been registered to the database", {
+              ...(data as UserModel),
+            }),
           );
         }
       },
@@ -98,6 +99,7 @@ export async function fbUserRegister({
     // Edit user in the database
     data = {
       ...(data as UserModel),
+      //  combine with data from auth
       firebaseUser: authData as User,
     };
     try {
@@ -134,13 +136,22 @@ export async function fbUserLogin({
     }
     // get the user data
     try {
+      // alert(userCred.user);
       const userData = await fsUserGetByEmail(userCred.user.email);
       if (userData === null) {
         callback?.(netError("Cannot find the requested user data"));
         return null;
       }
-      callback?.(netSuccess<UserModel>("Successfully signed in", userData));
-      return userData;
+      // user data to save locally from firestore
+      // combined with user data from auth
+      const updatedUserData = {
+        ...userData,
+        firebaseUser: userCred.user,
+      };
+      callback?.(
+        netSuccess<UserModel>("Successfully signed in", updatedUserData),
+      );
+      return updatedUserData;
     } catch (error) {
       callback?.(
         netError<FirebaseError>("Error when loggin in", error as FirebaseError),
