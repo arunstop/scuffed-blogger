@@ -20,6 +20,7 @@ export const AuthProvider = ({
   const [state, dispatch] = useReducer(authReducer, {
     user: initUser || null,
   });
+  // actions
   const action: AuthAction = {
     setUser: (user) => {
       // update state
@@ -41,9 +42,6 @@ export const AuthProvider = ({
       // navigate to auth
       router.push("/auth");
     },
-    // setReplyingCommentId: (id) => {
-    //   dispatch({ type: "SET_REPLYING_COMMENT_ID", payload: { id } });
-    // },
   };
 
   const value: AuthContextProps = {
@@ -54,7 +52,7 @@ export const AuthProvider = ({
   useEffect(() => {
     firebaseAuth.onAuthStateChanged((user) => {
       const localUserData = initUser;
-      
+
       // if not logged in
       if (!user) {
         // delete local user data from previous session (if exist)
@@ -66,7 +64,8 @@ export const AuthProvider = ({
       }
       // if logged in
       if (localUserData) {
-        action.setUser(localUserData);
+        // update firebase user props from auth data instead of the obsolete firestore
+        action.setUser({ ...localUserData, firebaseUser: user });
       }
     });
   }, []);
