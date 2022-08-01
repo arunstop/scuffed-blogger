@@ -19,8 +19,8 @@ import { firebaseClient } from "./FirebaseClient";
 //
 // =============================
 
-const articleDb = firebaseClient.db.article;
-const userDb = firebaseClient.db.user;
+const articleDb = firebaseClient.collections.article;
+const userDb = firebaseClient.collections.user;
 
 // Updates user's data
 export async function fsUserUpdate(user: UserModel) {

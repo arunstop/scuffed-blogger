@@ -2,14 +2,13 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
+  User
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore/lite";
 import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
-  UploadTaskSnapshot,
+  UploadTaskSnapshot
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
@@ -19,7 +18,7 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess,
+  netSuccess
 } from "../../data/Main";
 import { ArticleModel, toArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
@@ -27,13 +26,11 @@ import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 import {
   fsArticleAdd,
   fsArticleUpdate,
+  fsUserAdd,
   fsUserGetByEmail,
-  fsUserUpdate,
+  fsUserUpdate
 } from "./FirestoreModules";
 import { stFileDelete } from "./StorageModules";
-
-const articleDb = firebaseClient.collections.article;
-const userDb = firebaseClient.collections.user;
 
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;
@@ -248,7 +245,7 @@ export async function fbArticleAdd({
 type GetUserCallbackProps = UserModel | null | FirebaseError;
 type GetUserProps = UserModel | null;
 // @return UserModel if exists
-export // async function getUser({
+// async function getUser({
 //   email,
 //   callback,
 // }: {
@@ -295,10 +292,7 @@ export async function fbUserAdd({
 }): Promise<AddUserProps> {
   let data: AddUserProps = null;
   try {
-    // Create new data with its id
-    const newUserRef = doc(userDb, user.email);
-    // Adding to the database
-    await setDoc(newUserRef, JSON.parse(JSON.stringify(user)));
+    await fsUserAdd(user);
     data = user;
     // Show success
     callback?.(
