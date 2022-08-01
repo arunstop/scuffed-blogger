@@ -1,6 +1,7 @@
 import { User } from "firebase/auth";
 import { nanoid } from "nanoid";
 export interface UserModel {
+  id: string;
   email: string;
   name: string;
   username: string;
@@ -34,6 +35,7 @@ export interface UserModel {
 }
 
 export const createUserModel = ({
+  id,
   email = "e@mail.com",
   name = "Dummy",
   username,
@@ -45,8 +47,9 @@ export const createUserModel = ({
   list,
   profileCompletion = "REQ_SETUP",
   localAuthData,
-}: Partial<UserModel>): UserModel => {
+}: Partial<UserModel>&{id:string}): UserModel => {
   return {
+    id: id,
     name: name,
     email: email,
     username: username || nanoid(12),

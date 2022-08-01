@@ -31,6 +31,7 @@ import {
   fsUserGetByEmail,
   fsUserUpdate,
 } from "./FirestoreModules";
+import { rtdbSessionAdd } from "./RtdbModules";
 import { stFileDelete } from "./StorageModules";
 
 // Auth
@@ -53,6 +54,7 @@ export async function fbUserRegister({
     data = await fbUserAdd({
       user: createUserModel({
         ...fields,
+        id: nanoid(24),
       }),
       callback: (resp) => {
         // Show success
@@ -134,9 +136,8 @@ export async function fbUserLogin({
       callback?.(netError("Error when loggin in"));
       return null;
     }
-    // get the user data
     try {
-      // alert(userCred.user);
+      // get the user data
       const userData = await fsUserGetByEmail(userCred.user.email);
       if (userData === null) {
         callback?.(netError("Cannot find the requested user data"));
@@ -144,14 +145,17 @@ export async function fbUserLogin({
       }
       // user data to save locally from firestore
       // combined with user data from auth
-      const updatedUserData:UserModel = {
+      const userDataWithAuth: UserModel = {
         ...userData,
         localAuthData: userCred.user,
       };
+
+      // add session data to realtime database
+      await rtdbSessionAdd(userDataWithAuth);
       callback?.(
-        netSuccess<UserModel>("Successfully signed in", updatedUserData),
+        netSuccess<UserModel>("Successfully signed in", userDataWithAuth),
       );
-      return updatedUserData;
+      return userDataWithAuth;
     } catch (error) {
       callback?.(
         netError<FirebaseError>("Error when loggin in", error as FirebaseError),
