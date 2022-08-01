@@ -10,6 +10,7 @@ interface UserSession {
   os: string;
   browser: string;
   time: number;
+  userLastUpdated:number;
 }
 
 const db = firebaseClient.rtdb;
@@ -31,6 +32,7 @@ export function rtdbSessionAdd(user: UserModel) {
     os: `${userAgent.os.name} ${userAgent.os.version}`,
     browser: `${userAgent.browser.name} v.${userAgent.browser.version}`,
     time: lastLoginAt,
+    userLastUpdated:user.dateUpdated,
   };
   //   console.log(userSession);
   return push(newRef, userSession);

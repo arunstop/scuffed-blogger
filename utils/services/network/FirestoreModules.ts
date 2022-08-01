@@ -33,10 +33,15 @@ export async function fsUserAdd(user: UserModel) {
 export async function fsUserUpdate(user: UserModel) {
   // Updating user in the database
   const editUserRef = doc(userDb, user.email || "");
-  return updateDoc(editUserRef, toJsonFriendly(user));
+  return updateDoc(
+    editUserRef,
+    toJsonFriendly({ ...user, dateUpdated: Date.now() } as UserModel),
+  );
 }
 
-export async function fsUserGetByEmail(email: string): Promise<UserModel | null> {
+export async function fsUserGetByEmail(
+  email: string,
+): Promise<UserModel | null> {
   // Get user from database
   const snapshot = await getDoc(doc(userDb, email));
   // Check if exists
@@ -94,5 +99,3 @@ export async function fsArticleUpdate(
   // if NO, then update the whole document
   return await updateDoc(ref, toJsonFriendly(article));
 }
-
-

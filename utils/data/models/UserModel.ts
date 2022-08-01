@@ -21,7 +21,8 @@ export interface UserModel {
   status: {
     active: number;
   };
-  dateJoined: number;
+  dateCreated: number;
+  dateUpdated:number;
   //   short description
   bio?: string;
   //   description
@@ -41,7 +42,8 @@ export const createUserModel = ({
   username,
   avatar = "https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/images%2Fdefaults%2Fdefault_avatar.png?alt=media&token=161ddc35-cf8b-4b10-b64c-517b3e0cf603",
   status = { active: 1 },
-  dateJoined = 0,
+   dateCreated = 0,
+  dateUpdated = 0,
   bio = "Short bio",
   desc = "A bit long description",
   list,
@@ -69,7 +71,8 @@ export const createUserModel = ({
     status: {
       active: status.active,
     },
-    dateJoined: dateJoined || Date.now(),
+    dateCreated: dateCreated || Date.now(),
+    dateUpdated: dateCreated || Date.now(),
     bio: bio || "",
     desc: desc || "",
     localAuthData: localAuthData,
