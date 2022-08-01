@@ -65,7 +65,7 @@ export const AuthProvider = ({
       // if logged in
       if (localUserData) {
         // update firebase user props from auth data instead of the obsolete firestore
-        action.setUser({ ...localUserData, firebaseUser: user });
+        action.setUser({ ...localUserData, localAuthData: user });
       }
     });
   }, []);

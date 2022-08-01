@@ -25,8 +25,8 @@ export interface UserModel {
   bio?: string;
   //   description
   desc?: string;
-  //   firebase user
-  firebaseUser?: User;
+  // FOR LOCAL USE ONLY
+  localAuthData?: User;
   // 0 - not yet set up
   // 1 - not yet choosen topic
   // 2 - not yet banner update
@@ -44,7 +44,7 @@ export const createUserModel = ({
   desc = "A bit long description",
   list,
   profileCompletion = "REQ_SETUP",
-  firebaseUser,
+  localAuthData,
 }: Partial<UserModel>): UserModel => {
   return {
     name: name,
@@ -69,7 +69,7 @@ export const createUserModel = ({
     dateJoined: dateJoined || Date.now(),
     bio: bio || "",
     desc: desc || "",
-    firebaseUser,
+    localAuthData: localAuthData,
     profileCompletion: profileCompletion,
   };
 };

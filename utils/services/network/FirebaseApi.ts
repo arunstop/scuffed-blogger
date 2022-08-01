@@ -2,13 +2,13 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User
+  User,
 } from "firebase/auth";
 import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
-  UploadTaskSnapshot
+  UploadTaskSnapshot,
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
@@ -18,17 +18,18 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../data/Main";
 import { ArticleModel, toArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
+import { toJsonFriendly } from "../../helpers/MainHelpers";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 import {
   fsArticleAdd,
   fsArticleUpdate,
   fsUserAdd,
   fsUserGetByEmail,
-  fsUserUpdate
+  fsUserUpdate,
 } from "./FirestoreModules";
 import { stFileDelete } from "./StorageModules";
 
@@ -92,15 +93,17 @@ export async function fbUserRegister({
     }
 
     if (authData === null) return null;
-
-    // Edit user in the database
+    console.log(authData);
+    //  combine with data from auth
     data = {
       ...(data as UserModel),
-      //  combine with data from auth
-      firebaseUser: authData as User,
+      localAuthData: toJsonFriendly(authData as User),
     };
+    // Edit user in the database
     try {
-      fsUserUpdate(data);
+      // remove firebaseUser before updating document
+      // because firebaseUser meant to be used for local machine
+      fsUserUpdate({ ...data, localAuthData: undefined });
     } catch (error) {
       data = null;
       callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
@@ -141,9 +144,9 @@ export async function fbUserLogin({
       }
       // user data to save locally from firestore
       // combined with user data from auth
-      const updatedUserData = {
+      const updatedUserData:UserModel = {
         ...userData,
-        firebaseUser: userCred.user,
+        localAuthData: userCred.user,
       };
       callback?.(
         netSuccess<UserModel>("Successfully signed in", updatedUserData),

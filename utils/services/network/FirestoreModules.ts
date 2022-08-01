@@ -23,10 +23,17 @@ const articleDb = firebaseClient.collections.article;
 const userDb = firebaseClient.collections.user;
 
 // Updates user's data
+export async function fsUserAdd(user: UserModel) {
+  // Updating user in the database
+  const newUserRef = doc(userDb, user.email || "");
+  return setDoc(newUserRef, toJsonFriendly(user));
+}
+
+// Updates user's data
 export async function fsUserUpdate(user: UserModel) {
   // Updating user in the database
   const editUserRef = doc(userDb, user.email || "");
-  return await updateDoc(editUserRef, toJsonFriendly(user));
+  return updateDoc(editUserRef, toJsonFriendly(user));
 }
 
 export async function fsUserGetByEmail(email: string): Promise<UserModel | null> {
