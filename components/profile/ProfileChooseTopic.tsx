@@ -11,7 +11,7 @@ import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { fbUpdateUser } from "../../utils/services/network/FirebaseApi";
+import { fbUserUpdate } from "../../utils/services/network/FirebaseApi";
 import MainTextInput from "../input/MainTextInput";
 import GradientBackground from "../main/GradientBackground";
 import StatusPlaceholder, {
@@ -98,7 +98,7 @@ function ProfileChooseTopic() {
     }
 
     if (!user) return alert("Not Logged in");
-    await fbUpdateUser({
+    await fbUserUpdate({
         user: {
           ...user,
           profileCompletion: "COMPLETE",

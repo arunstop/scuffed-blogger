@@ -17,7 +17,7 @@ import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { fbUpdateUser } from "../../utils/services/network/FirebaseApi";
+import { fbUserUpdate } from "../../utils/services/network/FirebaseApi";
 import MainTextAreaInput from "../input/MainTextAreaInput";
 import MainTextInput from "../input/MainTextInput";
 import GradientBackground from "../main/GradientBackground";
@@ -93,7 +93,7 @@ function ProfileSetupForm() {
 
     scrollToTop(true);
     if (!user) return alert("Not Logged in");
-    await fbUpdateUser({
+    await fbUserUpdate({
         file: data.avatar,
         user: {
           ...user,

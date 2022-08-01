@@ -2,13 +2,13 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
+  User
 } from "firebase/auth";
 import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
-  UploadTaskSnapshot,
+  UploadTaskSnapshot
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
@@ -18,20 +18,19 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess,
+  netSuccess
 } from "../../data/Main";
 import { ArticleModel, toArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
-import { toJsonFriendly } from "../../helpers/MainHelpers";
 import { firebaseAuth, firebaseClient } from "./FirebaseClient";
 import {
   fsArticleAdd,
   fsArticleUpdate,
   fsUserAdd,
   fsUserGetByEmail,
-  fsUserUpdate,
+  fsUserUpdate
 } from "./FirestoreModules";
-import { rtdbSessionAdd } from "./RtdbModules";
+import { rtdbSessionAdd, rtdbSessionLatestSet } from "./RtdbModules";
 import { stFileDelete } from "./StorageModules";
 
 // Auth
@@ -99,13 +98,15 @@ export async function fbUserRegister({
     //  combine with data from auth
     data = {
       ...(data as UserModel),
-      localAuthData: toJsonFriendly(authData as User),
+      localAuthData: authData,
     };
     // Edit user in the database
     try {
       // remove firebaseUser before updating document
       // because firebaseUser meant to be used for local machine
-      fsUserUpdate({ ...data, localAuthData: undefined });
+      await fsUserUpdate({ ...data, localAuthData: undefined });
+      console.log(data);
+      await rtdbSessionAdd(data);
     } catch (error) {
       data = null;
       callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
@@ -371,7 +372,7 @@ export async function uploadFile({
 }
 
 type UpdateProfileProps = null | FirebaseError | UserModel;
-export async function fbUpdateUser({
+export async function fbUserUpdate({
   file,
   user,
   callback,
@@ -385,6 +386,7 @@ export async function fbUpdateUser({
     username: user.username,
     bio: user.bio,
     desc: user.desc,
+    dateUpdated:Date.now(),
   };
   // Upload image if there is one
   if (file) {
@@ -428,6 +430,8 @@ export async function fbUpdateUser({
   // Update overall User Data
   try {
     await fsUserUpdate(updatedUserData);
+    // change the latest session to match the latest dateUpdated
+    await rtdbSessionLatestSet({user:updatedUserData});
     callback?.(
       netSuccess<UserModel>("Success updating profile", updatedUserData),
     );
