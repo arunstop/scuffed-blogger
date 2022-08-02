@@ -1,52 +1,59 @@
 import { useRouter } from "next/router";
+import { destroyCookie, setCookie } from "nookies";
 import { ReactNode, useEffect, useReducer } from "react";
 import { AuthAction, AuthContextProps } from "../../data/contexts/AuthTypes";
 import { UserModel } from "../../data/models/UserModel";
-import { KEY_AUTH_USER } from "../../helpers/Constants";
-import {
-  storageCheck,
-  storageGet,
-  storageRemove,
-  storageSave,
-} from "../../services/local/LocalStorage";
+import { COOKIE_USER_AUTH } from "../../helpers/Constants";
+import { fbUserGet } from "../../services/network/FirebaseApi";
 import { firebaseAuth } from "../../services/network/FirebaseClient";
+import {
+  rtdbSessionAdd
+} from "../../services/network/RtdbModules";
 import { AuthContext } from "./AuthContext";
-import { AUTH_INIT } from "./AuthInitializer";
 import { authReducer } from "./AuthReducer";
-import {setCookie,destroyCookie} from "nookies";
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({
+  children,
+  initUser,
+}: {
+  children: ReactNode;
+  initUser?: UserModel;
+}) => {
   const router = useRouter();
   // reducer
-  const [state, dispatch] = useReducer(authReducer, AUTH_INIT);
+  const [state, dispatch] = useReducer(authReducer, {
+    user: initUser || null,
+  });
+  // actions
   const action: AuthAction = {
     setUser: (user) => {
       // update state
       dispatch({ type: "SET_USER", payload: { user } });
-      // set cookie
+      // set auth data cookie
       const strUser = encodeURIComponent(JSON.stringify(user));
-      setCookie(undefined, "USER_AUTH_COOKIE", strUser, {
+      setCookie(undefined, COOKIE_USER_AUTH, strUser, {
         path: "/",
         maxAge: 30 * 24 * 60 * 60,
       });
-      // set storage
-      storageSave(KEY_AUTH_USER, strUser);
+      // // set session cookie
+      // const strSession = encodeURIComponent(JSON.stringify(user.session));
+      // setCookie(undefined, COOKIE_USER_AUTH_SESSION, strSession, {
+      //   path: "/",
+      //   maxAge: 30 * 24 * 60 * 60,
+      // });
     },
     unsetUser: () => {
       // unset user in context
       dispatch({ type: "UNSET_USER" });
       // signout firebase
       firebaseAuth.signOut();
-      // destroy cookie
-      destroyCookie(undefined, "USER_AUTH_COOKIE");
-      // remove local storage
-      storageRemove(KEY_AUTH_USER);
+      // destroy cookie auth data
+      destroyCookie(undefined, COOKIE_USER_AUTH);
+      // destroy cookie auth session
+      // destroyCookie(undefined, COOKIE_USER_AUTH_SESSION);
       // navigate to auth
       router.push("/auth");
     },
-    // setReplyingCommentId: (id) => {
-    //   dispatch({ type: "SET_REPLYING_COMMENT_ID", payload: { id } });
-    // },
   };
 
   const value: AuthContextProps = {
@@ -55,8 +62,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    firebaseAuth.onAuthStateChanged((user) => {
-      const localUserData = storageCheck(KEY_AUTH_USER);
+    firebaseAuth.onAuthStateChanged(async (user) => {
+      const localUserData = initUser;
+      // console.log(localUserData);
 
       // if not logged in
       if (!user) {
@@ -67,20 +75,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
         return;
       }
-      // if logged in
+
+      // if logged in & has localUserData
       if (localUserData) {
-        // set local user data to the context,
-        // if it has the data from the session before
-        try {
-          // using try catch to avoid data modification
-          const localAuthData = JSON.parse(
-            decodeURIComponent(storageGet(KEY_AUTH_USER)),
-          );
-          // set auth data if valid
-          action.setUser(localAuthData as UserModel);
-        } catch (error) {
-          console.log("Error when setting the auth user data", error);
+        // check if data has changed
+        // by comparing lastLoginAt on auth database and local machine
+        console.log((user.metadata as any).lastLoginAt);
+
+        console.log((localUserData?.localAuthData as any).lastLoginAt);
+
+        if (
+          (user.metadata as any).lastLoginAt !==
+          (localUserData?.localAuthData as any).lastLoginAt
+        ) {
+          // getting new data
+          // console.log("getting new data");
+          const newUserData = await fbUserGet({ email: localUserData.email });
+
+          // if failed getting user data
+          if (!newUserData) return action.unsetUser();
+          const userWithNewSession = await rtdbSessionAdd({
+            ...newUserData,
+            localAuthData: user,
+          });
+          return action.setUser(userWithNewSession);
         }
+        // update firebase user props from auth data instead of the obsolete firestore
+        return action.setUser({ ...localUserData, localAuthData: user });
       }
     });
   }, []);

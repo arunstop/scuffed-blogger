@@ -55,7 +55,7 @@ function AuthRegisterForm({
   }
 
   function actionError(
-    resp: MainNetworkResponse<FirebaseError>,
+    resp: MainNetworkResponse<FirebaseError | null>,
     tryAgain: () => void,
   ) {
     let title, desc;
@@ -65,8 +65,9 @@ function AuthRegisterForm({
         label: "Back",
       },
     ];
-    const errorCode = resp.data.code;
-    if (errorCode === "auth/user-not-found") {
+
+    const data = resp.data;
+    if (!data || data?.code === "auth/user-not-found") {
       title = "User not found";
       desc = `Sorry we couldn't authenticate you in, because the credential that you used is invalid. Please enter the correct email and password combination`;
       reset();
@@ -77,7 +78,7 @@ function AuthRegisterForm({
         },
         label: "Register instead",
       });
-    } else if (errorCode === "auth/wrong-password") {
+    } else if (data?.code === "auth/wrong-password") {
       title = "Invalid password";
       desc =
         `Sorry we have to deny your authentication attempt because you just used a wrong password for the matching email. Please use the matching email and password. ` +
@@ -92,7 +93,7 @@ function AuthRegisterForm({
       setError("password", {
         message: "Invalid password for the matching email",
       });
-    } else if (errorCode === "auth/network-request-failed") {
+    } else if (data?.code === "auth/network-request-failed") {
       title = "Failed to connect to the server";
       desc = `There is no internet connection to connect you to our server. Please ensure that you have an active internet connection, or maybe your connection speed is too low.`;
       actions.push({
@@ -107,8 +108,9 @@ function AuthRegisterForm({
       newPlaceHolder: {
         title: title || "Something weird happened...",
         desc:
-          `${desc ? desc + "\n" : ""}- - - -\n${resp.data.message}` ||
-          resp.message,
+          `${desc ? desc + "\n" : ""}- - - -\n${
+            resp.data ? resp.data.message : resp.message
+          }` || resp.message,
         status: "error",
         actions: actions,
       },
@@ -141,32 +143,31 @@ function AuthRegisterForm({
   const onSubmit: SubmitHandler<LoginFields> = async (data) => {
     actionLoading();
     await fbUserLogin({
-        fields: data,
-        callback: async (resp) => {
-          // if loading
-          if (resp.status === "loading") {
-            // cancelActions(true);
-            return actionLoading(
-              "Retrieving your data from our database",
-              "The credential you entered matched a record in our database. Hold up for a bit ase we are retrieving the data for you.",
-            );
-          }
-          await waitFor(1000);
-          // if error
-          if (resp.status === "error")
-            return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
-              onSubmit(data),
-            );
-          // if success
-          if (resp.status === "success") {
-            const respUser = resp as MainNetworkResponse<UserModel>;
-            actionSuccess(respUser);
-          }
-        },
-      })
-      .then((e) => {
-        authAct.setUser(e as UserModel);
-      });
+      fields: data,
+      callback: async (resp) => {
+        // if loading
+        if (resp.status === "loading") {
+          // cancelActions(true);
+          return actionLoading(
+            "Retrieving your data from our database",
+            "The credential you entered matched a record in our database. Hold up for a bit ase we are retrieving the data for you.",
+          );
+        }
+        await waitFor(1000);
+        // if error
+        if (resp.status === "error")
+          return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
+            onSubmit(data),
+          );
+        // if success
+        if (resp.status === "success") {
+          const respUser = resp as MainNetworkResponse<UserModel>;
+          actionSuccess(respUser);
+        }
+      },
+    }).then((e) => {
+      authAct.setUser(e as UserModel);
+    });
   };
 
   return (

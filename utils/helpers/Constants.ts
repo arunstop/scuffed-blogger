@@ -5,6 +5,8 @@ export const KEY_CLIENT_DARK_MODE = "DARK_MODE";
 export const KEY_ARTICLE_CONTENT = "DUMMY_ARTICLE_CONTENT";
 export const KEY_ARTICLE_DRAFT = "KEY_ARTICLE_DRAFT";
 export const KEY_AUTH_USER = "AUTH_USER";
+export const COOKIE_USER_AUTH = "COOKIE_USER_AUTH";
+export const COOKIE_USER_AUTH_SESSION = "COOKIE_USER_AUTH_SESSION";
 export const ON_PROD = process.env.NODE_ENV === "production";
 export const BASE_URL = ON_PROD
   ? "https://tuturku.vercel.app"

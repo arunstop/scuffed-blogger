@@ -1,4 +1,4 @@
-import { FirebaseError } from 'firebase/app';
+import { FirebaseError } from "firebase/app";
 import { User } from "firebase/auth";
 import { AuthRegisterProps } from "../../../components/auth/AuthRegisterForm";
 import { MainNetworkResponse } from "../../data/Main";
@@ -113,12 +113,14 @@ async function addArticle({
   callback,
 }: {
   article: ArticleModel;
-  callback?: (resp: MainNetworkResponse<ArticleModel|FirebaseError | null>) => void;
-}): Promise<ArticleModel|FirebaseError | null> {
-
+  callback?: (
+    resp: MainNetworkResponse<ArticleModel | FirebaseError | null>,
+  ) => void;
+}): Promise<ArticleModel | FirebaseError | null> {
   // await waitFor(5000);
 
-  let data: MainNetworkResponse<ArticleModel|FirebaseError | null> | null = null;
+  let data: MainNetworkResponse<ArticleModel | FirebaseError | null> | null =
+    null;
 
   try {
     //   Call the endpoint
@@ -134,7 +136,9 @@ async function addArticle({
         return resp;
       });
 
-    data = result.data as MainNetworkResponse<ArticleModel |FirebaseError| null>;
+    data = result.data as MainNetworkResponse<
+      ArticleModel | FirebaseError | null
+    >;
     callback?.(data);
   } catch (error) {
     callback?.({
@@ -156,8 +160,7 @@ async function registerUser({
 }: {
   fields: AuthRegisterProps;
   callback?: (resp: MainNetworkResponse<User | null>) => void;
-}){
-
+}) {
   let data: MainNetworkResponse<User | null> | null = null;
 
   try {
@@ -185,7 +188,28 @@ async function registerUser({
   // Returns data if it exist
   // returns null otherwise
   return data?.data || null;
-
 }
 
-export const mainApi = { getDummy,mainArticleGetById, mainArticleGetAll, addArticle,registerUser };
+// server side auth validation
+export async function mainUserAuthValidate(token:string) {
+  try {
+    const data = await axiosClient.get("/api/auth/validate", {
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: token,
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+}
+
+export const mainApi = {
+  getDummy,
+  mainArticleGetById,
+  mainArticleGetAll,
+  addArticle,
+  registerUser,
+};

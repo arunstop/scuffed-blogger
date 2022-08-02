@@ -1,6 +1,18 @@
 import { User } from "firebase/auth";
 import { nanoid } from "nanoid";
+
+export interface UserSession {
+  id: string;
+  userId: string;
+  os: string;
+  browser: string;
+  time: number;
+  userLastUpdated: number;
+}
+
+
 export interface UserModel {
+  id: string;
   email: string;
   name: string;
   username: string;
@@ -20,13 +32,15 @@ export interface UserModel {
   status: {
     active: number;
   };
-  dateJoined: number;
+  dateCreated: number;
+  dateUpdated:number;
   //   short description
   bio?: string;
   //   description
   desc?: string;
-  //   firebase user
-  firebaseUser?: User;
+  // FOR LOCAL USE ONLY
+  localAuthData?: User;
+  session?:UserSession;
   // 0 - not yet set up
   // 1 - not yet choosen topic
   // 2 - not yet banner update
@@ -34,19 +48,22 @@ export interface UserModel {
 }
 
 export const createUserModel = ({
+  id,
   email = "e@mail.com",
   name = "Dummy",
   username,
   avatar = "https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/images%2Fdefaults%2Fdefault_avatar.png?alt=media&token=161ddc35-cf8b-4b10-b64c-517b3e0cf603",
   status = { active: 1 },
-  dateJoined = 0,
+   dateCreated = 0,
+  dateUpdated = 0,
   bio = "Short bio",
   desc = "A bit long description",
   list,
   profileCompletion = "REQ_SETUP",
-  firebaseUser,
-}: Partial<UserModel>): UserModel => {
+  localAuthData,
+}: Partial<UserModel>&{id:string}): UserModel => {
   return {
+    id: id,
     name: name,
     email: email,
     username: username || nanoid(12),
@@ -66,10 +83,11 @@ export const createUserModel = ({
     status: {
       active: status.active,
     },
-    dateJoined: dateJoined || Date.now(),
+    dateCreated: dateCreated || Date.now(),
+    dateUpdated: dateCreated || Date.now(),
     bio: bio || "",
     desc: desc || "",
-    firebaseUser,
+    localAuthData: localAuthData,
     profileCompletion: profileCompletion,
   };
 };
