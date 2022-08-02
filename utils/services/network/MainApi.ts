@@ -191,12 +191,12 @@ async function registerUser({
 }
 
 // server side auth validation
-export async function mainUserAuthValidate(user: User) {
+export async function mainUserAuthValidate(token:string) {
   try {
     const data = await axiosClient.get("/api/auth/validate", {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        Authorization: await user.getIdToken(),
+        Authorization: token,
       },
     });
     return data;

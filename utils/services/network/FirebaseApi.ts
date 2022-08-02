@@ -2,13 +2,13 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User
+  User,
 } from "firebase/auth";
 import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
-  UploadTaskSnapshot
+  UploadTaskSnapshot,
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../components/auth/AuthLoginForm";
@@ -18,7 +18,7 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../data/Main";
 import { ArticleModel, toArticleModel } from "../../data/models/ArticleModel";
 import { createUserModel, UserModel } from "../../data/models/UserModel";
@@ -28,7 +28,7 @@ import {
   fsArticleUpdate,
   fsUserAdd,
   fsUserGetByEmail,
-  fsUserUpdate
+  fsUserUpdate,
 } from "./FirestoreModules";
 import { rtdbSessionAdd, rtdbSessionLatestSet } from "./RtdbModules";
 import { stFileDelete } from "./StorageModules";
@@ -104,9 +104,13 @@ export async function fbUserRegister({
     try {
       // remove firebaseUser before updating document
       // because firebaseUser meant to be used for local machine
-      await fsUserUpdate({ ...data, localAuthData: undefined });
-      console.log(data);
-      await rtdbSessionAdd(data);
+      await fsUserUpdate({
+        ...data,
+        localAuthData: undefined,
+        session: undefined,
+      });
+      // user data with new session intact
+      data = await rtdbSessionAdd(data);
     } catch (error) {
       data = null;
       callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
@@ -152,25 +156,29 @@ export async function fbUserLogin({
       };
 
       // add session data to realtime database
-      await rtdbSessionAdd(userDataWithAuth);
+      // and return user data with session
+      const userDataWithSession = await rtdbSessionAdd(userDataWithAuth);
+
+      console.log(userDataWithSession);
       callback?.(
-        netSuccess<UserModel>("Successfully signed in", userDataWithAuth),
+        netSuccess<UserModel>("Successfully signed in", userDataWithSession),
       );
-      return userDataWithAuth;
+      return userDataWithSession;
     } catch (error) {
+      console.log(error);
       callback?.(
         netError<FirebaseError>("Error when loggin in", error as FirebaseError),
       );
       return null;
     }
   } catch (error) {
+    console.log(error);
     callback?.(
       netError<FirebaseError>("Error when loggin in", error as FirebaseError),
     );
     return null;
   }
 }
-
 
 type AddUserCallbackProps = UserModel | null | FirebaseError;
 type AddUserProps = UserModel | null;
@@ -203,7 +211,6 @@ export async function fbUserAdd({
   return data;
 }
 
-
 type UpdateProfileProps = null | FirebaseError | UserModel;
 export async function fbUserUpdate({
   file,
@@ -219,7 +226,7 @@ export async function fbUserUpdate({
     username: user.username,
     bio: user.bio,
     desc: user.desc,
-    dateUpdated:Date.now(),
+    dateUpdated: Date.now(),
   };
   // Upload image if there is one
   if (file) {
@@ -264,7 +271,7 @@ export async function fbUserUpdate({
   try {
     await fsUserUpdate(updatedUserData);
     // change the latest session to match the latest dateUpdated
-    await rtdbSessionLatestSet({user:updatedUserData});
+    await rtdbSessionLatestSet(updatedUserData);
     callback?.(
       netSuccess<UserModel>("Success updating profile", updatedUserData),
     );
@@ -357,41 +364,37 @@ export async function fbArticleAdd({
 type GetUserCallbackProps = UserModel | null | FirebaseError;
 type GetUserProps = UserModel | null;
 // @return UserModel if exists
-// async function getUser({
-//   email,
-//   callback,
-// }: {
-//   email: string;
-//   callback?: (resp: MainNetworkResponse<GetUserCallbackProps>) => void;
-// }): Promise<UserModel | null> {
-//   let data: GetUserProps = null;
-//   try {
-//     // Get user from database
-//     const snapshot = await getDoc(doc(userDb, email));
-//     // Check if exists
-//     const user = snapshot.exists() ? (snapshot.data() as UserModel) : null;
-
-//     data = user;
-//     // Show success
-//     callback?.(
-//       netSuccess<GetUserCallbackProps>(
-//         "User has been added to the database",
-//         user,
-//       ),
-//     );
-//   } catch (error) {
-//     // Show error
-//     // console.log(error);
-//     callback?.(
-//       netError<GetUserCallbackProps>(
-//         "Error when getting user data",
-//         error as FirebaseError,
-//       ),
-//     );
-//   }
-//   return data;
-// }
-
+export async function fbUserGet({
+  email,
+  callback,
+}: {
+  email: string;
+  callback?: (resp: MainNetworkResponse<GetUserCallbackProps>) => void;
+}): Promise<UserModel | null> {
+  try {
+    // Get user from database
+    const user = await fsUserGetByEmail(email);
+    
+    // Show success
+    callback?.(
+      netSuccess<GetUserCallbackProps>(
+        "User has been added to the database",
+        user,
+      ),
+    );
+    return user;
+  } catch (error) {
+    // Show error
+    console.log(error);
+    callback?.(
+      netError<GetUserCallbackProps>(
+        "Error when getting user data",
+        error as FirebaseError,
+      ),
+    );
+    return null;
+  }
+}
 
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file

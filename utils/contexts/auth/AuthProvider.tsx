@@ -3,9 +3,12 @@ import { destroyCookie, setCookie } from "nookies";
 import { ReactNode, useEffect, useReducer } from "react";
 import { AuthAction, AuthContextProps } from "../../data/contexts/AuthTypes";
 import { UserModel } from "../../data/models/UserModel";
-import { COOKIE_AUTH_USER } from "../../helpers/Constants";
+import { COOKIE_USER_AUTH } from "../../helpers/Constants";
+import { fbUserGet } from "../../services/network/FirebaseApi";
 import { firebaseAuth } from "../../services/network/FirebaseClient";
-import { mainUserAuthValidate } from "../../services/network/MainApi";
+import {
+  rtdbSessionAdd
+} from "../../services/network/RtdbModules";
 import { AuthContext } from "./AuthContext";
 import { authReducer } from "./AuthReducer";
 
@@ -26,20 +29,28 @@ export const AuthProvider = ({
     setUser: (user) => {
       // update state
       dispatch({ type: "SET_USER", payload: { user } });
-      // set cookie
+      // set auth data cookie
       const strUser = encodeURIComponent(JSON.stringify(user));
-      setCookie(undefined, COOKIE_AUTH_USER, strUser, {
+      setCookie(undefined, COOKIE_USER_AUTH, strUser, {
         path: "/",
         maxAge: 30 * 24 * 60 * 60,
       });
+      // // set session cookie
+      // const strSession = encodeURIComponent(JSON.stringify(user.session));
+      // setCookie(undefined, COOKIE_USER_AUTH_SESSION, strSession, {
+      //   path: "/",
+      //   maxAge: 30 * 24 * 60 * 60,
+      // });
     },
     unsetUser: () => {
       // unset user in context
       dispatch({ type: "UNSET_USER" });
       // signout firebase
       firebaseAuth.signOut();
-      // destroy cookie
-      destroyCookie(undefined, COOKIE_AUTH_USER);
+      // destroy cookie auth data
+      destroyCookie(undefined, COOKIE_USER_AUTH);
+      // destroy cookie auth session
+      // destroyCookie(undefined, COOKIE_USER_AUTH_SESSION);
       // navigate to auth
       router.push("/auth");
     },
@@ -53,6 +64,7 @@ export const AuthProvider = ({
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(async (user) => {
       const localUserData = initUser;
+      // console.log(localUserData);
 
       // if not logged in
       if (!user) {
@@ -63,12 +75,33 @@ export const AuthProvider = ({
         }
         return;
       }
-      console.log(await mainUserAuthValidate(user));
-      console.log("solama");
-      // if logged in
+
+      // if logged in & has localUserData
       if (localUserData) {
+        // check if data has changed
+        // by comparing lastLoginAt on auth database and local machine
+        console.log((user.metadata as any).lastLoginAt);
+
+        console.log((localUserData?.localAuthData as any).lastLoginAt);
+
+        if (
+          (user.metadata as any).lastLoginAt !==
+          (localUserData?.localAuthData as any).lastLoginAt
+        ) {
+          // getting new data
+          // console.log("getting new data");
+          const newUserData = await fbUserGet({ email: localUserData.email });
+
+          // if failed getting user data
+          if (!newUserData) return action.unsetUser();
+          const userWithNewSession = await rtdbSessionAdd({
+            ...newUserData,
+            localAuthData: user,
+          });
+          return action.setUser(userWithNewSession);
+        }
         // update firebase user props from auth data instead of the obsolete firestore
-        action.setUser({ ...localUserData, localAuthData: user });
+        return action.setUser({ ...localUserData, localAuthData: user });
       }
     });
   }, []);

@@ -1,5 +1,16 @@
 import { User } from "firebase/auth";
 import { nanoid } from "nanoid";
+
+export interface UserSession {
+  id: string;
+  userId: string;
+  os: string;
+  browser: string;
+  time: number;
+  userLastUpdated: number;
+}
+
+
 export interface UserModel {
   id: string;
   email: string;
@@ -29,6 +40,7 @@ export interface UserModel {
   desc?: string;
   // FOR LOCAL USE ONLY
   localAuthData?: User;
+  session?:UserSession;
   // 0 - not yet set up
   // 1 - not yet choosen topic
   // 2 - not yet banner update

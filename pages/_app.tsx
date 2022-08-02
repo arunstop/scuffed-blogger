@@ -10,8 +10,8 @@ import { UiProvider } from "../utils/contexts/ui/UiProvider";
 // import { ArticleModel } from "../utils/data/models/ArticleModel";
 import { parseCookies } from "nookies";
 import { UserModel } from "../utils/data/models/UserModel";
+import { COOKIE_USER_AUTH } from "../utils/helpers/Constants";
 import { useRouteChange } from "../utils/hooks/RouteChangeHook";
-import { COOKIE_AUTH_USER } from "../utils/helpers/Constants";
 
 interface AdditionalAppProps {
   user?: UserModel;
@@ -51,16 +51,19 @@ MainApp.getInitialProps = async (appContext: AppContext) => {
   // getting initial props
   const context = await App.getInitialProps(appContext);
   // get auth user cookie
-  const auth = parseCookies(appContext.ctx)?.[COOKIE_AUTH_USER];
+  const auth = parseCookies(appContext.ctx)?.[COOKIE_USER_AUTH];
   // if it exist then return it to the `MainApp`
   if (auth) {
     try {
+      // getting local user data
+      const user = JSON.parse(decodeURIComponent(auth)) as UserModel;
+      
       return {
         ...context,
-        user: JSON.parse(decodeURIComponent(auth)) as UserModel,
+        user,
       } as AppProps & AdditionalAppProps;
     } catch (error) {
-      console.log(error);
+      console.log("Error when parsing local user data : ", error );
     }
   }
   // if it doesn't then return the normal params for `MainApp` without `user` prop

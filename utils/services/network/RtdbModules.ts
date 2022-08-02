@@ -1,44 +1,22 @@
 import { ref, set } from "firebase/database";
 import uaParser from "ua-parser-js";
-import { UserModel } from "../../data/models/UserModel";
+import { UserModel, UserSession } from "../../data/models/UserModel";
 import { firebaseClient } from "./FirebaseClient";
 // Modules for realtime database
-
-interface UserSession {
-  id: string;
-  userId: string;
-  os: string;
-  browser: string;
-  time: number;
-  userLastUpdated: number;
-}
 
 const db = firebaseClient.rtdb;
 
 //  update latest data to be the indentifier if the firestore data has changed or not
 // so obsolete data on other machine would update
-export async function rtdbSessionLatestSet({
-  user,
-  session,
-}: {
-  user: UserModel;
-  session?: UserSession;
-}) {
-  let path = `sessionList/${encodeURIComponent(user.id || "")}/_LATEST/`;
-  let data: UserSession | number = {
-    ...session,
+export async function rtdbSessionLatestSet(user: UserModel) {
+  const path = `sessionList/${encodeURIComponent(user.id || "")}/_LATEST/`;
+  const data = {
+    ...user.session,
     userLastUpdated: user.dateUpdated,
   } as UserSession;
-  //   if no session params, only update the `userLastUpdated` props
-  if (!session) {
-    path = `sessionList/${encodeURIComponent(
-      user.id || "",
-    )}/_LATEST/userLastUpdated`;
-    data = user.dateUpdated;
-  }
-  console.log(path);
   const newRef = ref(db, path);
   await set(newRef, data);
+  return data;
 }
 
 export async function rtdbSessionAdd(user: UserModel) {
@@ -61,7 +39,9 @@ export async function rtdbSessionAdd(user: UserModel) {
     userLastUpdated: user.dateUpdated,
   };
   await set(newRef, session);
-  await rtdbSessionLatestSet({ user, session });
+  const userWithSession = { ...user, session: session };
+  const latestSession = await rtdbSessionLatestSet(userWithSession);
+  return userWithSession;
 }
 
 // UPDATE session to notice other instance if the user data has changed or not
