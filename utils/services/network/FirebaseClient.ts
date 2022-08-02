@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 import { collection, getFirestore } from "firebase/firestore/lite";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import {getDatabase} from "firebase/database";
+import { getDatabase } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,7 +23,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig, "FIREBASE_CLIENT");
 // const analytics = getAnalytics(app);
 
 // firestore client

@@ -5,6 +5,7 @@ import { AuthAction, AuthContextProps } from "../../data/contexts/AuthTypes";
 import { UserModel } from "../../data/models/UserModel";
 import { COOKIE_AUTH_USER } from "../../helpers/Constants";
 import { firebaseAuth } from "../../services/network/FirebaseClient";
+import { mainUserAuthValidate } from "../../services/network/MainApi";
 import { AuthContext } from "./AuthContext";
 import { authReducer } from "./AuthReducer";
 
@@ -50,7 +51,7 @@ export const AuthProvider = ({
   };
 
   useEffect(() => {
-    firebaseAuth.onAuthStateChanged((user) => {
+    firebaseAuth.onAuthStateChanged(async (user) => {
       const localUserData = initUser;
 
       // if not logged in
@@ -62,6 +63,8 @@ export const AuthProvider = ({
         }
         return;
       }
+      console.log(await mainUserAuthValidate(user));
+      console.log("solama");
       // if logged in
       if (localUserData) {
         // update firebase user props from auth data instead of the obsolete firestore

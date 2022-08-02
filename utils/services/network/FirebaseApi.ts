@@ -171,6 +171,110 @@ export async function fbUserLogin({
   }
 }
 
+
+type AddUserCallbackProps = UserModel | null | FirebaseError;
+type AddUserProps = UserModel | null;
+// @return UserModel if exists
+export async function fbUserAdd({
+  user,
+  callback,
+}: {
+  user: UserModel;
+  callback?: (resp: MainNetworkResponse<AddUserCallbackProps>) => void;
+}): Promise<AddUserProps> {
+  let data: AddUserProps = null;
+  try {
+    await fsUserAdd(user);
+    data = user;
+    // Show success
+    callback?.(
+      netSuccess<AddUserCallbackProps>(
+        "User has been added to the database",
+        user,
+      ),
+    );
+  } catch (error) {
+    // Show error
+    // console.log(error);
+    callback?.(
+      netError<AddUserCallbackProps>(error + "", error as FirebaseError),
+    );
+  }
+  return data;
+}
+
+
+type UpdateProfileProps = null | FirebaseError | UserModel;
+export async function fbUserUpdate({
+  file,
+  user,
+  callback,
+}: {
+  file?: FileList;
+  user: UserModel;
+  callback?: (resp: MainNetworkResponse<UpdateProfileProps>) => void;
+}): Promise<UpdateProfileProps> {
+  let updatedUserData = {
+    ...user,
+    username: user.username,
+    bio: user.bio,
+    desc: user.desc,
+    dateUpdated:Date.now(),
+  };
+  // Upload image if there is one
+  if (file) {
+    try {
+      const imageUrl = await uploadFile({
+        file: file[0],
+        directory: "images/avatars",
+      });
+      // console.log("imageUrl : " + imageUrl);
+      if (!imageUrl) {
+        callback?.(netError("Couldn't get the uploaded image's url"));
+        return null;
+      }
+
+      // Delete user's previous avatar if there was one
+      // and if the previous one was NOT the default one
+      if (user.avatar && !user.avatar.includes("default_avatar.png")) {
+        try {
+          await stFileDelete(user?.avatar);
+        } catch (error) {
+          callback?.(
+            netError(
+              "Error when deleting previous avatar",
+              error as FirebaseError,
+            ),
+          );
+          return null;
+        }
+      }
+
+      // if successful, inject the new image url to the user's data
+      if (imageUrl) updatedUserData = { ...updatedUserData, avatar: imageUrl };
+    } catch (error) {
+      callback?.(
+        netError("Error when updating profile", error as FirebaseError),
+      );
+      return null;
+    }
+  }
+
+  // Update overall User Data
+  try {
+    await fsUserUpdate(updatedUserData);
+    // change the latest session to match the latest dateUpdated
+    await rtdbSessionLatestSet({user:updatedUserData});
+    callback?.(
+      netSuccess<UserModel>("Success updating profile", updatedUserData),
+    );
+    return updatedUserData;
+  } catch (error) {
+    callback?.(netError("Error when updating profile", error as FirebaseError));
+    return null;
+  }
+}
+
 // Adding article, now using direct firebaseClient
 interface AddArticleProps {
   data: WritingPanelFormProps;
@@ -288,36 +392,6 @@ type GetUserProps = UserModel | null;
 //   return data;
 // }
 
-type AddUserCallbackProps = UserModel | null | FirebaseError;
-type AddUserProps = UserModel | null;
-// @return UserModel if exists
-export async function fbUserAdd({
-  user,
-  callback,
-}: {
-  user: UserModel;
-  callback?: (resp: MainNetworkResponse<AddUserCallbackProps>) => void;
-}): Promise<AddUserProps> {
-  let data: AddUserProps = null;
-  try {
-    await fsUserAdd(user);
-    data = user;
-    // Show success
-    callback?.(
-      netSuccess<AddUserCallbackProps>(
-        "User has been added to the database",
-        user,
-      ),
-    );
-  } catch (error) {
-    // Show error
-    // console.log(error);
-    callback?.(
-      netError<AddUserCallbackProps>(error + "", error as FirebaseError),
-    );
-  }
-  return data;
-}
 
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file
@@ -369,75 +443,4 @@ export async function uploadFile({
   });
 
   return data;
-}
-
-type UpdateProfileProps = null | FirebaseError | UserModel;
-export async function fbUserUpdate({
-  file,
-  user,
-  callback,
-}: {
-  file?: FileList;
-  user: UserModel;
-  callback?: (resp: MainNetworkResponse<UpdateProfileProps>) => void;
-}): Promise<UpdateProfileProps> {
-  let updatedUserData = {
-    ...user,
-    username: user.username,
-    bio: user.bio,
-    desc: user.desc,
-    dateUpdated:Date.now(),
-  };
-  // Upload image if there is one
-  if (file) {
-    try {
-      const imageUrl = await uploadFile({
-        file: file[0],
-        directory: "images/avatars",
-      });
-      // console.log("imageUrl : " + imageUrl);
-      if (!imageUrl) {
-        callback?.(netError("Couldn't get the uploaded image's url"));
-        return null;
-      }
-
-      // Delete user's previous avatar if there was one
-      // and if the previous one was NOT the default one
-      if (user.avatar && !user.avatar.includes("default_avatar.png")) {
-        try {
-          await stFileDelete(user?.avatar);
-        } catch (error) {
-          callback?.(
-            netError(
-              "Error when deleting previous avatar",
-              error as FirebaseError,
-            ),
-          );
-          return null;
-        }
-      }
-
-      // if successful, inject the new image url to the user's data
-      if (imageUrl) updatedUserData = { ...updatedUserData, avatar: imageUrl };
-    } catch (error) {
-      callback?.(
-        netError("Error when updating profile", error as FirebaseError),
-      );
-      return null;
-    }
-  }
-
-  // Update overall User Data
-  try {
-    await fsUserUpdate(updatedUserData);
-    // change the latest session to match the latest dateUpdated
-    await rtdbSessionLatestSet({user:updatedUserData});
-    callback?.(
-      netSuccess<UserModel>("Success updating profile", updatedUserData),
-    );
-    return updatedUserData;
-  } catch (error) {
-    callback?.(netError("Error when updating profile", error as FirebaseError));
-    return null;
-  }
 }
