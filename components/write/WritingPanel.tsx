@@ -7,7 +7,7 @@ import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
 import {
   WritingPanelFormProps,
-  WritingPanelTabTypes
+  WritingPanelTabTypes,
 } from "../../utils/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
@@ -57,7 +57,9 @@ function WritingPanel() {
       setNetWorkResp(netLoading("Creating your well written article ;)"));
 
       await fbArticleAdd({
-        data: processedData,
+        rawArticle: processedData,
+        // correct non-null assertion becase we know that isLoggedIn already true
+        user: authStt.user!,
         callback: async (resp) => {
           // change loading state, if it's loading, no need to wait
           if (resp.status !== "loading") await waitFor(2000);

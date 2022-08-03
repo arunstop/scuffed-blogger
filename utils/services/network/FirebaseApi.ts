@@ -30,7 +30,11 @@ import {
   fsUserGetByEmail,
   fsUserUpdate,
 } from "./FirestoreModules";
-import { rtdbSessionAdd, rtdbSessionLatestSet } from "./RtdbModules";
+import {
+  rtdbArticleAddMirror,
+  rtdbSessionAdd,
+  rtdbSessionLatestSet,
+} from "./RtdbModules";
 import { stFileDelete } from "./StorageModules";
 
 // Auth
@@ -283,29 +287,38 @@ export async function fbUserUpdate({
 }
 
 // Adding article, now using direct firebaseClient
-interface AddArticleProps {
-  data: WritingPanelFormProps;
+interface PropsAddArticle {
+  rawArticle: WritingPanelFormProps;
+  user: UserModel;
   callback?: (
     resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
   ) => void;
 }
 
 export async function fbArticleAdd({
-  data,
+  rawArticle,
+  user,
   callback,
-}: AddArticleProps): Promise<ArticleModel | null> {
+}: PropsAddArticle): Promise<ArticleModel | null> {
   // TODO: Add article with its thumbnail
   // generate article
-  const article = toArticleModel(data);
+  const article = toArticleModel(rawArticle);
+  // make/mirror article data to rtdb for efficient searching
+  const mirrorArticle = async (articleMirror: ArticleModel) => {
+    try {
+      await rtdbArticleAddMirror(articleMirror, user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // upload the article
   try {
     // add article first
     await fsArticleAdd(article);
-    // console.log(article);
 
     // upload thumbnail if there is one
-    const thumbnail = data.thumbnail;
+    const thumbnail = rawArticle.thumbnail;
     if (thumbnail) {
       try {
         callback?.(
@@ -324,6 +337,9 @@ export async function fbArticleAdd({
 
         // create new article with newly added thumbnail url
         const articleWithThumbnail = { ...article, thumbnail: thumbnailUrl };
+
+        // add some part of article to rtdb for searching purpose
+        mirrorArticle(articleWithThumbnail);
 
         // update the said article in database
         try {
@@ -352,6 +368,9 @@ export async function fbArticleAdd({
       }
     }
 
+    // add some part of article to rtdb for searching purpose
+    mirrorArticle(article);
+
     // if no thumbnail, then just return the default generated article
     callback?.(netSuccess<ArticleModel>("Success creating article", article));
     return article;
@@ -374,7 +393,7 @@ export async function fbUserGet({
   try {
     // Get user from database
     const user = await fsUserGetByEmail(email);
-    
+
     // Show success
     callback?.(
       netSuccess<GetUserCallbackProps>(
