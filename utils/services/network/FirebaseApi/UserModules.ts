@@ -20,7 +20,7 @@ import { uploadFile } from "./FileModules";
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;
 // @returns complete user information if successfull
-export async function fbUserRegister({
+export async function fbUserAuthRegister({
   fields,
   callback,
 }: {
@@ -106,7 +106,7 @@ export async function fbUserRegister({
 }
 
 // @returns complete user information if successfull
-export async function fbUserLogin({
+export async function fbUserAuthLogin({
   fields,
   callback,
 }: {
