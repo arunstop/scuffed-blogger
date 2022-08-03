@@ -58,6 +58,7 @@ export type ArticleLiteModel = Pick<
   };
 };
 
+// Adding lite version of article to rtdb for searching purpose
 export async function rtdbArticleAdd(
   article: ArticleModel,
   user: UserModel,
@@ -80,7 +81,7 @@ export async function rtdbArticleAdd(
       avatar: user.avatar,
      },
   };
-  console.log(data);
+  // console.log(data);
   const newRef = ref(db, path);
   await set(newRef, data);
   return article;

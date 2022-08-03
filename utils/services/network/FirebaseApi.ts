@@ -309,13 +309,6 @@ export async function fbArticleAdd({
     // add article first
     await fsArticleAdd(article);
 
-    // add some part of article to rtdb for searching purpose
-    try {
-      await rtdbArticleAdd(article, user);
-    } catch (error) {
-      console.log(error);
-    }
-
     // upload thumbnail if there is one
     const thumbnail = rawArticle.thumbnail;
     if (thumbnail) {
@@ -336,6 +329,13 @@ export async function fbArticleAdd({
 
         // create new article with newly added thumbnail url
         const articleWithThumbnail = { ...article, thumbnail: thumbnailUrl };
+
+        // add some part of article to rtdb for searching purpose
+        try {
+          await rtdbArticleAdd(articleWithThumbnail, user);
+        } catch (error) {
+          console.log(error);
+        }
 
         // update the said article in database
         try {
@@ -362,6 +362,13 @@ export async function fbArticleAdd({
         );
         return null;
       }
+    }
+
+    // add some part of article to rtdb for searching purpose
+    try {
+      await rtdbArticleAdd(article, user);
+    } catch (error) {
+      console.log(error);
     }
 
     // if no thumbnail, then just return the default generated article
