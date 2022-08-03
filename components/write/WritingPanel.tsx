@@ -14,7 +14,7 @@ import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { fbArticleAdd } from "../../utils/services/network/FirebaseApi";
+import { fbArticleAdd } from "../../utils/services/network/FirebaseApi/ArticleModules";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";

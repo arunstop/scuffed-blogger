@@ -1,46 +1,26 @@
 import { FirebaseError } from "firebase/app";
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  User,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword, User
 } from "firebase/auth";
-import {
-  getDownloadURL,
-  ref,
-  uploadBytesResumable,
-  UploadTaskSnapshot,
-} from "firebase/storage";
 import { nanoid } from "nanoid";
-import { LoginFields } from "../../../components/auth/AuthLoginForm";
-import { AuthRegisterProps } from "../../../components/auth/AuthRegisterForm";
-import { WritingPanelFormProps } from "../../data/contexts/WritingPanelTypes";
+import { LoginFields } from "../../../../components/auth/AuthLoginForm";
+import { AuthRegisterProps } from "../../../../components/auth/AuthRegisterForm";
 import {
-  MainNetworkResponse,
-  netError,
-  netLoading,
-  netSuccess,
-} from "../../data/Main";
-import { ArticleModel, toArticleModel } from "../../data/models/ArticleModel";
-import { createUserModel, UserModel } from "../../data/models/UserModel";
-import { firebaseAuth, firebaseClient } from "./FirebaseClient";
-import {
-  fsArticleAdd,
-  fsArticleUpdate,
-  fsUserAdd,
-  fsUserGetByEmail,
-  fsUserUpdate,
-} from "./FirestoreModules";
-import {
-  rtdbArticleAddMirror,
-  rtdbSessionAdd,
-  rtdbSessionLatestSet,
-} from "./RtdbModules";
-import { stFileDelete } from "./StorageModules";
+    MainNetworkResponse,
+    netError, netLoading, netSuccess
+} from "../../../data/Main";
+import { createUserModel, UserModel } from "../../../data/models/UserModel";
+import { firebaseAuth } from "../FirebaseClient";
+import { fsUserAdd, fsUserGetByEmail, fsUserUpdate } from "../FirestoreModules";
+import { rtdbSessionAdd, rtdbSessionLatestSet } from "../RtdbModules";
+import { stFileDelete } from "../StorageModules";
+import { uploadFile } from "./FileModules";
 
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;
 // @returns complete user information if successfull
-export async function fbUserRegister({
+export async function fbUserAuthRegister({
   fields,
   callback,
 }: {
@@ -126,7 +106,7 @@ export async function fbUserRegister({
 }
 
 // @returns complete user information if successfull
-export async function fbUserLogin({
+export async function fbUserAuthLogin({
   fields,
   callback,
 }: {
@@ -286,100 +266,6 @@ export async function fbUserUpdate({
   }
 }
 
-// Adding article, now using direct firebaseClient
-interface PropsAddArticle {
-  rawArticle: WritingPanelFormProps;
-  user: UserModel;
-  callback?: (
-    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
-  ) => void;
-}
-
-export async function fbArticleAdd({
-  rawArticle,
-  user,
-  callback,
-}: PropsAddArticle): Promise<ArticleModel | null> {
-  // TODO: Add article with its thumbnail
-  // generate article
-  const article = toArticleModel(rawArticle);
-  // make/mirror article data to rtdb for efficient searching
-  const mirrorArticle = async (articleMirror: ArticleModel) => {
-    try {
-      await rtdbArticleAddMirror(articleMirror, user);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // upload the article
-  try {
-    // add article first
-    await fsArticleAdd(article);
-
-    // upload thumbnail if there is one
-    const thumbnail = rawArticle.thumbnail;
-    if (thumbnail) {
-      try {
-        callback?.(
-          netLoading<ArticleModel>("Uploading the thumbnail", article),
-        );
-        // uploading thumbnail
-        const thumbnailUrl = await uploadFile({
-          file: thumbnail[0],
-          directory: "/thumbnails",
-        });
-
-        if (!thumbnailUrl) {
-          callback?.(netError("Couldn't get the uploaded image's url"));
-          return null;
-        }
-
-        // create new article with newly added thumbnail url
-        const articleWithThumbnail = { ...article, thumbnail: thumbnailUrl };
-
-        // add some part of article to rtdb for searching purpose
-        mirrorArticle(articleWithThumbnail);
-
-        // update the said article in database
-        try {
-          await fsArticleUpdate(articleWithThumbnail, ["thumbnail"]);
-          callback?.(
-            netSuccess<ArticleModel>(
-              "Success creating article",
-              articleWithThumbnail,
-            ),
-          );
-          return articleWithThumbnail;
-        } catch (error) {
-          callback?.(
-            netError(
-              "Error when applying thumbnail to database",
-              error as FirebaseError,
-            ),
-          );
-          return null;
-        }
-      } catch (error) {
-        callback?.(
-          netError("Error when creating thumbnail", error as FirebaseError),
-        );
-        return null;
-      }
-    }
-
-    // add some part of article to rtdb for searching purpose
-    mirrorArticle(article);
-
-    // if no thumbnail, then just return the default generated article
-    callback?.(netSuccess<ArticleModel>("Success creating article", article));
-    return article;
-  } catch (error) {
-    callback?.(netError("Error when creating article", error as FirebaseError));
-    return null;
-  }
-}
-
 type GetUserCallbackProps = UserModel | null | FirebaseError;
 type GetUserProps = UserModel | null;
 // @return UserModel if exists
@@ -393,7 +279,7 @@ export async function fbUserGet({
   try {
     // Get user from database
     const user = await fsUserGetByEmail(email);
-
+    
     // Show success
     callback?.(
       netSuccess<GetUserCallbackProps>(
@@ -413,56 +299,4 @@ export async function fbUserGet({
     );
     return null;
   }
-}
-
-type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
-// Upload file
-// @Returns the download url
-export async function uploadFile({
-  file,
-  directory,
-  callback,
-}: {
-  file: File;
-  directory: string;
-  callback?: (resp: MainNetworkResponse<UploadFileProps>) => void;
-}): Promise<string> {
-  let data = "";
-  // const file = fields.avatar[0];
-  // Splitting the name by with .  then get the last item
-  // which results the extension of the file
-  const extension = file.name.split(".").pop();
-  // Getting new name with id
-  const newName = `${nanoid(24)}.${extension}`;
-  const imageRef = ref(firebaseClient.storage, `${directory}/${newName}`);
-  // Uploading the file
-  const uploadTask = uploadBytesResumable(imageRef, file);
-  uploadTask.on(
-    "state_changed",
-    // handle progress change
-    (snapshot) => {
-      callback?.(
-        netLoading<UploadTaskSnapshot>("Uploading your avatar...", snapshot),
-      );
-      // console.log(snapshot);
-    },
-    // handle failed upload
-    (error) => {
-      callback?.(
-        netError("Error when uploading the image", error as FirebaseError),
-      );
-      // console.log(error);
-    },
-    // handle success
-    async () => {
-      // data = await getDownloadURL(uploadTask.snapshot.ref);
-      callback?.(netSuccess<string>("", data));
-      // console.log(data);
-    },
-  );
-  await uploadTask.then(async (e) => {
-    data = await getDownloadURL(uploadTask.snapshot.ref);
-  });
-
-  return data;
 }

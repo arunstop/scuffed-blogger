@@ -11,7 +11,7 @@ import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
-import { fbUserRegister } from "../../utils/services/network/FirebaseApi";
+import { fbUserAuthRegister } from "../../utils/services/network/FirebaseApi/UserModules";
 import MainTextInput from "../input/MainTextInput";
 import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";
@@ -144,7 +144,7 @@ function AuthRegisterForm({
   const onSubmit: SubmitHandler<RegisterFormFields> = async (data) => {
     actionLoading();
     await waitFor(2000);
-    await fbUserRegister({
+    await fbUserAuthRegister({
         fields: { ...data, email: data.email.toLowerCase() },
         callback: async (resp) => {
           // if loading
@@ -160,7 +160,7 @@ function AuthRegisterForm({
           // if error
           if (resp.status === "error")
             return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
-              onSubmit(data),
+              onSubmit(data), 
             );
           // if success
           if (resp.status === "success")
