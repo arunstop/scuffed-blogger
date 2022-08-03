@@ -7,7 +7,7 @@ import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
-import { fbUserLogin } from "../../utils/services/network/FirebaseApi";
+import { fbUserLogin } from "../../utils/services/network/FirebaseApi/UserModules";
 import MainTextInput from "../input/MainTextInput";
 import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";

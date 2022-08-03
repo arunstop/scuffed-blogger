@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useReducer } from "react";
 import { AuthAction, AuthContextProps } from "../../data/contexts/AuthTypes";
 import { UserModel } from "../../data/models/UserModel";
 import { COOKIE_USER_AUTH } from "../../helpers/Constants";
-import { fbUserGet } from "../../services/network/FirebaseApi";
+import { fbUserGet } from "../../services/network/FirebaseApi/UserModules";
 import { firebaseAuth } from "../../services/network/FirebaseClient";
 import {
   rtdbSessionAdd
