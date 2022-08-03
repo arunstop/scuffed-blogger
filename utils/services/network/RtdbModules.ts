@@ -59,7 +59,7 @@ export type ArticleLiteModel = Pick<
 };
 
 // Adding lite version of article to rtdb for searching purpose
-export async function rtdbArticleAdd(
+export async function rtdbArticleAddMirror(
   article: ArticleModel,
   user: UserModel,
 ): Promise<ArticleModel> {

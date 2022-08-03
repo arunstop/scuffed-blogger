@@ -31,7 +31,7 @@ import {
   fsUserUpdate,
 } from "./FirestoreModules";
 import {
-  rtdbArticleAdd,
+  rtdbArticleAddMirror,
   rtdbSessionAdd,
   rtdbSessionLatestSet,
 } from "./RtdbModules";
@@ -303,6 +303,14 @@ export async function fbArticleAdd({
   // TODO: Add article with its thumbnail
   // generate article
   const article = toArticleModel(rawArticle);
+  // make/mirror article data to rtdb for efficient searching
+  const mirrorArticle = async (articleMirror: ArticleModel) => {
+    try {
+      await rtdbArticleAddMirror(articleMirror, user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // upload the article
   try {
@@ -331,11 +339,7 @@ export async function fbArticleAdd({
         const articleWithThumbnail = { ...article, thumbnail: thumbnailUrl };
 
         // add some part of article to rtdb for searching purpose
-        try {
-          await rtdbArticleAdd(articleWithThumbnail, user);
-        } catch (error) {
-          console.log(error);
-        }
+        mirrorArticle(articleWithThumbnail);
 
         // update the said article in database
         try {
@@ -365,11 +369,7 @@ export async function fbArticleAdd({
     }
 
     // add some part of article to rtdb for searching purpose
-    try {
-      await rtdbArticleAdd(article, user);
-    } catch (error) {
-      console.log(error);
-    }
+    mirrorArticle(article);
 
     // if no thumbnail, then just return the default generated article
     callback?.(netSuccess<ArticleModel>("Success creating article", article));
