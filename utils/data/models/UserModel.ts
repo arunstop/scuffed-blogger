@@ -17,7 +17,7 @@ export interface UserModel {
   name: string;
   username: string;
   avatar: string;
-  list?: {
+  list: {
     followings: string[];
     posts: string[];
     bookmarks: string[];
