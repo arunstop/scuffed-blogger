@@ -11,6 +11,7 @@ import {
 } from "../../utils/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
+import { UserModel } from "../../utils/data/models/UserModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
@@ -39,7 +40,7 @@ function WritingPanel() {
     state: { formData, tab },
     action,
   } = useWritingPanelCtx();
-  const { authStt, isLoggedIn } = useAuthCtx();
+  const { authStt, authAct, isLoggedIn } = useAuthCtx();
 
   const submitArticle = useCallback(
     async (data?: WritingPanelFormProps) => {
@@ -56,7 +57,7 @@ function WritingPanel() {
       setLoading(true);
       setNetWorkResp(netLoading("Creating your well written article ;)"));
 
-      await fbArticleAdd({
+      const newArticle = await fbArticleAdd({
         rawArticle: processedData,
         // correct non-null assertion becase we know that isLoggedIn already true
         user: authStt.user!,
@@ -75,6 +76,17 @@ function WritingPanel() {
           // }
         },
       });
+
+      if (!newArticle) return;
+      const user = authStt.user;
+      if (!user) return;
+      // apply new article to the local user data
+      const updatedUser:UserModel = {
+        ...user,
+        list: { ...user.list, posts: [...user.list.posts, newArticle.id] },
+        dateUpdated: newArticle.dateAdded,
+      };
+      authAct.setUser(updatedUser);
     },
     [formData, isLoggedIn],
   );

@@ -1,23 +1,32 @@
 import { FirebaseError } from "firebase/app";
 import { WritingPanelFormProps } from "../../../data/contexts/WritingPanelTypes";
-import { MainNetworkResponse, netError, netLoading, netSuccess } from "../../../data/Main";
 import {
-    ArticleModel,
-    toArticleModel
+  MainNetworkResponse,
+  netError,
+  netLoading,
+  netSuccess,
+} from "../../../data/Main";
+import {
+  ArticleModel,
+  toArticleModel,
 } from "../../../data/models/ArticleModel";
 import { UserModel } from "../../../data/models/UserModel";
-import { fsArticleAdd, fsArticleUpdate } from "../FirestoreModules";
+import {
+  fsArticleAdd,
+  fsArticleUpdate,
+  fsUserUpdate,
+} from "../FirestoreModules";
 import { rtdbArticleAddMirror } from "../RtdbModules";
 import { uploadFile } from "./FileModules";
 
 // Adding article, now using direct firebaseClient
 interface PropsAddArticle {
-    rawArticle: WritingPanelFormProps;
-    user: UserModel;
-    callback?: (
-      resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
-    ) => void;
-  }
+  rawArticle: WritingPanelFormProps;
+  user: UserModel;
+  callback?: (
+    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
+  ) => void;
+}
 
 export async function fbArticleAdd({
   rawArticle,
@@ -94,6 +103,19 @@ export async function fbArticleAdd({
 
     // add some part of article to rtdb for searching purpose
     mirrorArticle(article);
+
+    // updating user data that they have added a new article
+    const userPosts = [...(user.list?.posts || [])];
+    fsUserUpdate({
+      ...user,
+      list: {
+        ...user.list,
+        posts: [...userPosts, article.id],
+      },
+      localAuthData: undefined,
+      session: undefined,
+      dateUpdated: article.dateAdded,
+    });
 
     // if no thumbnail, then just return the default generated article
     callback?.(netSuccess<ArticleModel>("Success creating article", article));
