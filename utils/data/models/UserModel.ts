@@ -1,5 +1,4 @@
 import { User } from "firebase/auth";
-import _ from "lodash";
 import { nanoid } from "nanoid";
 import { isFalsy } from "../Main";
 
@@ -101,9 +100,11 @@ export function isUserModel(value: unknown) {
   // check if it is object
   if (typeof value !== "object") return false;
   // console.log("object check passed");
+
   // check falsy
   if (isFalsy(value)) return false;
   // console.log("not falsy");
+
   // check if all required properties are satisfied
   const requiredPropsValid =
     "id" in value &&
@@ -117,6 +118,7 @@ export function isUserModel(value: unknown) {
     "dateUpdated" in value &&
     "profileCompletion" in value;
   // console.log("requiredPropsValid", requiredPropsValid);
+
   // list all properties
   const props = [
     "id",
@@ -135,9 +137,15 @@ export function isUserModel(value: unknown) {
     "profileCompletion",
   ];
   // check if `value` has props that is not in the required on the props
+  // a.k.a find the difference of those 2
+  // Using lodash causing `edge function` error on vercel depoyment
+
+  // const unrequiredPropsValid =
+  //   _.difference(Object.keys(value), props).length === 0;
   const unrequiredPropsValid =
-    _.difference(Object.keys(value), props).length === 0;
+    Object.keys(value).filter((e) => !e.includes(e)).length === 0;
   // console.log("unrequiredPropsValid", unrequiredPropsValid);
+
   // if all required props are satisfied
   // and no other unrequired value, returns true
   return requiredPropsValid === true && unrequiredPropsValid === true;
