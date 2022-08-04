@@ -110,8 +110,11 @@ export async function fbArticleAdd({
       ...user,
       list: {
         ...user.list,
-        posts: userPosts || [article.id],
+        posts: [...userPosts, article.id],
       },
+      localAuthData: undefined,
+      session: undefined,
+      dateUpdated: article.dateAdded,
     });
 
     // if no thumbnail, then just return the default generated article
