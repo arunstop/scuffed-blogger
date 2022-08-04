@@ -9,7 +9,7 @@ import { AuthProvider } from "../utils/contexts/auth/AuthProvider";
 import { UiProvider } from "../utils/contexts/ui/UiProvider";
 // import { ArticleModel } from "../utils/data/models/ArticleModel";
 import { parseCookies } from "nookies";
-import { UserModel } from "../utils/data/models/UserModel";
+import { isUserModel, UserModel } from "../utils/data/models/UserModel";
 import { COOKIE_USER_AUTH } from "../utils/helpers/Constants";
 import { useRouteChange } from "../utils/hooks/RouteChangeHook";
 
@@ -56,14 +56,24 @@ MainApp.getInitialProps = async (appContext: AppContext) => {
   if (auth) {
     try {
       // getting local user data
-      const user = JSON.parse(decodeURIComponent(auth)) as UserModel;
-      
+      const user = JSON.parse(auth);
+      if (!isUserModel(user as unknown)) {
+        throw new Error(
+          "Auth data stored in the cookies has invalid format/structure",
+        );
+      }
+
       return {
         ...context,
-        user,
+        user: user as UserModel,
       } as AppProps & AdditionalAppProps;
     } catch (error) {
-      console.log("Error when parsing local user data : ", error );
+      // if somehow the auth data from cookie is changed.
+      console.log("Error when parsing local user data : ", error);
+      return {
+        ...context,
+        user: undefined,
+      } as AppProps & AdditionalAppProps;
     }
   }
   // if it doesn't then return the normal params for `MainApp` without `user` prop
