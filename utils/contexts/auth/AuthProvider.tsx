@@ -30,7 +30,8 @@ export const AuthProvider = ({
       // update state
       dispatch({ type: "SET_USER", payload: { user } });
       // set auth data cookie
-      const strUser = encodeURIComponent(JSON.stringify(user));
+      const strUser = JSON.stringify(user);
+      // setting cookie, which is already encoded
       setCookie(undefined, COOKIE_USER_AUTH, strUser, {
         path: "/",
         maxAge: 30 * 24 * 60 * 60,
