@@ -289,7 +289,6 @@ function WritingPanel() {
                 >
                   <div className="min-w-full">
                     <WritingPanelPreview
-                      content={formData?.content || ""}
                       submit={submitArticle}
                     />
                   </div>
