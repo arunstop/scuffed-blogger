@@ -143,7 +143,7 @@ export function isUserModel(value: unknown) {
   // const unrequiredPropsValid =
   //   _.difference(Object.keys(value), props).length === 0;
   const unrequiredPropsValid =
-    Object.keys(value).filter((e) => !e.includes(e)).length === 0;
+    Object.keys(value).filter((e) => !props.includes(e)).length === 0;
   // console.log("unrequiredPropsValid", unrequiredPropsValid);
 
   // if all required props are satisfied
