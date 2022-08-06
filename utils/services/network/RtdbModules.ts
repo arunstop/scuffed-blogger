@@ -1,4 +1,8 @@
-import { get, orderByValue, query, ref, set } from "firebase/database";
+import {
+  get, orderByChild, query,
+  ref,
+  set
+} from "firebase/database";
 import uaParser from "ua-parser-js";
 import { UserModel, UserSession } from "../../data/models/UserModel";
 import { ArticleModel } from "./../../data/models/ArticleModel";
@@ -90,12 +94,17 @@ export async function rtdbTopicGet(): Promise<string[]> {
   const path = `topicList`;
   // const query = child(ref(db),path);
   const rr = ref(db, path);
-  const qq = query(rr, orderByValue());
-  const res = await get(qq).then((snapshot)=>{
-    // console.log(snapshot);
-    if(snapshot.exists()){
-      // console.log(snapshot.val());
-      return snapshot.val();
+  const qq = query(rr, orderByChild("name"));
+  const res = await get(qq).then((snapshot) => {
+    if (snapshot.exists()) {
+      
+      const data: string[] = [];
+      // using `forEach` because normal `val` won't guarantee the ordering request
+      snapshot.forEach((e) => {
+        data.push(e.val().name);
+      });
+      
+      return data;
     }
     return [];
   });
