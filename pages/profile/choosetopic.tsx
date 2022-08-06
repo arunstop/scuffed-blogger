@@ -1,10 +1,10 @@
 import Head from "next/head";
 import React from "react";
 import MainContainer from "../../components/main/MainContainer";
-import ProfileChooseTopicsForm from "../../components/profile/ProfileChooseTopicsForm";
+import ProfileChooseTopic from "../../components/profile/ProfileChooseTopic";
 import { APP_NAME } from "../../utils/helpers/Constants";
 
-function ProfileChooseTopics() {
+function ProfileSetup() {
   const title = "Setup your " + APP_NAME + " profile - " + APP_NAME;
 
   return (
@@ -17,7 +17,7 @@ function ProfileChooseTopics() {
       {/* <Header /> */}
       <MainContainer>
         <div className="relative z-0 min-h-screen overflow-hidden rounded-xl">
-        <ProfileChooseTopicsForm />
+        <ProfileChooseTopic />
         </div>
       </MainContainer>
       {/* <Footer/> */}
@@ -25,4 +25,4 @@ function ProfileChooseTopics() {
   );
 }
 
-export default ProfileChooseTopics;
+export default ProfileSetup;
