@@ -10,7 +10,7 @@ export async function fbTopicGetAll({
 }): Promise<string[]> {
   try {
     const topics = await rtdbTopicGet();
-    console.log(topics);
+    // console.log(topics);
     return topics;
   } catch (error) {
     console.log(error);
