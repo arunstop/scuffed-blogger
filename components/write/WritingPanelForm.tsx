@@ -30,6 +30,7 @@ function WritingPanelForm({
     formState: { isValid, errors },
     resetField,
     reset,
+    setValue,
   } = useForm<WritingPanelFormProps>({
     mode: "onChange",
   });
@@ -58,6 +59,8 @@ function WritingPanelForm({
     }
   }, [formData]);
 
+  console.log(getValues());
+
   // set contexts formData before previewing
   useEffect(() => {
     // set state if previewing
@@ -68,6 +71,7 @@ function WritingPanelForm({
 
   return (
     <div className="flex w-full flex-col gap-4 sm:gap-8">
+      {JSON.stringify(watch("thumbnail")?.[0]?.name)}
       <form
         className="flex w-full flex-col gap-4 sm:gap-8"
         onSubmit={handleSubmit(onSubmit)}
@@ -187,10 +191,12 @@ function WritingPanelForm({
                 <button
                   className="--btn-resp btn btn-link text-base-content"
                   onClick={() => {
-                    resetField("thumbnail", {
-                      keepError: false,
-                      keepTouched: false,
-                    });
+                    // using normal `reset` instead of `resetField`
+                    // because after switching back from preview
+                    // `reset` doesn't work for some reason.
+                    reset({ thumbnail: undefined }, { keepValues: false });
+                    
+                    // resetField("thumbnail",{defaultValue:undefined});
                   }}
                   type="button"
                   tabIndex={-1}
