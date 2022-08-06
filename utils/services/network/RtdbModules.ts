@@ -94,7 +94,7 @@ export async function rtdbTopicGet(): Promise<string[]> {
   const path = `topicList`;
   // const query = child(ref(db),path);
   const rr = ref(db, path);
-  const qq = query(rr, orderByChild("name"));
+ const qq = query(rr, orderByChild("name"));
   const res = await get(qq).then((snapshot) => {
     if (snapshot.exists()) {
       
