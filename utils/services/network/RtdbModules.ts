@@ -1,7 +1,11 @@
-import { ArticleModel } from "./../../data/models/ArticleModel";
-import { ref, set } from "firebase/database";
+import {
+  get, orderByChild, query,
+  ref,
+  set
+} from "firebase/database";
 import uaParser from "ua-parser-js";
 import { UserModel, UserSession } from "../../data/models/UserModel";
+import { ArticleModel } from "./../../data/models/ArticleModel";
 import { firebaseClient } from "./FirebaseClient";
 // Modules for realtime database
 
@@ -54,7 +58,7 @@ export type ArticleLiteModel = Pick<
     id: string;
     name: string;
     avatar: string;
-    username:string;
+    username: string;
   };
 };
 
@@ -64,8 +68,7 @@ export async function rtdbArticleAddMirror(
   user: UserModel,
 ): Promise<ArticleModel> {
   const path = `articleList/${article.id}`;
-  const {  dateAdded, desc, duration, id, thumbnail, title, topics } =
-    article;
+  const { dateAdded, desc, duration, id, thumbnail, title, topics } = article;
   const data: ArticleLiteModel = {
     dateAdded,
     desc,
@@ -74,15 +77,36 @@ export async function rtdbArticleAddMirror(
     thumbnail,
     title,
     topics,
-    author: { 
-      id:user.id,
-      name:user.name,
-      username:user.username,
+    author: {
+      id: user.id,
+      name: user.name,
+      username: user.username,
       avatar: user.avatar,
-     },
+    },
   };
   // console.log(data);
   const newRef = ref(db, path);
   await set(newRef, data);
   return article;
+}
+
+export async function rtdbTopicGet(): Promise<string[]> {
+  const path = `topicList`;
+  // const query = child(ref(db),path);
+  const rr = ref(db, path);
+  const qq = query(rr, orderByChild("name"));
+  const res = await get(qq).then((snapshot) => {
+    if (snapshot.exists()) {
+      
+      const data: string[] = [];
+      // using `forEach` because normal `val` won't guarantee the ordering request
+      snapshot.forEach((e) => {
+        data.push(e.val().name);
+      });
+      
+      return data;
+    }
+    return [];
+  });
+  return res as string[];
 }
