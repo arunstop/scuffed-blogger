@@ -1,19 +1,20 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { UserModel } from "../../utils/data/models/UserModel";
-import { LOREM } from "../../utils/helpers/Constants";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
+import { fbTopicGetAll } from "../../utils/services/network/FirebaseApi/TopicModules";
 import { fbUserUpdate } from "../../utils/services/network/FirebaseApi/UserModules";
 import MainTextInput from "../input/MainTextInput";
 import GradientBackground from "../main/GradientBackground";
+import LoadingIndicator from "../placeholder/LoadingIndicator";
 import StatusPlaceholder, {
   StatusPlaceholderProps
 } from "../placeholder/StatusPlaceholder";
@@ -21,9 +22,9 @@ import StatusPlaceholder, {
 export interface SetupProfileFormFields {
   topics: string[];
 }
+// TODO: use real data fro rtdb
 
-const dummyTopics = LOREM.split(" ");
-function ProfileChooseTopic() {
+function ProfileChooseTopicsForm() {
   const {
     register,
     formState: { errors, isValid },
@@ -71,10 +72,26 @@ function ProfileChooseTopic() {
 
   const [search, setSearch] = useState("");
   // const [selectedTopics, setSearch] = useState("");
+  const [topics, setTopics] = useState<string[]>([]);
+  const [loadingTopics, setLoadingTopics] = useState(true);
 
-  const searchedList = dummyTopics.filter((e) =>
-    e.toLowerCase().includes(search.toLowerCase().trim()),
-  );
+  const getTopics = async () => {
+    // get topics from rtdb
+    const topicsFromDb = await fbTopicGetAll({keyword:""});
+    // set states
+    setLoadingTopics(false);
+    setTopics(topicsFromDb);
+  };
+
+  useEffect(() => {
+    getTopics();
+  }, []);
+
+  const searchedList = !topics
+    ? []
+    : topics.filter((e) =>
+        e.toLowerCase().includes(search.toLowerCase().trim()),
+      );
 
   const onSubmit: SubmitHandler<SetupProfileFormFields> = async (data) => {
     if (!hasLoaded) {
@@ -99,72 +116,71 @@ function ProfileChooseTopic() {
 
     if (!user) return alert("Not Logged in");
     await fbUserUpdate({
-        user: {
-          ...user,
-          profileCompletion: "COMPLETE",
-          list: { ...user.list!, topics: data.topics },
-        },
-        callback: async (resp) => {
-          console.log(resp);
-          scrollToTop(true);
-          await waitFor(1000);
+      user: {
+        ...user,
+        profileCompletion: "COMPLETE",
+        list: { ...user.list!, topics: data.topics },
+      },
+      callback: async (resp) => {
+        console.log(resp);
+        scrollToTop(true);
+        await waitFor(1000);
 
-          if (resp.status === "error") {
-            const progress = resp.data as FirebaseError;
-            // console.log(progress);
-            stopLoading();
-            setNetResp({
-              ...resp,
-              data: {
-                title: "Oops something happened.",
-                desc: progress.message,
-                status: "error",
-                actions: [
-                  {
-                    label: "Cancel",
-                    callback: () => {
-                      setLoading({ value: false, data: null });
-                    },
+        if (resp.status === "error") {
+          const progress = resp.data as FirebaseError;
+          // console.log(progress);
+          stopLoading();
+          setNetResp({
+            ...resp,
+            data: {
+              title: "Oops something happened.",
+              desc: progress.message,
+              status: "error",
+              actions: [
+                {
+                  label: "Cancel",
+                  callback: () => {
+                    setLoading({ value: false, data: null });
                   },
-                ],
-              },
-            });
-            // setError1(true);
-          }
-          if (resp.status === "success") {
-            // const progress = resp.data as UserModel;
-            // console.log(`Upload file successful : ${progress}`);
-            // setSuccess(true);
-            stopLoading();
-            setNetResp({
-              ...resp,
-              data: {
-                title: "Setup Complete!",
-                desc: "Congratulations! Your account is now completely set up! Redirecting you to the main page...",
-                status: "success",
-                actions: [
-                  {
-                    label: "Cancel",
-                    callback: () => {
-                      setLoading({ value: false, data: null });
-                    },
+                },
+              ],
+            },
+          });
+          // setError1(true);
+        }
+        if (resp.status === "success") {
+          // const progress = resp.data as UserModel;
+          // console.log(`Upload file successful : ${progress}`);
+          // setSuccess(true);
+          stopLoading();
+          setNetResp({
+            ...resp,
+            data: {
+              title: "Setup Complete!",
+              desc: "Congratulations! Your account is now completely set up! Redirecting you to the main page...",
+              status: "success",
+              actions: [
+                {
+                  label: "Cancel",
+                  callback: () => {
+                    setLoading({ value: false, data: null });
                   },
-                  {
-                    label: "Continue",
-                    callback: () => {
-                      router.push("/");
-                    },
+                },
+                {
+                  label: "Continue",
+                  callback: () => {
+                    router.push("/");
                   },
-                ],
-              },
-            });
-          }
-        },
-      })
-      .then((e) => {
-        resetForm();
-        authAct.setUser(e as UserModel);
-      });
+                },
+              ],
+            },
+          });
+        }
+      },
+    }).then((e) => {
+      resetForm();
+      authAct.setUser(e as UserModel);
+    });
   };
 
   return (
@@ -185,6 +201,7 @@ function ProfileChooseTopic() {
           Choose topics that you interested in
         </span>
         <div className="flex flex-col w-full relative">
+          {/* Status States*/}
           <div className="absolute flex flex-col w-full z-10">
             <Transition
               appear
@@ -237,32 +254,6 @@ function ProfileChooseTopic() {
                 />
               )}
             </Transition>
-
-            {/*<Transition
-              appear
-              show={success}
-              as={"div"}
-              className={"absolute inset-x-0"}
-              {...transitionPullV({
-                enter: " w-full",
-                entered: "",
-                leave: " w-full",
-              })}
-            >
-              <StatusPlaceholder
-                status="success"
-                title="Success"
-                desc={LOREM}
-                actions={[
-                  {
-                    label: "Cancel",
-                    callback: () => {
-                      setSuccess(false);
-                    },
-                  },
-                ]}
-              />
-            </Transition> */}
           </div>
 
           <Transition
@@ -318,43 +309,54 @@ function ProfileChooseTopic() {
                   </span>
                 )}
               </div>
+
               <div className="flex flex-wrap gap-1 sm:gap-2 content-start justify-center h-96 overflow-auto">
-                {!searchedList.length && (
-                  <span className="font-semibold text-xs sm:text-sm md:text-md">
-                    Cannot find any topics matched with{" "}
-                    <span className="font-black">`{search}`</span>
-                  </span>
-                )}
-                {searchedList.map((e, idx) => {
-                  return (
-                    <label key={idx}>
-                      <input
-                        type={"checkbox"}
-                        value={e}
-                        checked={selectedTopics.includes(e)}
-                        className="hidden peer"
-                        onChange={(ev) => {
-                          if (ev.target.checked)
-                            setValue("topics", [...selectedTopics, e]);
-                          else
-                            setValue("topics", [
-                              ...selectedTopics.filter((el) => el !== e),
-                            ]);
-                          trigger("topics");
-                        }}
-                      />
-                      <span
-                        className="btn btn-xs sm:btn-sm md:btn-md peer-checked:rounded-[var(--rounded-btn,0.5rem)] 
-                        bg-opacity-0 peer-checked:bg-opacity-100 btn-primary md:border-2 transition-all duration-300
-                        text-xs sm:text-sm md:text-md lg:text-lg capitalize 
-                        rounded-md sm:rounded-lg md:rounded-xl
-                        "
-                      >
-                        {e}
+                {/* Loading indicator */}
+                {loadingTopics ? (
+                  <div className={`w-full`}>
+                    <LoadingIndicator text={`Loading Topics`} spinner />
+                  </div>
+                ) : (
+                  <>
+                    {/* Not found */}
+                    {!searchedList.length && (
+                      <span className="font-semibold text-xs sm:text-sm md:text-md">
+                        Cannot find any topics matched with{" "}
+                        <span className="font-black">`{search}`</span>
                       </span>
-                    </label>
-                  );
-                })}
+                    )}
+                    {searchedList.map((e, idx) => {
+                      return (
+                        <label key={idx}>
+                          <input
+                            type={"checkbox"}
+                            value={e}
+                            checked={selectedTopics.includes(e)}
+                            className="hidden peer"
+                            onChange={(ev) => {
+                              if (ev.target.checked)
+                                setValue("topics", [...selectedTopics, e]);
+                              else
+                                setValue("topics", [
+                                  ...selectedTopics.filter((el) => el !== e),
+                                ]);
+                              trigger("topics");
+                            }}
+                          />
+                          <span
+                            className="btn btn-xs sm:btn-sm md:btn-md peer-checked:rounded-[var(--rounded-btn,0.5rem)] 
+                      bg-opacity-0 peer-checked:bg-opacity-100 btn-primary md:border-2 transition-all duration-300
+                      text-xs sm:text-sm md:text-md lg:text-lg capitalize 
+                      rounded-md sm:rounded-lg md:rounded-xl
+                      "
+                          >
+                            {e}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </>
+                )}
               </div>
               <form className="flex" onSubmit={handleSubmit(onSubmit)}>
                 <input
@@ -399,4 +401,4 @@ function ProfileChooseTopic() {
   );
 }
 
-export default ProfileChooseTopic;
+export default ProfileChooseTopicsForm;
