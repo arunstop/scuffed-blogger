@@ -21,7 +21,7 @@ import StatusPlaceholder, {
 export interface SetupProfileFormFields {
   topics: string[];
 }
-
+// TODO: use real data fro rtdb
 const dummyTopics = LOREM.split(" ");
 function ProfileChooseTopic() {
   const {
