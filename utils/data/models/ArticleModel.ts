@@ -73,7 +73,9 @@ export function toArticleModel(formData: WritingPanelFormProps): ArticleModel {
     title: formData.title,
     desc: formData.desc,
     content: encodeURIComponent(formData.content),
-    thumbnail: ``,
+    thumbnail: formData.thumbnail
+      ? URL.createObjectURL(formData.thumbnail[0])
+      : "",
     author: "Munkrey Alf",
     dateAdded: date,
     dateUpdated: date,

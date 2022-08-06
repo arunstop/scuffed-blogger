@@ -12,7 +12,7 @@ function WritingPanelForm({
   submit,
 }: {
   previewing: boolean;
-  submit: (data?:WritingPanelFormProps) => void;
+  submit: (data?: WritingPanelFormProps) => void;
 }) {
   const {
     state: { formData },
@@ -30,6 +30,7 @@ function WritingPanelForm({
     formState: { isValid, errors },
     resetField,
     reset,
+    setValue,
   } = useForm<WritingPanelFormProps>({
     mode: "onChange",
   });
@@ -47,18 +48,18 @@ function WritingPanelForm({
 
   // set the values of form formData (state) set with article draft
   useEffect(() => {
-    console.log("current form",getValues("thumbnail"));
-    if (formData)
-      {
-    console.log("ctx",formData.thumbnail);
+    // console.log("current form",getValues("thumbnail"));
+    if (formData) {
+      // console.log("ctx",formData.thumbnail);
 
-        reset({
-          ...formData,
-          content: decodeURIComponent(formData.content),
-        });
-
-      }
+      reset({
+        ...formData,
+        content: decodeURIComponent(formData.content),
+      });
+    }
   }, [formData]);
+
+  console.log(getValues());
 
   // set contexts formData before previewing
   useEffect(() => {
@@ -70,6 +71,7 @@ function WritingPanelForm({
 
   return (
     <div className="flex w-full flex-col gap-4 sm:gap-8">
+      {JSON.stringify(watch("thumbnail")?.[0]?.name)}
       <form
         className="flex w-full flex-col gap-4 sm:gap-8"
         onSubmit={handleSubmit(onSubmit)}
@@ -105,6 +107,7 @@ function WritingPanelForm({
               }
               `}
             >
+              {/* thumbnail */}
               <img
                 className={`h-full w-full cursor-pointer object-cover transition-transform duration-500 
                 group-hover:scale-125`}
@@ -115,7 +118,6 @@ function WritingPanelForm({
                 }
                 alt="thumbnail"
               />
-              {/* <p>{!!thumbnail}</p> */}
               {/* Overlays and icon */}
               <div
                 className="group pointer-events-none absolute inset-0 flex items-center justify-center 
@@ -189,10 +191,12 @@ function WritingPanelForm({
                 <button
                   className="--btn-resp btn btn-link text-base-content"
                   onClick={() => {
-                    resetField("thumbnail", {
-                      keepError: false,
-                      keepTouched: false,
-                    });
+                    // using normal `reset` instead of `resetField`
+                    // because after switching back from preview
+                    // `reset` doesn't work for some reason.
+                    reset({ thumbnail: undefined }, { keepValues: false });
+                    
+                    // resetField("thumbnail",{defaultValue:undefined});
                   }}
                   type="button"
                   tabIndex={-1}

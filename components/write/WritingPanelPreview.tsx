@@ -1,18 +1,15 @@
 import { Transition } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
-import MainMarkdownContainer from "../main/MainMarkdownContainer";
+import { toArticleModel } from "../../utils/data/models/ArticleModel";
+import ArticleContent from "../article/ArticleContent";
+// import MainMarkdownContainer from "../main/MainMarkdownContainer";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 
-function WritingPanelPreview({
-  content,
-  submit,
-}: {
-  content: string;
-  submit: () => void;
-}) {
+function WritingPanelPreview({ submit }: { submit: () => void }) {
   const [loaded, setLoaded] = useState(false);
   const {
+    state: { formData },
     action: { setTab },
   } = useWritingPanelCtx();
   useEffect(() => {
@@ -24,14 +21,13 @@ function WritingPanelPreview({
     };
   }, []);
   // check if content is not empty
-  const isContentValid = !!content;
 
   return (
     <div className="flex w-full flex-1 flex-row self-start">
-      {!isContentValid ? (
+      {!formData ? (
         <button
           className="--btn-resp btn btn-link text-base-content"
-          onClick={()=>setTab("Write")}
+          onClick={() => setTab("Write")}
         >
           There is no content to show, please add something.
         </button>
@@ -46,10 +42,8 @@ function WritingPanelPreview({
             enterFrom="opacity-50 scale-x-50"
             enterTo="opacity-100 scale-x-100"
           >
-            <MainMarkdownContainer
-              content={decodeURIComponent(content)}
-              // className="outline outline-2 outline-offset-[1rem] outline-base-content/10"
-            />
+            <ArticleContent article={toArticleModel(formData)} />
+
             <div className="flex w-full flex-row flex-wrap justify-end gap-2 sm:gap-4">
               <button
                 className="--btn-resp btn btn-primary"

@@ -15,14 +15,11 @@ function ArticleContent({ article }: { article: ArticleModel }) {
   return (
     <>
       <h1 className="text-3xl font-black sm:text-4xl">
-        {article?.title ||
-          `Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium
-        itaque odit sed? Quibusdam quis nemo tempora.`}
+        {article?.title || `Article's Title`}
       </h1>
       <h2 className="text-xl font-semibold sm:text-2xl">
         {article?.desc ||
-          `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
-        commodi? Suscipit illum maxime, repellat inventore et distinctio porro.`}
+          `Article's Description`}
       </h2>
       <div className="flex flex-col gap-2 sm:gap-4">
         <figure className="relative aspect-video w-full overflow-hidden rounded-xl">
@@ -39,14 +36,12 @@ function ArticleContent({ article }: { article: ArticleModel }) {
             height={240}
           />
         </figure>
-        <span className="text-center text-sm opacity-70 sm:text-base">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic tempora
-          alias omnis, excepturi beatae quasi aut debitis eveniet molestiae
-          architecto nobis.
-        </span>
+        {/* <span className="text-center text-sm opacity-70 sm:text-base">
+          {`Article's Content`}
+        </span> */}
       </div>
       <MainMarkdownContainer
-        content={decodeURIComponent(article?.content || "")}
+        content={decodeURIComponent(article?.content || "Article's Content")}
       />
     </>
   );
