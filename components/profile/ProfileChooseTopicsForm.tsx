@@ -6,17 +6,17 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { UserModel } from "../../utils/data/models/UserModel";
-import { LOREM } from "../../utils/helpers/Constants";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
+import { fbTopicGetAll } from "../../utils/services/network/FirebaseApi/TopicModules";
 import { fbUserUpdate } from "../../utils/services/network/FirebaseApi/UserModules";
 import MainTextInput from "../input/MainTextInput";
 import GradientBackground from "../main/GradientBackground";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import StatusPlaceholder, {
-  StatusPlaceholderProps,
+  StatusPlaceholderProps
 } from "../placeholder/StatusPlaceholder";
 
 export interface SetupProfileFormFields {
@@ -76,10 +76,11 @@ function ProfileChooseTopicsForm() {
   const [loadingTopics, setLoadingTopics] = useState(true);
 
   const getTopics = async () => {
-    const dummyTopics = LOREM.split(" ");
-    await waitFor(3000);
+    // get topics from rtdb
+    const topicsFromDb = await fbTopicGetAll({keyword:""});
+    // set states
     setLoadingTopics(false);
-    setTopics(dummyTopics);
+    setTopics(topicsFromDb);
   };
 
   useEffect(() => {
