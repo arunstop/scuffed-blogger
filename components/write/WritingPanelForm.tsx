@@ -71,7 +71,6 @@ function WritingPanelForm({
 
   return (
     <div className="flex w-full flex-col gap-4 sm:gap-8">
-      {JSON.stringify(watch("thumbnail")?.[0]?.name)}
       <form
         className="flex w-full flex-col gap-4 sm:gap-8"
         onSubmit={handleSubmit(onSubmit)}
@@ -195,7 +194,7 @@ function WritingPanelForm({
                     // because after switching back from preview
                     // `reset` doesn't work for some reason.
                     reset({ thumbnail: undefined }, { keepValues: false });
-                    
+
                     // resetField("thumbnail",{defaultValue:undefined});
                   }}
                   type="button"
