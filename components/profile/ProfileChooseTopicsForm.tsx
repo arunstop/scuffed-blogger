@@ -12,7 +12,7 @@ import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { fbTopicGetAll } from "../../utils/services/network/FirebaseApi/TopicModules";
 import { fbUserUpdate } from "../../utils/services/network/FirebaseApi/UserModules";
-import MainTextInput from "../input/MainTextInput";
+import InputText from "../input/InputText";
 import GradientBackground from "../main/GradientBackground";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import StatusPlaceholder, {
@@ -289,7 +289,7 @@ function ProfileChooseTopicsForm() {
                 </span>
               </div>
               <div className="flex gap-2 sm:gap-4 items-center">
-                <MainTextInput
+                <InputText
                   type="text"
                   placeholder="Technology..."
                   icon={<MdSearch />}

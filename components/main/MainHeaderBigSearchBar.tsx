@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import { SEARCH_SUGGESTIONS_DUMMY } from "../../utils/helpers/Constants";
-import MainTextInput from "../input/MainTextInput";
+import InputText from "../input/InputText";
 import MainSearchSuggestionItem from "./MainSearchSuggestionItem";
 import MainSectionSkeleton from "./MainSectionSkeleton";
 
@@ -86,7 +86,7 @@ function MainHeaderBigSearchBar() {
     >
       <div className="form-control">
         <div className="relative flex flex-col items-center gap-2 sm:gap-4">
-          <MainTextInput
+          <InputText
             id="main-header-big-search-bar"
             value={search}
             onChange={onChange}

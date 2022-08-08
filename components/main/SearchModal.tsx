@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import { ModalProps } from "../../utils/data/Main";
 import { SEARCH_SUGGESTIONS_DUMMY } from "../../utils/helpers/Constants";
-import MainTextInput from "../input/MainTextInput";
+import InputText from "../input/InputText";
 import MainSearchSuggestionItem from "./MainSearchSuggestionItem";
 import MainSectionSkeleton from "./MainSectionSkeleton";
 import ModalTemplate from "../modal/ModalTemplate";
@@ -33,7 +33,7 @@ const SearchModal = React.memo(function SearchModal(props: ModalProps) {
       <div className="flex flex-col gap-2 sm:gap-4">
         <div className="form-control">
           <div className="inline-flex items-center gap-2 sm:gap-4">
-            <MainTextInput
+            <InputText
               value={search}
               onChange={onChange}
               placeholder="Search articles..."

@@ -1,13 +1,13 @@
 import React from "react";
 import { MdEmail } from "react-icons/md";
 import { APP_NAME } from "../../utils/helpers/Constants";
-import MainTextInput from "../input/MainTextInput";
+import InputText from "../input/InputText";
 import { AuthFormProps } from "./AuthPanel";
 
 function AuthResetPwForm({ changeForm }: AuthFormProps) {
   return (
     <>
-      <MainTextInput type="email" placeholder="Email..." icon={<MdEmail />} />
+      <InputText type="email" placeholder="Email..." icon={<MdEmail />} />
      
 
       <button className="btn --btn-resp btn-primary text-lg font-bold sm:text-xl">

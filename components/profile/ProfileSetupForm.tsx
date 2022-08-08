@@ -18,8 +18,8 @@ import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { fbUserUpdate } from "../../utils/services/network/FirebaseApi/UserModules";
-import MainTextAreaInput from "../input/MainTextAreaInput";
-import MainTextInput from "../input/MainTextInput";
+import InputTextArea from "../input/InputTextArea";
+import InputText from "../input/InputText";
 import GradientBackground from "../main/GradientBackground";
 import StatusPlaceholder, {
   StatusPlaceholderProps
@@ -394,7 +394,7 @@ function ProfileSetupForm() {
                     </span>
                   ))}
               </div>
-              <MainTextInput
+              <InputText
                 type="text"
                 placeholder="amazing_username123"
                 icon={<MdAlternateEmail />}
@@ -425,7 +425,7 @@ function ProfileSetupForm() {
                 errorMsg={errors.username?.message}
               />
 
-              <MainTextInput
+              <InputText
                 type="text"
                 placeholder="Describe what you do in tuturku..."
                 icon={<MdPerson />}
@@ -446,7 +446,7 @@ function ProfileSetupForm() {
                 error={!!errors.bio}
                 errorMsg={errors.bio?.message}
               />
-              <MainTextInput
+              <InputText
                 type="text"
                 placeholder="Describe as a reader or author or overall..."
                 icon={<MdNotes />}
@@ -462,7 +462,7 @@ function ProfileSetupForm() {
                 errorMsg={errors.desc?.message}
               />
 
-              <MainTextAreaInput className="min-h-[24rem] indent-8" />
+              <InputTextArea className="min-h-[24rem] indent-8" />
 
               <button className="--btn-resp btn btn-primary text-lg font-bold sm:text-xl">
                 Continue

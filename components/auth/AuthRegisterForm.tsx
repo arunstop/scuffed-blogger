@@ -12,7 +12,7 @@ import { MainNetworkResponse } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { fbUserAuthRegister } from "../../utils/services/network/FirebaseApi/UserModules";
-import MainTextInput from "../input/MainTextInput";
+import InputText from "../input/InputText";
 import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";
 
@@ -177,7 +177,7 @@ function AuthRegisterForm({
       className="form-control  gap-2 sm:gap-4"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <MainTextInput
+      <InputText
         type="text"
         placeholder="Name"
         icon={<MdFormatColorText />}
@@ -202,7 +202,7 @@ function AuthRegisterForm({
         errorMsg={errors.name?.message}
       />
 
-      <MainTextInput
+      <InputText
         type="email"
         placeholder="Email"
         icon={<MdEmail />}
@@ -217,7 +217,7 @@ function AuthRegisterForm({
         error={!!errors.email}
         errorMsg={errors.email?.message}
       />
-      <MainTextInput
+      <InputText
         type="password"
         placeholder="••••••••"
         icon={<MdOutlineVpnKey />}
@@ -232,7 +232,7 @@ function AuthRegisterForm({
         error={!!errors.password}
         errorMsg={errors.password?.message}
       />
-      <MainTextInput
+      <InputText
         type="password"
         placeholder="••••••••"
         icon={<MdVpnKey />}

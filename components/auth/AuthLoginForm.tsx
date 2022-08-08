@@ -8,7 +8,7 @@ import { UserModel } from "../../utils/data/models/UserModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { fbUserAuthLogin } from "../../utils/services/network/FirebaseApi/UserModules";
-import MainTextInput from "../input/MainTextInput";
+import InputText from "../input/InputText";
 import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";
 
@@ -175,7 +175,7 @@ function AuthRegisterForm({
       className="form-control  gap-2 sm:gap-4"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <MainTextInput
+      <InputText
         type="email"
         placeholder="example@gmail.com"
         icon={<MdEmail />}
@@ -190,7 +190,7 @@ function AuthRegisterForm({
         error={!!errors.email}
         errorMsg={errors.email?.message}
       />
-      <MainTextInput
+      <InputText
         type="password"
         placeholder="••••••••"
         icon={<MdVpnKey />}

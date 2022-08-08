@@ -4,8 +4,8 @@ import { MdAdd, MdEdit } from "react-icons/md";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
 import { WritingPanelFormProps } from "../../utils/data/contexts/WritingPanelTypes";
 // import { RegisterFormFields } from "../auth/AuthRegisterForm";
-import MainTextAreaInput from "../input/MainTextAreaInput";
-import MainTextInput from "../input/MainTextInput";
+import InputTextArea from "../input/InputTextArea";
+import InputText from "../input/InputText";
 
 function WritingPanelForm({
   previewing,
@@ -75,7 +75,7 @@ function WritingPanelForm({
         className="flex w-full flex-col gap-4 sm:gap-8"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <MainTextInput
+        <InputText
           scaleTo="md"
           placeholder="Title..."
           // onChange={(ev) => editTitle(ev.target.value)}
@@ -219,7 +219,7 @@ function WritingPanelForm({
           </div>
         </div>
 
-        <MainTextAreaInput
+        <InputTextArea
           placeholder="This article talks about something interesting..."
           className="!h-32 max-h-32"
           label="Description"
@@ -235,7 +235,7 @@ function WritingPanelForm({
         />
 
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
-          <MainTextInput
+          <InputText
             scaleTo="md"
             // value={title || ""}
             placeholder="Food and Beverages"
@@ -251,7 +251,7 @@ function WritingPanelForm({
             error={!!errors.topics}
             errorMsg={errors.topics?.message || ""}
           />
-          <MainTextInput
+          <InputText
             scaleTo="md"
             // value={title || ""}
             placeholder="Japanese Food, Dessert"
@@ -269,7 +269,7 @@ function WritingPanelForm({
           />
         </div>
 
-        <MainTextAreaInput
+        <InputTextArea
           className="min-h-[36rem] resize-none"
           placeholder="Write the article's content"
           label="Content"
