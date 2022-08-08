@@ -1,18 +1,18 @@
 import React from "react";
 import {
-  ActionModalAction,
-  ActionModalActionConfirmation,
-} from "./ActionModalTemplate";
+  ModalActionAction,
+  ModalActionConfirmation,
+} from "./ModalActionTemplate";
 
-function ActionModalActionItem({
+function ModalActionItem({
   label,
   confirmation,
   icon,
   action,
   openConfirmation,
-}: ActionModalAction & {
+}: ModalActionAction & {
   action?: () => void;
-  openConfirmation: (confirmation: ActionModalActionConfirmation) => void;
+  openConfirmation: (confirmation: ModalActionConfirmation) => void;
 }) {
   return (
     <li
@@ -29,4 +29,4 @@ function ActionModalActionItem({
   );
 }
 
-export default ActionModalActionItem;
+export default ModalActionItem;

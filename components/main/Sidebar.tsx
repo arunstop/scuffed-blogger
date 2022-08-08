@@ -15,7 +15,7 @@ import {
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
-import ModalDialog from "../modal/ModalDialog";
+import ModalConfirmation from "../modal/ModalConfirmation";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 
 function Sidebar() {
@@ -193,7 +193,7 @@ function Sidebar() {
           </div>
         </div>
       </div>
-      <ModalDialog
+      <ModalConfirmation
         value={dialogLogout}
         onClose={() => setDialogLogout(false)}
         title={"Logout"}

@@ -1,12 +1,12 @@
 import React from "react";
 import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import { MdDelete, MdFlag, MdPersonOff, MdReport } from "react-icons/md";
-import { MainModalProps } from "../../utils/data/Main";
-import ActionModalTemplate, {
-  ActionModalAction
-} from "../main/ActionModalTemplate";
+import { ModalProps } from "../../utils/data/Main";
+import ModalActionTemplate, {
+  ModalActionAction
+} from "../modal/ModalActionTemplate";
 
-const options: ActionModalAction[] = [
+const options: ModalActionAction[] = [
   { icon: <MdReport />, label: "Report comment", action: () => {} },
   { icon: <MdDelete />, label: "Delete comment", action: () => {} },
   { icon: <FaVolumeMute />, label: "Mute user", action: () => {} },
@@ -15,15 +15,15 @@ const options: ActionModalAction[] = [
   { icon: <MdFlag />, label: "Report user", action: () => {} },
 ];
 
-function ArticleCommentOptionModal({ value, onClose }: MainModalProps) {
+function ArticleCommentOptionModal({ value, onClose }: ModalProps) {
   return (
-    <ActionModalTemplate
+    <ModalActionTemplate
       value={value}
       onClose={onClose}
       title="Options"
       desc="Action cannot be undone, choose wisely"
       actions={options}
-    >x</ActionModalTemplate>
+    >x</ModalActionTemplate>
   );
 }
 

@@ -1,22 +1,22 @@
 import React from "react";
-import { MainModalProps } from "../../utils/data/Main";
-import ModalTemplate from "../main/ModalTemplate";
+import { ModalProps } from "../../utils/data/Main";
+import ModalTemplate from "./ModalTemplate";
 
-interface ModalDialogProps {
+interface ModalConfirmationProps {
   title: string;
   desc: string;
   actionY?: () => void;
   actionN?: () => void;
 }
 
-function ModalDialog({
+function ModalConfirmation({
   value,
   onClose,
   title,
   desc,
   actionN = () => {},
   actionY = () => {},
-}: MainModalProps & ModalDialogProps) {
+}: ModalProps & ModalConfirmationProps) {
   return (
     <ModalTemplate value={value} onClose={onClose} title={title}>
       <div className="flex flex-col gap-4 sm:gap-6">
@@ -42,4 +42,4 @@ function ModalDialog({
   );
 }
 
-export default ModalDialog;
+export default ModalConfirmation;

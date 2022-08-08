@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { MainModalProps } from "../../utils/data/Main";
-import ModalTemplate from "../main/ModalTemplate";
+import { ModalProps } from "../../utils/data/Main";
+import ModalTemplate from "../modal/ModalTemplate";
 
 const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
   value,
   onClose,
-}: MainModalProps) {
+}: ModalProps) {
   const [reply, setReply] = useState("");
 
   // const { uiStt, uiAct } = useUiCtx();

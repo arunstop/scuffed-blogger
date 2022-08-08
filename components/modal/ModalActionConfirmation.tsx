@@ -1,13 +1,15 @@
 import { Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
-import { MainModalProps } from "../../utils/data/Main";
-import { ActionModalActionConfirmation } from "./ActionModalTemplate";
+import { ModalProps } from "../../utils/data/Main";
+import { ModalActionConfirmation } from "./ModalActionTemplate";
 
-function ConfirmationModalTemplate({
+
+
+function ModalActionConfirmation({
   value,
   onClose,
   confirmation,
-}: MainModalProps & { confirmation?: ActionModalActionConfirmation }) {
+}: ModalProps & { confirmation?: ModalActionConfirmation }) {
   
   return (
     <Transition
@@ -73,4 +75,4 @@ function ConfirmationModalTemplate({
   );
 }
 
-export default React.memo(ConfirmationModalTemplate);
+export default React.memo(ModalActionConfirmation);

@@ -1,12 +1,12 @@
 import React from "react";
-import { ActionModalActionConfirmation } from "./ActionModalTemplate";
+import { ModalActionConfirmation } from "./ModalActionTemplate";
 
-function ActionModalConfirmationItem({
+function ModalActionConfirmationItem({
   desc,
   title,
   action,
   value,
-}: ActionModalActionConfirmation & { action?: () => void; value: boolean }) {
+}: ModalActionConfirmation & { action?: () => void; value: boolean }) {
   return (
     // <Transition
     //   as={Fragment}
@@ -53,4 +53,4 @@ function ActionModalConfirmationItem({
   );
 }
 
-export default ActionModalConfirmationItem;
+export default ModalActionConfirmationItem;

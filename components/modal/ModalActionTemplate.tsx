@@ -1,33 +1,33 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, ReactNode } from "react";
-import { MainModalProps } from "../../utils/data/Main";
+import { Fragment, ReactNode } from "react";
+import { ModalProps } from "../../utils/data/Main";
 import useOptionModalConfirmationHook from "../../utils/hooks/PostOptionConfirmationModalBehaviorHook";
-import ActionModalActionSection from "./ActionModalActionSection";
-import ConfirmationModalTemplate from "./ConfirmationModalTemplate";
-import GradientBackground from "./GradientBackground";
+import GradientBackground from "../main/GradientBackground";
+import ModalActionItem from "./ModalActionItem";
+import ModalActionConfirmation from "./ModalActionConfirmation";
 
-export interface ActionModalActionConfirmation {
+export interface ModalActionConfirmation {
   title: string;
   desc: string;
 }
 
 // If action has confirmation
 // a confirmation alert will show up
-export interface ActionModalAction {
+export interface ModalActionAction {
   icon?: ReactNode;
   label: string;
-  confirmation?: ActionModalActionConfirmation;
+  confirmation?: ModalActionConfirmation;
   action?: () => void;
 }
 
-interface ActionModalTemplateProps {
+interface MainActionModalTemplateProps {
   title: string;
   children?: ReactNode;
   fullscreen?: boolean;
   desc?: string;
 }
 
-const ActionModalTemplate = ({
+const ModalActionTemplate = ({
   value,
   onClose,
   title,
@@ -35,8 +35,8 @@ const ActionModalTemplate = ({
   children,
   fullscreen = false,
   actions = [],
-}: MainModalProps &
-  ActionModalTemplateProps & { actions: ActionModalAction[] }) => {
+}: ModalProps &
+  MainActionModalTemplateProps & { actions: ModalActionAction[] }) => {
   const confirmation = useOptionModalConfirmationHook();
 
   function closeModal() {
@@ -123,12 +123,17 @@ const ActionModalTemplate = ({
                 </Dialog.Title>
 
                 {/* Action section */}
-                <ActionModalActionSection
-                  actions={actions}
-                  openConfirmation={confirmation.open}
-                />
+                <>
+                  {actions.map((e, idx) => (
+                    <ModalActionItem
+                      key={idx}
+                      openConfirmation={confirmation.open}
+                      {...e}
+                    />
+                  ))}
+                </>
                 {/* Confirmation dialog */}
-                <ConfirmationModalTemplate
+                <ModalActionConfirmation
                   value={confirmation.show}
                   onClose={() => confirmation.close()}
                   confirmation={confirmation.data}
@@ -163,4 +168,4 @@ const ActionModalTemplate = ({
   );
 };
 
-export default ActionModalTemplate;
+export default ModalActionTemplate;

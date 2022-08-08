@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { MdSearch } from "react-icons/md";
-import { MainModalProps } from "../../utils/data/Main";
+import { ModalProps } from "../../utils/data/Main";
 import { SEARCH_SUGGESTIONS_DUMMY } from "../../utils/helpers/Constants";
 import MainTextInput from "../input/MainTextInput";
 import MainSearchSuggestionItem from "./MainSearchSuggestionItem";
 import MainSectionSkeleton from "./MainSectionSkeleton";
-import ModalTemplate from "./ModalTemplate";
+import ModalTemplate from "../modal/ModalTemplate";
 
-const SearchModal = React.memo(function SearchModal(props: MainModalProps) {
+const SearchModal = React.memo(function SearchModal(props: ModalProps) {
   // const router = useRouter();
   const [search, setSearch] = useState("");
   const clear = useCallback(() => {
