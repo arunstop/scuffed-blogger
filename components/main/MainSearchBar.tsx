@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { MdSearch } from "react-icons/md";
-import MainTextInput from "../input/MainTextInput";
+import InputText from "../input/InputText";
 
 const MainSearchBar = React.memo(function MainSearchBar() {
   // function MainSearchBar() {
@@ -18,7 +18,7 @@ const MainSearchBar = React.memo(function MainSearchBar() {
     <>
       <div className="form-control">
         <div className="inline-flex gap-2 sm:gap-4 items-center">
-          <MainTextInput
+          <InputText
             value={search}
             onChange={onChange}
             placeholder="Search articles..."

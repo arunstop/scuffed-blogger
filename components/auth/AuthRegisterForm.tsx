@@ -5,10 +5,10 @@ import {
   MdEmail,
   MdFormatColorText,
   MdOutlineVpnKey,
-  MdVpnKey
+  MdVpnKey,
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { MainNetworkResponse } from "../../utils/data/Main";
+import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { fbUserAuthRegister } from "../../utils/services/network/FirebaseApi/UserModules";
@@ -46,14 +46,14 @@ function AuthRegisterForm({
 
   const { authAct } = useAuthCtx();
 
-  function actionLoading(title = "", desc = "") {
+  function actionLoading(resp: MainNetworkResponse<string | null>) {
+    if (!resp.data) return;
     setAction({
-      newLoading: true,
+      newLoading: false,
+      newNetResp: resp,
       newPlaceHolder: {
-        title: title || "Processing your registration",
-        desc:
-          desc ||
-          "Hold up for a moment, we are registering your information into our database, checking things left right and center as usual, you know the drill",
+        title: resp.message,
+        desc: resp.data,
         status: "loading",
         actions: [
           {
@@ -142,34 +142,40 @@ function AuthRegisterForm({
   // console.log(watch("email"));
 
   const onSubmit: SubmitHandler<RegisterFormFields> = async (data) => {
-    actionLoading();
+    actionLoading(
+      netLoading(
+        "Processing your registration",
+        "Hold up for a moment, we are registering your information into our database, checking things left right and center as usual, you know the drill",
+      ),
+    );
     await waitFor(2000);
     await fbUserAuthRegister({
-        fields: { ...data, email: data.email.toLowerCase() },
-        callback: async (resp) => {
-          // if loading
-          if (resp.status === "loading") {
-            // cancelActions(true);
-            return actionLoading(
+      fields: { ...data, email: data.email.toLowerCase() },
+      callback: async (resp) => {
+        // if loading
+        if (resp.status === "loading") {
+          // cancelActions(true);
+          return actionLoading(
+            netLoading(
               "Adding your information into our database",
               "We have just authenticated you into our system. Now wait for a moment as we adding your complete information into our database.",
-            );
-          }
-          // wait for a bit if it is not loading
-          else await waitFor(2000);
-          // if error
-          if (resp.status === "error")
-            return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
-              onSubmit(data), 
-            );
-          // if success
-          if (resp.status === "success")
-            return actionSuccess(resp as MainNetworkResponse<UserModel>);
-        },
-      })
-      .then((e) => {
-        authAct.setUser(e as UserModel);
-      });
+            ),
+          );
+        }
+        // wait for a bit if it is not loading
+        // else await waitFor(2000);
+        // if error
+        if (resp.status === "error")
+          return actionError(resp as MainNetworkResponse<FirebaseError>, () =>
+            onSubmit(data),
+          );
+        // if success
+        if (resp.status === "success")
+          return actionSuccess(resp as MainNetworkResponse<UserModel>);
+      },
+    }).then((e) => {
+      authAct.setUser(e as UserModel);
+    });
   };
 
   return (

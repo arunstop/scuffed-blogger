@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEmail, MdVpnKey } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { MainNetworkResponse } from "../../utils/data/Main";
+import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
 import { UserModel } from "../../utils/data/models/UserModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
@@ -34,14 +34,13 @@ function AuthRegisterForm({
 
   const { authAct } = useAuthCtx();
 
-  function actionLoading(title = "", desc = "") {
+  function actionLoading(resp: MainNetworkResponse<string | null>) {
     setAction({
-      newLoading: true,
+      newLoading: false,
+      newNetResp: resp,
       newPlaceHolder: {
-        title: title || "Processing your authentication...",
-        desc:
-          desc ||
-          `Hold up a little bit, we are checking whether your credential matched any data in our database. This will be quick.`,
+        title: resp.message,
+        desc: resp.data || "",
         status: "loading",
         actions: [
           {
@@ -50,7 +49,6 @@ function AuthRegisterForm({
           },
         ],
       },
-      // newNetResp:netCreateLoadingResponse(""),
     });
   }
 
@@ -141,7 +139,12 @@ function AuthRegisterForm({
   // console.log(watch("email"));
 
   const onSubmit: SubmitHandler<LoginFields> = async (data) => {
-    actionLoading();
+    actionLoading(
+      netLoading(
+        "Processing your authentication...",
+        "Hold up a little bit, we are checking whether your credential matched any data in our database. This will be quick.",
+      ),
+    );
     await fbUserAuthLogin({
       fields: data,
       callback: async (resp) => {
@@ -149,8 +152,10 @@ function AuthRegisterForm({
         if (resp.status === "loading") {
           // cancelActions(true);
           return actionLoading(
-            "Retrieving your data from our database",
-            "The credential you entered matched a record in our database. Hold up for a bit ase we are retrieving the data for you.",
+            netLoading(
+              "Retrieving your data from our database",
+              "The credential you entered matched a record in our database. Hold up for a bit ase we are retrieving the data for you.",
+            ),
           );
         }
         await waitFor(1000);
