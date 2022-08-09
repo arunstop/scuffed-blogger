@@ -1,8 +1,8 @@
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, ReactNode } from "react";
 import { FaTimes } from "react-icons/fa";
-import { MainModalProps } from "../../utils/data/Main";
-import GradientBackground from "./GradientBackground";
+import { ModalProps } from "../../utils/data/Main";
+import GradientBackground from "../main/GradientBackground";
 
 interface ModalTemplateProps {
   title: string;
@@ -22,7 +22,7 @@ const ModalTemplate = ({
   noHeader = false,
   noCloseButton = false,
   // closeBtnText,
-}: MainModalProps & ModalTemplateProps) => {
+}: ModalProps & ModalTemplateProps) => {
   return (
     <Transition appear show={value} as={Fragment}>
       <Dialog

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Comment } from "../../utils/data/comment";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
-import MainTextAreaInput from "../input/MainTextAreaInput";
+import InputTextArea from "../input/InputTextArea";
 import ArticleComments from "./ArticleComments";
 
 const egComments: Comment[] = [
@@ -33,7 +33,7 @@ function ArticleCommentSection({ article }: { article: ArticleModel }) {
           </div>
         </div>
         <div className="form-control flex-1 rounded-xl gap-4">
-          <MainTextAreaInput
+          <InputTextArea
             value={comment}
             className="min-h-[12rem]"
             placeholder="Add a comment..."

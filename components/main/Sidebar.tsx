@@ -1,12 +1,21 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
-  MdDarkMode, MdLightMode,
-  MdLogout, MdArticle, MdBookmark, MdEdit, MdFactCheck, MdPlaylistAddCheck, MdWatchLater, MdPerson
+  MdArticle,
+  MdBookmark,
+  MdDarkMode,
+  MdEdit,
+  MdFactCheck,
+  MdLightMode,
+  MdLogout,
+  MdPerson,
+  MdPlaylistAddCheck,
+  MdWatchLater,
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
+import ModalConfirmation from "../modal/ModalConfirmation";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 
 function Sidebar() {
@@ -44,7 +53,7 @@ function Sidebar() {
     {
       title: "Choose topics",
       icon: <MdPlaylistAddCheck />,
-      link: `/profile/choosetopic`,
+      link: `/profile/choosetopics`,
       action: () => {
         closeDrawer();
       },
@@ -101,9 +110,7 @@ function Sidebar() {
       title: "Logout",
       icon: <MdLogout />,
       action: async () => {
-        closeDrawer();
-        await waitFor(1000);
-        authAct.unsetUser();
+        setDialogLogout(true);
       },
       show: true,
     },
@@ -112,14 +119,13 @@ function Sidebar() {
   const shownMenus = allMenus.filter((e) => e.show);
 
   const [drawer, setDrawer] = useState(false);
+  const [dialogLogout, setDialogLogout] = useState(false);
 
   function closeDrawer() {
     // blur out everything
     (document.activeElement as HTMLElement).blur();
     setDrawer(false);
   }
-
-  console.log("test");
 
   function handleKeyPress(ev: KeyboardEvent) {
     console.log(ev.key);
@@ -140,49 +146,69 @@ function Sidebar() {
   }, [drawer]);
 
   return (
-    <div className="fixed inset-0 drawer drawer-end z-10 pointer-events-none">
-      <input
-        id="main-drawer"
-        type="checkbox"
-        className="drawer-toggle"
-        checked={drawer}
-        onChange={(e) => {
-          setDrawer(e.target.checked);
-        }}
-      />
-      {/* USELESS CONTENT */}
-      {/* <div className="drawer-content"></div> */}
-      <div className="drawer-side overflow-hidden">
-        {/* OVERLAY */}
-        <label
-          htmlFor="main-drawer"
-          className="drawer-overlay pointer-events-auto !cursor-default backdrop-blur-sm !bg-black/60"
+    <>
+      <div className="fixed inset-0 drawer drawer-end z-10 pointer-events-none">
+        <input
+          id="main-drawer"
+          type="checkbox"
+          className="drawer-toggle"
+          checked={drawer}
+          onChange={(e) => {
+            setDrawer(e.target.checked);
+          }}
         />
-        <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 overflow-y-auto w-80 bg-base-100 pointer-events-auto">
-          <div className="flex flex-col gap-2 sm:gap-4 items-center">
-            <div
-              className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
+        {/* USELESS CONTENT */}
+        {/* <div className="drawer-content"></div> */}
+        <div className="drawer-side overflow-hidden">
+          {/* OVERLAY */}
+          <label
+            htmlFor="main-drawer"
+            className="drawer-overlay pointer-events-auto !cursor-default backdrop-blur-sm !bg-black/60"
+          />
+          <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 overflow-y-auto w-80 bg-base-100 pointer-events-auto">
+            <div className="flex flex-col gap-2 sm:gap-4 items-center">
+              <div
+                className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
               h-12 w-12 sm:h-20 sm:w-20 "
-            >
-              <img src={user?.avatar} className="h-full w-full object-cover" />
+              >
+                <img
+                  src={user?.avatar}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <p className="text-center">
+                <span className="line-clamp-2 font-bold text-md sm:text-lg md:text-xl">
+                  {user?.name}
+                </span>
+                <span className="font-bold text-sm sm:text-md md:text-lg text-base-content text-opacity-50">
+                  {`@${user?.username}`}
+                </span>
+              </p>
             </div>
-            <p className="text-center">
-              <span className="line-clamp-2 font-bold text-md sm:text-lg md:text-xl">
-                {user?.name}
-              </span>
-              <span className="font-bold text-sm sm:text-md md:text-lg text-base-content text-opacity-50">
-                {`@${user?.username}`}
-              </span>
-            </p>
+            <ul className="menu">
+              {shownMenus.map((e, idx) => (
+                <MainMenuItem key={idx} {...e} />
+              ))}
+            </ul>
           </div>
-          <ul className="menu">
-            {shownMenus.map((e, idx) => (
-              <MainMenuItem key={idx} {...e} />
-            ))}
-          </ul>
         </div>
       </div>
-    </div>
+      <ModalConfirmation
+        value={dialogLogout}
+        onClose={() => setDialogLogout(false)}
+        title={"Logout"}
+        desc={`Are you sure you want to end this authentication session?`}
+        actionN={() => {
+          setDialogLogout(false);
+        }}
+        actionY={async () => {
+          setDialogLogout(false);
+          closeDrawer();
+          await waitFor(1000);
+          authAct.unsetUser();
+        }}
+      />
+    </>
   );
 }
 

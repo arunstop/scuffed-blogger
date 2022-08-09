@@ -4,6 +4,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdWorkspaces } from "react-icons/md";
 import { NetworkResponseStatus } from "../../utils/data/Main";
+import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 
 // INTERFACES
 export interface StatusPlaceholderAction {
@@ -54,14 +55,27 @@ const StatusPlaceholder = React.forwardRef<
   React.PropsWithChildren<StatusPlaceholderProps>
 >(({ title, desc, status, actions }, ref) => {
   const style = getStyle(status);
+  const newKey = title;
   return (
-    <Transition appear show>
+    <Transition
+      appear
+      show
+      as={"div"}
+      className={"transition-all duration-500"}
+      key={newKey}
+      {...transitionPullV({
+        enter: "absolute inset-x-0 w-full",
+        entered: "absolute inset-x-0",
+        leave: "absolute inset-x-0 w-full",
+      })}
+    >
       <div
         ref={ref}
-        className={`mx-auto my-4 flex min-w-[50%] flex-col 
+        className={`mx-auto my-4 flex min-w-[50%] flex-col w-full 
       items-center justify-center gap-2 rounded-[10%] bg-gradient-to-r
-      from-transparent ${style.gradientVia} ${style.gradientViaDark} to-transparent py-2 px-4 pb-4 text-center  sm:my-8 sm:max-w-2xl
-      sm:gap-4 sm:py-4 sm:px-8`}
+      from-transparent ${style.gradientVia} ${style.gradientViaDark} 
+      to-transparent py-2 px-4 pb-4 text-center  sm:my-8 sm:max-w-2xl
+      sm:gap-4 sm:py-4 sm:px-8 `}
       >
         <Transition.Child
           enter="transform transition duration-1000"
@@ -92,7 +106,10 @@ const StatusPlaceholder = React.forwardRef<
           </span>
         </p>
         {actions && actions.length && (
-          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4">
+          <div
+            key={newKey}
+            className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4"
+          >
             {actions.map((e, idx) => (
               <Transition.Child
                 key={idx}
@@ -101,7 +118,7 @@ const StatusPlaceholder = React.forwardRef<
                 enterTo="opacity-100 scale-100"
                 style={{ transitionDelay: `${idx * 200 + 500}ms` }}
               >
-                <button className=" --btn-resp btn" onClick={e.callback}>
+                <button className=" --btn-resp btn !min-w-[6rem]" onClick={e.callback}>
                   {e.label}
                 </button>
               </Transition.Child>

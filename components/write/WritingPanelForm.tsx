@@ -4,8 +4,8 @@ import { MdAdd, MdEdit } from "react-icons/md";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
 import { WritingPanelFormProps } from "../../utils/data/contexts/WritingPanelTypes";
 // import { RegisterFormFields } from "../auth/AuthRegisterForm";
-import MainTextAreaInput from "../input/MainTextAreaInput";
-import MainTextInput from "../input/MainTextInput";
+import InputTextArea from "../input/InputTextArea";
+import InputText from "../input/InputText";
 
 function WritingPanelForm({
   previewing,
@@ -59,8 +59,6 @@ function WritingPanelForm({
     }
   }, [formData]);
 
-  console.log(getValues());
-
   // set contexts formData before previewing
   useEffect(() => {
     // set state if previewing
@@ -71,12 +69,11 @@ function WritingPanelForm({
 
   return (
     <div className="flex w-full flex-col gap-4 sm:gap-8">
-      {JSON.stringify(watch("thumbnail")?.[0]?.name)}
       <form
         className="flex w-full flex-col gap-4 sm:gap-8"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <MainTextInput
+        <InputText
           scaleTo="md"
           placeholder="Title..."
           // onChange={(ev) => editTitle(ev.target.value)}
@@ -195,7 +192,7 @@ function WritingPanelForm({
                     // because after switching back from preview
                     // `reset` doesn't work for some reason.
                     reset({ thumbnail: undefined }, { keepValues: false });
-                    
+
                     // resetField("thumbnail",{defaultValue:undefined});
                   }}
                   type="button"
@@ -220,7 +217,7 @@ function WritingPanelForm({
           </div>
         </div>
 
-        <MainTextAreaInput
+        <InputTextArea
           placeholder="This article talks about something interesting..."
           className="!h-32 max-h-32"
           label="Description"
@@ -236,7 +233,7 @@ function WritingPanelForm({
         />
 
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
-          <MainTextInput
+          <InputText
             scaleTo="md"
             // value={title || ""}
             placeholder="Food and Beverages"
@@ -252,7 +249,7 @@ function WritingPanelForm({
             error={!!errors.topics}
             errorMsg={errors.topics?.message || ""}
           />
-          <MainTextInput
+          <InputText
             scaleTo="md"
             // value={title || ""}
             placeholder="Japanese Food, Dessert"
@@ -270,7 +267,7 @@ function WritingPanelForm({
           />
         </div>
 
-        <MainTextAreaInput
+        <InputTextArea
           className="min-h-[36rem] resize-none"
           placeholder="Write the article's content"
           label="Content"

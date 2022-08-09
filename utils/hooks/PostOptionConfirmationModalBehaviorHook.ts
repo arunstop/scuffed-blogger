@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
-import { ActionModalActionConfirmation } from "../../components/main/ActionModalTemplate";
+import { ModalActionConfirmation } from "../../components/modal/ModalActionTemplate";
 
 function useOptionModalConfirmationHook() {
   const [confirmation, setConfirmation] = useState<{
     show: boolean;
-    data?: ActionModalActionConfirmation;
+    data?: ModalActionConfirmation;
   }>({ show: false });
 
   const close = useCallback(() => {
@@ -13,7 +13,7 @@ function useOptionModalConfirmationHook() {
     setConfirmation({ show: false, data: confirmation.data });
   }, [confirmation]);
   const open = useCallback(
-    (value: ActionModalActionConfirmation | undefined) => {
+    (value: ModalActionConfirmation | undefined) => {
       // setShow(true);
       setConfirmation({ show: true, data: value });
     },

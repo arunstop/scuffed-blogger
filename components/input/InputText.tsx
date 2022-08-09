@@ -10,7 +10,7 @@ import {
 } from "../../utils/helpers/InputStyleHelpers";
 import { transitionScaleY } from "../../utils/helpers/UiTransitionHelpers";
 
-type MainTextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   clearable?: boolean;
   clearIcon?: boolean;
   clearAction?: () => void;
@@ -21,9 +21,9 @@ type MainTextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
 };
 
-const MainTextInput = React.forwardRef<
+const InputText = React.forwardRef<
   HTMLInputElement,
-  React.PropsWithChildren<MainTextInputProps>
+  React.PropsWithChildren<InputTextProps>
 >(
   (
     {
@@ -125,6 +125,6 @@ const MainTextInput = React.forwardRef<
   },
 );
 
-MainTextInput.displayName = "MainTextInput";
+InputText.displayName = "InputText";
 
-export default MainTextInput;
+export default InputText;

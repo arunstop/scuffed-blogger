@@ -8,11 +8,11 @@ import {
   MdShare
 } from "react-icons/md";
 import { usePostOptionModalBehaviorHook } from "../../utils/hooks/PostOptionModalBehaviorHook";
-import ActionModalTemplate, {
-  ActionModalAction
-} from "../main/ActionModalTemplate";
+import ModalActionTemplate, {
+  ModalActionAction
+} from "../modal/ModalActionTemplate";
 
-const options: ActionModalAction[] = [
+const options: ModalActionAction[] = [
   {
     icon: <MdHideSource />,
     label: "Show less like this",
@@ -67,13 +67,13 @@ function ArticleCommentOptionModal() {
 
   const {optionModal,closeOptionModal}= usePostOptionModalBehaviorHook();
   return (
-    <ActionModalTemplate
+    <ModalActionTemplate
       value={optionModal}
       onClose={closeOptionModal}
       title="Post options"
       desc="What to do about this post?"
       actions={options}
-    ></ActionModalTemplate>
+    ></ModalActionTemplate>
   );
 }
 

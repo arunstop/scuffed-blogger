@@ -21,7 +21,7 @@ export type AuthFormTypes = "LOGIN" | "REGISTER" | "RESET_PW";
 interface SetStatusPropsProps {
   newLoading: boolean;
   newPlaceHolder: StatusPlaceholderProps;
-  newNetResp?: MainNetworkResponse<UserModel | FirebaseError | null>;
+  newNetResp?: MainNetworkResponse<UserModel | FirebaseError | string|null>;
 }
 
 const renderTitle = (form:string) => {
@@ -78,12 +78,12 @@ function AuthPanel() {
   const setAction = useCallback(
     ({ newLoading, newPlaceHolder, newNetResp }: SetStatusPropsProps) => {
       scrollToTop(true);
-      setLoading((prev) => {
-        return {
-          value: newLoading,
-          data: newLoading ? newPlaceHolder : prev.data,
-        };
-      });
+      // setLoading((prev) => {
+      //   return {
+      //     value: newLoading,
+      //     data: newLoading ? newPlaceHolder : prev.data,
+      //   };
+      // });
       // if (newLoading) setPlaceholder(newPlaceHolder);
       if (newNetResp) setNetResp({ ...newNetResp, data: newPlaceHolder });
     },
@@ -92,8 +92,8 @@ function AuthPanel() {
 
   const cancelActions = useCallback((onlyLoading: boolean) => {
     scrollToTop(true);
-    setLoading({ value: false, data: null });
-    // setNetResp(undefined);
+    // setLoading({ value: false, data: null });
+    setNetResp(undefined);
     // if (!onlyLoading) setPlaceholder(undefined);
   }, []);
 
@@ -101,7 +101,7 @@ function AuthPanel() {
   return (
     <div className="relative z-0 min-h-screen overflow-hidden rounded-xl">
       <Transition
-        show={!loading.value && !loading.data}
+        show={!netResp}
         enter="transition-opacity duration-500"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -117,20 +117,13 @@ function AuthPanel() {
           {renderTitle(form)}
           {/* {(placeholder?.status||"")} */}
         </span>
-        <Transition
-          appear
-          show={loading.value}
-          as={Fragment}
-          {...transitionPullV({
-            enter: "absolute inset-x-0 w-full",
-            entered: "absolute inset-x-0",
-            leave: "absolute inset-x-0 w-full",
-          })}
-        >
-          <StatusPlaceholder {...loading.data!} />
-        </Transition>
+        
+          <div className={"flex w-full"}>
+          {netResp ? <StatusPlaceholder {...netResp.data!} /> : <></>}
+          </div>
+        
 
-        <Transition
+        {/* <Transition
           appear
           show={!loading.value && netResp?.status === "error" && !!loading.data}
           as={Fragment}
@@ -156,11 +149,11 @@ function AuthPanel() {
           })}
         >
           {netResp && <StatusPlaceholder {...netResp.data!} />}
-        </Transition>
+        </Transition> */}
 
         <Transition
           appear
-          show={!loading.value && !loading.data}
+          show={!netResp}
           as={"div"}
           {...transitionPullV({
             // enter: " w-full",

@@ -81,9 +81,9 @@ export const AuthProvider = ({
       if (localUserData) {
         // check if data has changed
         // by comparing lastLoginAt on auth database and local machine
-        console.log((user.metadata as any).lastLoginAt);
+        // console.log((user.metadata as any).lastLoginAt);
 
-        console.log((localUserData?.localAuthData as any).lastLoginAt);
+        // console.log((localUserData?.localAuthData as any).lastLoginAt);
 
         if (
           (user.metadata as any).lastLoginAt !==

@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import React from "react";
 import { transitionScaleY } from "../../utils/helpers/UiTransitionHelpers";
 
-type MainTextAreaInputProps =
+type InputTextArea =
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
     // clearable?: boolean;
     // clearIcon?: boolean;
@@ -13,9 +13,9 @@ type MainTextAreaInputProps =
     label?: string;
   };
 
-const MainTextAreaInput = React.forwardRef<
+const InputTextArea = React.forwardRef<
   HTMLTextAreaElement,
-  MainTextAreaInputProps
+  InputTextArea
 >(({ label, error, errorMsg, ...props }, ref) => {
   return (
     <div className="flex w-full flex-col gap-1 sm:gap-2">
@@ -58,6 +58,6 @@ const MainTextAreaInput = React.forwardRef<
   );
 });
 
-MainTextAreaInput.displayName = "MainTextAreaInput";
+InputTextArea.displayName = "InputTextArea";
 
-export default MainTextAreaInput;
+export default InputTextArea;
