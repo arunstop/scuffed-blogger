@@ -38,7 +38,7 @@ export function middleware(request: NextRequest) {
   const onAuthPage = reqRoute.toLowerCase().includes("/auth");
   // if valid and accessing /auth, then redirect to profile
   if (onAuthPage)
-    return NextResponse.redirect(new URL("/profile/choosetopic", request.url));
+    return NextResponse.redirect(new URL("/profile/choosetopics", request.url));
   // if not accessing auth, then don't redirect
   return NextResponse.next();
 }

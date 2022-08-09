@@ -155,7 +155,7 @@ function ProfileSetupForm() {
         if (!e) return;
         resetForm();
         authAct.setUser(e as UserModel);
-        router.push("/profile/choosetopic");
+        router.push("/profile/choosetopics");
       });
   };
 

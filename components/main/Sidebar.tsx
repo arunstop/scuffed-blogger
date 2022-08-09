@@ -53,7 +53,7 @@ function Sidebar() {
     {
       title: "Choose topics",
       icon: <MdPlaylistAddCheck />,
-      link: `/profile/choosetopic`,
+      link: `/profile/choosetopics`,
       action: () => {
         closeDrawer();
       },
