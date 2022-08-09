@@ -19,7 +19,7 @@ function scrollCallback(event: Event, callback: (value:boolean)  => void) {
     header!.classList.add("bg-primary/50", "shadow-lg", "backdrop-blur-md");
     header!.classList.remove("text-primary");
   }
-  console.log("top" + Math.random());
+  // console.log("top" + Math.random());
 }
 
 export function useHeaderBehavior(callback: (value:boolean) => void) {
