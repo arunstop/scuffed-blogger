@@ -1,14 +1,17 @@
 import { FirebaseError } from "firebase/app";
 import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword, User
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  User,
 } from "firebase/auth";
 import { nanoid } from "nanoid";
 import { LoginFields } from "../../../../components/auth/AuthLoginForm";
 import { AuthRegisterProps } from "../../../../components/auth/AuthRegisterForm";
 import {
-    MainNetworkResponse,
-    netError, netLoading, netSuccess
+  MainNetworkResponse,
+  netError,
+  netLoading,
+  netSuccess,
 } from "../../../data/Main";
 import { createUserModel, UserModel } from "../../../data/models/UserModel";
 import { firebaseAuth } from "../FirebaseClient";
@@ -29,11 +32,12 @@ export async function fbUserAuthRegister({
 }): Promise<AuthUserProps> {
   let data: AuthUserProps = null;
 
-  try {
-    // Show a loading state still,
-    // because the system need to add yet another data to the `USER DB`
+  // create new user on firestoer
+  // register on auth
+  // edit the firestore data
 
-    // Adding the user
+  // 1. Create new user in firestore to check if that user already exists
+  try {
     data = await fbUserAdd({
       user: createUserModel({
         ...fields,
@@ -56,52 +60,58 @@ export async function fbUserAuthRegister({
         }
       },
     });
+    // if somehow data is null then throw an error
+    if (data === null)
+      throw new FirebaseError("client-error", "Error when adding data.");
+  } catch (error) {
+    console.log(error);
+    callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
+    return null;
+  }
 
-    // Do not proceed if failed/
-    // mostly because of existing user
-    if (data === null) return null;
-
+  // 2. Register to the authentication system
+  let authData: User | null = null;
+  try {
     callback?.(netLoading("Getting your data from our database...", null));
 
-    let authData: User | null = null;
-
-    try {
-      const userCred = await createUserWithEmailAndPassword(
-        firebaseAuth,
-        fields.email,
-        fields.password,
-      );
-      authData = userCred.user;
-    } catch (error) {
-      authData = null;
-      callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
-    }
-
-    if (authData === null) return null;
-    console.log(authData);
-    //  combine with data from auth
+    const userCred = await createUserWithEmailAndPassword(
+      firebaseAuth,
+      fields.email,
+      fields.password,
+    );
+    authData = userCred.user;
+    if (authData === null)
+      throw new FirebaseError("client-error", "Error when authenticating user");
     data = {
       ...(data as UserModel),
       localAuthData: authData,
     };
-    // Edit user in the database
-    try {
-      // remove firebaseUser before updating document
-      // because firebaseUser meant to be used for local machine
-      await fsUserUpdate({
-        ...data,
-        localAuthData: undefined,
-        session: undefined,
-      });
-      // user data with new session intact
-      data = await rtdbSessionAdd(data);
-    } catch (error) {
-      data = null;
-      callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
-    }
   } catch (error) {
+    console.log(error);
     callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
+    return null;
   }
+
+  try {
+    // remove firebaseUser before updating document
+    // because firebaseUser meant to be used for local machine
+    await fsUserUpdate({
+      ...data,
+      localAuthData: undefined,
+      session: undefined,
+    });
+    // user data with new session intact
+    data = await rtdbSessionAdd(data);
+  } catch (error) {
+    console.log(error);
+    callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
+    return null;
+  }
+  callback?.(
+    netSuccess<UserModel>("User has been registered to the database", {
+      ...(data as UserModel),
+    }),
+  );
   return data;
 }
 
@@ -279,7 +289,7 @@ export async function fbUserGet({
   try {
     // Get user from database
     const user = await fsUserGetByEmail(email);
-    
+
     // Show success
     callback?.(
       netSuccess<GetUserCallbackProps>(
