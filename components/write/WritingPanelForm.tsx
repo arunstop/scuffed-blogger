@@ -59,8 +59,6 @@ function WritingPanelForm({
     }
   }, [formData]);
 
-  console.log(getValues());
-
   // set contexts formData before previewing
   useEffect(() => {
     // set state if previewing
