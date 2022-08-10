@@ -72,6 +72,7 @@ function Sidebar() {
     {
       title: "Posts",
       icon: <MdArticle />,
+      link:`/user/posts`,
       action: () => {
         closeDrawer();
       },

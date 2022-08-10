@@ -13,6 +13,7 @@ import {
 import { UserModel } from "../../../data/models/UserModel";
 import {
   fsArticleAdd,
+  fsArticleGetByIds,
   fsArticleUpdate,
   fsUserUpdate,
 } from "../FirestoreModules";
@@ -124,4 +125,25 @@ export async function fbArticleAdd({
     callback?.(netError("Error when creating article", error as FirebaseError));
     return null;
   }
+}
+
+export async function fbArticleGetByIds({
+  articleIds,
+  callback,
+}: {
+  articleIds: string[];
+  callback?: (
+    resp: MainNetworkResponse<ArticleModel[] | null | FirebaseError>,
+  ) => void;
+}): Promise<ArticleModel[]> {
+  try {
+    const data = await fsArticleGetByIds(articleIds);
+    callback?.(netSuccess<ArticleModel[]>("Success getting user's posts", data));
+    return data;
+  } catch (error) {
+    console.log(error);
+    callback?.(netError<FirebaseError>("Error when getting users's posts", error as FirebaseError));
+    return [];
+  }
+  return [];
 }

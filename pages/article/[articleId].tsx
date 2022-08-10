@@ -13,7 +13,7 @@ import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { mainApi } from "../../utils/services/network/MainApi";
 
-export const getServerSideProps: GetServerSideProps<{
+const getServerSideProps: GetServerSideProps<{
   article: ArticleModel;
 }> = async (context) => {
   // SLUG ORDER

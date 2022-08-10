@@ -2,8 +2,10 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore/lite";
 import _ from "lodash";
 import { ArticleModel } from "../../data/models/ArticleModel";
@@ -47,6 +49,16 @@ export async function fsUserGetByEmail(email: string): Promise<UserModel | null>
 export async function fsArticleGetAll(): Promise<ArticleModel[] | null> {
   const snapshot = await getDocs(articleDb);
   // console.log(snapshot);
+  const list = snapshot.docs.map((doc) => doc.data() as ArticleModel);
+  return list;
+}
+
+// @return all articles
+export async function fsArticleGetByIds(articleId : string[]): Promise<ArticleModel[]> {
+  const qq = query(articleDb,where("__name__", "in", articleId));
+  const snapshot = await getDocs(qq);
+  // console.log(snapshot);
+  if(snapshot.empty) return [];
   const list = snapshot.docs.map((doc) => doc.data() as ArticleModel);
   return list;
 }
