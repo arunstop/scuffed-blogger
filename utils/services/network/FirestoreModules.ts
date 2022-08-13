@@ -1,4 +1,5 @@
 import {
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -38,7 +39,9 @@ export async function fsUserUpdate(user: UserModel) {
   return updateDoc(editUserRef, toJsonFriendly(user));
 }
 
-export async function fsUserGetByEmail(email: string): Promise<UserModel | null> {
+export async function fsUserGetByEmail(
+  email: string,
+): Promise<UserModel | null> {
   // Get user from database
   const snapshot = await getDoc(doc(userDb, email));
   // Check if exists
@@ -54,11 +57,13 @@ export async function fsArticleGetAll(): Promise<ArticleModel[] | null> {
 }
 
 // @return all articles
-export async function fsArticleGetByIds(articleId : string[]): Promise<ArticleModel[]> {
-  const qq = query(articleDb,where("__name__", "in", articleId));
+export async function fsArticleGetByIds(
+  articleId: string[],
+): Promise<ArticleModel[]> {
+  const qq = query(articleDb, where("__name__", "in", articleId));
   const snapshot = await getDocs(qq);
   // console.log(snapshot);
-  if(snapshot.empty) return [];
+  if (snapshot.empty) return [];
   const list = snapshot.docs.map((doc) => doc.data() as ArticleModel);
   return list;
 }
@@ -107,4 +112,8 @@ export async function fsArticleUpdate(
   return await updateDoc(ref, toJsonFriendly(article));
 }
 
-
+export async function fsArticleDelete(articleId: string):Promise<boolean> {
+  const ref = doc(articleDb, articleId);
+  await deleteDoc(ref);
+  return true;
+}

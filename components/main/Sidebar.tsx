@@ -199,10 +199,7 @@ function Sidebar() {
         onClose={() => setDialogLogout(false)}
         title={"Logout"}
         desc={`Are you sure you want to end this authentication session?`}
-        actionN={() => {
-          setDialogLogout(false);
-        }}
-        actionY={async () => {
+        onConfirm={async () => {
           setDialogLogout(false);
           closeDrawer();
           await waitFor(1000);

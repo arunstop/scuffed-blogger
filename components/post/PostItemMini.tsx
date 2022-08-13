@@ -1,5 +1,6 @@
 import { formatDistance } from "date-fns";
 import Link from "next/link";
+import React from "react";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 const randomId = () => Math.floor(Math.random() * 100) + 1;
@@ -17,7 +18,7 @@ function PostItemMini({ article }: { article: ArticleModel }) {
           className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2]"
           src={
             article.thumbnail ||
-            `https://picsum.photos/id/${randomId()}/500/300`
+            `https://picsum.photos/id/${article.dateAdded.toString().split("").slice(-2).join("")}/500/300`
           }
           alt="Image"
           width={100}
@@ -63,13 +64,22 @@ function PostItemMini({ article }: { article: ArticleModel }) {
           <button className="btn btn-circle btn-sm btn-outline btn-primary">
             <MdEdit className="text-xl" />
           </button>
-          <button className="btn btn-circle btn-sm btn-outline btn-error">
-            <MdDelete className="text-xl" />
-          </button>
+          <Link
+            href={{
+              query: {
+                articleId: article.id,
+              },
+            }}
+            shallow
+          >
+            <a className="btn btn-circle btn-sm btn-outline btn-error">
+              <MdDelete className="text-xl" />
+            </a>
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default PostItemMini;
+export default React.memo(PostItemMini);

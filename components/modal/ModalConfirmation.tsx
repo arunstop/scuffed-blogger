@@ -5,8 +5,7 @@ import ModalTemplate from "./ModalTemplate";
 interface ModalConfirmationProps {
   title: string;
   desc: string;
-  actionY?: () => void;
-  actionN?: () => void;
+  onConfirm: () => void;
 }
 
 function ModalConfirmation({
@@ -14,8 +13,8 @@ function ModalConfirmation({
   onClose,
   title,
   desc,
-  actionN = () => {},
-  actionY = () => {},
+
+  onConfirm,
 }: ModalProps & ModalConfirmationProps) {
   return (
     <ModalTemplate value={value} onClose={onClose} title={title}>
@@ -26,13 +25,13 @@ function ModalConfirmation({
         <div className="flex gap-2 sm:gap-4 w-full flex-col sm:flex-row">
           <button
             className="flex-1 btn --btn-resp btn-outline font-bold"
-            onClick={() => actionN()}
+            onClick={onClose}
           >
             No
           </button>
           <button
             className="flex-1 btn --btn-resp btn-primary font-bold"
-            onClick={() => actionY()}
+            onClick={onConfirm}
           >
             Yes
           </button>

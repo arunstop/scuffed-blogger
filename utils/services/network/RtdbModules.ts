@@ -1,8 +1,4 @@
-import {
-  get, orderByChild, query,
-  ref,
-  set
-} from "firebase/database";
+import { get, orderByChild, query, ref, remove, set } from "firebase/database";
 import uaParser from "ua-parser-js";
 import { UserModel, UserSession } from "../../data/models/UserModel";
 import { ArticleModel } from "./../../data/models/ArticleModel";
@@ -90,6 +86,15 @@ export async function rtdbArticleAddMirror(
   return article;
 }
 
+export async function rtdbArticleDeleteMirror(
+  articleId: string,
+): Promise<boolean> {
+  const path = `articleList/${articleId}`;
+  const rr = ref(db, path);
+  await remove(rr);
+  return true;
+}
+
 export async function rtdbTopicGet(): Promise<string[]> {
   const path = `topicList`;
   // const query = child(ref(db),path);
@@ -97,13 +102,12 @@ export async function rtdbTopicGet(): Promise<string[]> {
   const qq = query(rr, orderByChild("name"));
   const res = await get(qq).then((snapshot) => {
     if (snapshot.exists()) {
-      
       const data: string[] = [];
       // using `forEach` because normal `val` won't guarantee the ordering request
       snapshot.forEach((e) => {
         data.push(e.val().name);
       });
-      
+
       return data;
     }
     return [];

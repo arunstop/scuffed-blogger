@@ -13,11 +13,12 @@ import {
 import { UserModel } from "../../../data/models/UserModel";
 import {
   fsArticleAdd,
+  fsArticleDelete,
   fsArticleGetByIds,
   fsArticleUpdate,
   fsUserUpdate,
 } from "../FirestoreModules";
-import { rtdbArticleAddMirror } from "../RtdbModules";
+import { rtdbArticleAddMirror, rtdbArticleDeleteMirror } from "../RtdbModules";
 import { uploadFile } from "./FileModules";
 
 // Adding article, now using direct firebaseClient
@@ -138,12 +139,55 @@ export async function fbArticleGetByIds({
 }): Promise<ArticleModel[]> {
   try {
     const data = await fsArticleGetByIds(articleIds);
-    callback?.(netSuccess<ArticleModel[]>("Success getting user's posts", data));
+    callback?.(
+      netSuccess<ArticleModel[]>("Success getting user's posts", data),
+    );
     return data;
   } catch (error) {
     console.log(error);
-    callback?.(netError<FirebaseError>("Error when getting users's posts", error as FirebaseError));
+    callback?.(
+      netError<FirebaseError>(
+        "Error when getting users's posts",
+        error as FirebaseError,
+      ),
+    );
     return [];
   }
-  return [];
+}
+
+export async function fbArticleDelete({
+  articleId,
+  callback,
+}: {
+  articleId: string;
+  callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
+}) {
+  // delete firestore data
+  let data = false;
+  try {
+    data = await fsArticleDelete(articleId);
+    callback?.(netSuccess<string>("Success getting user's posts", "Success"));
+  } catch (error) {
+    console.log(error);
+    callback?.(
+      netError<FirebaseError>(
+        "Error when deleteing users's posts",
+        error as FirebaseError,
+      ),
+    );
+    return;
+  }
+  // delete mirror on rtdb
+  try {
+    await rtdbArticleDeleteMirror(articleId);
+    callback?.(netSuccess<string>("Success getting user's posts", "Success"));
+  } catch (error) {
+    console.log(error);
+    callback?.(
+      netError<FirebaseError>(
+        "Error when deleteing users's posts",
+        error as FirebaseError,
+      ),
+    );
+  }
 }

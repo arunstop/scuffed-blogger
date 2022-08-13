@@ -2,32 +2,33 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { routeTrimQuery } from "../helpers/MainHelpers";
 
-export function ModalRoutedBehaviorHook(param: string) {
-  const [modal, setModal] = useState(false);
+export function useModalRoutedBehaviorHook(param: string) {
+  const [show, setShow] = useState(false);
   const router = useRouter();
 
   // toggle modal
-  const toggleModal = useCallback((value: boolean) => {
-    setModal(value);
+  const toggle = useCallback((value: boolean) => {
+    setShow(value);
   }, []);
 
   // close state
-  const closeModal = useCallback(() => {
-      alert("closemodal");
+  const close = useCallback(() => {
     const currentPath = routeTrimQuery(router.asPath);
     router.replace(currentPath, undefined, {
       shallow: true,
     });
   }, [router]);
 
+  const value = router.query[param];
+
   // Determine on what query/param on url, the state will change
   useEffect(() => {
     // if query "postoption" exist, it will open the modal
     // if it doesn't it will close the modal
-    toggleModal(!!router.query[param]);
+    toggle(!!value);
 
     return () => {};
-  }, [router.query[param]]);
+  }, [value]);
 
-  return { modal, closeModal, toggleModal };
+  return {  show, close, toggle, value:value as string };
 }
