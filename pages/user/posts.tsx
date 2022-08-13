@@ -11,7 +11,7 @@ import { APP_NAME } from "../../utils/helpers/Constants";
 import { useModalRoutedBehaviorHook } from "../../utils/hooks/ModalRoutedBehaviorHook";
 import {
   fbArticleDelete,
-  fbArticleGetByIds
+  fbArticleGetByIds,
 } from "../../utils/services/network/FirebaseApi/ArticleModules";
 
 function PageUserPosts() {
@@ -79,13 +79,13 @@ function PageUserPosts() {
           </div>
         )}
         {/* The actual articles */}
-        {articles?.length && (
+        {articles?.length ? (
           <div className="flex flex-col gap-2 sm:gap-4 min-h-[24rem]">
             {articles.map((e, idx) => {
               return <PostItemMini key={idx} article={e} />;
             })}
           </div>
-        )}
+        ) : null}
         {/* pagination */}
         <div className="flex w-full min-h-[6rem] bg-primary/30"></div>
       </MainContainer>
