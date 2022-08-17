@@ -35,13 +35,14 @@ const rtdb = getDatabase(app);
 const auth = getAuth(app);
 
 // Databases
-const article = collection(firestore, "articles");
-const user = collection(firestore, "users");
+const articles = collection(firestore, "articles");
+const articleContents = collection(firestore, "articleContents");
+const users = collection(firestore, "users");
 const storage = getStorage(app);
 
 export const firebaseClient = {
   auth,
-  collections: { article, user },
+  collections: { articles, articleContents, users },
   rtdb,
   storage,
 };

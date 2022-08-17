@@ -19,7 +19,7 @@ export interface UserModel {
   avatar: string;
   list: {
     followings: string[];
-    posts: string[];
+    posts: string;
     bookmarks: string[];
     readLaters: string[];
     lists: string[];
@@ -74,7 +74,7 @@ export const createUserModel = ({
     avatar: avatar,
     list: {
       followings: list?.followings || [],
-      posts: list?.posts || [],
+      posts: list?.posts || nanoid(24),
       bookmarks: list?.bookmarks || [],
       readLaters: list?.readLaters || [],
       lists: list?.lists || [],

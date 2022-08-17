@@ -1,7 +1,17 @@
 import { FirebaseError } from "firebase/app";
-import { UploadTaskSnapshot, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+  UploadTaskSnapshot,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 import { nanoid } from "nanoid";
-import { MainNetworkResponse, netLoading, netError, netSuccess } from "../../../data/Main";
+import {
+  MainNetworkResponse,
+  netLoading,
+  netError,
+  netSuccess,
+} from "../../../data/Main";
 import { firebaseClient } from "../FirebaseClient";
 
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
@@ -10,10 +20,12 @@ type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 export async function uploadFile({
   file,
   directory,
+  name,
   callback,
 }: {
   file: File;
   directory: string;
+  name?: string;
   callback?: (resp: MainNetworkResponse<UploadFileProps>) => void;
 }): Promise<string> {
   let data = "";
@@ -22,7 +34,7 @@ export async function uploadFile({
   // which results the extension of the file
   const extension = file.name.split(".").pop();
   // Getting new name with id
-  const newName = `${nanoid(24)}.${extension}`;
+  const newName = `${name || nanoid(24)}.${extension}`;
   const imageRef = ref(firebaseClient.storage, `${directory}/${newName}`);
   // Uploading the file
   const uploadTask = uploadBytesResumable(imageRef, file);

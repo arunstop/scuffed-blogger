@@ -3,9 +3,11 @@ import _ from "lodash";
 import { WritingPanelFormProps } from "../contexts/WritingPanelTypes";
 import { nanoid } from "nanoid";
 import { strKebabify } from "../../helpers/MainHelpers";
+import { UserModel } from "./UserModel";
 
 export interface ArticleModel {
   id: string;
+  slug: string;
   title: string;
   desc: string;
   thumbnail: string;
@@ -28,6 +30,7 @@ export function isArticleModel(value: unknown) {
   // check if all required properties are satisfied
   const requiredPropsValid =
     "id" in value &&
+    "slug" in value &&
     "title" in value &&
     "desc" in value &&
     "thumbnail" in value &&
@@ -41,6 +44,7 @@ export function isArticleModel(value: unknown) {
   // list all properties
   const props = [
     "id",
+    "slug",
     "title",
     "desc",
     "thumbnail",
@@ -65,18 +69,36 @@ export function isArticleModel(value: unknown) {
 
 // turn `WritingPanelFormProps` into `ArticleModel`
 // by extracting their component
-export function toArticleModel(formData: WritingPanelFormProps): ArticleModel {
+export function toArticleModel({
+  id,
+  user,
+  formData,
+}: {
+  id: string;
+  user: UserModel;
+  formData: WritingPanelFormProps;
+}): ArticleModel {
   const date = Date.now();
+  let thumbnail = "";
+  if (formData.thumbnail) {
+    const file = formData.thumbnail[0];
+    // Splitting the name by with .  then get the last item
+    // which results the extension of the file
+    const extension = file.name.split(".").pop();
+    // Getting new name with id
+    const newName = encodeURIComponent(`thumbnails/${id}.${extension}`);
+
+    thumbnail = `https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/${newName}?alt=media`;
+  }
 
   return {
-    id: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
+    id: id,
+    slug: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
     title: formData.title,
     desc: formData.desc,
     content: encodeURIComponent(formData.content),
-    thumbnail: formData.thumbnail
-      ? URL.createObjectURL(formData.thumbnail[0])
-      : "",
-    author: "Munkrey Alf",
+    thumbnail: thumbnail,
+    author: user.email,
     dateAdded: date,
     dateUpdated: date,
     deleted: 0,
