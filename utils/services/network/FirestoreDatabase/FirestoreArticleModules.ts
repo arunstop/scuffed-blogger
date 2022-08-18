@@ -8,7 +8,13 @@ import { ArticleListModel } from "./../../../data/models/ArticleListModel";
 // =============================
 
 import {
-  arrayUnion, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where
+  arrayUnion,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
 } from "firebase/firestore/lite";
 import { ArticleModel } from "../../../data/models/ArticleModel";
 import { firebaseClient } from "../FirebaseClient";
@@ -25,15 +31,15 @@ export async function fsArticleGetAll(): Promise<ArticleModel[] | null> {
 }
 
 // @return all articles
-export async function fsArticleGetByIds(
-  articleId: string[],
-): Promise<ArticleModel[]> {
-  const qq = query(articleDb, where("__name__", "in", articleId));
-  const snapshot = await getDocs(qq);
-  // console.log(snapshot);
-  if (snapshot.empty) return [];
-  const list = snapshot.docs.map((doc) => doc.data() as ArticleModel);
-  return list;
+export async function fsArticleGetByUser(
+  articleListId: string,
+): Promise<ArticleListModel | null> {
+  const ref = doc(articleDb, articleListId);
+  const snapshot = await getDoc(ref);
+  const articles = snapshot.exists()
+    ? (snapshot.data() as ArticleListModel)
+    : null;
+  return articles;
 }
 
 // @return an article based on `id`
@@ -51,16 +57,15 @@ export async function fsArticleGetById(
 }
 
 // Adds an article to article list to database
-export async function fsArticleAdd(
-  articleList: ArticleListModel
-) {
+export async function fsArticleAdd(articleList: ArticleListModel) {
   const ref = doc(articleDb, articleList.id);
   const snapshot = await getDoc(ref);
   // check if document exists, update if it does
-  if(snapshot.exists())  return await updateDoc(ref, {
-    ...articleList,
-    articles: arrayUnion(...articleList.articles),
-  });
+  if (snapshot.exists())
+    return await updateDoc(ref, {
+      ...articleList,
+      articles: arrayUnion(...articleList.articles),
+    });
   // add otherwise
   await setDoc(ref, {
     ...articleList,
@@ -114,7 +119,13 @@ export async function fsArticleContentDelete(id: string) {
 //   return await updateDoc(ref, toJsonFriendly(article));
 // }
 
-export async function fsArticleDelete(articleId: string): Promise<boolean> {
+export async function fsArticleDelete({
+  articleId,
+  userId,
+}: {
+  articleId: string;
+  userId: string;
+}): Promise<boolean> {
   const ref = doc(articleDb, articleId);
   await deleteDoc(ref);
   return true;

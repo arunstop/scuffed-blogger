@@ -1,8 +1,7 @@
-import { isFalsy } from "../Main";
 import _ from "lodash";
-import { WritingPanelFormProps } from "../contexts/WritingPanelTypes";
-import { nanoid } from "nanoid";
 import { strKebabify } from "../../helpers/MainHelpers";
+import { WritingPanelFormProps } from "../contexts/WritingPanelTypes";
+import { isFalsy } from "../Main";
 import { UserModel } from "./UserModel";
 
 export interface ArticleModel {
@@ -86,14 +85,14 @@ export function toArticleModel({
     // which results the extension of the file
     const extension = file.name.split(".").pop();
     // Getting new name with id
-    const newName = encodeURIComponent(`thumbnails/${id}.${extension}`);
+    const newName = encodeURIComponent(`thumbnails/${id}/${id}.${extension}`);
 
     thumbnail = `https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/${newName}?alt=media`;
   }
 
   return {
     id: id,
-    slug: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
+    slug: `${strKebabify(formData.title.slice(0, 120))}-${id}`,
     title: formData.title,
     desc: formData.desc,
     content: encodeURIComponent(formData.content),

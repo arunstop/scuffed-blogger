@@ -45,7 +45,7 @@ function WritingPanel() {
   const submitArticle = useCallback(
     async (data?: WritingPanelFormProps) => {
       // Auth required
-      if (!isLoggedIn) return;
+      if (!authStt.user) return;
 
       // if param data exist (data from form), use it
       // if not use the current formData state from WritingPanel context
@@ -60,7 +60,7 @@ function WritingPanel() {
       const newArticle = await fbArticleAdd({
         rawArticle: processedData,
         // correct non-null assertion becase we know that isLoggedIn already true
-        user: authStt.user!,
+        user: authStt.user,
         callback: async (resp) => {
           // change loading state, if it's loading, no need to wait
           if (resp.status !== "loading") await waitFor(2000);
@@ -83,7 +83,6 @@ function WritingPanel() {
       // apply new article to the local user data
       const updatedUser:UserModel = {
         ...user,
-        list: { ...user.list, posts: [...user.list.posts, newArticle.id] },
         dateUpdated: newArticle.dateAdded,
       };
       authAct.setUser(updatedUser);
@@ -129,6 +128,7 @@ function WritingPanel() {
               {
                 label: "Cancel",
                 callback: () => {
+                  setNetWorkResp(undefined);
                   setLoading(false);
                 },
               },
@@ -290,6 +290,7 @@ function WritingPanel() {
                   <div className="min-w-full">
                     <WritingPanelPreview
                       submit={submitArticle}
+                      user={authStt.user!}
                     />
                   </div>
                 </Transition>

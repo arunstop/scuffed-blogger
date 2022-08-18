@@ -11,12 +11,13 @@ import { APP_NAME } from "../../utils/helpers/Constants";
 import { useModalRoutedBehaviorHook } from "../../utils/hooks/ModalRoutedBehaviorHook";
 import {
   fbArticleDelete,
-  fbArticleGetByIds,
+  fbArticleGetByUser
 } from "../../utils/services/network/FirebaseApi/ArticleModules";
 
 function PageUserPosts() {
   const {
     authStt: { user },
+    authAct,
   } = useAuthCtx();
 
   const [articles, setArticles] = useState<ArticleModel[]>();
@@ -26,11 +27,11 @@ function PageUserPosts() {
 
   const getArticles = async () => {
     if (!user) return;
-    const articlesFromDb = await fbArticleGetByIds({
-      articleIds: user?.list.posts,
+    const articlesFromDb = await fbArticleGetByUser({
+      articleListId: user.list.posts,
     });
     setLoadingArticles(false);
-    setArticles(articlesFromDb);
+    setArticles(articlesFromDb?.articles || []);
   };
 
   useEffect(() => {
@@ -39,8 +40,15 @@ function PageUserPosts() {
   }, [articles]);
 
   const deleteArticle = useCallback(async () => {
-    await fbArticleDelete({ articleId: modalDelete.value }).then(async () => {
-      getArticles();
+    if (!user) return;
+    const articleId = modalDelete.value;
+
+    await fbArticleDelete({
+      articleId: articleId,
+      user: user,
+    }).then(async (user) => {
+      await getArticles();
+      if (user) authAct.setUser(user);
     });
     modalDelete.close();
   }, [modalDelete.value]);
