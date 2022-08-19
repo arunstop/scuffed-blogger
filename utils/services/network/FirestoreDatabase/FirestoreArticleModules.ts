@@ -81,7 +81,11 @@ export async function fsArticleUpdate2(articleList: ArticleListModel) {
     articles: arrayUnion(...articleList.articles),
   });
 }
-
+export async function fsArticleContentGet(id: string):Promise<string|null> {
+  const ref = doc(articleContentDb, id);
+  const res = await getDoc(ref);
+  return res.exists()? res.data().content:null;
+}
 export async function fsArticleContentAdd(id: string, content: string) {
   const ref = doc(articleContentDb, id);
   await setDoc(ref, { content: content });

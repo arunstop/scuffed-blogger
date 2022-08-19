@@ -67,7 +67,7 @@ function PostItemMini({ article }: { article: ArticleModel }) {
           <Link
             href={{
               query: {
-                articleId: article.slug,
+                articleId: article.id,
               },
             }}
             shallow

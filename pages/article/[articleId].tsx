@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleSectionAction from "../../components/article/ArticleActions";
 import ArticleContent from "../../components/article/ArticleContent";
@@ -11,40 +11,46 @@ import MainUserPopup from "../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../components/main/MainUserLabel";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
+import { fbArticleContentGet } from "../../utils/services/network/FirebaseApi/ArticleModules";
 import { mainApi } from "../../utils/services/network/MainApi";
 
 export const getServerSideProps: GetServerSideProps<{
-  article: ArticleModel;
+  articleContentless: ArticleModel;
 }> = async (context) => {
   // SLUG ORDER
   // 0 = User's id
   // 1 = Tab/section
 
   // Getting id from the slug from the last 24 chars
-  const slug = ((context.query.articleId || "") as string).slice(-24);
-  const article = await mainApi.mainArticleGetById({ id: slug });
+  const slug = (context.query.articleId || "") as string;
+  const id = slug.slice(-24);
+  const articleContentless = await mainApi.mainArticleGetById({ id: id });
   // Show 404 if article not found or
-  // if the slugs don't  match 
-  if (!article || article.slug !== slug)
+  // if the slugs don't  match
+  if (!articleContentless || articleContentless.slug !== slug)
     return {
       notFound: true,
     };
-  return { props: { article: article } };
+  return { props: { articleContentless: articleContentless } };
 };
 
-function Article({ article }: { article: ArticleModel }) {
-  // const router = useRouter();
-  // const { articleId } = router.query;
-  const articleId = article.id;
+function Article({ articleContentless }: { articleContentless: ArticleModel }) {
+  const articleId = articleContentless.id;
 
-  // useEffect(() => {
-  //   scrollToTop();
+  
+  const [article, setArticle] = useState(articleContentless);
 
-  //   return () => {};
-  // }, [articleId]);
-
-  // const title =
-  //   "Lorem ipsum dolor sit amet consectetur adipisicing elit Laudantium itaque odit sed? Quibusdam quis nemo tempora";
+  const getContent = async () => {
+    const content = await fbArticleContentGet({ id: article.id });
+    if (content) {
+      setArticle((prev) => ({ ...prev, content:content }));
+    }
+  };
+  
+  // reload article content on slug change
+  useEffect(() => {
+    getContent();
+  }, [articleId]);
 
   const mzPage = useMemo(() => {
     return (

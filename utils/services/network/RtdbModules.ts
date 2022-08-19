@@ -75,25 +75,9 @@ export async function rtdbArticleAddMirror(
   user: UserModel,
 ): Promise<ArticleModel> {
   const path = `articleList/${article.id}`;
-  const { dateAdded, desc, duration, id, thumbnail, title, topics } = article;
-  const data: ArticleLiteModel = {
-    dateAdded,
-    desc,
-    duration,
-    id,
-    thumbnail,
-    title,
-    topics,
-    author: {
-      id: user.id,
-      name: user.name,
-      username: user.username,
-      avatar: user.avatar,
-    },
-  };
   // console.log(data);
   const newRef = ref(db, path);
-  await set(newRef, data);
+  await set(newRef, article);
   return article;
 }
 

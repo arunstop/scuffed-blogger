@@ -14,7 +14,7 @@ import {
 import { UserModel } from "../../../data/models/UserModel";
 import {
   fsArticleAdd,
-  fsArticleContentAdd, fsArticleContentDelete, fsArticleDelete,
+  fsArticleContentAdd, fsArticleContentDelete, fsArticleContentGet, fsArticleDelete,
   fsArticleGetByUser
 } from "../FirestoreDatabase/FirestoreArticleModules";
 import { rtdbArticleAddMirror, rtdbArticleDeleteMirror } from "../RtdbModules";
@@ -215,4 +215,31 @@ export async function fbArticleDelete({
     ),
   );
   return user;
+}
+
+export async function fbArticleContentGet({
+  id,
+  callback,
+}: {
+  id: string;
+  callback?: (
+    resp: MainNetworkResponse<string | null | FirebaseError>,
+  ) => void;
+}): Promise<string | null> {
+  try {
+    const data = await fsArticleContentGet(id);
+    callback?.(
+      netSuccess<string | null>("Success getting user's posts", data),
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    callback?.(
+      netError<FirebaseError>(
+        "Error when getting users's posts",
+        error as FirebaseError,
+      ),
+    );
+    return null;
+  }
 }
