@@ -2,7 +2,9 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { routeTrimQuery } from "../helpers/MainHelpers";
 
-export function useModalRoutedBehaviorHook(param: string) {
+export function useModalRoutedBehaviorHook(
+  mainParam: string,
+) {
   const [show, setShow] = useState(false);
   const router = useRouter();
 
@@ -19,7 +21,7 @@ export function useModalRoutedBehaviorHook(param: string) {
     });
   }, [router]);
 
-  const value = router.query[param];
+  const value = router.query[mainParam];
 
   // Determine on what query/param on url, the state will change
   useEffect(() => {
@@ -30,5 +32,5 @@ export function useModalRoutedBehaviorHook(param: string) {
     return () => {};
   }, [value]);
 
-  return {  show, close, toggle, value:value as string };
+  return { show, close, toggle, value: value as string, query: router.query };
 }

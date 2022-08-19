@@ -5,21 +5,20 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess,
+  netSuccess
 } from "../../../data/Main";
 import {
   ArticleModel,
-  toArticleModel,
+  toArticleModel
 } from "../../../data/models/ArticleModel";
 import { UserModel } from "../../../data/models/UserModel";
 import {
   fsArticleAdd,
-  fsArticleContentAdd,
-  fsArticleDelete,
-  fsArticleGetByUser,
+  fsArticleContentAdd, fsArticleContentDelete, fsArticleDelete,
+  fsArticleGetByUser
 } from "../FirestoreDatabase/FirestoreArticleModules";
 import { rtdbArticleAddMirror, rtdbArticleDeleteMirror } from "../RtdbModules";
-import { stFileDelete } from "../StorageModules";
+import { stDirectoryDelete } from "../StorageModules";
 import { ArticleListModel } from "./../../../data/models/ArticleListModel";
 import { uploadFile } from "./FileModules";
 
@@ -143,19 +142,19 @@ export async function fbArticleAdd({
 }
 
 export async function fbArticleDelete({
-  articleId,
+  article,
   user,
   callback,
 }: {
-  articleId: string;
+  article: ArticleModel;
   user: UserModel;
   callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
 }): Promise<UserModel | null> {
-  // delete firestore data
+  // delete article 
   try {
     await fsArticleDelete({
-      articleId,
-      userId: user.id,
+      article: article,
+      userPostsRef: user.list.posts,
     });
   } catch (error) {
     console.log(error);
@@ -167,9 +166,21 @@ export async function fbArticleDelete({
     );
     return null;
   }
+  // delete article content
+  try {
+    await fsArticleContentDelete(article.id);
+  } catch (error) {
+    console.log(error);
+    callback?.(
+      netError<FirebaseError>(
+        "Error when deleting users's posts",
+        error as FirebaseError,
+      ),
+    );
+  }
   // delete mirror on rtdb
   try {
-    await rtdbArticleDeleteMirror(articleId);
+    await rtdbArticleDeleteMirror(article.id);
   } catch (error) {
     console.log(error);
     callback?.(
@@ -181,9 +192,10 @@ export async function fbArticleDelete({
     return null;
   }
   // delete thumbnail if exists
-  if (thumbnail) {
+  if (article.thumbnail) {
     try {
-      await stFileDelete(thumbnail);
+      const thumbnailDirectory = `/thumbnails/${article.id}/`;
+      await stDirectoryDelete(thumbnailDirectory);
     } catch (error) {
       console.log(error);
       callback?.(
@@ -192,13 +204,14 @@ export async function fbArticleDelete({
           error as FirebaseError,
         ),
       );
+      return null;
     }
   }
 
   callback?.(
     netSuccess<string>(
       "Sucess deleting the article",
-      `Deleted article with ID : ${articleId}`,
+      `Deleted article with ID : ${article.id}`,
     ),
   );
   return user;

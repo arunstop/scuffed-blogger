@@ -17,7 +17,7 @@ import { createUserModel, UserModel } from "../../../data/models/UserModel";
 import { firebaseAuth } from "../FirebaseClient";
 import { fsUserAdd, fsUserGetByEmail, fsUserUpdate } from "../FirestoreModules";
 import { rtdbSessionAdd, rtdbSessionLatestSet } from "../RtdbModules";
-import { stFileDelete } from "../StorageModules";
+import { stFileDeleteByFullLink } from "../StorageModules";
 import { uploadFile } from "./FileModules";
 
 // Auth
@@ -239,7 +239,7 @@ export async function fbUserUpdate({
       // and if the previous one was NOT the default one
       if (user.avatar && !user.avatar.includes("default_avatar.png")) {
         try {
-          await stFileDelete(user?.avatar);
+          await stFileDeleteByFullLink(user?.avatar);
         } catch (error) {
           callback?.(
             netError(

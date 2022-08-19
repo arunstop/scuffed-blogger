@@ -8,6 +8,7 @@ import { ArticleListModel } from "./../../../data/models/ArticleListModel";
 // =============================
 
 import {
+  arrayRemove,
   arrayUnion,
   deleteDoc,
   doc,
@@ -120,13 +121,15 @@ export async function fsArticleContentDelete(id: string) {
 // }
 
 export async function fsArticleDelete({
-  articleId,
-  userId,
+  article,
+  userPostsRef,
 }: {
-  articleId: string;
-  userId: string;
-}): Promise<boolean> {
-  const ref = doc(articleDb, articleId);
-  await deleteDoc(ref);
-  return true;
+  article: ArticleModel;
+  userPostsRef: string;
+}) {
+  const ref = doc(articleDb, userPostsRef);
+  await updateDoc(ref, {
+    dateUpdated: Date.now(),
+    articles: arrayRemove(article),
+  });
 }

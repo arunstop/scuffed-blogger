@@ -11,7 +11,7 @@ import { APP_NAME } from "../../utils/helpers/Constants";
 import { useModalRoutedBehaviorHook } from "../../utils/hooks/ModalRoutedBehaviorHook";
 import {
   fbArticleDelete,
-  fbArticleGetByUser
+  fbArticleGetByUser,
 } from "../../utils/services/network/FirebaseApi/ArticleModules";
 
 function PageUserPosts() {
@@ -41,15 +41,18 @@ function PageUserPosts() {
 
   const deleteArticle = useCallback(async () => {
     if (!user) return;
+    if (!articles) return;
     const articleId = modalDelete.value;
+    const articleTarget = articles.find((e) => e.id === articleId);
 
-    await fbArticleDelete({
-      articleId: articleId,
-      user: user,
-    }).then(async (user) => {
-      await getArticles();
-      if (user) authAct.setUser(user);
-    });
+    if (articleTarget) {
+      await fbArticleDelete({
+        article: articleTarget,
+        user: user,
+      }).then(async (user) => {
+        await getArticles();
+      });
+    }
     modalDelete.close();
   }, [modalDelete.value]);
 

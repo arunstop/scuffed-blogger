@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
-const randomId = () => Math.floor(Math.random() * 100) + 1;
+
 function PostItemMini({ article }: { article: ArticleModel }) {
   const postedAt = formatDistance(article.dateAdded, Date.now());
   return (
