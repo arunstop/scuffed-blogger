@@ -1,6 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
+import { MdSearch } from "react-icons/md";
+import InputText from "../../components/input/InputText";
 import MainContainer from "../../components/main/MainContainer";
 import ModalConfirmation from "../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
@@ -11,7 +13,7 @@ import { APP_NAME } from "../../utils/helpers/Constants";
 import { useModalRoutedBehaviorHook } from "../../utils/hooks/ModalRoutedBehaviorHook";
 import {
   fbArticleDelete,
-  fbArticleGetByUser,
+  fbArticleGetByUser
 } from "../../utils/services/network/FirebaseApi/ArticleModules";
 
 function PageUserPosts() {
@@ -22,6 +24,7 @@ function PageUserPosts() {
 
   const [articles, setArticles] = useState<ArticleModel[]>();
   const [loadingArticles, setLoadingArticles] = useState(true);
+  const [keyword, setKeyword] = useState("");
   // routed modal
   const modalDelete = useModalRoutedBehaviorHook("articleId");
 
@@ -56,6 +59,31 @@ function PageUserPosts() {
     modalDelete.close();
   }, [modalDelete.value]);
 
+  const searchArticles = useCallback(async (keyword: string) => {
+    setKeyword(keyword);
+  }, []);
+
+  const searchedArticles = !articles
+    ? []
+    : keyword.trim().length < 2
+    ? articles
+    : articles.filter((e) => {
+        const title = e.title.toLowerCase().trim();
+        const desc = e.desc.toLowerCase().trim();
+        const topics = e.topics?.join(" ").toLowerCase().trim() || "";
+        const tags = e.tags.join(" ").toLowerCase().trim();
+        // const date = format(e.dateAdded, "EEEE, DDDD MMMM yyyy")
+        //   .toLowerCase()
+        //   .trim();
+        const kw = keyword.toLowerCase().trim();
+        return (
+          title.includes(kw) ||
+          desc.includes(kw) ||
+          topics.includes(kw) ||
+          tags.includes(kw)
+        );
+      });
+
   return (
     <>
       <Head>
@@ -67,7 +95,26 @@ function PageUserPosts() {
         {/* title */}
         <div className="text-4xl font-bold sm:text-5xl">My Posts</div>
         {/* toolbar */}
-        <div className="flex w-full min-h-[6rem] bg-primary/30"></div>
+        <div className="tabs-boxed w-full rounded-xl min-h-[2rem] flex p-2 sm:p-4">
+          <div className="flex justify-between w-full items-center">
+            <p className="sm:text-xl">
+              <span className="font-bold">{searchedArticles?.length || 0}</span>{" "}
+              articles found.
+            </p>
+
+            <div className="flex ">
+              <InputText
+                icon={<MdSearch />}
+                placeholder="Search my posts..."
+                value={keyword}
+                clearable={keyword.length >= 2}
+                clearAction={()=>searchArticles("")}
+                clearIcon
+                onChange={(e) => searchArticles(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
         {/* posts */}
         {/* Loading indicator */}
         {loadingArticles && (
@@ -76,7 +123,7 @@ function PageUserPosts() {
           </div>
         )}
         {/* Empty indicator */}
-        {!loadingArticles && !articles?.length && (
+        {!loadingArticles && !searchedArticles?.length && (
           <div className={`w-full`}>
             <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
               <span className="sm:text-xl font-bold">
@@ -90,9 +137,9 @@ function PageUserPosts() {
           </div>
         )}
         {/* The actual articles */}
-        {articles?.length ? (
+        {searchedArticles?.length ? (
           <div className="flex flex-col gap-2 sm:gap-4 min-h-[24rem]">
-            {articles.map((e, idx) => {
+            {searchedArticles.map((e, idx) => {
               return <PostItemMini key={idx} article={e} />;
             })}
           </div>

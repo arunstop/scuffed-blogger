@@ -53,7 +53,7 @@ function PostItemMini({ article }: { article: ArticleModel }) {
           </a>
         </Link>
         <div className="flex flex-row w-full items-center gap-2 text-sm font-light sm:text-base">
-          <span className="">{`${postedAt} ago`}</span>
+          <span className="capitalize">{`${postedAt} ago`}</span>
           <span className="font-black">&middot;</span>
         </div>
         {/* options for desktop */}
