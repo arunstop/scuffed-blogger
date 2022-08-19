@@ -58,6 +58,17 @@ export type ArticleLiteModel = Pick<
   };
 };
 
+export async function rtdbArticleGetById(id:string):Promise<ArticleModel|null>{
+  const path=`articleList/${id}`;
+  const rr= ref(db,path);
+  const res = await get(rr);
+  if(res.exists()){
+    return res.val() as ArticleModel;
+  }
+  return null;
+
+}
+
 // Adding lite version of article to rtdb for searching purpose
 export async function rtdbArticleAddMirror(
   article: ArticleModel,

@@ -13,20 +13,21 @@ import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { mainApi } from "../../utils/services/network/MainApi";
 
-const getServerSideProps: GetServerSideProps<{
+export const getServerSideProps: GetServerSideProps<{
   article: ArticleModel;
 }> = async (context) => {
   // SLUG ORDER
   // 0 = User's id
   // 1 = Tab/section
 
-  const slug = (context.query.articleId || "") as string;
-
+  // Getting id from the slug from the last 24 chars
+  const slug = ((context.query.articleId || "") as string).slice(-24);
   const article = await mainApi.mainArticleGetById({ id: slug });
- 
-  if (!article)
+  // Show 404 if article not found or
+  // if the slugs don't  match 
+  if (!article || article.slug !== slug)
     return {
-      notFound: !article,
+      notFound: true,
     };
   return { props: { article: article } };
 };

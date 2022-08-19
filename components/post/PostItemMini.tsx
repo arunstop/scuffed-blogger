@@ -45,7 +45,7 @@ function PostItemMini({ article }: { article: ArticleModel }) {
       {/* </Link> */}
 
       <div className="flex flex-1 flex-col gap-4 p-4">
-        <Link href={`/article/${article.id}`} passHref>
+        <Link href={`/article/${article.slug}`} passHref>
           <a>
             <h1 className="font-black group-hover:underline sm:text-xl line-clamp-2">
               {article.title}
@@ -67,7 +67,7 @@ function PostItemMini({ article }: { article: ArticleModel }) {
           <Link
             href={{
               query: {
-                articleId: article.id,
+                articleId: article.slug,
               },
             }}
             shallow

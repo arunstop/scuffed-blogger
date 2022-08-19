@@ -26,7 +26,7 @@ function PostItem({ article }: { article: ArticleModel }) {
       "
     >
       <PostLinker
-        href={`/article/${article.id}`}
+        href={`/article/${article.slug}`}
         className="relative aspect-square h-60 w-full overflow-hidden rounded-t-xl 
         rounded-bl-none bg-base-content sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none"
       >
@@ -60,10 +60,10 @@ function PostItem({ article }: { article: ArticleModel }) {
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="inline-flex items-center gap-4">
           <div className="dropdown-hover dropdown self-start sm:dropdown-end">
-            <MainUserLabel id={article.id} />
+            <MainUserLabel id={article.slug} />
 
             <div tabIndex={0} className="dropdown-content pt-2">
-              <MainUserPopup id={article.id} />
+              <MainUserPopup id={article.slug} />
             </div>
           </div>
 
@@ -72,7 +72,7 @@ function PostItem({ article }: { article: ArticleModel }) {
               pathname: router.asPath,
 
               query: {
-                postoption: article.id,
+                postoption: article.slug,
               },
             }}
             shallow
@@ -87,7 +87,7 @@ function PostItem({ article }: { article: ArticleModel }) {
           </Link>
         </div>
 
-        <PostLinker href={`/article/${article.id}`}>
+        <PostLinker href={`/article/${article.slug}`}>
           <h1 className="text-2xl font-black group-hover:underline sm:text-3xl line-clamp-2">
             {`${article.title}`}
           </h1>
@@ -114,7 +114,7 @@ function PostItem({ article }: { article: ArticleModel }) {
               <MdBookmarkAdd />
             </span>
           </button>
-          <PostLinker href={`/article/${article.id}`}>
+          <PostLinker href={`/article/${article.slug}`}>
             <button
               className="btn-neutral btn-outline btn btn-sm w-32
               text-lg font-bold normal-case opacity-80
