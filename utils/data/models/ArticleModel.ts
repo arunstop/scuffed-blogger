@@ -106,3 +106,26 @@ export function toArticleModel({
     topics: [...formData.topics.split(",").map((e) => e.trim())],
   };
 }
+
+
+export function toArticleModelDraft(formData: WritingPanelFormProps): ArticleModel {
+  const date = Date.now();
+
+   return {
+    id: "",
+    slug: ``,
+    title: formData.title,
+    desc: formData.desc,
+    content: encodeURIComponent(formData.content),
+    thumbnail: formData.thumbnail
+      ? URL.createObjectURL(formData.thumbnail[0])
+      : "",
+    author: `Writer`,
+    dateAdded: date,
+    dateUpdated: date,
+    deleted: 0,
+    duration: (formData.content.length || 0) / 200,
+    tags: [...formData.tags.split(",").map((e) => e.trim())],
+    topics: [...formData.topics.split(",").map((e) => e.trim())],
+  };
+}
