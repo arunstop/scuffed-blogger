@@ -81,7 +81,7 @@ function WritingPanel() {
       const user = authStt.user;
       if (!user) return;
       // apply new article to the local user data
-      const updatedUser:UserModel = {
+      const updatedUser: UserModel = {
         ...user,
         dateUpdated: newArticle.dateAdded,
       };
@@ -204,8 +204,14 @@ function WritingPanel() {
                   callback: () => {
                     if (!networkResp?.data) return;
                     router.push(
-                      `/article/${(networkResp.data as ArticleModel).id}`,
+                      `/article/${(networkResp.data as ArticleModel).slug}`,
                     );
+                  },
+                },
+                {
+                  label: "Go to My Posts",
+                  callback: () => {
+                    router.push("/user/posts");
                   },
                 },
               ]}
