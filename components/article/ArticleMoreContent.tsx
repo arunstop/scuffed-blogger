@@ -22,8 +22,6 @@ function ArticleMoreContent({ article }: { article: ArticleModel }) {
   useEffect(() => {
     setLoadCommentSection(false);
     setLoadSuggestionSection(false);
-
-    return () => {};
   }, [article]);
 
   return (

@@ -1,16 +1,19 @@
+import { formatDistance } from "date-fns";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import React, { useEffect, useMemo, useState } from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleSectionAction from "../../components/article/ArticleActions";
-import ArticleContent from "../../components/article/ArticleContent";
 import ArticleMoreContent from "../../components/article/ArticleMoreContent";
 import MainContainer from "../../components/main/MainContainer";
+import MainMarkdownContainer from "../../components/main/MainMarkdownContainer";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../components/main/MainUserLabel";
+import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
+import useLazyScrollerHook from "../../utils/hooks/LazyScrollerHook";
 import { fbArticleContentGet } from "../../utils/services/network/FirebaseApi/ArticleModules";
 import { mainApi } from "../../utils/services/network/MainApi";
 
@@ -37,19 +40,27 @@ export const getServerSideProps: GetServerSideProps<{
 function Article({ articleContentless }: { articleContentless: ArticleModel }) {
   const articleId = articleContentless.id;
 
-  
   const [article, setArticle] = useState(articleContentless);
 
   const getContent = async () => {
     const content = await fbArticleContentGet({ id: article.id });
     if (content) {
-      setArticle((prev) => ({ ...prev, content:content }));
+      setArticle((prev) => ({ ...prev, content: content }));
     }
   };
-  
+  const {
+    load: loadContentSection,
+    ref: contentSectionRef,
+    setLoad: setLoadContentSection,
+  } = useLazyScrollerHook({
+    callback: () => {
+      getContent();
+    },
+  });
+
   // reload article content on slug change
   useEffect(() => {
-    getContent();
+    setLoadContentSection(false);
   }, [articleId]);
 
   const mzPage = useMemo(() => {
@@ -78,11 +89,13 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
           </div>
 
           <div className="flex flex-wrap gap-2 text-base sm:text-lg">
-            <span className="">2d ago</span>
+            <span className="">{`${formatDistance(article.dateAdded, Date.now())} ago`}
+              
+            </span>
             <span className="font-black">&middot;</span>
-            <span className="">2mins read</span>
+            <span className="">{`${Math.floor(article.duration)} mins read`}</span>
             <span className="font-black">&middot;</span>
-            <span className="">Technology</span>
+            <span className="">{`${article.topics?.join(", ")}`}</span>
           </div>
 
           <div className=" flex flex-wrap justify-start gap-2 overflow-hidden">
@@ -103,12 +116,46 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
             />
           </div>
 
-          <ArticleContent article={article} />
+          <h1 className="text-3xl font-black sm:text-4xl">
+            {article?.title || `Article's Title`}
+          </h1>
+          <h2 className="text-xl font-semibold sm:text-2xl">
+            {article?.desc || `Article's Description`}
+          </h2>
+          <div className="flex flex-col gap-2 sm:gap-4">
+            <figure className="relative aspect-video w-full overflow-hidden rounded-xl">
+              <img
+                className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2] bg-primary"
+                src={
+                  article?.thumbnail ||
+                  `https://picsum.photos/id/${Math.floor(
+                    Math.random() * 10,
+                  )}/500/300`
+                }
+                alt="Image"
+                width={240}
+                height={240}
+              />
+            </figure>
+          </div>
 
-          <ArticleSectionAction article={article} />
-
-          {/* Comment and Suggestion section */}
-          <ArticleMoreContent article={article} />
+          {loadContentSection ? (
+            <>
+              <MainMarkdownContainer
+                content={decodeURIComponent(
+                  article?.content || "Article's Content",
+                )}
+              />
+              <ArticleSectionAction article={article} />
+              <ArticleMoreContent article={article} />
+            </>
+          ) : (
+            <LoadingIndicator
+              ref={contentSectionRef}
+              spinner
+              text="Loading content"
+            />
+          )}
         </MainContainer>
       </>
     );
