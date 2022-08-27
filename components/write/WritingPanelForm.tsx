@@ -12,7 +12,7 @@ function WritingPanelForm({
   submit,
 }: {
   previewing: boolean;
-  submit: (data?: WritingPanelFormProps) => void;
+  submit: (data: WritingPanelFormProps) => void;
 }) {
   const {
     state: { formData },
@@ -41,7 +41,7 @@ function WritingPanelForm({
     trigger();
     if (!isValid) return;
     // proceed if so
-    action.setFormData(getValues());
+    action.setFormData(getValues(), false);
     // console.log(getValues());
     submit(getValues());
   };
@@ -62,7 +62,7 @@ function WritingPanelForm({
   // set contexts formData before previewing
   useEffect(() => {
     // set state if previewing
-    if (previewing) action.setFormData(getValues());
+    if (previewing) action.setFormData(getValues(), false);
 
     return () => {};
   }, [previewing]);
@@ -111,7 +111,8 @@ function WritingPanelForm({
                 src={
                   thumbnail
                     ? URL.createObjectURL(thumbnail)
-                    : "https://picsum.photos/seed/picsum/300/600"
+                    : formData?.defaultThumbnailPreview ||
+                      "https://picsum.photos/seed/picsum/300/600"
                 }
                 alt="thumbnail"
               />
@@ -126,7 +127,7 @@ function WritingPanelForm({
                   className="flex items-center justify-center rounded-full bg-black/60 p-2 transition-transform
                 duration-700 group-hover:scale-125"
                 >
-                  {thumbnail ? (
+                  {thumbnail || formData?.defaultThumbnailPreview ? (
                     <MdEdit className="text-3xl text-white sm:text-4xl" />
                   ) : (
                     <MdAdd className="text-3xl text-white sm:text-4xl" />

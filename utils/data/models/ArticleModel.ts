@@ -107,11 +107,47 @@ export function toArticleModel({
   };
 }
 
+// Turn ArticleModel to newly updated ArticleModel
+export function toArticleModelUpdated({
+  oldArticle,
+  formData,
+}: {
+  oldArticle: ArticleModel;
+  formData: WritingPanelFormProps;
+}): ArticleModel {
+  const id = oldArticle.id;
+  // use oldArticle.thumbnail if no thumbnail is present
+  let thumbnail = oldArticle.thumbnail;
+  if (formData.thumbnail) {
+    const file = formData.thumbnail[0];
+    // Splitting the name by with .  then get the last item
+    // which results the extension of the file
+    const extension = file.name.split(".").pop();
+    // Getting new name with id
+    const newName = encodeURIComponent(`thumbnails/${id}/${id}.${extension}`);
 
-export function toArticleModelDraft(formData: WritingPanelFormProps): ArticleModel {
+    thumbnail = `https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/${newName}?alt=media`;
+  }
+
+  return {
+    ...oldArticle,
+    title: formData.title,
+    desc: formData.desc,
+    content: encodeURIComponent(formData.content),
+    thumbnail: thumbnail,
+    duration: (formData.content.length || 0) / 200,
+    dateUpdated: Date.now(),
+    tags: [...formData.tags.split(",").map((e) => e.trim())],
+    topics: [...formData.topics.split(",").map((e) => e.trim())],
+  };
+}
+
+export function toArticleModelDraft(
+  formData: WritingPanelFormProps,
+): ArticleModel {
   const date = Date.now();
 
-   return {
+  return {
     id: "",
     slug: ``,
     title: formData.title,

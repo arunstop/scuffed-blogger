@@ -151,7 +151,7 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
             </>
           ) : (
             <LoadingIndicator
-              ref={contentSectionRef}
+              ref={contentSectionRef} 
               spinner
               text="Loading content"
             />

@@ -5,19 +5,29 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../../data/Main";
 import {
   ArticleModel,
-  toArticleModel
+  toArticleModel,
+  toArticleModelUpdated,
 } from "../../../data/models/ArticleModel";
 import { UserModel } from "../../../data/models/UserModel";
 import {
   fsArticleAdd,
-  fsArticleContentAdd, fsArticleContentDelete, fsArticleContentGet, fsArticleDelete,
-  fsArticleGetByUser
+  fsArticleContentAdd,
+  fsArticleContentDelete,
+  fsArticleContentGet,
+  fsArticleContentUpdate,
+  fsArticleDelete,
+  fsArticleGetByUser,
+  fsArticleUpdate,
 } from "../FirestoreDatabase/FirestoreArticleModules";
-import { rtdbArticleAddMirror, rtdbArticleDeleteMirror } from "../RtdbModules";
+import {
+  rtdbArticleMirrorAdd,
+  rtdbArticleMirrorDelete,
+  rtdbArticleMirrorUpdate,
+} from "../RtdbModules";
 import { stDirectoryDelete } from "../StorageModules";
 import { ArticleListModel } from "./../../../data/models/ArticleListModel";
 import { uploadFile } from "./FileModules";
@@ -130,7 +140,7 @@ export async function fbArticleAdd({
 
   // uploading mirror to rtdb for efficient searching
   try {
-    await rtdbArticleAddMirror(articleContentless, user);
+    await rtdbArticleMirrorAdd(articleContentless);
   } catch (error) {
     console.log(error);
     errorCb("Error when creating thumbnail", error as FirebaseError);
@@ -150,7 +160,7 @@ export async function fbArticleDelete({
   user: UserModel;
   callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
 }): Promise<UserModel | null> {
-  // delete article 
+  // delete article
   try {
     await fsArticleDelete({
       article: article,
@@ -180,7 +190,7 @@ export async function fbArticleDelete({
   }
   // delete mirror on rtdb
   try {
-    await rtdbArticleDeleteMirror(article.id);
+    await rtdbArticleMirrorDelete(article.id);
   } catch (error) {
     console.log(error);
     callback?.(
@@ -222,15 +232,11 @@ export async function fbArticleContentGet({
   callback,
 }: {
   id: string;
-  callback?: (
-    resp: MainNetworkResponse<string | null | FirebaseError>,
-  ) => void;
+  callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
 }): Promise<string | null> {
   try {
     const data = await fsArticleContentGet(id);
-    callback?.(
-      netSuccess<string | null>("Success getting user's posts", data),
-    );
+    callback?.(netSuccess<string | null>("Success getting user's posts", data));
     return data;
   } catch (error) {
     console.log(error);
@@ -242,4 +248,93 @@ export async function fbArticleContentGet({
     );
     return null;
   }
+}
+
+type PropsEditArticle = {
+  oldArticle: ArticleModel;
+  rawArticle: WritingPanelFormProps;
+  userPostsRef: string;
+  callback?: (
+    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
+  ) => void;
+};
+
+export async function fbArticleUpdate({
+  oldArticle,
+  rawArticle,
+  userPostsRef,
+  callback,
+}: PropsEditArticle) {
+  // generate updated article
+  const article = toArticleModelUpdated({
+    oldArticle: oldArticle,
+    formData: rawArticle,
+  });
+
+  const errorCb = (msg: string, error: null | FirebaseError) => {
+    callback?.(netError<null | FirebaseError>(msg, error));
+  };
+
+  // contentless articles
+  const articleContentless: ArticleModel = { ...article, content: "" };
+  const oldArticleContentless: ArticleModel = { ...oldArticle, content: "" };
+
+  // store updated article without content
+  try {
+    await fsArticleUpdate({
+      oldArticle: oldArticleContentless,
+      article: articleContentless,
+      userPostsRef: userPostsRef,
+    });
+  } catch (error) {
+    console.log(error);
+    errorCb("Error when creating article", error as FirebaseError);
+    return null;
+  }
+
+  // update the content if present different
+  if (oldArticle.content !== article.content) {
+    try {
+      await fsArticleContentUpdate(article.id, article.content);
+    } catch (error) {
+      console.log(error);
+      errorCb("Error when creating article", error as FirebaseError);
+      return null;
+    }
+  }
+
+  // upload thumbnail if present
+  const thumbnail = rawArticle.thumbnail;
+  if (thumbnail) {
+    try {
+      callback?.(netLoading<ArticleModel>("Uploading the thumbnail", article));
+      // uploading thumbnail
+      const thumbnailUrl = await uploadFile({
+        file: thumbnail[0],
+        directory: `/thumbnails/${article.id}/`,
+        name: article.id,
+      });
+
+      if (!thumbnailUrl) {
+        errorCb("Couldn't get the uploaded image's url", null);
+        return null;
+      }
+    } catch (error) {
+      console.log(error);
+      errorCb("Error when creating thumbnail", error as FirebaseError);
+      return null;
+    }
+  }
+
+  // uploading mirror to rtdb for efficient searching
+  try {
+    await rtdbArticleMirrorUpdate(articleContentless);
+  } catch (error) {
+    console.log(error);
+    errorCb("Error when creating thumbnail", error as FirebaseError);
+    return null;
+  }
+
+  callback?.(netSuccess<ArticleModel>("Success creating article", article));
+  return article;
 }

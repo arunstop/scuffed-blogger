@@ -74,30 +74,34 @@ export async function fsArticleAdd(articleList: ArticleListModel) {
   });
 }
 
-export async function fsArticleUpdate2(articleList: ArticleListModel) {
-  const ref = doc(articleDb, articleList.id);
-  await setDoc(ref, {
-    ...articleList,
-    articles: arrayUnion(...articleList.articles),
+// Update an article to firestore database
+export async function fsArticleUpdate({
+  oldArticle,
+  article,
+  userPostsRef,
+}: {
+  oldArticle: ArticleModel;
+  article: ArticleModel;
+  userPostsRef: string;
+}) {
+  const ref = doc(articleDb, userPostsRef);
+  console.log("oldArticle",oldArticle.dateUpdated);
+  console.log("article",article.dateUpdated);
+  // delete the old article
+  await updateDoc(ref, {
+    articles: arrayRemove(oldArticle),
+  });
+  // add the new updated one
+  await updateDoc(ref, {
+    dateUpdated: article.dateUpdated,
+    articles: arrayUnion(article),
   });
 }
-export async function fsArticleContentGet(id: string):Promise<string|null> {
+
+export async function fsArticleContentGet(id: string): Promise<string | null> {
   const ref = doc(articleContentDb, id);
   const res = await getDoc(ref);
-  return res.exists()? res.data().content:null;
-}
-export async function fsArticleContentAdd(id: string, content: string) {
-  const ref = doc(articleContentDb, id);
-  await setDoc(ref, { content: content });
-}
-export async function fsArticleContentUpdate(id: string, content: string) {
-  const ref = doc(articleContentDb, id);
-  await setDoc(ref, { content: content });
-}
-
-export async function fsArticleContentDelete(id: string) {
-  const ref = doc(articleContentDb, id);
-  await deleteDoc(ref);
+  return res.exists() ? res.data().content : null;
 }
 
 // Updates an article in database
@@ -136,4 +140,18 @@ export async function fsArticleDelete({
     dateUpdated: Date.now(),
     articles: arrayRemove(article),
   });
+}
+
+export async function fsArticleContentAdd(id: string, content: string) {
+  const ref = doc(articleContentDb, id);
+  await setDoc(ref, { content: content });
+}
+export async function fsArticleContentUpdate(id: string, content: string) {
+  const ref = doc(articleContentDb, id);
+  await setDoc(ref, { content: content });
+}
+
+export async function fsArticleContentDelete(id: string) {
+  const ref = doc(articleContentDb, id);
+  await deleteDoc(ref);
 }

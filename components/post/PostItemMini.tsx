@@ -18,7 +18,11 @@ function PostItemMini({ article }: { article: ArticleModel }) {
           className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2]"
           src={
             article.thumbnail ||
-            `https://picsum.photos/id/${article.dateAdded.toString().split("").slice(-2).join("")}/500/300`
+            `https://picsum.photos/id/${article.dateAdded
+              .toString()
+              .split("")
+              .slice(-2)
+              .join("")}/500/300`
           }
           alt="Image"
           width={100}
@@ -61,9 +65,11 @@ function PostItemMini({ article }: { article: ArticleModel }) {
           <button className="btn btn-circle btn-sm btn-outline">
             <MdVisibility className="text-xl" />
           </button>
-          <button className="btn btn-circle btn-sm btn-outline btn-primary">
-            <MdEdit className="text-xl" />
-          </button>
+          <Link href={`/article/edit/${article.id}`}>
+            <a className="btn btn-circle btn-sm btn-outline btn-primary">
+              <MdEdit className="text-xl" />
+            </a>
+          </Link>
           <Link
             href={{
               query: {

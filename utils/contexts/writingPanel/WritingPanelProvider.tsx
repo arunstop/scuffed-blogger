@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useReducer } from "react";
 import {
-  WritingPanelAction,
   getWritingPanelInit,
+  WritingPanelAction,
   WritingPanelContextProps,
   WritingPanelFormProps,
 } from "../../data/contexts/WritingPanelTypes";
@@ -15,14 +15,22 @@ import {
 import { WritingPanelContext } from "./WritingPanelContext";
 import { writingPanelReducer } from "./WritingPanelReducer";
 
-export const WritingPanelProvider = ({ children }: { children: ReactNode }) => {
+export const WritingPanelProvider = ({
+  children,
+  initFormData,
+}: {
+  children: ReactNode;
+  initFormData?: WritingPanelFormProps;
+}) => {
   // reducer
   const [state, dispatch] = useReducer(
     writingPanelReducer,
-    getWritingPanelInit(),
+    getWritingPanelInit({
+      formData: initFormData,
+    }),
   );
   const action: WritingPanelAction = {
-    setFormData: (data) => {
+    setFormData: (data,saveLocal) => {
       // encoding content
       const processedData: WritingPanelFormProps = {
         ...data,
@@ -31,6 +39,7 @@ export const WritingPanelProvider = ({ children }: { children: ReactNode }) => {
       // set state
       dispatch({ type: "SET_FORM_DATA", payload: { data: processedData } });
       // save to local
+      if(saveLocal) 
       storageSave(
         KEY_ARTICLE_DRAFT,
         JSON.stringify({

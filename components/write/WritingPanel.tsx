@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
-import { MdEdit, MdRemoveRedEye } from "react-icons/md";
+import { MdEdit, MdRemoveRedEye } from "react-icons/md";    
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
 import {
@@ -308,4 +308,5 @@ function WritingPanel() {
     </Transition>
   );
 }
+
 export default WritingPanel;
