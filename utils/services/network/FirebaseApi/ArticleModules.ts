@@ -28,7 +28,7 @@ import {
   rtdbArticleMirrorDelete,
   rtdbArticleMirrorUpdate,
 } from "../RtdbModules";
-import { stDirectoryDelete } from "../StorageModules";
+import { stDirectoryDelete, stFileDeleteByFullLink } from "../StorageModules";
 import { ArticleListModel } from "./../../../data/models/ArticleListModel";
 import { uploadFile } from "./FileModules";
 
@@ -306,9 +306,23 @@ export async function fbArticleUpdate({
   // upload thumbnail if present
   const thumbnail = rawArticle.thumbnail;
   if (thumbnail) {
+    callback?.(netLoading<ArticleModel>("Uploading the thumbnail", article));
+    // delete the old tumbnail
+    const thumbnailExt = thumbnail[0].name.split(".").pop() || "";
+    // delete the old thumbnail
+    // if it has different extension than the new one
+    if (!oldArticle.thumbnail.includes(thumbnailExt)) {
+      try {
+        await stFileDeleteByFullLink(oldArticle.thumbnail);
+      } catch (error) {
+        console.log(error);
+        errorCb("Error when uploading thumbnail", error as FirebaseError);
+        return null;
+      }
+    }
+
+    // upload/replace the new one
     try {
-      callback?.(netLoading<ArticleModel>("Uploading the thumbnail", article));
-      // uploading thumbnail
       const thumbnailUrl = await uploadFile({
         file: thumbnail[0],
         directory: `/thumbnails/${article.id}/`,
