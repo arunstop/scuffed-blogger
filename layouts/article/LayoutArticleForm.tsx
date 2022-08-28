@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { Fragment, ReactNode, useEffect } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import StatusPlaceholder, {
-  StatusPlaceholderProps
+  StatusPlaceholderProps,
 } from "../../components/placeholder/StatusPlaceholder";
 import WritingPanelForm from "../../components/write/WritingPanelForm";
 import WritingPanelPreview from "../../components/write/WritingPanelPreview";
@@ -10,7 +10,7 @@ import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
 import {
   WritingPanelFormProps,
-  WritingPanelTabTypes
+  WritingPanelTabTypes,
 } from "../../utils/data/contexts/WritingPanelTypes";
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
@@ -29,10 +29,11 @@ const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [
 ];
 
 interface LayoutArticleFormProps {
+  title: string;
   submitArticle: (props: ArticleSubmissionProps) => void;
 }
 
-function LayoutArticleForm({ submitArticle }: LayoutArticleFormProps) {
+function LayoutArticleForm({ title, submitArticle }: LayoutArticleFormProps) {
   const netAct = useNetworkAction<
     StatusPlaceholderProps | null,
     StatusPlaceholderProps | null
@@ -66,7 +67,7 @@ function LayoutArticleForm({ submitArticle }: LayoutArticleFormProps) {
       className={`flex flex-col justify-start gap-4 sm:gap-8 w-full`}
       {...transitionPullV()}
     >
-      <div className="text-4xl font-bold sm:text-5xl">Write Article</div>
+      <div className="text-4xl font-bold sm:text-5xl">{title}</div>
 
       <div className="relative min-w-full">
         {netAct.netResp ? (
