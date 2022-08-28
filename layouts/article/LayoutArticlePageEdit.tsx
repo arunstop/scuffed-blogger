@@ -132,7 +132,7 @@ export function LayoutArticlePageEdit({
 
   return (
     <>
-      <LayoutArticleForm submitArticle={submitArticle} />
+      <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
     </>
   );
 }

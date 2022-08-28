@@ -1,7 +1,10 @@
 import { Transition } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
-import { toArticleModelDraft } from "../../utils/data/models/ArticleModel";
+import {
+  ArticleModel,
+  toArticleModelDraft,
+} from "../../utils/data/models/ArticleModel";
 import { UserModel } from "../../utils/data/models/UserModel";
 import ArticleContent from "../article/ArticleContent";
 // import MainMarkdownContainer from "../main/MainMarkdownContainer";
@@ -28,7 +31,10 @@ function WritingPanelPreview({
     };
   }, []);
   // check if content is not empty
-  const article = toArticleModelDraft(formData!);
+  const article = {
+    ...toArticleModelDraft(formData!),
+    thumbnail: formData?.defaultThumbnailPreview || "",
+  } as ArticleModel;
 
   return (
     <div className="flex w-full flex-1 flex-row self-start">

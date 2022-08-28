@@ -54,7 +54,7 @@ function WritingPanelForm({
 
       reset({
         ...formData,
-        content: decodeURIComponent(formData.content),
+        content: formData.content,
       });
     }
   }, [formData]);

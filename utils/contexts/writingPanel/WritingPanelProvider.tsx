@@ -34,7 +34,7 @@ export const WritingPanelProvider = ({
       // encoding content
       const processedData: WritingPanelFormProps = {
         ...data,
-        content: encodeURIComponent(data.content),
+        content: data.content,
       };
       // set state
       dispatch({ type: "SET_FORM_DATA", payload: { data: processedData } });
