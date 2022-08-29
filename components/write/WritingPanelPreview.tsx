@@ -33,7 +33,9 @@ function WritingPanelPreview({
   // check if content is not empty
   const article = {
     ...toArticleModelDraft(formData!),
-    thumbnail: formData?.defaultThumbnailPreview || "",
+    thumbnail: formData?.thumbnail?.[0]
+      ? URL.createObjectURL(formData?.thumbnail[0])
+      : formData?.defaultThumbnailPreview || "",
   } as ArticleModel;
 
   return (

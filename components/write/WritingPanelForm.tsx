@@ -98,9 +98,9 @@ function WritingPanelForm({
               rounded-lg border-2  group overflow-hidden
               flex-col relative
               ${
-                !thumbnail
-                  ? "border-dashed border-base-content/20"
-                  : "border-solid border-base-content"
+                thumbnail || formData?.defaultThumbnailPreview
+                ? "border-solid border-base-content"
+                : "border-dashed border-base-content/20"
               }
               `}
             >
