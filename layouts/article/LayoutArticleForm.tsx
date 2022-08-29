@@ -1,6 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { Fragment, ReactNode, useEffect } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
+import MainPageTitle from "../../components/main/MainPageTitle";
 import StatusPlaceholder, {
   StatusPlaceholderProps,
 } from "../../components/placeholder/StatusPlaceholder";
@@ -67,7 +68,7 @@ function LayoutArticleForm({ title, submitArticle }: LayoutArticleFormProps) {
       className={`flex flex-col justify-start gap-4 sm:gap-8 w-full`}
       {...transitionPullV()}
     >
-      <div className="text-4xl font-bold sm:text-5xl">{title}</div>
+      <MainPageTitle title={title} backButton />
 
       <div className="relative min-w-full">
         {netAct.netResp ? (
