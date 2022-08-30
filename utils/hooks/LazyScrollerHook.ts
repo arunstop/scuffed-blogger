@@ -3,9 +3,8 @@ import { waitFor } from "../helpers/DelayHelpers";
 
 interface LazyScrollerHookProps {
   delay?: number;
-  callback?: () => void;
+  callback?: () => void | Promise<void>;
 }
-
 
 function useLazyScrollerHook(
   { delay = 0, callback }: LazyScrollerHookProps = {}, // <==
@@ -17,12 +16,13 @@ function useLazyScrollerHook(
 
   const observer = useRef<IntersectionObserver | null>(null);
 
-  function action() {
+  async function action() {
     // if there is a callback, execute first
-    if (callback) callback();
+    // giving await to callback meaning that it could be promise
+    if (delay > 0) await waitFor(delay);
+    if (callback) await callback();
     // then load
     setLoad(true);
-    // console.log("visible");
   }
 
   const ref = useCallback((node: HTMLElement | null) => {
@@ -33,22 +33,20 @@ function useLazyScrollerHook(
     // setting the observer.
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        // Apply delay if set
-        if (delay === 0) {
-          action();
-        } else {
-          // wait for requested amount of time
-          (async () => {
-            await waitFor(delay);
-            action();
-          })();
-        }
+        action();
       }
     });
     // Observe node if the component is rendered
     if (node) observer.current?.observe(node);
   }, []);
-  return { ref, load, setLoad };
+  return {
+    ref,
+    load,
+    setLoad: (val: boolean) => {
+      console.log(val);
+      setLoad(val);
+    },
+  };
 }
 
 export default useLazyScrollerHook;
