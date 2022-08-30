@@ -1,7 +1,7 @@
 import { formatDistance } from "date-fns";
 import Link from "next/link";
 import React from "react";
-import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
+import { MdDelete, MdEdit, MdList } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 
 function PostItemMini({ article }: { article: ArticleModel }) {
@@ -57,16 +57,19 @@ function PostItemMini({ article }: { article: ArticleModel }) {
           </a>
         </Link>
         <div className="flex flex-row w-full items-center gap-2 text-sm font-light sm:text-base">
-          <span className="capitalize">{`${postedAt} ago`}</span>
+          <span className="">{`${postedAt} ago`}</span>
           <span className="font-black">&middot;</span>
+          <span className="">{`${`17 likes`}`}</span>
+          <span className="font-black">&middot;</span>
+          <span className="">{`${`299 views`}`}</span>
         </div>
         {/* options for desktop */}
         <div className="hidden flex-row items-center mt-auto justify-end gap-2 sm:flex">
-          <button className="btn btn-circle btn-sm btn-outline">
-            <MdVisibility className="text-xl" />
+          <button className="btn btn-circle btn-sm btn-outline" title="View details">
+            <MdList className="text-xl" />
           </button>
           <Link href={`/article/edit/${article.id}`}>
-            <a className="btn btn-circle btn-sm btn-outline btn-primary">
+            <a className="btn btn-circle btn-sm btn-outline btn-primary" title="Edit article">
               <MdEdit className="text-xl" />
             </a>
           </Link>
@@ -78,7 +81,7 @@ function PostItemMini({ article }: { article: ArticleModel }) {
             }}
             shallow
           >
-            <a className="btn btn-circle btn-sm btn-outline btn-error">
+            <a className="btn btn-circle btn-sm btn-outline btn-error" title="Delete article?">
               <MdDelete className="text-xl" />
             </a>
           </Link>
