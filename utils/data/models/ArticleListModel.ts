@@ -1,7 +1,7 @@
 import { ArticleModel } from "./ArticleModel";
 
 export interface ArticleListModel {
-    id:string;  
+  id: string;
   title: string;
   dateAdded: number;
   dateUpdated: number;

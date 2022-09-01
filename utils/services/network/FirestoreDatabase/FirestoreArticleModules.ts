@@ -19,6 +19,7 @@ import {
 } from "firebase/firestore/lite";
 import { ArticleModel } from "../../../data/models/ArticleModel";
 import { firebaseClient } from "../FirebaseClient";
+import { ArticleListModelByUser } from "../FirebaseApi/ArticleModules";
 
 const articleDb = firebaseClient.collections.articles;
 const articleContentDb = firebaseClient.collections.articleContents;
@@ -34,13 +35,43 @@ export async function fsArticleGetAll(): Promise<ArticleModel[] | null> {
 // @return all articles
 export async function fsArticleGetByUser(
   articleListId: string,
-): Promise<ArticleListModel | null> {
+  keyword: string,
+): Promise<ArticleListModelByUser | null> {
   const ref = doc(articleDb, articleListId);
   const snapshot = await getDoc(ref);
-  const articles = snapshot.exists()
-    ? (snapshot.data() as ArticleListModel)
-    : null;
-  return articles;
+
+  if (!snapshot.exists()) return null;
+
+  const dataRaw = snapshot.data();
+  const data = {
+    ...dataRaw,
+    totalArticle: dataRaw.articles.length,
+    keyword: keyword,
+  } as ArticleListModelByUser;
+  // no keyword
+  if (!keyword) return data;
+  // with keyword
+  const kw = keyword.trim().toLowerCase();
+  const filteredArticles = data.articles.filter((e) => {
+    const title = e.title.toLowerCase().trim();
+    const desc = e.desc.toLowerCase().trim();
+    const topics = e.topics?.join(" ").toLowerCase().trim() || "";
+    const tags = e.tags.join(" ").toLowerCase().trim();
+    // const date = format(e.dateAdded, "EEEE, DDDD MMMM yyyy")
+    //   .toLowerCase()
+    //   .trim();
+    return (
+      title.includes(kw) ||
+      desc.includes(kw) ||
+      topics.includes(kw) ||
+      tags.includes(kw)
+    );
+  });
+
+  return {
+    ...data,
+    articles: filteredArticles,
+  };
 }
 
 // @return an article based on `id`
@@ -85,8 +116,8 @@ export async function fsArticleUpdate({
   userPostsRef: string;
 }) {
   const ref = doc(articleDb, userPostsRef);
-  console.log("oldArticle",oldArticle.dateUpdated);
-  console.log("article",article.dateUpdated);
+  console.log("oldArticle", oldArticle.dateUpdated);
+  console.log("article", article.dateUpdated);
   // delete the old article
   await updateDoc(ref, {
     articles: arrayRemove(oldArticle),

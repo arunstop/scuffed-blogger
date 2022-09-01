@@ -5,12 +5,12 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess,
+  netSuccess
 } from "../../../data/Main";
 import {
   ArticleModel,
   toArticleModel,
-  toArticleModelUpdated,
+  toArticleModelUpdated
 } from "../../../data/models/ArticleModel";
 import { UserModel } from "../../../data/models/UserModel";
 import {
@@ -21,15 +21,17 @@ import {
   fsArticleContentUpdate,
   fsArticleDelete,
   fsArticleGetByUser,
-  fsArticleUpdate,
+  fsArticleUpdate
 } from "../FirestoreDatabase/FirestoreArticleModules";
 import {
   rtdbArticleMirrorAdd,
   rtdbArticleMirrorDelete,
-  rtdbArticleMirrorUpdate,
+  rtdbArticleMirrorUpdate
 } from "../RtdbModules";
 import { stDirectoryDelete, stFileDeleteByFullLink } from "../StorageModules";
-import { ArticleListModel } from "./../../../data/models/ArticleListModel";
+import {
+  ArticleListModel
+} from "./../../../data/models/ArticleListModel";
 import { uploadFile } from "./FileModules";
 
 // Adding article, now using direct firebaseClient
@@ -41,19 +43,28 @@ interface PropsAddArticle {
   ) => void;
 }
 
+export type ArticleListModelByUser = ArticleListModel & {
+  totalArticle: number;
+  keyword: string;
+};
 export async function fbArticleGetByUser({
   articleListId,
+  keyword,
   callback,
 }: {
   articleListId: string;
+  keyword: string;
   callback?: (
-    resp: MainNetworkResponse<ArticleListModel | null | FirebaseError>,
+    resp: MainNetworkResponse<ArticleListModelByUser | null | FirebaseError>,
   ) => void;
-}): Promise<ArticleListModel | null> {
+}): Promise<ArticleListModelByUser | null> {
   try {
-    const data = await fsArticleGetByUser(articleListId);
+    const data = await fsArticleGetByUser(articleListId, keyword);
     callback?.(
-      netSuccess<ArticleListModel | null>("Success getting user's posts", data),
+      netSuccess<ArticleListModelByUser | null>(
+        "Success getting user's posts",
+        data,
+      ),
     );
     return data;
   } catch (error) {
