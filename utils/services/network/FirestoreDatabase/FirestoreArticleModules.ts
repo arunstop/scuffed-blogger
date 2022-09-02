@@ -36,18 +36,25 @@ export async function fsArticleGetAll(): Promise<ArticleModel[] | null> {
 export async function fsArticleGetByUser(
   articleListId: string,
   keyword: string,
+  paging: {
+    start: number;
+    end: number;
+  },
 ): Promise<ArticleListModelByUser | null> {
   const ref = doc(articleDb, articleListId);
   const snapshot = await getDoc(ref);
 
   if (!snapshot.exists()) return null;
 
-  const dataRaw = snapshot.data();
+  const dataRaw = snapshot.data() as ArticleListModel;
   const data = {
     ...dataRaw,
     totalArticle: dataRaw.articles.length,
     keyword: keyword,
+    articles: dataRaw.articles.slice(paging.start, paging.end),
+    offset: paging.end,
   } as ArticleListModelByUser;
+  
   // no keyword
   if (!keyword) return data;
   // with keyword
