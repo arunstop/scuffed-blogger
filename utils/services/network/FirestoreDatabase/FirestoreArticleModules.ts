@@ -54,12 +54,12 @@ export async function fsArticleGetByUser(
     articles: dataRaw.articles.slice(paging.start, paging.end),
     offset: paging.end,
   } as ArticleListModelByUser;
-  
+
   // no keyword
   if (!keyword) return data;
   // with keyword
   const kw = keyword.trim().toLowerCase();
-  const filteredArticles = data.articles.filter((e) => {
+  const filteredArticles = dataRaw.articles.filter((e) => {
     const title = e.title.toLowerCase().trim();
     const desc = e.desc.toLowerCase().trim();
     const topics = e.topics?.join(" ").toLowerCase().trim() || "";
@@ -77,7 +77,8 @@ export async function fsArticleGetByUser(
 
   return {
     ...data,
-    articles: filteredArticles,
+    articles: filteredArticles.slice(paging.start, paging.end),
+    totalArticle: filteredArticles.length,
   };
 }
 

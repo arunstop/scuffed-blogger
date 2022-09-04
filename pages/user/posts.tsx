@@ -126,21 +126,24 @@ function PageUserPosts() {
     getArticles({ init: false, keyword: kw });
   }
 
-  const loadMoreArticles = () => {
+  const loadMoreArticles = async () => {
     if (!articleData) return;
     if (articleData.offset > articleData.totalArticle)
-      return console.log(articleData?.offset);
+      return console.log("maxed out", articleData?.offset);
     setLoadingArticles(true);
+    await waitFor(500);
     getArticles({
       init: false,
       keyword: articleData?.keyword,
       offset: articleData?.offset,
       append: true,
     });
-    setLoadingArticles(false);
   };
 
   const articles = articleData?.articles || [];
+  const articleCount = articleData?.keyword
+    ? articleData?.totalArticle || 0
+    : articleDataInit?.totalArticle || 0;
   // getting articles at first render only
   useEffect(() => {
     if (articleDataInit) return;
@@ -158,7 +161,7 @@ function PageUserPosts() {
       </Head>
       <MainContainer>
         {/* title */}
-        <div className="text-4xl font-bold sm:text-5xl">My Posts </div>
+        <div className="text-4xl font-bold sm:text-5xl">My Posts</div>
         {/* toolbar */}
         {articleData && (
           <div className="tabs-boxed w-full rounded-xl min-h-[2rem] flex p-2 sm:p-4">
@@ -201,8 +204,8 @@ function PageUserPosts() {
         )}
         {!!articles.length && (
           <p className="sm:text-xl">
-            <span className="font-bold">{articles.length || 0}</span> articles
-            found.
+            <span className="font-bold">{articleCount}</span>{" "}
+            {`article${articleCount < 1 ? `s` : ``}`} found.
           </p>
         )}
         {/* articles */}
@@ -217,19 +220,22 @@ function PageUserPosts() {
         {!loadingArticles && (
           <>
             {/* no articles */}
-            {!articleData?.totalArticle && (
-              <div className={`w-full`}>
-                <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
-                  <span className="sm:text-xl">
-                    No articles found, write your first article and let the
-                    world know!
-                  </span>
-                  <Link href={"/write"} passHref>
-                    <a className="btn --btn-resp btn-outline">Write Article</a>
-                  </Link>
+            {!articleData?.articles.length ||
+              (!articleDataInit?.totalArticle && (
+                <div className={`w-full`}>
+                  <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                    <span className="sm:text-xl">
+                      No articles found, write your first article and let the
+                      world know!
+                    </span>
+                    <Link href={"/write"} passHref>
+                      <a className="btn --btn-resp btn-outline">
+                        Write Article
+                      </a>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
             {/* No result */}
             {!articles.length && (
               <div className={`w-full`}>
@@ -255,7 +261,7 @@ function PageUserPosts() {
         {loadingArticles ? (
           <Transition appear {...transitionPullV()}>
             <div className={`w-full h-[30rem]`}>
-              <LoadingIndicator text={`Loading articles...`} spinner />
+              <LoadingIndicator text={``} spinner />
             </div>
           </Transition>
         ) : (
@@ -267,8 +273,7 @@ function PageUserPosts() {
                 loadMoreArticles();
               }}
               className="flex w-full "
-            >
-            </MainLazyScrollTrigger>
+            ></MainLazyScrollTrigger>
           )
         )}
 
