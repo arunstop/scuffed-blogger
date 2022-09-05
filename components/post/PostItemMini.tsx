@@ -49,7 +49,8 @@ const PostItemMiniContent = ({ article }: { article: ArticleModel }) => {
     // >
     <div
       className="group flex w-full overflow-hidden rounded-xl bg-primary
-      bg-opacity-10 shadow-lg transition-all hover:bg-opacity-40 flex-row"
+      bg-opacity-10 shadow-lg transition-all hover:bg-opacity-40 flex-row
+      animate-[button-pop_0.25s_ease-out]"
     >
       {/* <Link href={`/article/${post.id}`} passHref> */}
       <a className="relative aspect-video w-24 sm:w-48 overflow-hidden">
