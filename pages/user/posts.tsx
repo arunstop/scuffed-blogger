@@ -212,7 +212,7 @@ function PageUserPosts() {
         {articles.length ? (
           <div className="flex flex-col gap-2 sm:gap-4 min-h-[24rem]">
             {articles.map((e, idx) => {
-              return <PostItemMini key={idx} article={e} />;
+              return <PostItemMini key={idx} article={e} observe />;
             })}
           </div>
         ) : null}
