@@ -1,8 +1,7 @@
-import { COOKIE_USER_AUTH } from "./../utils/helpers/Constants";
-// middleware.ts
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
-import { isUserModel } from "../utils/data/models/UserModel";
+import { NextRequest, NextResponse } from "next/server";
+import { isUserModel } from "./utils/data/models/UserModel";
+import { COOKIE_USER_AUTH } from "./utils/helpers/Constants";
+
 
 const protectedRoutes = ["/write", "/profile"];
 
@@ -13,7 +12,7 @@ export function middleware(request: NextRequest) {
   // check if user requested to access to protected routes without authenticating
   // a.k.a tresspassing
   //  by checking their cookies
-  const auth = request.cookies[COOKIE_USER_AUTH];
+  const auth = request.cookies.get(COOKIE_USER_AUTH)||"";
   let isValid;
   try {
     isValid = isUserModel(JSON.parse(auth) as unknown);
