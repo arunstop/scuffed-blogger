@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { routeTrimQuery } from "../helpers/MainHelpers";
 
 export function useUiSidebarBehaviorHook() {
@@ -20,12 +20,12 @@ export function useUiSidebarBehaviorHook() {
 
   const show = !!router.query.sidebar;
 
-  // checking the query params
-  // then open or close based on the value
-  useEffect(() => {
-    if (show) return openSidebar();
-    return closeSidebar();
-  }, [show]);
+//   // checking the query params
+//   // then open or close based on the value
+//   useEffect(() => {
+//     if (show) return openSidebar();
+//     return closeSidebar();
+//   }, [show]);
 
   return { sidebar: show, openSidebar, closeSidebar };
 }
