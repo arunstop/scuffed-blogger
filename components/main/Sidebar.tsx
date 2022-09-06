@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
   MdArticle,
@@ -10,11 +9,12 @@ import {
   MdLogout,
   MdPerson,
   MdPlaylistAddCheck,
-  MdWatchLater,
+  MdWatchLater
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
+import { useUiSidebarBehaviorHook } from "../../utils/hooks/UiSidebarBehaviorHook";
 import ModalConfirmation from "../modal/ModalConfirmation";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 
@@ -28,8 +28,6 @@ function Sidebar() {
     uiStt: { darkMode },
     uiAct,
   } = useUiCtx();
-
-  const router = useRouter();
 
   const allMenus: (MainMenuItemProps & { show: boolean })[] = [
     {
@@ -72,7 +70,7 @@ function Sidebar() {
     {
       title: "Posts",
       icon: <MdArticle />,
-      link:`/user/posts`,
+      link: `/user/posts`,
       action: () => {
         closeDrawer();
       },
@@ -119,13 +117,14 @@ function Sidebar() {
 
   const shownMenus = allMenus.filter((e) => e.show);
 
-  const [drawer, setDrawer] = useState(false);
   const [dialogLogout, setDialogLogout] = useState(false);
+
+  const { sidebar, openSidebar, closeSidebar } = useUiSidebarBehaviorHook();
 
   function closeDrawer() {
     // blur out everything
     (document.activeElement as HTMLElement).blur();
-    setDrawer(false);
+    closeSidebar();
   }
 
   function handleKeyPress(ev: KeyboardEvent) {
@@ -138,13 +137,13 @@ function Sidebar() {
   //   Key listener
   useEffect(() => {
     //   only listen to keydown when drawer shows
-    if (drawer) window.addEventListener("keydown", handleKeyPress);
+    if (sidebar) window.addEventListener("keydown", handleKeyPress);
     // otherwise remove it
     else window.removeEventListener("keydown", handleKeyPress);
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [drawer]);
+  }, [sidebar]);
 
   return (
     <>
@@ -153,9 +152,10 @@ function Sidebar() {
           id="main-drawer"
           type="checkbox"
           className="drawer-toggle"
-          checked={drawer}
+          checked={sidebar}
           onChange={(e) => {
-            setDrawer(e.target.checked);
+            if (e.target.checked) return openSidebar();
+            return closeSidebar();
           }}
         />
         {/* USELESS CONTENT */}
