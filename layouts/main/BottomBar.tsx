@@ -74,7 +74,7 @@ function BottomBar() {
         modalShown ? "z-[1000]" : "z-50"
       }`}
     >
-      <div className="h-[3.5rem] bg-primary flex w-full">
+      <div className="h-[3rem] bg-primary flex w-full">
         {tabs.map((tab, idx) => {
           return <BottomBarTab key={idx} {...tab} />;
         })}
@@ -86,14 +86,14 @@ function BottomBar() {
 function BottomBarTab({ title, active, icon, action }: BottomBarTabProps) {
   return (
     <div
-      className={`btn btn-ghost px-2 rounded-none flex flex-col flex-[1_1_0px] !h-auto overflow-hidden
+      className={`btn btn-ghost px-1 py-px rounded-none flex-nowrap !flex !flex-col flex-[1_1_0px] !h-auto overflow-hidden
       ${active && `!bg-base-content !text-primary`}
       `}
       onClick={() => {
         action?.();
       }}
     >
-      <div className="text-2xl my-1">{icon}</div>
+      <div className="text-2xl mb-px">{icon}</div>
       <div className="overflow-hidden w-full truncate text-sm">{title}</div>
     </div>
   );
