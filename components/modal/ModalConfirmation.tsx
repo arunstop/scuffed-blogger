@@ -13,7 +13,6 @@ function ModalConfirmation({
   onClose,
   title,
   desc,
-
   onConfirm,
 }: ModalProps & ModalConfirmationProps) {
   return (
