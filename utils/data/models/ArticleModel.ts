@@ -1,11 +1,12 @@
-import { isFalsy } from "../Main";
 import _ from "lodash";
-import { WritingPanelFormProps } from "../contexts/WritingPanelTypes";
-import { nanoid } from "nanoid";
 import { strKebabify } from "../../helpers/MainHelpers";
+import { WritingPanelFormProps } from "../contexts/WritingPanelTypes";
+import { isFalsy } from "../Main";
+import { UserModel } from "./UserModel";
 
 export interface ArticleModel {
   id: string;
+  slug: string;
   title: string;
   desc: string;
   thumbnail: string;
@@ -28,6 +29,7 @@ export function isArticleModel(value: unknown) {
   // check if all required properties are satisfied
   const requiredPropsValid =
     "id" in value &&
+    "slug" in value &&
     "title" in value &&
     "desc" in value &&
     "thumbnail" in value &&
@@ -41,6 +43,7 @@ export function isArticleModel(value: unknown) {
   // list all properties
   const props = [
     "id",
+    "slug",
     "title",
     "desc",
     "thumbnail",
@@ -65,18 +68,95 @@ export function isArticleModel(value: unknown) {
 
 // turn `WritingPanelFormProps` into `ArticleModel`
 // by extracting their component
-export function toArticleModel(formData: WritingPanelFormProps): ArticleModel {
+export function toArticleModel({
+  id,
+  user,
+  formData,
+}: {
+  id: string;
+  user: UserModel;
+  formData: WritingPanelFormProps;
+}): ArticleModel {
+  const date = Date.now();
+  let thumbnail = "";
+  if (formData.thumbnail) {
+    const file = formData.thumbnail[0];
+    // Splitting the name by with .  then get the last item
+    // which results the extension of the file
+    const extension = file.name.split(".").pop();
+    // Getting new name with id
+    const newName = encodeURIComponent(`thumbnails/${id}/${id}.${extension}`);
+
+    thumbnail = `https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/${newName}?alt=media`;
+  }
+
+  return {
+    id: id,
+    slug: `${strKebabify(formData.title.slice(0, 120))}-${id}`,
+    title: formData.title,
+    desc: formData.desc,
+    content: encodeURIComponent(formData.content),
+    thumbnail: thumbnail,
+    author: user.email,
+    dateAdded: date,
+    dateUpdated: date,
+    deleted: 0,
+    duration: (formData.content.length || 0) / 200,
+    tags: [...formData.tags.split(",").map((e) => e.trim())],
+    topics: [...formData.topics.split(",").map((e) => e.trim())],
+  };
+}
+
+// Turn ArticleModel to newly updated ArticleModel
+export function toArticleModelUpdated({
+  oldArticle,
+  formData,
+}: {
+  oldArticle: ArticleModel;
+  formData: WritingPanelFormProps;
+}): ArticleModel {
+  const id = oldArticle.id;
+  // use oldArticle.thumbnail if no thumbnail is present
+  let thumbnail = oldArticle.thumbnail;
+  if (formData.thumbnail) {
+    const file = formData.thumbnail[0];
+    // Splitting the name by with .  then get the last item
+    // which results the extension of the file
+    const extension = file.name.split(".").pop();
+    // Getting new name with id
+    const newName = encodeURIComponent(`thumbnails/${id}/${id}.${extension}`);
+
+    thumbnail = `https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/${newName}?alt=media`;
+  }
+
+  return {
+    ...oldArticle,
+    title: formData.title,
+    desc: formData.desc,
+    content: encodeURIComponent(formData.content),
+    thumbnail: thumbnail,
+    duration: (formData.content.length || 0) / 200,
+    dateUpdated: Date.now(),
+    tags: [...formData.tags.split(",").map((e) => e.trim())],
+    topics: [...formData.topics.split(",").map((e) => e.trim())],
+  };
+}
+
+export function toArticleModelDraft(
+  formData: WritingPanelFormProps,
+): ArticleModel {
   const date = Date.now();
 
   return {
-    id: strKebabify(`${formData.title.slice(0, 120)}-${nanoid()}`),
+    id: "",
+    slug: ``,
     title: formData.title,
     desc: formData.desc,
     content: encodeURIComponent(formData.content),
     thumbnail: formData.thumbnail
       ? URL.createObjectURL(formData.thumbnail[0])
       : "",
-    author: "Munkrey Alf",
+    author: `Writer`,
     dateAdded: date,
     dateUpdated: date,
     deleted: 0,

@@ -1,12 +1,22 @@
 import { Transition } from "@headlessui/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
-import { toArticleModel } from "../../utils/data/models/ArticleModel";
+import {
+  ArticleModel,
+  toArticleModelDraft,
+} from "../../utils/data/models/ArticleModel";
+import { UserModel } from "../../utils/data/models/UserModel";
 import ArticleContent from "../article/ArticleContent";
 // import MainMarkdownContainer from "../main/MainMarkdownContainer";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 
-function WritingPanelPreview({ submit }: { submit: () => void }) {
+function WritingPanelPreview({
+  user,
+  submit,
+}: {
+  user: UserModel;
+  submit: () => void;
+}) {
   const [loaded, setLoaded] = useState(false);
   const {
     state: { formData },
@@ -21,6 +31,12 @@ function WritingPanelPreview({ submit }: { submit: () => void }) {
     };
   }, []);
   // check if content is not empty
+  const article = {
+    ...toArticleModelDraft(formData!),
+    thumbnail: formData?.thumbnail?.[0]
+      ? URL.createObjectURL(formData?.thumbnail[0])
+      : formData?.defaultThumbnailPreview || "",
+  } as ArticleModel;
 
   return (
     <div className="flex w-full flex-1 flex-row self-start">
@@ -42,7 +58,7 @@ function WritingPanelPreview({ submit }: { submit: () => void }) {
             enterFrom="opacity-50 scale-x-50"
             enterTo="opacity-100 scale-x-100"
           >
-            <ArticleContent article={toArticleModel(formData)} />
+            <ArticleContent article={article} />
 
             <div className="flex w-full flex-row flex-wrap justify-end gap-2 sm:gap-4">
               <button

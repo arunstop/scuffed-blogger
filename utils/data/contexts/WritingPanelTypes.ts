@@ -4,14 +4,14 @@ export interface WritingPanelContextProps {
 }
 
 export interface WritingPanelState {
-  formData: WritingPanelFormProps | null;
+  formData: WritingPanelFormProps | undefined;
   tab: WritingPanelTabTypes;
 }
 
 export type WritingPanelTabTypes = "Preview" | "Write";
 
 export interface WritingPanelAction {
-  setFormData: (data: WritingPanelFormProps) => void;
+  setFormData: (data: WritingPanelFormProps,saveLocal?:boolean) => void;
   clearFormData: () => void;
   setTab: (data: WritingPanelTabTypes) => void;
 }
@@ -21,7 +21,7 @@ export type WritingPanelActionTypes =
       type: "SET_FORM_DATA";
       payload: { data: WritingPanelFormProps };
     }
-    | {
+  | {
       type: "CLEAR_FORM_DATA";
     }
   | {
@@ -40,6 +40,7 @@ export interface WritingPanelFormProps {
   tags: string;
   content: string;
   thumbnail?: FileList;
+  defaultThumbnailPreview?:string;
 }
 
 // factory
@@ -57,6 +58,9 @@ export interface WritingPanelFormProps {
 //   return data;
 // };
 
-export const getWritingPanelInit = (): WritingPanelState => {
-  return { formData: null, tab: "Write" };
+export const getWritingPanelInit = ({
+  formData,
+  tab = "Write",
+}: Partial<WritingPanelState>): WritingPanelState => {
+  return { formData, tab };
 };

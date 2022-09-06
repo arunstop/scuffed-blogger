@@ -3,6 +3,7 @@ import { storageSave } from "../services/local/LocalStorage";
 
 export const getBodyEl = () => document.getElementsByTagName("BODY")[0];
 export const getHeaderEl = () => document.getElementById("header");
+export const getElById = (id: string) => document.getElementById(id);
 
 export const toggleClientDarkMode = (newVal: boolean) => {
   // const html = document.documentElement;

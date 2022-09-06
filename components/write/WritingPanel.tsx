@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
-import { MdEdit, MdRemoveRedEye } from "react-icons/md";
+import { MdEdit, MdRemoveRedEye } from "react-icons/md";    
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
 import {
@@ -45,7 +45,7 @@ function WritingPanel() {
   const submitArticle = useCallback(
     async (data?: WritingPanelFormProps) => {
       // Auth required
-      if (!isLoggedIn) return;
+      if (!authStt.user) return;
 
       // if param data exist (data from form), use it
       // if not use the current formData state from WritingPanel context
@@ -60,7 +60,7 @@ function WritingPanel() {
       const newArticle = await fbArticleAdd({
         rawArticle: processedData,
         // correct non-null assertion becase we know that isLoggedIn already true
-        user: authStt.user!,
+        user: authStt.user,
         callback: async (resp) => {
           // change loading state, if it's loading, no need to wait
           if (resp.status !== "loading") await waitFor(2000);
@@ -81,9 +81,8 @@ function WritingPanel() {
       const user = authStt.user;
       if (!user) return;
       // apply new article to the local user data
-      const updatedUser:UserModel = {
+      const updatedUser: UserModel = {
         ...user,
-        list: { ...user.list, posts: [...user.list.posts, newArticle.id] },
         dateUpdated: newArticle.dateAdded,
       };
       authAct.setUser(updatedUser);
@@ -129,6 +128,7 @@ function WritingPanel() {
               {
                 label: "Cancel",
                 callback: () => {
+                  setNetWorkResp(undefined);
                   setLoading(false);
                 },
               },
@@ -204,8 +204,14 @@ function WritingPanel() {
                   callback: () => {
                     if (!networkResp?.data) return;
                     router.push(
-                      `/article/${(networkResp.data as ArticleModel).id}`,
+                      `/article/${(networkResp.data as ArticleModel).slug}`,
                     );
+                  },
+                },
+                {
+                  label: "Go to My Posts",
+                  callback: () => {
+                    router.push("/user/posts");
                   },
                 },
               ]}
@@ -290,6 +296,7 @@ function WritingPanel() {
                   <div className="min-w-full">
                     <WritingPanelPreview
                       submit={submitArticle}
+                      user={authStt.user!}
                     />
                   </div>
                 </Transition>
@@ -301,4 +308,5 @@ function WritingPanel() {
     </Transition>
   );
 }
+
 export default WritingPanel;

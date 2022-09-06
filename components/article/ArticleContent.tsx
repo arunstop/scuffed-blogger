@@ -3,15 +3,6 @@ import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import MainMarkdownContainer from "../main/MainMarkdownContainer";
 
 function ArticleContent({ article }: { article: ArticleModel }) {
-  // const [article, setArticle] = useState<undefined | ArticleModel>();
-  // useEffect(() => {
-  //   const dummyArticle = JSON.parse(storageGet(KEY_ARTICLE_CONTENT));
-  //   if (dummyArticle) setArticle(dummyArticle as ArticleModel);
-  //   return () => {};
-  // }, []);
-
-  console.log("render Article Content");
-
   return (
     <>
       <h1 className="text-3xl font-black sm:text-4xl">

@@ -15,6 +15,7 @@ export const UserPostTab = React.memo(function UserPost({
         {[...Array(10)].map((_e, idx) => (
           <PostItem key={Math.random()} article={{
             id: idx+"",
+            slug: idx+"",
             title: LOREM.slice(0, 120),
             desc: LOREM.slice(121, LOREM.length),
             content: encodeURIComponent(LOREM),
