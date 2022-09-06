@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { MdHome, MdNotifications, MdPerson, MdSearch } from "react-icons/md";
+import { routeTrimQuery } from "../../utils/helpers/MainHelpers";
 import { useUiSidebarBehaviorHook } from "../../utils/hooks/UiSidebarBehaviorHook";
 
 interface BottomBarTabProps {
@@ -12,6 +13,7 @@ interface BottomBarTabProps {
 
 function BottomBar() {
   const router = useRouter();
+  const currentPath = routeTrimQuery(router.asPath);
   const { sidebar, openSidebar, closeSidebar } = useUiSidebarBehaviorHook();
   const [modalShown, setModalShown] = useState(false);
   const isSearching = !!router.query.search;
@@ -31,7 +33,11 @@ function BottomBar() {
       icon: <MdSearch />,
       active: isSearching,
       action: () => {
-        router.push({ query: { search: true } }, undefined, { shallow: true });
+        router.push(
+          { pathname: currentPath, query: { search: true } },
+          undefined,
+          { shallow: true },
+        );
       },
     },
     {
@@ -39,7 +45,11 @@ function BottomBar() {
       icon: <MdNotifications />,
       active: !!router.query.notifications,
       action: () => {
-        router.push({ query: { notifications: true } });
+        router.push(
+          { pathname: currentPath, query: { notifications: true } },
+          undefined,
+          { shallow: true },
+        );
       },
     },
     {
@@ -55,8 +65,8 @@ function BottomBar() {
   useEffect(() => {
     // if(!isSearching) return;
     // set modal shown based on searchModal and sidebar
-    setModalShown(isSearching||!sidebar);
-  }, [isSearching,sidebar]);
+    setModalShown(isSearching || !sidebar);
+  }, [isSearching, sidebar]);
 
   return (
     <div

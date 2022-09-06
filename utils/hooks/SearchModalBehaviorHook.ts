@@ -12,7 +12,7 @@ export function useSearchModalBehavior() {
 
   const closeSearchModal = useCallback(() => {
     // const q = router.query.articleId;
-    console.log(router);
+    // console.log(router);
     const currentPath = routeTrimQuery(router.asPath);
     router.replace(currentPath, undefined, {
       shallow: true,

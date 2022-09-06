@@ -6,11 +6,11 @@ export function useUiSidebarBehaviorHook() {
   const router = useRouter();
 
   const show = !!router.query.sidebar;
+  const currentPath = routeTrimQuery(router.asPath);
 
   const closeSidebar = useCallback(() => {
     // const q = router.query.articleId;
     // console.log(router);
-    const currentPath = routeTrimQuery(router.asPath);
     router.replace(currentPath, undefined, {
       shallow: true,
     });
@@ -18,7 +18,11 @@ export function useUiSidebarBehaviorHook() {
 
   const openSidebar = useCallback(() => {
     if (show) return;
-    router.push({ query: { sidebar: true } });
+    router.push(
+      { pathname: currentPath, query: { sidebar: true } },
+      undefined,
+      { shallow: true },
+    );
   }, [router]);
 
   //   // checking the query params
