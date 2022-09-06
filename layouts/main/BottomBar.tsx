@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { MdHome, MdNotifications, MdPerson, MdSearch } from "react-icons/md";
 import { useUiSidebarBehaviorHook } from "../../utils/hooks/UiSidebarBehaviorHook";
 
@@ -13,11 +13,14 @@ interface BottomBarTabProps {
 function BottomBar() {
   const router = useRouter();
   const { sidebar, openSidebar, closeSidebar } = useUiSidebarBehaviorHook();
+  const [modalShown, setModalShown] = useState(false);
+  const isSearching = !!router.query.search;
+
   const tabs: BottomBarTabProps[] = [
     {
       title: "Home",
       icon: <MdHome />,
-      active: !router.query.notifications && !sidebar && !router.query.search,
+      active: !router.query.notifications && !sidebar && !isSearching,
       action: () => {
         if (router.pathname !== "/") return router.back();
         return router.push("/");
@@ -26,7 +29,7 @@ function BottomBar() {
     {
       title: "Search",
       icon: <MdSearch />,
-      active: !!router.query.search,
+      active: isSearching,
       action: () => {
         router.push({ query: { search: true } }, undefined, { shallow: true });
       },
@@ -48,8 +51,19 @@ function BottomBar() {
       },
     },
   ];
+
+  useEffect(() => {
+    // if(!isSearching) return;
+    // set modal shown based on searchModal and sidebar
+    setModalShown(isSearching||!sidebar);
+  }, [isSearching,sidebar]);
+
   return (
-    <div className="fixed inset-x-0 bottom-0 sm:hidden z-[1000]">
+    <div
+      className={`fixed inset-x-0 bottom-0 sm:hidden ${
+        modalShown ? "z-[1000]" : "z-50"
+      }`}
+    >
       <div className="h-[3.5rem] bg-primary flex w-full">
         {tabs.map((tab, idx) => {
           return <BottomBarTab key={idx} {...tab} />;

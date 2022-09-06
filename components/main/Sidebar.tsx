@@ -164,9 +164,9 @@ function Sidebar() {
           {/* OVERLAY */}
           <label
             htmlFor="main-drawer"
-            className="drawer-overlay pointer-events-auto !cursor-default backdrop-blur-sm !bg-black/60"
+            className="drawer-overlay pointer-events-auto !cursor-default backdrop-blur-sm !bg-black/60 hidden sm:block"
           />
-          <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 overflow-y-auto w-80 bg-base-100 pointer-events-auto">
+          <div className="flex flex-col gap-4 p-4 overflow-y-auto sm:w-80 bg-base-100 pointer-events-auto mb-[3.5rem] sm:mb-0 w-full">
             <div className="flex flex-col gap-2 sm:gap-4 items-center">
               <div
                 className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
