@@ -5,6 +5,8 @@ import { routeTrimQuery } from "../helpers/MainHelpers";
 export function useUiSidebarBehaviorHook() {
   const router = useRouter();
 
+  const show = !!router.query.sidebar;
+
   const closeSidebar = useCallback(() => {
     // const q = router.query.articleId;
     // console.log(router);
@@ -15,17 +17,16 @@ export function useUiSidebarBehaviorHook() {
   }, [router]);
 
   const openSidebar = useCallback(() => {
+    if (show) return;
     router.push({ query: { sidebar: true } });
   }, [router]);
 
-  const show = !!router.query.sidebar;
-
-//   // checking the query params
-//   // then open or close based on the value
-//   useEffect(() => {
-//     if (show) return openSidebar();
-//     return closeSidebar();
-//   }, [show]);
+  //   // checking the query params
+  //   // then open or close based on the value
+  //   useEffect(() => {
+  //     if (show) return openSidebar();
+  //     return closeSidebar();
+  //   }, [show]);
 
   return { sidebar: show, openSidebar, closeSidebar };
 }
