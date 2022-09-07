@@ -31,7 +31,7 @@ const SearchModal = React.memo(function SearchModal() {
   );
   return (
     <ModalTemplate value={searchModal} onClose={closeSearchModal} title="Search Tuturku" fullscreen>
-      <div className="flex flex-col gap-2 sm:gap-4">
+      <div className="flex flex-col gap-2 sm:gap-4 pb-[3rem] sm:pb-0">
         <div className="form-control">
           <div className="inline-flex items-center gap-2 sm:gap-4">
             <InputText
