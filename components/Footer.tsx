@@ -1,6 +1,4 @@
-import React from "react";
 import { FaBloggerB, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
-import BottomBar from "../layouts/main/BottomBar";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
 function Footer() {
@@ -47,7 +45,6 @@ function Footer() {
         </div>
       </div>
     </footer>
-    <BottomBar/>
     </>
   );
 }

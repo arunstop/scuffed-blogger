@@ -15,14 +15,14 @@ function BottomBar() {
   const router = useRouter();
   const currentPath = routeTrimQuery(router.asPath);
   const { sidebar, openSidebar, closeSidebar } = useUiSidebarBehaviorHook();
-  const [modalShown, setModalShown] = useState(false);
   const isSearching = !!router.query.search;
+  const [modalShown, setModalShown] = useState(isSearching);
 
   const tabs: BottomBarTabProps[] = [
     {
       title: "Home",
       icon: <MdHome />,
-      active: !router.query.notifications && !sidebar && !isSearching,
+      active: router.pathname === "/",
       action: () => {
         if (router.pathname !== "/") return router.back();
         return router.push("/");
@@ -65,8 +65,8 @@ function BottomBar() {
   useEffect(() => {
     // if(!isSearching) return;
     // set modal shown based on searchModal and sidebar
-    setModalShown(isSearching || !sidebar);
-  }, [isSearching, sidebar]);
+    setModalShown(isSearching);
+  }, [isSearching]);
 
   return (
     <div
@@ -87,7 +87,7 @@ function BottomBarTab({ title, active, icon, action }: BottomBarTabProps) {
   return (
     <div
       className={`btn btn-ghost px-1 py-px rounded-none flex-nowrap !flex !flex-col flex-[1_1_0px] !h-auto overflow-hidden
-      ${active && `!bg-base-content !text-primary`}
+      ${active ? `!bg-base-content !text-primary` : ''}
       `}
       onClick={() => {
         action?.();
