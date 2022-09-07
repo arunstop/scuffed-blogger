@@ -10,6 +10,7 @@ interface ModalTemplateProps {
   fullscreen?: boolean;
   noHeader?: boolean;
   noCloseButton?: boolean;
+  className?: string;
   // closeBtnText?: string; // use text instead of icon
 }
 
@@ -21,13 +22,14 @@ const ModalTemplate = ({
   fullscreen = false,
   noHeader = false,
   noCloseButton = false,
-  // closeBtnText,
-}: ModalProps & ModalTemplateProps) => {
+  className = "",
+}: // closeBtnText,
+ModalProps & ModalTemplateProps) => {
   return (
     <Transition appear show={value} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed inset-0 z-[999] flex justify-center items-end sm:items-center"
+        className={`fixed inset-0 z-[999] flex justify-center items-end sm:items-center ${className}`}
         onClose={onClose}
       >
         {/* OVERLAY */}
@@ -78,14 +80,16 @@ const ModalTemplate = ({
                     <span className="text-xl font-bold sm:text-2xl">
                       {title}
                     </span>
-                    {noCloseButton ||<span
+                    {noCloseButton || (
+                      <span
                         className="btn btn-ghost btn-sm aspect-square !h-9 !w-9 rounded-xl 
                         !p-0 opacity-80 hover:opacity-100 sm:btn-md sm:!h-12 sm:!w-12"
                         title="Back"
                         onClick={onClose}
                       >
                         <FaTimes className="text-2xl sm:text-3xl" />
-                      </span>}
+                      </span>
+                    )}
                   </div>
                 </Dialog.Title>
               )}

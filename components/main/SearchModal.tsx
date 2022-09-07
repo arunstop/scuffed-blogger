@@ -30,7 +30,7 @@ const SearchModal = React.memo(function SearchModal() {
       : e.title.toLowerCase().includes(search.trim().toLowerCase()),
   );
   return (
-    <ModalTemplate value={searchModal} onClose={closeSearchModal} title="Search Tuturku" fullscreen>
+    <ModalTemplate value={searchModal} onClose={closeSearchModal} title="Search Tuturku" fullscreen className='!z-10'>
       <div className="flex flex-col gap-2 sm:gap-4 pb-[3rem] sm:pb-0">
         <div className="form-control">
           <div className="inline-flex items-center gap-2 sm:gap-4">

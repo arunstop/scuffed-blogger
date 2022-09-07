@@ -71,7 +71,7 @@ function BottomBar() {
   return (
     <div
       className={`fixed inset-x-0 bottom-0 sm:hidden ${
-        modalShown ? "z-[1000]" : "z-50"
+        `z-20`
       }`}
     >
       <div className="h-[3rem] bg-primary flex w-full">
