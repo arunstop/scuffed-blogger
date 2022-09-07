@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import ArticleCommentSection from "../../components/article/ArticleCommentSection";
 import ArticleSuggestionSection from "../../components/article/ArticleSuggestionSection";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
@@ -12,22 +11,17 @@ function ArticleMoreContent({ article }: { article: ArticleModel }) {
     setLoad: setLoadCommentSection,
     ref: commentSectionRef,
   } = useLazyScrollerHook({delay:1000});
+
   const {
     load: loadSuggestionSection,
     setLoad: setLoadSuggestionSection,
     ref: suggestionSectionRef,
   } = useLazyScrollerHook({delay:1000});
 
-  //   refresh when id change
-  useEffect(() => {
-    setLoadCommentSection(false);
-    setLoadSuggestionSection(false);
-  }, [article]);
-
   return (
     <>
       {loadCommentSection ? (
-        <ArticleCommentSection article={article} />
+        <ArticleCommentSection articleId={article.id} />
       ) : (
         <LoadingIndicator ref={commentSectionRef} spinner text="Loading comments..." />
       )}

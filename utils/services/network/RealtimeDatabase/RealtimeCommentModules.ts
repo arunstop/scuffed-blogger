@@ -2,9 +2,10 @@ import { ApiPagingReqProps } from "./../../../data/Main";
 import { get, ref, remove, set } from "firebase/database";
 import {
   CommentModel,
-  CommentModelWithPaging,
+  CommentModelsWithPaging,
 } from "../../../data/models/CommentModel";
 import { firebaseClient } from "./../FirebaseClient";
+import _ from "lodash";
 const db = firebaseClient.rtdb;
 
 export async function rtCommentGet({
@@ -14,12 +15,14 @@ export async function rtCommentGet({
 }: //   keyword,
 {
   articleId: string;
-} & ApiPagingReqProps): Promise<CommentModelWithPaging | null> {
+} & ApiPagingReqProps): Promise<CommentModelsWithPaging | null> {
   const path = `commentList/${articleId}`;
   const rr = ref(db, path);
   const res = await get(rr);
   if (res.exists()) {
-    const data = res.val() as CommentModel[];
+    const dataRaw = res.val();
+    const data = _.values(dataRaw) as CommentModel[];
+    console.log(data);
     // apply filter based of keyword before slicing/paging
     // if(keyword) {
     //     const res = data.filter((e,idx)=>{
@@ -37,7 +40,7 @@ export async function rtCommentGet({
 }
 
 export async function rtCommentAdd({ comment }: { comment: CommentModel }) {
-  const path = `commentlist/${comment.articleId}/${comment.id}`;
+  const path = `commentList/${comment.articleId}/${comment.id}`;
   const rr = ref(db, path);
   await set(rr, comment);
   return comment;

@@ -11,7 +11,7 @@ import {
     netError,
     netSuccess
 } from "./../../../data/Main";
-import { CommentModelWithPaging as CommentModelsWithPaging } from './../../../data/models/CommentModel';
+import { CommentModelsWithPaging } from './../../../data/models/CommentModel';
 
 type ApiResponse<DATA, RESP> = {
   data: DATA;
@@ -24,17 +24,17 @@ export async function fbCommentAdd({
 }: ApiResponse<
   { comment: CommentModel },
   CommentModel | null | FirebaseError
->) {
+>):Promise<boolean> {
   const { comment } = data;
   try {
     await rtCommentAdd({
       comment: comment,
     });
     callback?.(netSuccess("Success adding comment", comment));
-    return;
+    return true;
   } catch (error) {
     callback?.(netError("Error when adding comment", error as FirebaseError));
-    return;
+    return false;
   }
 }
 

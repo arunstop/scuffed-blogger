@@ -1,15 +1,15 @@
 import React from "react";
-import { Comment } from "../../utils/data/comment";
+import { CommentModelsWithPaging } from "../../utils/data/models/CommentModel";
 import { useArticleModalsBehaviorHook } from "../../utils/hooks/ArticleModalsBehaviorHook";
 import ArticleCommentItem from "./ArticleCommentItem";
 import ArticleCommentOptionModal from "./ArticleCommentOptionModal";
 import ArticleCommentReplyModal from "./ArticleCommentReplyModal";
 
 function ArticleComments({
-  comments,
+  commentList,
 }: // addComment,
 {
-  comments: Comment[];
+  commentList: CommentModelsWithPaging;
   // addComment: (comments:Comment[]) => void;
 }) {
   const { optionModal, closeOptionModal, replyModal, closeReplyModal } =
@@ -17,11 +17,11 @@ function ArticleComments({
 
   return (
     <>
-      {comments.map((e, idx) => (
+      {commentList.comments.map((e, idx) => (
         <ArticleCommentItem
           key={idx}
           id={e.id}
-          text={e.text}
+          text={e.content}
           // openOptionModal={openOptionModal}
           // openReplyModal={openReplyModal}
         />

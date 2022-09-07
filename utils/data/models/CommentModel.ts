@@ -10,6 +10,6 @@ export interface CommentModel {
   userName: string;
 }
 
-export type CommentModelWithPaging = {
+export type CommentModelsWithPaging = {
   comments: CommentModel[];
 } & ApiPagingResultProps;
