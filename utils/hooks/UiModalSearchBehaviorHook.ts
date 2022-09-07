@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { routeTrimQuery } from "../helpers/MainHelpers";
 
-export function useSearchModalBehavior() {
+export function useUiModalSearchBehaviorHook() {
   const [searchModal, setSearchModal] = useState(false);
   const router = useRouter();
 

@@ -1,14 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { MdSearch } from "react-icons/md";
-import { ModalProps } from "../../utils/data/Main";
 import { SEARCH_SUGGESTIONS_DUMMY } from "../../utils/helpers/Constants";
+import { useUiModalSearchBehaviorHook } from "../../utils/hooks/UiModalSearchBehaviorHook";
 import InputText from "../input/InputText";
+import ModalTemplate from "../modal/ModalTemplate";
 import MainSearchSuggestionItem from "./MainSearchSuggestionItem";
 import MainSectionSkeleton from "./MainSectionSkeleton";
-import ModalTemplate from "../modal/ModalTemplate";
 
-const SearchModal = React.memo(function SearchModal(props: ModalProps) {
-  // const router = useRouter();
+const SearchModal = React.memo(function SearchModal() {
+  const { searchModal, closeSearchModal } = useUiModalSearchBehaviorHook();
+
   const [search, setSearch] = useState("");
   const clear = useCallback(() => {
     setSearch("");
@@ -21,7 +22,7 @@ const SearchModal = React.memo(function SearchModal(props: ModalProps) {
   useEffect(() => {
     clear();
     return () => {};
-  }, [props.value]);
+  }, [searchModal]);
 
   const filteredData = SEARCH_SUGGESTIONS_DUMMY.filter((e) =>
     search === ""
@@ -29,7 +30,7 @@ const SearchModal = React.memo(function SearchModal(props: ModalProps) {
       : e.title.toLowerCase().includes(search.trim().toLowerCase()),
   );
   return (
-    <ModalTemplate {...props} title="Search Tuturku" fullscreen>
+    <ModalTemplate value={searchModal} onClose={closeSearchModal} title="Search Tuturku" fullscreen>
       <div className="flex flex-col gap-2 sm:gap-4">
         <div className="form-control">
           <div className="inline-flex items-center gap-2 sm:gap-4">
