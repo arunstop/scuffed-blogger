@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { routeTrimQuery } from "../helpers/MainHelpers";
 
-export function useSearchModalBehavior() {
+export function useUiModalSearchBehaviorHook() {
   const [searchModal, setSearchModal] = useState(false);
   const router = useRouter();
 
@@ -12,7 +12,7 @@ export function useSearchModalBehavior() {
 
   const closeSearchModal = useCallback(() => {
     // const q = router.query.articleId;
-    console.log(router);
+    // console.log(router);
     const currentPath = routeTrimQuery(router.asPath);
     router.replace(currentPath, undefined, {
       shallow: true,

@@ -2,8 +2,6 @@ import type { AppContext, AppProps } from "next/app";
 import App from "next/app";
 import Script from "next/script";
 import NextNProgress from "nextjs-progressbar";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import "../styles/globals.css";
 import { AuthProvider } from "../utils/contexts/auth/AuthProvider";
 import { UiProvider } from "../utils/contexts/ui/UiProvider";
@@ -12,6 +10,7 @@ import { parseCookies } from "nookies";
 import { isUserModel, UserModel } from "../utils/data/models/UserModel";
 import { COOKIE_USER_AUTH } from "../utils/helpers/Constants";
 import { useRouteChange } from "../utils/hooks/RouteChangeHook";
+import LayoutMainWrapper from "../layouts/main/LayoutMainWrapper";
 
 interface AdditionalAppProps {
   user?: UserModel;
@@ -38,9 +37,9 @@ const MainApp = ({
             height={6}
             showOnShallow={false}
           />
-          <Header />
+          <LayoutMainWrapper>
           <Component {...pageProps} />
-          <Footer />
+          </LayoutMainWrapper>
         </UiProvider>
       </AuthProvider>
     </>

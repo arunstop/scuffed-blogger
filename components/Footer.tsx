@@ -1,9 +1,9 @@
-import React from "react";
 import { FaBloggerB, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
 function Footer() {
   return (
+    <>
     <footer className="footer h-[20rem] bg-base-300 p-10">
       <div>
         <FaBloggerB className="text-5xl text-primary-focus sm:text-[4rem]" />
@@ -45,6 +45,7 @@ function Footer() {
         </div>
       </div>
     </footer>
+    </>
   );
 }
 

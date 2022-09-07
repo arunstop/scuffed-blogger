@@ -7,10 +7,7 @@ import { useUiCtx } from "../utils/contexts/ui/UiHook";
 import { APP_NAME } from "../utils/helpers/Constants";
 import { routeTrimQuery } from "../utils/helpers/MainHelpers";
 import { useHeaderBehavior } from "../utils/hooks/HeaderBehaviorHook";
-import { useSearchModalBehavior } from "../utils/hooks/SearchModalBehaviorHook";
 import MainHeaderBigSearchBar from "./main/MainHeaderBigSearchBar";
-import SearchModal from "./main/SearchModal";
-import Sidebar from "./main/Sidebar";
 
 // function scrollListener(event: Event) {
 //   const element = event.target as Element;
@@ -42,7 +39,6 @@ function Header() {
 
   useHeaderBehavior(scrollToTopCallback);
 
-  const { searchModal, closeSearchModal } = useSearchModalBehavior();
   const {
     isLoggedIn,
     authStt: { user },
@@ -56,7 +52,7 @@ function Header() {
   return (
     <>
       <div
-        className={`sticky flex flex-row gap-4 top-0 z-10 h-12 sm:h-16 w-full items-center 
+        className={`sticky hidden sm:flex flex-row gap-4 top-0 z-10 h-12 sm:h-16 w-full items-center 
         px-2 sm:px-4 justify-between transition-all duration-[600ms] text-primary
         `}
         id="header"
@@ -184,8 +180,6 @@ function Header() {
           )}
         </div>
       </div>
-      {isLoggedIn && <Sidebar />}
-      <SearchModal value={searchModal} onClose={closeSearchModal} />
     </>
   );
 }

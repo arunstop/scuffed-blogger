@@ -192,7 +192,7 @@ function PageUserPosts() {
                   </a>
                 </Link>
               </div>
-              <div className="sm:hidden fixed z-[2] right-0 bottom-0 p-4 pointer-events-none [&>*]:pointer-events-auto">
+              <div className="sm:hidden fixed z-[2] right-0 bottom-0 p-2 pointer-events-none [&>*]:pointer-events-auto mb-[3rem]">
                 <Link href={"/write"} passHref>
                   <a className="btn btn-primary btn-circle">
                     <MdAdd className="text-2xl transition-colors" />
@@ -212,7 +212,7 @@ function PageUserPosts() {
         {articles.length ? (
           <div className="flex flex-col gap-2 sm:gap-4 min-h-[24rem]">
             {articles.map((e, idx) => {
-              return <PostItemMini key={idx} article={e} observe />;
+              return <PostItemMini key={e.id} article={e} observe />;
             })}
           </div>
         ) : null}
