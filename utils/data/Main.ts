@@ -45,3 +45,15 @@ export const netSuccess = <T>(
   message: string,
   data: T,
 ): MainNetworkResponse<T> => ({ status: "success", data: data, message });
+
+
+export interface ApiPagingReqProps {
+  start: number;
+  count: number;
+  keyword?: string;
+}
+export interface ApiPagingResultProps {
+  offset: number;
+  total: number;
+  keyword?: string;
+}
