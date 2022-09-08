@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { BsChatSquareText, BsShare } from "react-icons/bs";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { MdMoreHoriz } from "react-icons/md";
@@ -8,25 +8,47 @@ import { CommentModel } from "../../utils/data/models/CommentModel";
 import {
   dateDistanceGet,
   routeTrimQuery,
-  userAvatarLinkGet
+  userAvatarLinkGet,
 } from "../../utils/helpers/MainHelpers";
+import { fbCommentReact } from "../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import UserAvatar from "../user/UserAvatar";
 
-function ArticleCommentItem({ comment }: { comment: CommentModel }) {
+function ArticleCommentItem({ comment:commentProps }: { comment: CommentModel }) {
   const router = useRouter();
+  const [comment,setComment] = useState(commentProps);
   const postedAt = dateDistanceGet(comment.dateAdded, Date.now());
   const userAvatar = userAvatarLinkGet(comment.userId);
 
   const actions: CommentActionProps[] = [
     {
-      label: !comment.upvote?'':comment.upvote+"",
+      label: !comment.upvote ? "" : comment.upvote + "",
       icon: <FaArrowUp />,
-      action: () => {},
+      className:`${comment.upvote ? 'text-success':''}`,
+      minimize:false,
+      action: async () => {
+        const newComment = await fbCommentReact({
+          data: {
+            react: "up",
+            comment: { ...comment, dateUpdated: Date.now() },
+          },
+        });
+        if (newComment) setComment(newComment);
+      },
     },
     {
-      label: !comment.downvote?'':comment.downvote+"",
+      label: !comment.downvote ? "" : comment.downvote + "",
       icon: <FaArrowDown />,
-      action: () => {},
+      className:`${comment.downvote ? 'text-error':''}`,
+      minimize:false,
+      action: async () => {
+        const newComment = await fbCommentReact({
+          data: {
+            react: "down",
+            comment: { ...comment, dateUpdated: Date.now() },
+          },
+        });
+        if (newComment) setComment(newComment);
+      },
     },
     {
       label: "Reply",
@@ -48,12 +70,12 @@ function ArticleCommentItem({ comment }: { comment: CommentModel }) {
       label: "Share",
       icon: <BsShare />,
       action: () => {
-        alert('Link copied');
+        alert("Link copied");
       },
     },
   ];
   return (
-    <div className="flex flex-row items-start gap-4">
+    <div className="flex flex-row items-start gap-2 sm:gap-4">
       <UserAvatar src={userAvatar} />
       <div className="flex flex-1 flex-col gap-2">
         <div className="inline-flex gap-4">
@@ -61,7 +83,7 @@ function ArticleCommentItem({ comment }: { comment: CommentModel }) {
             <span className="text-base font-bold !leading-[1.2] sm:text-lg capitalize">
               {comment.userName}
             </span>
-            <span className="text-base font-semibold !leading-[1.2] opacity-50 sm:text-lg">
+            <span className="text-sm font-semibold !leading-[1.2] opacity-50 sm:text-md">
               {postedAt}
             </span>
           </div>
@@ -156,24 +178,29 @@ function ArticleCommentItem({ comment }: { comment: CommentModel }) {
 export interface CommentActionProps {
   icon?: ReactNode;
   label?: string;
+className?:string;
+minimize?:boolean;
   action?: () => void;
 }
 
 const ArticleCommentItemActionButton = ({
   label,
   icon,
+className,
+minimize=true,
   action = () => {},
 }: CommentActionProps) => {
   return (
     <span
-      className="btn btn-ghost rounded-xl p-2 opacity-50 hover:opacity-100
-      !flex !flex-nowrap max-w-none gap-4 !h-auto aspect-square sm:aspect-auto
-      group"
+      className={`btn btn-ghost rounded-xl p-1 sm:p-2 opacity-75 hover:opacity-100
+      !flex !flex-nowrap max-w-none gap-1 sm:gap-2 !h-auto aspect-square sm:aspect-auto
+      !font-black
+      group ${className||''}`}
       title="Upvote"
-      onClick={()=>action()}
+      onClick={() => action()}
     >
       {icon && <span className="text-xl sm:text-2xl">{icon}</span>}
-      {label && <span className="hidden sm:block">{label}</span>}
+      {label && <span className={minimize ? 'hidden sm:block':'!text-sm sm:!text-md'}>{label}</span>}
     </span>
   );
 };

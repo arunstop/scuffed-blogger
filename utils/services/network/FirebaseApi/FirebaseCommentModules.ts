@@ -1,17 +1,18 @@
 import { FirebaseError } from "firebase/app";
 import { CommentModel } from "../../../data/models/CommentModel";
 import {
-    rtCommentAdd,
-    rtCommentDelete,
-    rtCommentGet,
-    rtCommentUpdate
+  rtCommentAdd,
+  rtCommentDelete,
+  rtCommentGet,
+  rtCommentUpdate,
 } from "../RealtimeDatabase/RealtimeCommentModules";
 import {
-    ApiPagingReqProps, MainNetworkResponse,
-    netError,
-    netSuccess
+  ApiPagingReqProps,
+  MainNetworkResponse,
+  netError,
+  netSuccess,
 } from "./../../../data/Main";
-import { CommentModelsWithPaging } from './../../../data/models/CommentModel';
+import { CommentModelsWithPaging } from "./../../../data/models/CommentModel";
 
 type ApiResponse<DATA, RESP> = {
   data: DATA;
@@ -24,7 +25,7 @@ export async function fbCommentAdd({
 }: ApiResponse<
   { comment: CommentModel },
   CommentModel | null | FirebaseError
->):Promise<boolean> {
+>): Promise<boolean> {
   const { comment } = data;
   try {
     await rtCommentAdd({
@@ -37,7 +38,6 @@ export async function fbCommentAdd({
     return false;
   }
 }
-
 
 export async function fbCommentGet({
   data,
@@ -75,6 +75,31 @@ export async function fbCommentUpdate({
   } catch (error) {
     callback?.(netError("Error when updating comment", error as FirebaseError));
     return;
+  }
+}
+
+export async function fbCommentReact({
+  data,
+  callback,
+}: ApiResponse<
+  { react: "up" | "down"; comment: CommentModel },
+  CommentModel | null | FirebaseError
+>):Promise<CommentModel|null> {
+  const { comment, react } = data;
+  try {
+    const updatedComment: CommentModel =
+      react === "up"
+        ? { ...comment, upvote: comment.upvote + 1 }
+        : { ...comment, downvote: comment.downvote + 1 };
+    await rtCommentUpdate({
+      comment: updatedComment,
+    });
+    callback?.(netSuccess("Success updating comment", comment));
+    console.log(updatedComment);
+    return updatedComment;
+  } catch (error) {
+    callback?.(netError("Error when updating comment", error as FirebaseError));
+    return null;
   }
 }
 
