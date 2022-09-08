@@ -1,16 +1,16 @@
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import { StatusPlaceholderProps } from "../../components/placeholder/StatusPlaceholder";
-import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
-import { WritingPanelFormProps } from "../../utils/data/contexts/WritingPanelTypes";
-import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
-import { ArticleModel } from "../../utils/data/models/ArticleModel";
+import { StatusPlaceholderProps } from "../../../components/placeholder/StatusPlaceholder";
+import { useWritingPanelCtx } from "../../../utils/contexts/writingPanel/WritingPanelHook";
+import { WritingPanelFormProps } from "../../../utils/data/contexts/WritingPanelTypes";
+import { MainNetworkResponse, netLoading } from "../../../utils/data/Main";
+import { ArticleModel } from "../../../utils/data/models/ArticleModel";
 import {
   fbArticleContentGet,
   fbArticleUpdate,
-} from "../../utils/services/network/FirebaseApi/ArticleModules";
-import LayoutArticleForm from "./LayoutArticleForm";
+} from "../../../utils/services/network/FirebaseApi/ArticleModules";
+import LayoutArticleForm from "../LayoutArticleForm";
 
 export interface ArticleSubmissionProps {
   data: WritingPanelFormProps;

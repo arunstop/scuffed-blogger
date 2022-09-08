@@ -1,11 +1,11 @@
-import ArticleCommentSection from "../../components/article/ArticleCommentSection";
-import ArticleSuggestionSection from "../../components/article/ArticleSuggestionSection";
+import LayoutArticleSuggestionSection from "./LayoutArticleSuggestionSection";
+import LayoutArticleCommentSection from "./comment/LayoutArticleCommentSection";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import useLazyScrollerHook from "../../utils/hooks/LazyScrollerHook";
-import LoadingIndicator from "../placeholder/LoadingIndicator";
+import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
 
 // Supposed to serve as container of comment and suggestion section
-function ArticleMoreContent({ article }: { article: ArticleModel }) {
+function LayoutArticleMoreSection({ article }: { article: ArticleModel }) {
   const {
     load: loadCommentSection,
     setLoad: setLoadCommentSection,
@@ -21,13 +21,13 @@ function ArticleMoreContent({ article }: { article: ArticleModel }) {
   return (
     <>
       {loadCommentSection ? (
-        <ArticleCommentSection articleId={article.id} />
+        <LayoutArticleCommentSection articleId={article.id} />
       ) : (
         <LoadingIndicator ref={commentSectionRef} spinner text="Loading comments..." />
       )}
 
       {loadSuggestionSection ? (
-        <ArticleSuggestionSection article={article} />
+        <LayoutArticleSuggestionSection article={article} />
       ) : (
         <LoadingIndicator ref={suggestionSectionRef} spinner text="Loading related articles..." />
       )}
@@ -51,4 +51,4 @@ function ArticleMoreContent({ article }: { article: ArticleModel }) {
 //   },
 // );
 
-export default ArticleMoreContent;
+export default LayoutArticleMoreSection;
