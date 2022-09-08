@@ -22,7 +22,7 @@ export async function rtCommentGet({
   if (res.exists()) {
     const dataRaw = res.val();
     const data = _.values(dataRaw) as CommentModel[];
-    console.log(data);
+    // console.log(data);
     // apply filter based of keyword before slicing/paging
     // if(keyword) {
     //     const res = data.filter((e,idx)=>{

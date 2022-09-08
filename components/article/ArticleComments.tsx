@@ -17,15 +17,16 @@ function ArticleComments({
 
   return (
     <>
-      {commentList.comments.map((e, idx) => (
-        <ArticleCommentItem
-          key={idx}
-          id={e.id}
-          text={e.content}
-          // openOptionModal={openOptionModal}
-          // openReplyModal={openReplyModal}
-        />
-      ))}
+      <div className="flex flex-col-reverse gap-4 sm:gap-8">
+        {commentList.comments.map((e, idx) => (
+          <ArticleCommentItem
+            key={e.id}
+            comment={e}
+            // openOptionModal={openOptionModal}
+            // openReplyModal={openReplyModal}
+          />
+        ))}
+      </div>
       <ArticleCommentOptionModal
         value={optionModal !== null}
         onClose={closeOptionModal}

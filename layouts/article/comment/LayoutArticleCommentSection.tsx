@@ -28,11 +28,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
         articleId={articleId}
         loadComments={loadComments}
       />
-      {commentList && (
-        <div className="flex flex-col-reverse gap-4 sm:gap-8">
-          <ArticleComments commentList={commentList} />
-        </div>
-      )}
+      {commentList && <ArticleComments commentList={commentList} />}
     </div>
   );
 }

@@ -29,20 +29,23 @@ function LayoutArticleCommentForm({
   const onComment: SubmitHandler<{ comment: string }> = async ({ comment }) => {
     console.log(comment);
     if (!user) return;
+    const dateNow = Date.now();
     const commentEntry: CommentModel = {
-      id: nanoid(24),
+      id: `${dateNow}-${nanoid(24)}`,
       content: comment,
-      dateAdded: Date.now(),
-      dateUpdated: Date.now(),
+      dateAdded: dateNow,
+      dateUpdated: dateNow,
       updated: false,
       articleId: articleId,
       userId: user.id,
       userName: user.name,
+      upvote: 0,
+      downvote: 0,
     };
     const res = await fbCommentAdd({ data: { comment: commentEntry } });
     if (res) {
-        loadComments();
-        reset();
+      loadComments();
+      reset();
     }
   };
   return (

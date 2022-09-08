@@ -6,7 +6,7 @@ function MainUserLabel({ id }: { id: string }) {
   return (
     <Link href={`/author/${id}`} passHref>
       <a className="flex flex-row items-center gap-4 hover:underline">
-        <UserAvatar id={id} />
+        <UserAvatar src={`https://api.lorem.space/image/face?hash=${id}`} />
         <div className="flex flex-col">
           <span className="text-base font-bold sm:text-lg !leading-[1.2]">
             Firstname Lastn
