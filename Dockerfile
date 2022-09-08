@@ -55,3 +55,12 @@ EXPOSE 3000
 ENV PORT 3000
 
 CMD ["node", "server.js"]
+
+# BUILD
+# docker build -t yourreponame/tuturku:latest .
+
+# RUN 
+# docker run -d -p 3000:3000 --name tuturku001 --rm yourreponame/tuturku:latest
+
+# REMOVE DANGLING IMAGES
+# docker image prune
