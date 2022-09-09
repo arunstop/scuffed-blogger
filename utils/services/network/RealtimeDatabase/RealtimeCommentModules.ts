@@ -3,7 +3,7 @@ import _ from "lodash";
 import {
   CommentModel,
   CommentModelListPagedSorted,
-  CommentModelsSortType
+  CommentModelsSortType,
 } from "../../../data/models/CommentModel";
 import { FbCommentReactProps } from "../FirebaseApi/FirebaseCommentModules";
 import { ApiPagingReqProps } from "./../../../data/Main";
@@ -18,7 +18,7 @@ export async function rtCommentGet({
 }: //   keyword,
 {
   articleId: string;
-  sortBy?:CommentModelsSortType;
+  sortBy?: CommentModelsSortType;
 } & ApiPagingReqProps): Promise<CommentModelListPagedSorted | null> {
   const path = `commentList/${articleId}`;
   const rr = ref(db, path);
@@ -46,7 +46,7 @@ export async function rtCommentGet({
       comments: sort(data.slice(start, start + count)),
       total: data.length,
       offset: start + count,
-      sortBy:sortBy,
+      sortBy: sortBy,
     };
   }
   return null;
@@ -82,11 +82,19 @@ export async function rtCommentReact({
     // but probably without upvote/downvote props
     const dataRaw = res.val() as CommentModel;
     let updatedData = dataRaw;
+    const cancelledUpvote = (updatedData.upvote || []).filter(
+      (e) => e !== userId,
+    );
+    const cancelledDownvote = (updatedData.downvote || []).filter(
+      (e) => e !== userId,
+    );
     try {
       switch (react) {
         case "up": {
+          // when upvoting, cancel downvote first
           updatedData = {
             ...updatedData,
+            downvote: cancelledDownvote,
             upvote: [...(updatedData.upvote || []), userId],
           };
           break;
@@ -99,8 +107,10 @@ export async function rtCommentReact({
           break;
         }
         case "down": {
+          // when downvoting, cancel upvote first
           updatedData = {
             ...updatedData,
+            upvote: cancelledUpvote,
             downvote: [...(updatedData.downvote || []), userId],
           };
           break;
