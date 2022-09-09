@@ -1,15 +1,15 @@
 import React from "react";
-import { Comment } from "../../utils/data/comment";
+import { CommentModelsWithPaging } from "../../utils/data/models/CommentModel";
 import { useArticleModalsBehaviorHook } from "../../utils/hooks/ArticleModalsBehaviorHook";
 import ArticleCommentItem from "./ArticleCommentItem";
 import ArticleCommentOptionModal from "./ArticleCommentOptionModal";
 import ArticleCommentReplyModal from "./ArticleCommentReplyModal";
 
 function ArticleComments({
-  comments,
+  commentList,
 }: // addComment,
 {
-  comments: Comment[];
+  commentList: CommentModelsWithPaging;
   // addComment: (comments:Comment[]) => void;
 }) {
   const { optionModal, closeOptionModal, replyModal, closeReplyModal } =
@@ -17,15 +17,16 @@ function ArticleComments({
 
   return (
     <>
-      {comments.map((e, idx) => (
-        <ArticleCommentItem
-          key={idx}
-          id={e.id}
-          text={e.text}
-          // openOptionModal={openOptionModal}
-          // openReplyModal={openReplyModal}
-        />
-      ))}
+      <div className="flex flex-col gap-4 sm:gap-8">
+        {commentList.comments.map((e, idx) => (
+          <ArticleCommentItem
+            key={e.id}
+            comment={e}
+            // openOptionModal={openOptionModal}
+            // openReplyModal={openReplyModal}
+          />
+        ))}
+      </div>
       <ArticleCommentOptionModal
         value={optionModal !== null}
         onClose={closeOptionModal}

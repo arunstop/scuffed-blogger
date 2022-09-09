@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import MainContainer from "../../../components/main/MainContainer";
-import { LayoutArticlePageEdit } from "../../../layouts/article/LayoutArticlePageEdit";
+import { LayoutArticlePageEdit } from "../../../layouts/article/pages/LayoutArticlePageEdit";
 import { WritingPanelProvider } from "../../../utils/contexts/writingPanel/WritingPanelProvider";
 import { ArticleModel } from "../../../utils/data/models/ArticleModel";
 import { APP_DESC, APP_NAME } from "../../../utils/helpers/Constants";

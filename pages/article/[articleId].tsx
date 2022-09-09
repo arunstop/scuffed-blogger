@@ -4,7 +4,7 @@ import Head from "next/head";
 import React, { useEffect, useMemo, useState } from "react";
 import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleSectionAction from "../../components/article/ArticleActions";
-import ArticleMoreContent from "../../components/article/ArticleMoreContent";
+import LayoutArticleMoreSection from "../../layouts/article/LayoutArticleMoreSection";
 import MainContainer from "../../components/main/MainContainer";
 import MainMarkdownContainer from "../../components/main/MainMarkdownContainer";
 import MainPostStatusChip from "../../components/main/MainPostFilterChip";
@@ -147,7 +147,7 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
                 )}
               />
               <ArticleSectionAction article={article} />
-              <ArticleMoreContent article={article} />
+              <LayoutArticleMoreSection article={article} />
             </>
           ) : (
             <LoadingIndicator

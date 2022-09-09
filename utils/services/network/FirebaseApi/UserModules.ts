@@ -228,6 +228,7 @@ export async function fbUserUpdate({
       const imageUrl = await uploadFile({
         file: file[0],
         directory: "images/avatars",
+        name:user.id,
       });
       // console.log("imageUrl : " + imageUrl);
       if (!imageUrl) {

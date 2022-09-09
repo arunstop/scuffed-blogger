@@ -16,7 +16,7 @@ import {
 import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
 import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { ArticleSubmissionProps } from "./LayoutArticlePageEdit";
+import { ArticleSubmissionProps } from "./pages/LayoutArticlePageEdit";
 
 const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [
   {

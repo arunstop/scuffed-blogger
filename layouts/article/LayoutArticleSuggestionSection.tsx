@@ -1,9 +1,9 @@
 import React from "react";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
-import PostItem from "../post/PostItem";
-import PostOptionModal from "../post/PostOptionModal";
+import PostItem from "../../components/post/PostItem";
+import PostOptionModal from "../../components/post/PostOptionModal";
 
-function ArticleSuggestionSection({ article }: { article: ArticleModel }) {
+function LayoutArticleSuggestionSection({ article }: { article: ArticleModel }) {
   return (
     <>
       <span className="text-xl sm:text-2xl font-bold">
@@ -17,4 +17,4 @@ function ArticleSuggestionSection({ article }: { article: ArticleModel }) {
   );
 }
 
-export default ArticleSuggestionSection;
+export default LayoutArticleSuggestionSection;
