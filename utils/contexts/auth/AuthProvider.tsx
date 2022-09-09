@@ -49,7 +49,9 @@ export const AuthProvider = ({
       // signout firebase
       firebaseAuth.signOut();
       // destroy cookie auth data
-      destroyCookie(undefined, COOKIE_USER_AUTH);
+      destroyCookie(undefined, COOKIE_USER_AUTH, {
+        path: "/",
+      });
       // destroy cookie auth session
       // destroyCookie(undefined, COOKIE_USER_AUTH_SESSION);
       // navigate to auth
