@@ -33,7 +33,7 @@ function ArticleCommentItem({
     {
       label: !comment.upvote?.length ? "" : comment.upvote.length + "",
       icon: <FaArrowUp />,
-      className: `${upvoted || comment.upvote?.length ? "text-success" : ""}`,
+      className: `${upvoted && comment.upvote?.length ? "text-success" : ""}`,
       minimize: false,
       action: async () => {
         if (!user) return;
@@ -51,7 +51,7 @@ function ArticleCommentItem({
     {
       label: !comment.downvote?.length ? "" : comment.downvote.length + "",
       icon: <FaArrowDown />,
-      className: `${downvoted || comment.downvote?.length ? "text-error" : ""}`,
+      className: `${downvoted && comment.downvote?.length ? "text-error" : ""}`,
       minimize: false,
       action: async () => {
         if (!user) return;
