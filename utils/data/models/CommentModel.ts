@@ -8,8 +8,8 @@ export interface CommentModel {
   articleId: string;
   userId: string;
   userName: string;
-  upvote : number;
-  downvote:number;
+  upvote? : string[];
+  downvote?:string[];
 }
 
 export type CommentModelsWithPaging = {

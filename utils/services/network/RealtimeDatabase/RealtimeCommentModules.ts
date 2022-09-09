@@ -6,6 +6,7 @@ import {
 } from "../../../data/models/CommentModel";
 import { firebaseClient } from "./../FirebaseClient";
 import _ from "lodash";
+import { FbCommentReactProps } from "../FirebaseApi/FirebaseCommentModules";
 const db = firebaseClient.rtdb;
 
 export async function rtCommentGet({
@@ -53,6 +54,63 @@ export async function rtCommentUpdate({ comment }: { comment: CommentModel }) {
   });
   await rtCommentAdd({ comment });
   return comment;
+}
+
+export async function rtCommentReact({
+  react,
+  commentId,
+  articleId,
+  userId,
+}: FbCommentReactProps) {
+  const path = `commentList/${articleId}/${commentId}`;
+  const rr = ref(db, path);
+  const res = await get(rr);
+  if (res.exists()) {
+    // data raw is a CommentModel from rtdb
+    // but probably without upvote/downvote props
+    const dataRaw = res.val() as CommentModel;
+    let updatedData = dataRaw;
+    try {
+      switch (react) {
+        case "up": {
+          updatedData = {
+            ...updatedData,
+            upvote: [...(updatedData.upvote || []), userId],
+          };
+          break;
+        }
+        case "upCancel": {
+          updatedData = {
+            ...updatedData,
+            upvote: (updatedData.upvote || []).filter((e) => e !== userId),
+          };
+          break;
+        }
+        case "down": {
+          updatedData = {
+            ...updatedData,
+            downvote: [...(updatedData.downvote || []), userId],
+          };
+          break;
+        }
+        case "downCancel": {
+          updatedData = {
+            ...updatedData,
+            downvote: (updatedData.downvote || []).filter((e) => e !== userId),
+          };
+          break;
+        }
+        default:
+          break;
+      }
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+    await rtCommentUpdate({ comment: updatedData });
+    return updatedData;
+  }
+  return null;
 }
 
 export async function rtCommentDelete({

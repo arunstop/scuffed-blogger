@@ -4,6 +4,7 @@ import React, { ReactNode, useState } from "react";
 import { BsChatSquareText, BsShare } from "react-icons/bs";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { MdMoreHoriz } from "react-icons/md";
+import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { CommentModel } from "../../utils/data/models/CommentModel";
 import {
   dateDistanceGet,
@@ -13,38 +14,53 @@ import {
 import { fbCommentReact } from "../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import UserAvatar from "../user/UserAvatar";
 
-function ArticleCommentItem({ comment:commentProps }: { comment: CommentModel }) {
+function ArticleCommentItem({
+  comment: commentProps,
+}: {
+  comment: CommentModel;
+}) {
   const router = useRouter();
-  const [comment,setComment] = useState(commentProps);
+  const {
+    authStt: { user },
+  } = useAuthCtx();
+  const [comment, setComment] = useState(commentProps);
   const postedAt = dateDistanceGet(comment.dateAdded, Date.now());
   const userAvatar = userAvatarLinkGet(comment.userId);
+  const upvoted = comment.upvote?.includes(user?.id || "");
+  const downvoted = comment.downvote?.includes(user?.id || "");
 
   const actions: CommentActionProps[] = [
     {
-      label: !comment.upvote ? "" : comment.upvote + "",
+      label: !comment.upvote?.length ? "" : comment.upvote.length + "",
       icon: <FaArrowUp />,
-      className:`${comment.upvote ? 'text-success':''}`,
-      minimize:false,
+      className: `${upvoted || comment.upvote?.length ? "text-success" : ""}`,
+      minimize: false,
       action: async () => {
+        if (!user) return;
         const newComment = await fbCommentReact({
           data: {
-            react: "up",
-            comment: { ...comment, dateUpdated: Date.now() },
+            react: upvoted ? "upCancel" : "up",
+            articleId: comment.articleId,
+            commentId: comment.id,
+            userId: user.id,
           },
         });
         if (newComment) setComment(newComment);
       },
     },
     {
-      label: !comment.downvote ? "" : comment.downvote + "",
+      label: !comment.downvote?.length ? "" : comment.downvote.length + "",
       icon: <FaArrowDown />,
-      className:`${comment.downvote ? 'text-error':''}`,
-      minimize:false,
+      className: `${downvoted || comment.downvote?.length ? "text-error" : ""}`,
+      minimize: false,
       action: async () => {
+        if (!user) return;
         const newComment = await fbCommentReact({
           data: {
-            react: "down",
-            comment: { ...comment, dateUpdated: Date.now() },
+            react: downvoted ? "downCancel" : "down",
+            articleId: comment.articleId,
+            commentId: comment.id,
+            userId: user.id,
           },
         });
         if (newComment) setComment(newComment);
@@ -178,16 +194,16 @@ function ArticleCommentItem({ comment:commentProps }: { comment: CommentModel })
 export interface CommentActionProps {
   icon?: ReactNode;
   label?: string;
-className?:string;
-minimize?:boolean;
+  className?: string;
+  minimize?: boolean;
   action?: () => void;
 }
 
 const ArticleCommentItemActionButton = ({
   label,
   icon,
-className,
-minimize=true,
+  className,
+  minimize = true,
   action = () => {},
 }: CommentActionProps) => {
   return (
@@ -195,12 +211,16 @@ minimize=true,
       className={`btn btn-ghost rounded-xl p-1 sm:p-2 opacity-75 hover:opacity-100
       !flex !flex-nowrap max-w-none gap-1 sm:gap-2 !h-auto aspect-square sm:aspect-auto
       !font-black
-      group ${className||''}`}
+      group ${className || ""}`}
       title="Upvote"
       onClick={() => action()}
     >
       {icon && <span className="text-xl sm:text-2xl">{icon}</span>}
-      {label && <span className={minimize ? 'hidden sm:block':'!text-sm sm:!text-md'}>{label}</span>}
+      {label && (
+        <span className={minimize ? "hidden sm:block" : "!text-sm sm:!text-md"}>
+          {label}
+        </span>
+      )}
     </span>
   );
 };

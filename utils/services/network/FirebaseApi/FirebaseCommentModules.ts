@@ -4,6 +4,7 @@ import {
   rtCommentAdd,
   rtCommentDelete,
   rtCommentGet,
+  rtCommentReact,
   rtCommentUpdate,
 } from "../RealtimeDatabase/RealtimeCommentModules";
 import {
@@ -78,25 +79,25 @@ export async function fbCommentUpdate({
   }
 }
 
+export interface FbCommentReactProps {
+  react: "up" | "down" | "upCancel" | "downCancel";
+  commentId: string;
+  articleId: string;
+  userId: string;
+}
+
 export async function fbCommentReact({
   data,
   callback,
 }: ApiResponse<
-  { react: "up" | "down"; comment: CommentModel },
+  FbCommentReactProps,
   CommentModel | null | FirebaseError
->):Promise<CommentModel|null> {
-  const { comment, react } = data;
+>): Promise<CommentModel | null> {
   try {
-    const updatedComment: CommentModel =
-      react === "up"
-        ? { ...comment, upvote: comment.upvote + 1 }
-        : { ...comment, downvote: comment.downvote + 1 };
-    await rtCommentUpdate({
-      comment: updatedComment,
-    });
-    callback?.(netSuccess("Success updating comment", comment));
-    console.log(updatedComment);
-    return updatedComment;
+    const res = await rtCommentReact(data);
+    callback?.(netSuccess("Success updating comment", res));
+    console.log(res);
+    return res;
   } catch (error) {
     callback?.(netError("Error when updating comment", error as FirebaseError));
     return null;

@@ -39,8 +39,8 @@ function LayoutArticleCommentForm({
       articleId: articleId,
       userId: user.id,
       userName: user.name,
-      upvote: 0,
-      downvote: 0,
+      upvote: [user.id],
+      downvote:[],
     };
     const res = await fbCommentAdd({ data: { comment: commentEntry } });
     if (res) {
