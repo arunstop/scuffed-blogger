@@ -1,28 +1,39 @@
-import { ApiPagingReqProps } from "./../../../data/Main";
 import { get, ref, remove, set } from "firebase/database";
+import _ from "lodash";
 import {
   CommentModel,
-  CommentModelsWithPaging,
+  CommentModelListPagedSorted,
+  CommentModelsSortType
 } from "../../../data/models/CommentModel";
-import { firebaseClient } from "./../FirebaseClient";
-import _ from "lodash";
 import { FbCommentReactProps } from "../FirebaseApi/FirebaseCommentModules";
+import { ApiPagingReqProps } from "./../../../data/Main";
+import { firebaseClient } from "./../FirebaseClient";
 const db = firebaseClient.rtdb;
 
 export async function rtCommentGet({
   articleId,
   start,
   count,
+  sortBy = "new",
 }: //   keyword,
 {
   articleId: string;
-} & ApiPagingReqProps): Promise<CommentModelsWithPaging | null> {
+  sortBy?:CommentModelsSortType;
+} & ApiPagingReqProps): Promise<CommentModelListPagedSorted | null> {
   const path = `commentList/${articleId}`;
   const rr = ref(db, path);
   const res = await get(rr);
   if (res.exists()) {
     const dataRaw = res.val();
     const data = _.values(dataRaw) as CommentModel[];
+    const sort = (comments: CommentModel[]) => {
+      return comments.sort((a, b) => {
+        if (sortBy === "new") return b.dateAdded - a.dateAdded;
+        if (sortBy === "top")
+          return (b.upvote?.length || 0) - (a.upvote?.length || 0);
+        return 0;
+      });
+    };
     // console.log(data);
     // apply filter based of keyword before slicing/paging
     // if(keyword) {
@@ -32,9 +43,10 @@ export async function rtCommentGet({
     //     return res;
     // }
     return {
-      comments: data.slice(start, start + count),
+      comments: sort(data.slice(start, start + count)),
       total: data.length,
       offset: start + count,
+      sortBy:sortBy,
     };
   }
   return null;

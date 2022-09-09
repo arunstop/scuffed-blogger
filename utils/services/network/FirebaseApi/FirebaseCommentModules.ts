@@ -1,5 +1,9 @@
 import { FirebaseError } from "firebase/app";
-import { CommentModel } from "../../../data/models/CommentModel";
+import {
+  CommentModel,
+  CommentModelListPagedSorted,
+  CommentModelsSortType,
+} from "../../../data/models/CommentModel";
 import {
   rtCommentAdd,
   rtCommentDelete,
@@ -46,9 +50,10 @@ export async function fbCommentGet({
 }: ApiResponse<
   {
     articleId: string;
+    sortBy?: CommentModelsSortType;
   } & ApiPagingReqProps,
   CommentModelsWithPaging | null | FirebaseError
->) {
+>): Promise<CommentModelListPagedSorted | null> {
   try {
     const res = await rtCommentGet(data);
     callback?.(netSuccess("Success getting comments", res));

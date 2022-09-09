@@ -17,7 +17,7 @@ function ArticleComments({
 
   return (
     <>
-      <div className="flex flex-col-reverse gap-4 sm:gap-8">
+      <div className="flex flex-col gap-4 sm:gap-8">
         {commentList.comments.map((e, idx) => (
           <ArticleCommentItem
             key={e.id}

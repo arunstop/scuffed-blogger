@@ -8,10 +8,16 @@ export interface CommentModel {
   articleId: string;
   userId: string;
   userName: string;
-  upvote? : string[];
-  downvote?:string[];
+  upvote?: string[];
+  downvote?: string[];
 }
 
 export type CommentModelsWithPaging = {
   comments: CommentModel[];
 } & ApiPagingResultProps;
+
+export type CommentModelListPagedSorted = CommentModelsWithPaging & {
+  sortBy: CommentModelsSortType;
+};
+
+export type CommentModelsSortType = "new" | "top" | "discussed";
