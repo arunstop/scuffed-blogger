@@ -163,7 +163,7 @@ function PageUserPosts() {
         {/* title */}
         <div className="text-4xl font-bold sm:text-5xl">My Posts</div>
         {/* toolbar */}
-        {articleData && (
+        {!!articleDataInit?.articles.length && (
           <div className="tabs-boxed w-full rounded-xl min-h-[2rem] flex p-2 sm:p-4">
             <div className="flex justify-between w-full items-start">
               <form
@@ -220,41 +220,41 @@ function PageUserPosts() {
         {!loadingArticles && (
           <>
             {/* no articles */}
-            {!articleData?.articles.length ||
-              (!articleDataInit?.totalArticle && (
-                <div className={`w-full`}>
-                  <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
-                    <span className="sm:text-xl">
-                      No articles found, write your first article and let the
-                      world know!
-                    </span>
-                    <Link href={"/write"} passHref>
-                      <a className="btn --btn-resp btn-outline">
-                        Write Article
-                      </a>
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            {/* No result */}
-            {!articles.length && (
+            {!articleDataInit?.totalArticle ? (
               <div className={`w-full`}>
                 <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
                   <span className="sm:text-xl">
-                    No articles found, with keyword{" "}
-                    <span className="font-bold">`{articleData?.keyword}`</span>
-                    <br />
-                    Try to use a different keyword.
+                    No articles found, write your first article and let the
+                    world know!
                   </span>
-
-                  <button
-                    className="btn --btn-resp btn-outline"
-                    onClick={() => search("")}
-                  >
-                    Reset search
-                  </button>
+                  <Link href={"/write"} passHref>
+                    <a className="btn --btn-resp btn-outline">Write Article</a>
+                  </Link>
                 </div>
               </div>
+            ) : (
+              articleDataInit?.totalArticle &&
+              !articles.length && (
+                <div className={`w-full`}>
+                  <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                    <span className="sm:text-xl">
+                      No articles found, with keyword{" "}
+                      <span className="font-bold">
+                        `{articleData?.keyword}`
+                      </span>
+                      <br />
+                      Try to use a different keyword.
+                    </span>
+
+                    <button
+                      className="btn --btn-resp btn-outline"
+                      onClick={() => search("")}
+                    >
+                      Reset search
+                    </button>
+                  </div>
+                </div>
+              )
             )}
           </>
         )}
