@@ -1,3 +1,4 @@
+import { Transition } from "@headlessui/react";
 import { useState } from "react";
 import {
   MdBookmarkAdd,
@@ -9,10 +10,9 @@ import {
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import {
   ArticleModel,
-  toArticleContentless,
+  factoryArticleRemoveContent as factoryArticleContentRemove,
 } from "../../utils/data/models/ArticleModel";
 import { fbArticleReact } from "../../utils/services/network/FirebaseApi/ArticleModules";
-import ArticleReactionButton from "./ArticleReactionButton";
 interface ArticleReactProps {
   value: boolean;
   action: () => void;
@@ -43,7 +43,7 @@ function getArticleAfterReaction({
 
   const antiReactions = (list: string[] = []): string[] => {
     return reacted //
-      ? list || []
+      ? list
       : !list
       ? []
       : filterReacts(list, userId);
@@ -51,8 +51,9 @@ function getArticleAfterReaction({
 
   const newArticleEntry: ArticleModel = {
     ...article,
-    likes: type === "like" ? reactions(likes) : antiReactions(dislikes),
-    dislikes: type === "like" ? antiReactions(dislikes) : antiReactions(likes),
+    likes: type === "like" ? reactions(likes) : antiReactions(likes),
+    dislikes:
+      type === "dislike" ? reactions(dislikes) : antiReactions(dislikes),
   };
   return newArticleEntry;
 }
@@ -61,100 +62,105 @@ function ArticleSectionAction({ article }: { article: ArticleModel }) {
   const {
     authStt: { user },
   } = useAuthCtx();
-  const articleContentless = toArticleContentless(article);
-
-  const [liked, setLiked] = useState(
-    user ? !!article.likes?.includes(user.id) : false,
+  const [articleContentless, setArticleContentless] = useState(
+    factoryArticleContentRemove(article),
   );
+
+  const liked = user ? !!articleContentless.likes.includes(user.id) : false;
+  const disliked = user
+    ? !!articleContentless.dislikes.includes(user.id)
+    : false;
   const like = async () => {
     if (!user) return;
     await fbArticleReact({
       data: {
-        oldArticle: articleContentless,
-        newArticle: getArticleAfterReaction({
+        article: getArticleAfterReaction({
           type: "like",
           article: articleContentless,
           reacted: liked,
           userId: user.id,
         }),
-        type: "like",
       },
     }).then((e) => {
-      if (e) {
-        setLiked((prev) => !prev);
-        if (disliked) setDisliked((prev) => !prev);
-      }
+      if (e) return setArticleContentless(e);
     });
   };
 
-  const [disliked, setDisliked] = useState(
-    user ? !!article.dislikes?.includes(user.id) : false,
-  );
   const dislike = async () => {
     if (!user) return;
     await fbArticleReact({
       data: {
-        oldArticle: articleContentless,
-        newArticle: getArticleAfterReaction({
+        article: getArticleAfterReaction({
           type: "dislike",
           article: articleContentless,
           reacted: disliked,
           userId: user.id,
         }),
-        type: "dislike",
       },
     }).then((e) => {
-      if (e) {
-        setDisliked((prev) => !prev);
-        if (liked) setLiked((prev) => !prev);
-      }
+      if (e) return setArticleContentless(e);
     });
   };
 
   return (
     <div className="flex flex-wrap gap-4 sm:justify-end">
       <div className="inline-flex w-full gap-4 sm:w-auto">
-        <ArticleReactionButton
-          value={liked}
-          icon={<MdThumbUp />}
-          color="success"
-          outlined
+        <button
+          className={`btn flex-1 gap-2 sm:gap-4 !border-[2px] sm:min-w-32 sm:flex-none sm:border-2 --btn-resp 
+          btn-success ${!liked ? "btn-outline" : ""} `}
           title="Like"
-          onChange={like}
-          className={`hover:bg-opacity-20 hover:text-success`}
-          disabled={!user}
-        />
-        <ArticleReactionButton
-          value={disliked}
-          icon={<MdThumbDown />}
-          color="error"
-          outlined
-          title="Disike"
-          onChange={dislike}
-          className={`hover:bg-opacity-20 hover:text-error`}
-          disabled={!user}
-        />
+          onClick={() => like()}
+        >
+          <Transition
+            key={`liked-${liked}`}
+            appear
+            enter="transition-transform duration-[600ms]"
+            enterFrom="rotate-[0deg]"
+            enterTo="rotate-[360deg]"
+          >
+            <MdThumbUp className="text-xl sm:text-2xl" />
+          </Transition>
+          {articleContentless.likes.length || ""}
+        </button>
+
+        <button
+          className={`btn flex-1 gap-2 sm:gap-4 !border-[2px] sm:min-w-32 sm:flex-none sm:border-2 --btn-resp 
+          btn-error ${!disliked ? "btn-outline" : ""} `}
+          title="Dislike"
+          onClick={() => dislike()}
+        >
+          <Transition
+            key={`disliked-${disliked}`}
+            appear
+            enter="transition-transform duration-[600ms]"
+            enterFrom="rotate-[0deg]"
+            enterTo="rotate-[360deg]"
+          >
+            <MdThumbDown className="text-xl sm:text-2xl" />
+          </Transition>
+          {articleContentless.dislikes.length || ""}
+        </button>
       </div>
       {/* <button
         className="btn border-yellow-500 hover:border-yellow-600 w-full gap-2 text-xl 
         font-bold normal-case sm:w-48 bg-yellow-500 hover:bg-yellow-600 text-white"
       > */}
       <button
-        className="btn --btn-resp btn-primary w-full 
+        className="--btn-resp btn btn-primary w-full 
         gap-2 font-bold normal-case sm:w-48"
       >
         <MdBookmarkAdd className="text-2xl" />
         Bookmark
       </button>
       <button
-        className="btn --btn-resp btn-primary w-full 
+        className="--btn-resp btn btn-primary w-full 
         gap-2 font-bold normal-case sm:w-48"
       >
         <MdOutlinePlaylistAdd className="text-2xl" />
         Read Later
       </button>
       <button
-        className="btn --btn-resp btn-primary w-full 
+        className="--btn-resp btn btn-primary w-full 
         gap-2 font-bold normal-case sm:w-48"
       >
         <MdShare className="text-2xl" />

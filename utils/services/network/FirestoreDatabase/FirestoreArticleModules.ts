@@ -124,8 +124,8 @@ export async function fsArticleUpdate({
   userPostsRef: string;
 }) {
   const ref = doc(articleDb, userPostsRef);
-  console.log("oldArticle", oldArticle.dateUpdated);
-  console.log("article", article.dateUpdated);
+  console.log( oldArticle);
+  console.log( article);
   // delete the old article
   await updateDoc(ref, {
     articles: arrayRemove(oldArticle),

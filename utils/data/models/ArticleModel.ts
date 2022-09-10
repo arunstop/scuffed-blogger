@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { nanoid } from "nanoid";
 import { strKebabify } from "../../helpers/MainHelpers";
 import { WritingPanelFormProps } from "../contexts/WritingPanelTypes";
 import { isFalsy } from "../Main";
@@ -15,12 +16,12 @@ export interface ArticleModel {
   dateAdded: number;
   dateUpdated: number;
   duration: number;
-  topics?: string[];
+  topics: string[];
   tags: string[];
   deleted: number;
-  community?: string;
-  likes?: string[];
-  dislikes?: string[];
+  community: string;
+  likes: string[];
+  dislikes: string[];
 }
 
 export function isArticleModel(value: unknown) {
@@ -40,8 +41,12 @@ export function isArticleModel(value: unknown) {
     "dateAdded" in value &&
     "dateUpdated" in value &&
     "duration" in value &&
+    "topics" in value &&
     "tags" in value &&
-    "deleted" in value;
+    "deleted" in value &&
+    "community" in value &&
+    "likes" in value &&
+    "dislikes" in value;
   // list all properties
   const props = [
     "id",
@@ -54,8 +59,8 @@ export function isArticleModel(value: unknown) {
     "dateAdded",
     "dateUpdated",
     "duration",
-    "tags",
     "topics",
+    "tags",
     "deleted",
     "community",
     "likes",
@@ -110,7 +115,32 @@ export function toArticleModel({
     topics: [...formData.topics.split(",").map((e) => e.trim())],
     likes: [],
     dislikes: [],
+    community: "",
   };
+}
+
+export function factoryArticleComplete(
+  partial: Partial<ArticleModel>,
+): ArticleModel {
+  const res: ArticleModel = {
+    id: partial.id || nanoid(24),
+    slug: partial.slug || "",
+    title: partial.title || "",
+    desc: partial.desc || "",
+    thumbnail: partial.thumbnail || "",
+    content: partial.content || "",
+    author: partial.author || "",
+    dateAdded: partial.dateAdded || Date.now(),
+    dateUpdated: partial.dateUpdated || Date.now(),
+    duration: partial.duration || 0,
+    topics: partial.topics || [],
+    tags: partial.tags || [],
+    deleted: partial.deleted || 0,
+    community: partial.community || "",
+    likes: partial.likes || [],
+    dislikes: partial.dislikes || [],
+  };
+  return res;
 }
 
 // Turn ArticleModel to newly updated ArticleModel
@@ -148,7 +178,7 @@ export function toArticleModelUpdated({
   };
 }
 
-export function toArticleContentless(article: ArticleModel): ArticleModel {
+export function factoryArticleRemoveContent(article: ArticleModel): ArticleModel {
   return { ...article, content: "" };
 }
 
@@ -175,5 +205,6 @@ export function toArticleModelDraft(
     topics: [...formData.topics.split(",").map((e) => e.trim())],
     likes: [],
     dislikes: [],
+    community: "",
   };
 }

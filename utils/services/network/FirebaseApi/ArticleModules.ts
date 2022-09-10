@@ -5,12 +5,12 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../../data/Main";
 import {
   ArticleModel,
   toArticleModel,
-  toArticleModelUpdated
+  toArticleModelUpdated,
 } from "../../../data/models/ArticleModel";
 import { UserModel } from "../../../data/models/UserModel";
 import {
@@ -21,9 +21,13 @@ import {
   fsArticleContentUpdate,
   fsArticleDelete,
   fsArticleGetByUser,
-  fsArticleUpdate
+  fsArticleUpdate,
 } from "../FirestoreDatabase/FirestoreArticleModules";
-import { rtArticleMirrorAdd, rtArticleMirrorDelete, rtArticleMirrorUpdate } from "../RealtimeDatabase/RealtimeArticleModules";
+import {
+  rtArticleMirrorAdd,
+  rtArticleMirrorDelete,
+  rtArticleMirrorUpdate,
+} from "../RealtimeDatabase/RealtimeArticleModules";
 
 import { stDirectoryDelete, stFileDeleteByFullLink } from "../StorageModules";
 import { MainApiResponse } from "./../../../data/Main";
@@ -372,23 +376,16 @@ export async function fbArticleReact({
   callback,
 }: MainApiResponse<
   {
-    type: "like" | "dislike";
-    oldArticle: ArticleModel;
-    newArticle: ArticleModel;
-    userPostsRef: string;
+    article: ArticleModel;
   },
   ArticleModel | null | FirebaseError
 >): Promise<ArticleModel | null> {
-  const { oldArticle, newArticle, userPostsRef } = data;
+  const { article } = data;
   try {
-    console.log(newArticle);
-    await fsArticleUpdate({
-      oldArticle: oldArticle,
-      article: newArticle,
-      userPostsRef: userPostsRef,
-    });
-    callback?.(netSuccess("Success liking the article", newArticle));
-    return newArticle;
+    console.log(article);
+    await rtArticleMirrorUpdate(article);
+    callback?.(netSuccess("Success liking the article", article));
+    return article;
   } catch (error) {
     console.log(error);
     callback?.(netError("Success liking the article", error as FirebaseError));
