@@ -8,6 +8,7 @@ interface ActionButtonProps {
   color?: MainColorTypes;
   outlined?: boolean;
   value: boolean;
+  disabled:boolean;
   onChange?: (value: boolean) => void;
   className?:string;
 }
@@ -41,16 +42,16 @@ function ArticleReactionButton({
   outlined = false,
   color = "neutral",
   value = false,
+  disabled=false,
   onChange,
   className="",
 }: ActionButtonProps) {
   return (
     <label
-      className={`btn btn-success flex-1 !border-[2px] sm:w-32 
+      className={`btn flex-1 !border-[2px] sm:w-32 
       sm:flex-none sm:border-2 --btn-resp
       ${outlined && !value ? "btn-outline" : ""}
-      ${getColor(color)}
-      ${className}
+      ${disabled?'btn-disabled':`${getColor(color)} ${className}`}
       `}
       title={title}
       tabIndex={-1}

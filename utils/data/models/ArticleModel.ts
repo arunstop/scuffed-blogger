@@ -19,6 +19,8 @@ export interface ArticleModel {
   tags: string[];
   deleted: number;
   community?: string;
+  likes?: string[];
+  dislikes?: string[];
 }
 
 export function isArticleModel(value: unknown) {
@@ -56,6 +58,8 @@ export function isArticleModel(value: unknown) {
     "topics",
     "deleted",
     "community",
+    "likes",
+    "dislikes",
   ];
   // check if `value` has props that is not in the required on the props
   const unrequiredPropsValid =
@@ -104,6 +108,8 @@ export function toArticleModel({
     duration: (formData.content.length || 0) / 200,
     tags: [...formData.tags.split(",").map((e) => e.trim())],
     topics: [...formData.topics.split(",").map((e) => e.trim())],
+    likes: [],
+    dislikes: [],
   };
 }
 
@@ -142,6 +148,10 @@ export function toArticleModelUpdated({
   };
 }
 
+export function toArticleContentless(article: ArticleModel): ArticleModel {
+  return { ...article, content: "" };
+}
+
 export function toArticleModelDraft(
   formData: WritingPanelFormProps,
 ): ArticleModel {
@@ -163,5 +173,7 @@ export function toArticleModelDraft(
     duration: (formData.content.length || 0) / 200,
     tags: [...formData.tags.split(",").map((e) => e.trim())],
     topics: [...formData.topics.split(",").map((e) => e.trim())],
+    likes: [],
+    dislikes: [],
   };
 }

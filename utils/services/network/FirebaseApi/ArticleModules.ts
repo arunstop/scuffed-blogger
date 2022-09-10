@@ -1,3 +1,4 @@
+import { MainApiResponse } from "./../../../data/Main";
 import { FirebaseError } from "firebase/app";
 import { nanoid } from "nanoid";
 import { WritingPanelFormProps } from "../../../data/contexts/WritingPanelTypes";
@@ -367,4 +368,25 @@ export async function fbArticleUpdate({
 
   callback?.(netSuccess<ArticleModel>("Success creating article", article));
   return article;
+}
+
+export async function fbArticleReact({
+  data,
+  callback,
+}: MainApiResponse<
+  {
+    type: "like" | "dislike";
+    oldArticle: ArticleModel;
+    newArticle: ArticleModel;
+  },
+  ArticleModel | null | FirebaseError
+>): Promise<ArticleModel | null> {
+  const { oldArticle, newArticle } = data;
+  try {
+    console.log(oldArticle);
+    console.log(newArticle);
+    return newArticle;
+  } catch (error) {
+    return null;
+  }
 }
