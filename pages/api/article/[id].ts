@@ -2,7 +2,7 @@ import { MainNetworkResponse } from "./../../../utils/data/Main";
 import { ArticleModel } from "./../../../utils/data/models/ArticleModel";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { rtdbArticleGetById } from "../../../utils/services/network/RtdbModules";
+import { rtArticleGetById } from "../../../utils/services/network/RealtimeDatabase/RealtimeArticleModules";
 
 // type Data = {
 //   name: string;
@@ -17,7 +17,7 @@ export default async function handler(
   if (!id) return res.status(500);
   // only proceed if the method is `GET`
   if (req.method === "GET") {
-    const requestedArticle = await rtdbArticleGetById(id as string).then(
+    const requestedArticle = await rtArticleGetById(id as string).then(
       (e) =>
         ({
           message: e
