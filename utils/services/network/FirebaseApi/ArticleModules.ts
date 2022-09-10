@@ -24,11 +24,13 @@ import {
   fsArticleUpdate,
 } from "../FirestoreDatabase/FirestoreArticleModules";
 import {
-  rtdbArticleMirrorAdd,
-  rtdbArticleMirrorDelete,
-  rtdbArticleMirrorUpdate,
-} from "../RtdbModules";
+  rtArticleMirrorAdd,
+  rtArticleMirrorDelete,
+  rtArticleMirrorUpdate,
+} from "../RealtimeDatabase/RealtimeArticleModules";
+
 import { stDirectoryDelete, stFileDeleteByFullLink } from "../StorageModules";
+import { MainApiResponse } from "./../../../data/Main";
 import { ArticleListModel } from "./../../../data/models/ArticleListModel";
 import { uploadFile } from "./FileModules";
 
@@ -156,7 +158,7 @@ export async function fbArticleAdd({
 
   // uploading mirror to rtdb for efficient searching
   try {
-    await rtdbArticleMirrorAdd(articleContentless);
+    await rtArticleMirrorAdd(articleContentless);
   } catch (error) {
     console.log(error);
     errorCb("Error when creating thumbnail", error as FirebaseError);
@@ -206,7 +208,7 @@ export async function fbArticleDelete({
   }
   // delete mirror on rtdb
   try {
-    await rtdbArticleMirrorDelete(article.id);
+    await rtArticleMirrorDelete(article.id);
   } catch (error) {
     console.log(error);
     callback?.(
@@ -358,7 +360,7 @@ export async function fbArticleUpdate({
 
   // uploading mirror to rtdb for efficient searching
   try {
-    await rtdbArticleMirrorUpdate(articleContentless);
+    await rtArticleMirrorUpdate(articleContentless);
   } catch (error) {
     console.log(error);
     errorCb("Error when creating thumbnail", error as FirebaseError);
@@ -367,4 +369,26 @@ export async function fbArticleUpdate({
 
   callback?.(netSuccess<ArticleModel>("Success creating article", article));
   return article;
+}
+
+export async function fbArticleReact({
+  data,
+  callback,
+}: MainApiResponse<
+  {
+    article: ArticleModel;
+  },
+  ArticleModel | null | FirebaseError
+>): Promise<ArticleModel | null> {
+  const { article } = data;
+  try {
+    console.log(article);
+    await rtArticleMirrorUpdate(article);
+    callback?.(netSuccess("Success liking the article", article));
+    return article;
+  } catch (error) {
+    console.log(error);
+    callback?.(netError("Success liking the article", error as FirebaseError));
+    return null;
+  }
 }

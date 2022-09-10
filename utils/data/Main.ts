@@ -57,3 +57,8 @@ export interface ApiPagingResultProps {
   total: number;
   keyword?: string;
 }
+
+export type MainApiResponse<DATA, RESP> = {
+  data: DATA;
+  callback?: (resp: MainNetworkResponse<RESP>) => void;
+};

@@ -2,32 +2,26 @@ import { FirebaseError } from "firebase/app";
 import {
   CommentModel,
   CommentModelListPagedSorted,
-  CommentModelsSortType,
+  CommentModelsSortType
 } from "../../../data/models/CommentModel";
 import {
   rtCommentAdd,
   rtCommentDelete,
   rtCommentGet,
   rtCommentReact,
-  rtCommentUpdate,
+  rtCommentUpdate
 } from "../RealtimeDatabase/RealtimeCommentModules";
 import {
   ApiPagingReqProps,
-  MainNetworkResponse,
-  netError,
-  netSuccess,
+  MainApiResponse, netError,
+  netSuccess
 } from "./../../../data/Main";
 import { CommentModelsWithPaging } from "./../../../data/models/CommentModel";
-
-type ApiResponse<DATA, RESP> = {
-  data: DATA;
-  callback?: (resp: MainNetworkResponse<RESP>) => void;
-};
 
 export async function fbCommentAdd({
   data,
   callback,
-}: ApiResponse<
+}: MainApiResponse<
   { comment: CommentModel },
   CommentModel | null | FirebaseError
 >): Promise<boolean> {
@@ -47,7 +41,7 @@ export async function fbCommentAdd({
 export async function fbCommentGet({
   data,
   callback,
-}: ApiResponse<
+}: MainApiResponse<
   {
     articleId: string;
     sortBy?: CommentModelsSortType;
@@ -67,7 +61,7 @@ export async function fbCommentGet({
 export async function fbCommentUpdate({
   data,
   callback,
-}: ApiResponse<
+}: MainApiResponse<
   { comment: CommentModel },
   CommentModel | null | FirebaseError
 >) {
@@ -94,7 +88,7 @@ export interface FbCommentReactProps {
 export async function fbCommentReact({
   data,
   callback,
-}: ApiResponse<
+}: MainApiResponse<
   FbCommentReactProps,
   CommentModel | null | FirebaseError
 >): Promise<CommentModel | null> {
@@ -112,7 +106,7 @@ export async function fbCommentReact({
 export async function fbCommentDelete({
   data,
   callback,
-}: ApiResponse<
+}: MainApiResponse<
   { articleId: string; commentId: string },
   CommentModel | null | FirebaseError
 >) {
