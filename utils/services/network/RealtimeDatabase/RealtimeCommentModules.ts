@@ -43,7 +43,7 @@ export async function rtCommentGet({
     //     return res;
     // }
     return {
-      comments: sort(data.slice(start, start + count)),
+      comments: sort(data).slice(start, start + count),
       total: data.length,
       offset: start + count,
       sortBy: sortBy,
