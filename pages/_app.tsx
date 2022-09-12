@@ -10,6 +10,7 @@ import { parseCookies } from "nookies";
 import { isUserModel, UserModel } from "../utils/data/models/UserModel";
 import { COOKIE_USER_AUTH } from "../utils/helpers/Constants";
 import { useRouteChange } from "../utils/hooks/RouteChangeHook";
+import SplashScreen from "../components/placeholder/LayoutPlaceholder";
 
 interface AdditionalAppProps {
   user?: UserModel;
@@ -20,7 +21,12 @@ const LazyNextProgressBar = dynamic(() => import("nextjs-progressbar"), {
 
 const LazyMainWrapper = dynamic(
   () => import("../layouts/main/LayoutMainWrapper"),
-  { ssr: false },
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <SplashScreen />;
+    },
+  },
 );
 
 // Not using `NextPage` type because of it is custom
