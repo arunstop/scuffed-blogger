@@ -91,7 +91,7 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
           </div>
 
           <div className="flex flex-wrap gap-2 text-base sm:text-lg">
-            <span className="">
+            <span className="first-letter:uppercase">
               {`${formatDistance(article.dateAdded, Date.now())} ago`}
             </span>
             <span className="font-black">&middot;</span>
