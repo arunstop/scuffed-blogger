@@ -78,7 +78,7 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
             content="Scuffed blogs, for scuffed people"
           />
         </Head>
-        <ArticleProgressBar/>
+        <ArticleProgressBar />
         <MainContainer>
           <div className="inline-flex justify-start">
             <div className="dropdown-hover dropdown self-start">
@@ -95,9 +95,9 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
               {`${formatDistance(article.dateAdded, Date.now())} ago`}
             </span>
             <span className="font-black">&middot;</span>
-            <span className="">{`${Math.ceil(
-              article.duration,
-            )} mins read`}</span>
+            <span className="">{`${Math.ceil(article.duration)} min${
+              Math.ceil(article.duration) >= 2 ? "s" : ""
+            } read`}</span>
             <span className="font-black">&middot;</span>
             <span className="">{`${article.topics?.join(", ")}`}</span>
           </div>
