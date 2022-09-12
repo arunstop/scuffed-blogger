@@ -1,20 +1,27 @@
 import type { AppContext, AppProps } from "next/app";
 import App from "next/app";
 import Script from "next/script";
-import NextNProgress from "nextjs-progressbar";
 import "../styles/globals.css";
 import { AuthProvider } from "../utils/contexts/auth/AuthProvider";
 import { UiProvider } from "../utils/contexts/ui/UiProvider";
 // import { ArticleModel } from "../utils/data/models/ArticleModel";
+import dynamic from "next/dynamic";
 import { parseCookies } from "nookies";
 import { isUserModel, UserModel } from "../utils/data/models/UserModel";
 import { COOKIE_USER_AUTH } from "../utils/helpers/Constants";
 import { useRouteChange } from "../utils/hooks/RouteChangeHook";
-import LayoutMainWrapper from "../layouts/main/LayoutMainWrapper";
 
 interface AdditionalAppProps {
   user?: UserModel;
 }
+const LazyNextProgressBar = dynamic(() => import("nextjs-progressbar"), {
+  ssr: false,
+});
+
+const LazyMainWrapper = dynamic(
+  () => import("../layouts/main/LayoutMainWrapper"),
+  { ssr: false },
+);
 
 // Not using `NextPage` type because of it is custom
 const MainApp = ({
@@ -30,16 +37,16 @@ const MainApp = ({
 
       <AuthProvider initUser={user}>
         <UiProvider>
-          <NextNProgress
+          <LazyNextProgressBar
             color="hsl(var(--pc))"
             startPosition={0.4}
             stopDelayMs={200}
             height={6}
             showOnShallow={false}
           />
-          <LayoutMainWrapper>
-          <Component {...pageProps} />
-          </LayoutMainWrapper>
+          <LazyMainWrapper>
+            <Component {...pageProps} />
+          </LazyMainWrapper>
         </UiProvider>
       </AuthProvider>
     </>

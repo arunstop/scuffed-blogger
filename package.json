@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "scan": "ANALYZE=true npm run build"
   },
   "dependencies": {
     "@headlessui/react": "^1.6.4",
+    "@next/bundle-analyzer": "^12.3.0",
     "@tailwindcss/line-clamp": "^0.4.0",
     "@types/ua-parser-js": "^0.7.36",
     "axios": "^0.27.2",
