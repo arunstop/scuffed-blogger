@@ -16,6 +16,7 @@ import { APP_NAME } from "../../utils/helpers/Constants";
 import useLazyScrollerHook from "../../utils/hooks/LazyScrollerHook";
 import { fbArticleContentGet } from "../../utils/services/network/FirebaseApi/ArticleModules";
 import { mainApi } from "../../utils/services/network/MainApi";
+import ArticleProgressBar from "../../components/article/ArticleProgressBar";
 
 export const getServerSideProps: GetServerSideProps<{
   articleContentless: ArticleModel;
@@ -77,6 +78,7 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
             content="Scuffed blogs, for scuffed people"
           />
         </Head>
+        <ArticleProgressBar/>
         <MainContainer>
           <div className="inline-flex justify-start">
             <div className="dropdown-hover dropdown self-start">
@@ -89,11 +91,13 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
           </div>
 
           <div className="flex flex-wrap gap-2 text-base sm:text-lg">
-            <span className="">{`${formatDistance(article.dateAdded, Date.now())} ago`}
-              
+            <span className="">
+              {`${formatDistance(article.dateAdded, Date.now())} ago`}
             </span>
             <span className="font-black">&middot;</span>
-            <span className="">{`${Math.floor(article.duration)} mins read`}</span>
+            <span className="">{`${Math.floor(
+              article.duration,
+            )} mins read`}</span>
             <span className="font-black">&middot;</span>
             <span className="">{`${article.topics?.join(", ")}`}</span>
           </div>
@@ -151,7 +155,7 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
             </>
           ) : (
             <LoadingIndicator
-              ref={contentSectionRef} 
+              ref={contentSectionRef}
               spinner
               text="Loading content"
             />

@@ -9,7 +9,7 @@ interface MainMarkdownContainerProps {
 
 function MainMarkdownContainer({
   content,
-  className="",
+  className = "",
 }: MainMarkdownContainerProps) {
   useEffect(() => {
     const container = document.getElementById("main-markdown-container");
@@ -20,17 +20,22 @@ function MainMarkdownContainer({
         // using `getAttribute` instead of `.href`
         // becase `.href` returns a full link
         // instead of the raw text inside of that attribute
-        const rawHref = linkEl.getAttribute("href")||"";
+        const rawHref = linkEl.getAttribute("href") || "";
         // console.log(rawHref);
         // check if the href points to an `id`
         // or check if `target` attribute is not null already
-        if (rawHref[0]==="#" || linkEl.getAttribute("target") !== null)
+        if (rawHref[0] === "#" || linkEl.getAttribute("target") !== null)
           return;
         linkEl.setAttribute("target", "_blank");
       });
     }
     return () => {};
   }, [content]);
+
+  useEffect(() => {
+    console.log((document.getElementById('main-markdown-container') as HTMLDivElement).offsetTop);
+    return () => {};
+  }, []);
 
   return (
     <article

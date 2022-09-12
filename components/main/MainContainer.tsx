@@ -5,7 +5,11 @@ interface MainContainerProps {
   className?: string;
   children: ReactNode;
 }
-function MainContainer({ className, children }: MainContainerProps) {
+function MainContainer({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLElement>) {
   return (
     <Transition
       as={Fragment}
@@ -23,6 +27,7 @@ function MainContainer({ className, children }: MainContainerProps) {
       transition-colors duration-500
       ${className}
       `}
+        {...props}
       >
         {children}
       </main>
