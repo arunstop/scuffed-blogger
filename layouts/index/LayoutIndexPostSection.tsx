@@ -1,29 +1,33 @@
 import { Transition } from "@headlessui/react";
+import { FirebaseError } from "firebase/app";
 import React, { useCallback, useEffect, useState } from "react";
-import { mainApi } from "../../utils/services/network/MainApi";
+import ErrorPlaceholder from "../../components/placeholder/ErrorPlaceholder";
+import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
+import PostItem from "../../components/post/PostItem";
+import PostOptionModal from "../../components/post/PostOptionModal";
 import { MainNetworkResponse } from "../../utils/data/Main";
-import ErrorPlaceholder from "../placeholder/ErrorPlaceholder";
-import LoadingIndicator from "../placeholder/LoadingIndicator";
-import PostItem from "../post/PostItem";
-import PostOptionModal from "../post/PostOptionModal";
-import { ArticleModel } from "../../utils/data/models/ArticleModel";
+import {
+  ArticleModelFromDb,
+  fbArticleMirrorGetAll,
+} from "../../utils/services/network/FirebaseApi/ArticleModules";
 
-function MainPostSection() {
-  const [posts, setPosts] = useState<MainNetworkResponse<ArticleModel[]|null>>();
+function LayoutIndexPostSection() {
+  const [posts, setPosts] =
+    useState<MainNetworkResponse<ArticleModelFromDb | null | FirebaseError>>();
   const [loading, setLoading] = useState(true);
   // const [status, setStatus] = useState<MainNetworkResponse>();
   const loadPosts = useCallback(async () => {
     // show loading indicator
     setLoading(true);
-    await mainApi.mainArticleGetAll({
+    await fbArticleMirrorGetAll({
+      data: {
+        count: 0,
+        start: 0,
+      },
       callback: (resp) => {
-        // Cancel the process `status` = loading
         if (resp.status === "loading") return;
-        console.log(resp);
-
-        // Proceed if `status` = error/success
-        setLoading(false);
         setPosts(resp);
+        setLoading(false);
       },
     });
     // await waitFor(4000);
@@ -32,8 +36,7 @@ function MainPostSection() {
 
   useEffect(() => {
     loadPosts();
-    return () => {};
-  }, [loadPosts]);
+  }, []);
 
   return (
     <>
@@ -73,9 +76,9 @@ function MainPostSection() {
         {!loading && posts?.status === "success" && (
           <>
             <div className="flex flex-col gap-4 sm:gap-8" id="main-content">
-              {posts.data?.map((articleItem, idx) => (
-                <PostItem key={idx} article={articleItem} />
-              ))}
+              {(posts.data as ArticleModelFromDb).articles.map((e) => {
+                return <PostItem key={e.id} article={e} />;
+              })}
             </div>
             <PostOptionModal />
           </>
@@ -85,4 +88,4 @@ function MainPostSection() {
   );
 }
 
-export default React.memo(MainPostSection);
+export default React.memo(LayoutIndexPostSection);
