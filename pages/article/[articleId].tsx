@@ -95,7 +95,7 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
               {`${formatDistance(article.dateAdded, Date.now())} ago`}
             </span>
             <span className="font-black">&middot;</span>
-            <span className="">{`${Math.floor(
+            <span className="">{`${Math.ceil(
               article.duration,
             )} mins read`}</span>
             <span className="font-black">&middot;</span>
