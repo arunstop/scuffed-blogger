@@ -106,7 +106,13 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
         loadComments={loadComments}
       />
       <div></div>
-      {commentList && <ArticleComments commentList={commentList} />}
+      {!commentList?.comments.length ? (
+        <span className="font-bold text-sm sm:text-base  text-center opacity-80 my-16">
+          {`No comments yet, let the people know, what's your thought about this article..`}
+        </span>
+      ) : (
+        <ArticleComments commentList={commentList} />
+      )}
     </div>
   );
 }
