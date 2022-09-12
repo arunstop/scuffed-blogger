@@ -5,7 +5,7 @@ function SplashScreen() {
   return (
     <div
       id="layout-placeholder"
-      className="min-h-screen bg-gradient-to-b from-transparent  flex via-primary/50 from-transparent sm:-mt-16 animate-pulse
+      className="min-h-screen bg-gradient-to-b from-transparent  flex via-primary/50 from-transparent  animate-pulse
       transition-all"
     >
       <div className="flex flex-col gap-2 sm-gap-4 m-auto animate-bounce items-center text-primary-content ">
