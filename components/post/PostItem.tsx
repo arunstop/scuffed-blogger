@@ -14,8 +14,6 @@ import MainUserPopup from "../main/MainPostUserPopup";
 import MainUserLabel from "../main/MainUserLabel";
 import PostLinker from "./PostLinker";
 
-const randomId = () => Math.floor(Math.random() * 1000) + 1;
-
 function PostItem({ article }: { article: ArticleModel }) {
   const router = useRouter();
   return (
@@ -33,7 +31,14 @@ function PostItem({ article }: { article: ArticleModel }) {
         <img
           className="h-full w-full max-w-none object-cover transition-transform 
           duration-1000 group-hover:scale-[1.2]"
-          src={`https://picsum.photos/id/${randomId()}/500/300`}
+          src={`${
+            article.thumbnail ||
+            `https://picsum.photos/id/${article.dateAdded
+              .toString()
+              .split("")
+              .slice(-2)
+              .join("")}/500/300`
+          }`}
           alt="Image"
           width={240}
           height={240}
@@ -93,7 +98,7 @@ function PostItem({ article }: { article: ArticleModel }) {
           </h1>
         </PostLinker>
         <span className="text-base sm:text-lg line-clamp-3">
-         {`${article.desc}`}
+          {`${article.desc}`}
         </span>
         <div className="flex flex-wrap gap-2 text-sm font-light sm:text-base">
           <span className="">2d ago</span>

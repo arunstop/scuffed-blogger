@@ -2,6 +2,8 @@ import { FirebaseError } from "firebase/app";
 import { nanoid } from "nanoid";
 import { WritingPanelFormProps } from "../../../data/contexts/WritingPanelTypes";
 import {
+  ApiPagingReqProps,
+  ApiPagingResultProps,
   MainNetworkResponse,
   netError,
   netLoading,
@@ -24,6 +26,7 @@ import {
   fsArticleUpdate,
 } from "../FirestoreDatabase/FirestoreArticleModules";
 import {
+  rtArticleGetAll,
   rtArticleMirrorAdd,
   rtArticleMirrorDelete,
   rtArticleMirrorUpdate,
@@ -48,6 +51,35 @@ export type ArticleListModelByUser = ArticleListModel & {
   keyword: string;
   offset: number;
 };
+
+export type ArticleModelFromDb = {
+  articles: ArticleModel[];
+} & ApiPagingResultProps;
+
+export async function fbArticleMirrorGetAll({
+  data,
+  callback,
+}: MainApiResponse<
+  ApiPagingReqProps,
+  ArticleModelFromDb | null | FirebaseError
+>): Promise<ArticleModelFromDb | null> {
+  try {
+    const res = await rtArticleGetAll(data);
+    if (res) {
+      callback?.(netSuccess("Success fetching articles", res));
+      return res;
+    }
+    callback?.(netError("Error when fetching articles", null));
+    return null;
+  } catch (error) {
+    console.log(error as FirebaseError);
+    callback?.(
+      netError("Error when fetching articles", error as FirebaseError),
+    );
+    return null;
+  }
+}
+
 export async function fbArticleGetByUser({
   articleListId,
   keyword,

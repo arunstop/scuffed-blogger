@@ -1,21 +1,16 @@
 import type { NextPage } from "next";
-import dynamic from "next/dynamic";
 import Head from "next/head";
 import React from "react";
 import MainContainer from "../components/main/MainContainer";
-import MainPostSection from "../components/main/MainPostSection";
-import MainSectionFilter from "../components/main/MainSectionFilterTab";
-import MainSectionSkeleton from "../components/main/MainSectionSkeleton";
+import LayoutIndexPage from "../layouts/index/pages/LayoutIndexPage";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
-
-const LazyMainPostSection = dynamic(
-  () => import("../components/main/MainPostSection"),
-  {
-    loading: () => <MainSectionSkeleton text="Loading posts..." spinner />,
-    
-  },
-);
+// const LazyMainPostSection = dynamic(
+//   () => import("../components/main/MainPostSection"),
+//   {
+//     loading: () => <MainSectionSkeleton text="Loading posts..." spinner />,
+//   },
+// );
 
 const Home: NextPage = () => {
   console.log("render Index");
@@ -27,9 +22,7 @@ const Home: NextPage = () => {
         <meta name="description" content={APP_DESC} />
       </Head>
       <MainContainer>
-        {/* <div className="hidden sm:block"><MainSearchBar /></div> */}
-        <MainSectionFilter />
-        <MainPostSection />
+        <LayoutIndexPage/>
       </MainContainer>
     </>
   );

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { MdStar, MdTrendingUp, MdForum, MdNewReleases } from "react-icons/md";
-import MainTabItem, { MainTabItemProps } from "./MainTabItem";
+import MainTabItem, { MainTabItemProps } from "../../components/main/MainTabItem";
 
 const tabs: MainTabItemProps[] = [
   {
@@ -25,7 +25,7 @@ const tabs: MainTabItemProps[] = [
   },
 ];
 
-function MainSectionFilter() {
+function LayoutIndexTabFilter() {
   const [activeTab, setActiveTab] = useState<string>("Trending");
   const changeActiveTab = useCallback(
     (title:string) => {
@@ -50,4 +50,4 @@ function MainSectionFilter() {
   );
 }
 
-export default React.memo(MainSectionFilter);
+export default React.memo(LayoutIndexTabFilter);
