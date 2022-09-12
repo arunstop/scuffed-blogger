@@ -1,8 +1,7 @@
 import type { NextPage } from "next";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import React from "react";
-import MainContainer from "../components/main/MainContainer";
-import LayoutIndexPage from "../layouts/index/pages/LayoutIndexPage";
 import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 
 // const LazyMainPostSection = dynamic(
@@ -11,6 +10,11 @@ import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 //     loading: () => <MainSectionSkeleton text="Loading posts..." spinner />,
 //   },
 // );
+
+const LazyLayoutIndexPage = dynamic(
+  () => import("../layouts/index/pages/LayoutIndexPage"),
+  { ssr: false },
+);
 
 const Home: NextPage = () => {
   console.log("render Index");
@@ -21,9 +25,7 @@ const Home: NextPage = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={APP_DESC} />
       </Head>
-      <MainContainer>
-        <LayoutIndexPage/>
-      </MainContainer>
+      <LazyLayoutIndexPage />
     </>
   );
 };
