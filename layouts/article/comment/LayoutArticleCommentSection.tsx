@@ -49,7 +49,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
   function getSortedByLabel() {
     if (sortedBy === "new") return "newest first";
     if (sortedBy === "top") return "top comments";
-    else return '';
+    else return "";
   }
 
   useEffect(() => {
@@ -61,50 +61,58 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
   // console.log("render ArticleCommentSection");
   return (
     <div className="flex flex-col gap-4 sm:gap-8">
-      <div className="flex gap-2 sm:gap-4 items-center justify-between sm:justify-start">
-        {commentList?.comments.length && (
-          <span className="font-bold text-sm sm:text-base">{`${commentList.comments.length} Comments`}</span>
-        )}
-        <div className="dropdown dropdown-end">
-          <label
-            tabIndex={0}
-            className="btn btn-ghost rounded-lg gap-2 sm:gap-4 "
-          >
-            <label className="text-xl sm:text-2xl">
-              <MdSort />
+      {commentList?.comments.length && (
+        <div className="flex gap-2 sm:gap-4 items-center justify-between sm:justify-start">
+          <span className="font-bold text-sm sm:text-base truncate">{`${commentList.comments.length} Comments`}</span>
+          <div className="dropdown dropdown-end">
+            <label
+              tabIndex={0}
+              className="btn btn-ghost rounded-lg gap-2 sm:gap-4 flex-nowrap "
+            >
+              <label className="text-xl sm:text-2xl">
+                <MdSort />
+              </label>
+              <span className="text-sm sm:text-base truncate">
+                Sorted by{" "}
+                <span className="underline">{getSortedByLabel()}</span>
+              </span>
             </label>
-            <span className="text-sm sm:text-base ">
-              Sorted by <span className='underline'>{getSortedByLabel()}</span>
-            </span>
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu p-2 ring-[1px] ring-base-content bg-base-100 rounded-lg w-52
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu p-2 ring-[1px] ring-base-content bg-base-100 rounded-lg w-52
             [&_a]:!rounded-lg text-sm sm:text-base font-bold"
-          >
-            {sorts.map((e, idx) => {
-              return (
-                <li key={idx}>
-                  <a
-                    onClick={() => {
-                      e.action?.();
-                      (document.activeElement as HTMLElement).blur();
-                    }}
-                  >
-                    {e.label}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+            >
+              {sorts.map((e, idx) => {
+                return (
+                  <li key={idx}>
+                    <a
+                      onClick={() => {
+                        e.action?.();
+                        (document.activeElement as HTMLElement).blur();
+                      }}
+                    >
+                      {e.label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
-      </div>
+      )}
+
       <LayoutArticleCommentForm
         articleId={articleId}
         loadComments={loadComments}
       />
       <div></div>
-      {commentList && <ArticleComments commentList={commentList} />}
+      {!commentList?.comments.length ? (
+        <span className="font-bold text-sm sm:text-base  text-center opacity-80 my-16">
+          {`No comments yet, let the people know, what's your thought about this article..`}
+        </span>
+      ) : (
+        <ArticleComments commentList={commentList} />
+      )}
     </div>
   );
 }

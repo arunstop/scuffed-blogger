@@ -32,11 +32,6 @@ function MainMarkdownContainer({
     return () => {};
   }, [content]);
 
-  useEffect(() => {
-    console.log((document.getElementById('main-markdown-container') as HTMLDivElement).offsetTop);
-    return () => {};
-  }, []);
-
   return (
     <article
       id="main-markdown-container"
@@ -55,7 +50,7 @@ function MainMarkdownContainer({
       `}
     >
       <ReactMarkdown remarkPlugins={[gfm]}>
-        {decodeURIComponent(content) || "No content."}
+        {content || "No content."}
       </ReactMarkdown>
     </article>
   );
