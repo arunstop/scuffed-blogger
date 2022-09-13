@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { MdSort } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
+import { useAuthCtx } from "../../../utils/contexts/auth/AuthHook";
 import {
   CommentModelsSortType,
   CommentModelListPagedSorted,
 } from "../../../utils/data/models/CommentModel";
 import { fbCommentGet } from "../../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import LayoutArticleCommentForm from "./LayoutArticleCommentForm";
+import Link from "next/link";
 
 function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
+  const {
+    authStt: { user },
+  } = useAuthCtx();
+
   const [commentList, setCommentList] = useState<CommentModelListPagedSorted>();
   const [sortedBy, setSortedBy] = useState<CommentModelsSortType>("new");
 
@@ -56,6 +62,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
     loadComments();
   }, [sortedBy]);
 
+  console.log(user);
   // console.log("commentList", commentList);
 
   // console.log("render ArticleCommentSection");
@@ -101,11 +108,43 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
         </div>
       )}
 
-      <LayoutArticleCommentForm
-        articleId={articleId}
-        loadComments={loadComments}
-      />
-      <div></div>
+      {user && (
+        <LayoutArticleCommentForm
+          articleId={articleId}
+          loadComments={loadComments}
+        />
+      )}
+      {!user && (
+        <div className="bg-primary/10 w-full p-4 sm:p-8 flex flex-col text-center rounded-xl sm:my-8 my-4">
+          <div className="gap-2 sm:gap-4 flex flex-col justify-center items-center w-full">
+            <span className="text-lg sm:text-xl font-bold">
+              Join us now, let us know what do you think about this amazing
+              article!
+            </span>
+            <Link
+              href={{
+                pathname: "/auth",
+              }}
+              passHref
+            >
+              <a className="--btn-resp btn btn-primary w-full gap-2 font-bold normal-case sm:w-">
+                Login, if have account
+              </a>
+            </Link>
+            <Link
+              href={{
+                pathname: "/auth",
+              }}
+              passHref
+            >
+              <a className="--btn-resp btn btn-primary w-full gap-2 font-bold normal-case sm:w-">
+                {`Register, if you don't`}
+              </a>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {!commentList?.comments.length ? (
         <span className="font-bold text-sm sm:text-base  text-center opacity-80 my-16">
           {`No comments yet, let the people know, what's your thought about this article..`}
