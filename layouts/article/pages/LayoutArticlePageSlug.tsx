@@ -1,6 +1,7 @@
 import { formatDistance } from "date-fns";
-import React, { useEffect, useState } from "react";
-import { MdStar, MdTrendingUp, MdForum } from "react-icons/md";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
 import ArticleSectionAction from "../../../components/article/ArticleActions";
 import ArticleProgressBar from "../../../components/article/ArticleProgressBar";
 import MainContainer from "../../../components/main/MainContainer";
@@ -8,6 +9,7 @@ import MainMarkdownContainer from "../../../components/main/MainMarkdownContaine
 import MainPostStatusChip from "../../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../../components/main/MainPostUserPopup";
 import MainUserLabel from "../../../components/main/MainUserLabel";
+import MobileHeader from "../../../components/main/MobileHeader";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import { ArticleModel } from "../../../utils/data/models/ArticleModel";
 import useLazyScrollerHook from "../../../utils/hooks/LazyScrollerHook";
@@ -19,6 +21,7 @@ function LayoutArticlePageSlug({
 }: {
   articleContentless: ArticleModel;
 }) {
+  const router = useRouter();
   const articleId = articleContentless.id;
 
   const [article, setArticle] = useState(articleContentless);
@@ -47,6 +50,7 @@ function LayoutArticlePageSlug({
   return (
     <>
       <ArticleProgressBar />
+    <MobileHeader back={()=>router.back()} title='Read Article'/>
       <MainContainer>
         <div className="inline-flex justify-start">
           <div className="dropdown-hover dropdown self-start">
