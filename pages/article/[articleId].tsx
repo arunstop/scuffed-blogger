@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import SplashScreen from "../../components/placeholder/LayoutPlaceholder";
+import SplashScreen from "../../components/placeholder/SplashScreen";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { APP_NAME } from "../../utils/helpers/Constants";
 import { mainApi } from "../../utils/services/network/MainApi";
