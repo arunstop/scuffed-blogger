@@ -5,13 +5,13 @@ function SplashScreen() {
   return (
     <div
       id="layout-placeholder"
-      className="min-h-screen bg-gradient-to-b from-transparent  flex via-primary/50 from-transparent  animate-pulse
+      className="flex min-h-screen animate-pulse  bg-gradient-to-b from-transparent via-primary/50  to-transparent
       transition-all"
     >
-      <div className="flex flex-col gap-2 sm-gap-4 m-auto animate-bounce items-center text-primary-content ">
+      <div className="sm-gap-4 m-auto flex animate-bounce flex-col items-center gap-2 text-primary-content ">
         <MdWorkspaces className="animate-spin text-4xl sm:text-5xl" />
 
-        <span className="  font-black text-xli sm:text-2xl">{APP_NAME}</span>
+        <span className="  text-xli font-black sm:text-2xl">{APP_NAME}</span>
       </div>
     </div>
   );
