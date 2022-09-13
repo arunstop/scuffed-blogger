@@ -10,7 +10,7 @@ import { parseCookies } from "nookies";
 import { isUserModel, UserModel } from "../utils/data/models/UserModel";
 import { COOKIE_USER_AUTH } from "../utils/helpers/Constants";
 import { useRouteChange } from "../utils/hooks/RouteChangeHook";
-import SplashScreen from "../components/placeholder/LayoutPlaceholder";
+import SplashScreen from "../components/placeholder/SplashScreen";
 
 interface AdditionalAppProps {
   user?: UserModel;

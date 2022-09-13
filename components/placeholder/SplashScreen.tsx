@@ -4,7 +4,7 @@ import { APP_NAME } from "../../utils/helpers/Constants";
 function SplashScreen() {
   return (
     <div
-      id="layout-placeholder"
+      id="splash-screen"
       className="flex min-h-screen animate-pulse  bg-gradient-to-b from-transparent via-primary/50  to-transparent
       transition-all"
     >
