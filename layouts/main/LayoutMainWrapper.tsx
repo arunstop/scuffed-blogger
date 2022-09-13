@@ -21,7 +21,7 @@ function LayoutMainWrapper({ children }: { children: ReactNode }) {
       <BottomBar />
       {/* Modal/Sidebar Containers */}
       <>
-        {isLoggedIn && <Sidebar />}
+        <Sidebar />
         <SearchModal />
       </>
       {/* Footer */}
