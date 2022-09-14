@@ -69,25 +69,25 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
   return (
     <div className="flex flex-col gap-4 sm:gap-8">
       {commentList?.comments.length && (
-        <div className="flex gap-2 sm:gap-4 items-center justify-between sm:justify-start">
-          <span className="font-bold text-sm sm:text-base truncate">{`${commentList.comments.length} Comments`}</span>
-          <div className="dropdown dropdown-end">
+        <div className="flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
+          <span className="truncate text-sm font-bold sm:text-base">{`${commentList.comments.length} Comments`}</span>
+          <div className="dropdown-end dropdown">
             <label
               tabIndex={0}
-              className="btn btn-ghost rounded-lg gap-2 sm:gap-4 flex-nowrap "
+              className="btn btn-ghost flex-nowrap gap-2 rounded-xl sm:gap-4 "
             >
               <label className="text-xl sm:text-2xl">
                 <MdSort />
               </label>
-              <span className="text-sm sm:text-base truncate">
+              <span className="truncate text-sm sm:text-base">
                 Sorted by{" "}
                 <span className="underline">{getSortedByLabel()}</span>
               </span>
             </label>
             <ul
               tabIndex={0}
-              className="dropdown-content menu p-2 ring-[1px] ring-base-content bg-base-100 rounded-lg w-52
-            [&_a]:!rounded-lg text-sm sm:text-base font-bold"
+              className="dropdown-content menu w-52 rounded-xl bg-base-300 p-2 text-sm font-bold
+              ring-[1px] ring-base-content/10 sm:text-base [&_a]:!rounded-xl"
             >
               {sorts.map((e, idx) => {
                 return (
@@ -115,9 +115,9 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
         />
       )}
       {!user && (
-        <div className="bg-primary/10 w-full p-4 sm:p-8 flex flex-col text-center rounded-xl sm:my-8 my-4">
-          <div className="gap-2 sm:gap-4 flex flex-col justify-center items-center w-full">
-            <span className="text-lg sm:text-xl font-bold">
+        <div className="my-4 flex w-full flex-col rounded-xl bg-primary/10 p-4 text-center sm:my-8 sm:p-8">
+          <div className="flex w-full flex-wrap items-center justify-center gap-4 sm:gap-8">
+            <span className="flex-2 text-lg font-bold sm:text-xl  w-full">
               Join us now, let us know what do you think about this amazing
               article!
             </span>
@@ -127,7 +127,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
               }}
               passHref
             >
-              <a className="--btn-resp btn btn-primary w-full gap-2 font-bold normal-case sm:w-">
+              <a className="--btn-resp flex-2 btn btn-primary w-full gap-2 font-bold normal-case sm:flex-[2_2_0%]">
                 Login, if have account
               </a>
             </Link>
@@ -137,7 +137,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
               }}
               passHref
             >
-              <a className="--btn-resp btn btn-primary w-full gap-2 font-bold normal-case sm:w-">
+              <a className="--btn-resp flex-2 btn btn-primary w-full gap-2 font-bold normal-case sm:flex-[2_2_0%]">
                 {`Register, if you don't`}
               </a>
             </Link>
@@ -146,7 +146,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
       )}
 
       {!commentList?.comments.length ? (
-        <span className="font-bold text-sm sm:text-base  text-center opacity-80 my-16">
+        <span className="my-16 text-center text-sm  font-bold opacity-80 sm:text-base">
           {`No comments yet, let the people know, what's your thought about this article..`}
         </span>
       ) : (
