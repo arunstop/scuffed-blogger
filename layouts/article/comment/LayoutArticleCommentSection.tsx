@@ -87,7 +87,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
             <ul
               tabIndex={0}
               className="dropdown-content menu w-52 rounded-xl bg-base-300 p-2 text-sm font-bold
-              ring-[1px] ring-base-content/10 sm:text-base [&_a]:!rounded-xl"
+              ring-[1px] ring-base-content/10 sm:text-base [&_a]:!rounded-xl !z-[1]"
             >
               {sorts.map((e, idx) => {
                 return (
