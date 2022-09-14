@@ -50,7 +50,7 @@ function LayoutArticlePageSlug({
   return (
     <>
       <ArticleProgressBar />
-    <MobileHeader back={()=>router.back()} title='Read Article'/>
+      <MobileHeader back={() => router.back()} title="Read Article" />
       <MainContainer>
         <div className="inline-flex justify-start">
           <div className="dropdown-hover dropdown self-start">
@@ -92,7 +92,7 @@ function LayoutArticlePageSlug({
           />
         </div>
 
-        <h1 className="text-3xl font-black sm:text-4xl">
+        <h1 id='article-title' className="text-3xl font-black sm:text-4xl">
           {article?.title || `Article's Title`}
         </h1>
         <h2 className="text-xl font-semibold sm:text-2xl">

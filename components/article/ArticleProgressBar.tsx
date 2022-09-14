@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 function ArticleProgressBar() {
   const [progress, setProgress] = useState(0);
   const scrollListener = (ev: Event) => {
-    const ele = document.getElementById("main-markdown-container");
-    if (ele) {
-      const bodyEl = ev.target as Element;
-      const scrollProgress = bodyEl.scrollTop;
+    const ElContent = document.getElementById("main-markdown-container");
+    const ElTitle = document.getElementById("article-title");
+    if (ElContent && ElTitle) {
+      const ElBody = ev.target as Element;
+      const scrollProgress =
+        ElBody.scrollTop - (ElTitle.clientHeight + ElTitle.offsetHeight);
       //   cross-platform viewport height
       const viewportHeight =
         Math.max(
@@ -16,10 +18,12 @@ function ArticleProgressBar() {
       // substracting with ( viewport height/2) to the total scroll
       // doing so, when the user's middle viewport point become the indicator
       // instead of the bottom one.
-      const totalToScroll = ele.offsetHeight + ele.offsetTop - viewportHeight;
+      const totalToScroll =
+        ElContent.offsetHeight + ElContent.offsetTop - viewportHeight;
       const readingProgress = (scrollProgress / totalToScroll) * 100;
-      setProgress(Math.round(readingProgress));
-      // console.log(ele.offsetHeight);
+      if (readingProgress < 0) return setProgress(0);
+      if (readingProgress > 100) return setProgress(100);
+      return setProgress(Math.round(readingProgress));
     }
   };
 
