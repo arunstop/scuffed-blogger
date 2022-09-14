@@ -15,7 +15,7 @@
     "@tailwindcss/line-clamp": "^0.4.0",
     "@types/ua-parser-js": "^0.7.36",
     "axios": "^0.27.2",
-    "daisyui": "^2.13.6",
+    "daisyui": "^2.27.0",
     "date-fns": "^2.29.1",
     "dotenv": "^16.0.1",
     "firebase": "^9.8.3",
