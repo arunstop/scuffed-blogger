@@ -9,8 +9,8 @@ function MobileHeader({
 }) {
   return (
     <div
-      className="sm:hidden sticky inset-x-0 top-0 flex gap-2 items-center z-[1] bg-base-300/90 py-2 
-       border-b-2 border-primary-content/10"
+      className="sm:hidden sticky inset-x-0 top-0 flex gap-2 items-center z-[1] bg-base-300/90 p-2 
+       border-b-2 border-primary-content/10 -mt-2"
     >
       {back && (
         <button
