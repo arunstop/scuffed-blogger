@@ -38,7 +38,7 @@ function ArticleProgressBar() {
   }, []);
 
   return (
-    <div className="pointer-events-none sticky inset-x-0 top-0 z-[11] sm:-mb-16 sm:pt-16">
+    <div className="pointer-events-none sticky inset-x-0 top-0 z-10 sm:-mb-16 sm:pt-16">
       <div
         className="h-1 bg-primary bg-gradient-to-r from-primary via-primary-focus to-primary-content transition-[width] 
         duration-300 ease-linear sm:h-2"
