@@ -8,7 +8,7 @@ function ArticleProgressBar() {
     if (ElContent && ElTitle) {
       const ElBody = ev.target as Element;
       const scrollProgress =
-        ElBody.scrollTop - (ElTitle.clientHeight + ElTitle.offsetHeight);
+        ElBody.scrollTop - ElTitle.clientHeight;
       //   cross-platform viewport height
       const viewportHeight =
         Math.max(
