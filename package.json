@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "scan": "ANALYZE=true npm run build"
+    "scan": "cross-env ANALYZE=true npm run build"
   },
   "dependencies": {
     "@headlessui/react": "^1.6.4",
