@@ -1,4 +1,6 @@
-module.exports = {
+const withAnimations = require("animated-tailwindcss");
+
+module.exports = withAnimations({
   content: [
     "./pages/**/*.tsx",
     "./components/**/*.tsx",
@@ -20,7 +22,11 @@ module.exports = {
       // }
     },
   },
-  plugins: [require("@tailwindcss/typography"),require("@tailwindcss/line-clamp"), require("daisyui")],
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/line-clamp"),
+    require("daisyui"),
+  ],
   darkMode: "class",
   // DAISY UI CONFIG
   daisyui: {
@@ -50,4 +56,4 @@ module.exports = {
     prefix: "",
     // darkTheme: "luxury",
   },
-};
+});

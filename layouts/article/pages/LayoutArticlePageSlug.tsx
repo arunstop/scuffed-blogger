@@ -92,7 +92,7 @@ function LayoutArticlePageSlug({
           />
         </div>
 
-        <h1 id='article-title' className="text-3xl font-black sm:text-4xl">
+        <h1 id="article-title" className="text-3xl font-black sm:text-4xl">
           {article?.title || `Article's Title`}
         </h1>
         <h2 className="text-xl font-semibold sm:text-2xl">

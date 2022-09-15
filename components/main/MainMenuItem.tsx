@@ -27,7 +27,7 @@ function MainMenuItem({
       {indicator && (
         <div className="absolute inset-y-0 right-0 m-auto pointer-events-none">
           <span
-            className="absolute inset-0 m-auto h-2 w-2 origin-center transform animate-ping rounded-full
+            className="absolute inset-0 m-auto h-2 w-2 origin-center transform animate-twPing rounded-full
           bg-red-500 sm:h-4 sm:w-4"
           />
           <span className="absolute inset-0 m-auto h-2 w-2 rounded-full bg-red-500 sm:h-4 sm:w-4" />

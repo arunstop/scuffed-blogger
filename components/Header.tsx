@@ -168,7 +168,7 @@ function Header() {
                   >
                     <div className="relative">
                       <span
-                        className="absolute inset-0 h-2 w-2 origin-center transform animate-ping rounded-full
+                        className="absolute inset-0 h-2 w-2 origin-center transform animate-twPing rounded-full
                       bg-red-500 sm:h-4 sm:w-4"
                       ></span>
                       <span className="absolute inset-0 h-2 w-2 rounded-full bg-red-500 sm:h-4 sm:w-4"></span>
