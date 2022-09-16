@@ -1,8 +1,7 @@
 import { GetServerSideProps } from "next";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import MainContainer from "../../../components/main/MainContainer";
-import { LayoutArticlePageEdit } from "../../../layouts/article/pages/LayoutArticlePageEdit";
-import { WritingPanelProvider } from "../../../utils/contexts/writingPanel/WritingPanelProvider";
+import SplashScreen from "../../../components/placeholder/SplashScreen";
 import { ArticleModel } from "../../../utils/data/models/ArticleModel";
 import { APP_DESC, APP_NAME } from "../../../utils/helpers/Constants";
 import { mainApi } from "../../../utils/services/network/MainApi";
@@ -26,6 +25,16 @@ export const getServerSideProps: GetServerSideProps<{
   return { props: { articleContentless: articleContentless } };
 };
 
+const LazyLayoutArticlePageSlug = dynamic(
+  () => import("../../../layouts/article/pages/LayoutArticlePageSlug"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <SplashScreen />;
+    },
+  },
+);
+
 function Edit({ articleContentless }: { articleContentless: ArticleModel }) {
   return (
     <>
@@ -34,20 +43,7 @@ function Edit({ articleContentless }: { articleContentless: ArticleModel }) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={APP_DESC} />
       </Head>
-      <MainContainer className="">
-        <WritingPanelProvider
-          initFormData={{
-            desc: articleContentless.desc,
-            content: articleContentless.content,
-            tags: articleContentless.tags.join(","),
-            title: articleContentless.title,
-            topics: articleContentless.topics?.join(",") || "",
-            defaultThumbnailPreview: articleContentless.thumbnail,
-          }}
-        >
-          <LayoutArticlePageEdit oldArticle={articleContentless} />
-        </WritingPanelProvider>
-      </MainContainer>
+      <LazyLayoutArticlePageSlug articleContentless={articleContentless} />
     </>
   );
 }

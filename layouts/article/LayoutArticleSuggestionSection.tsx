@@ -6,7 +6,7 @@ import PostOptionModal from "../../components/post/PostOptionModal";
 function LayoutArticleSuggestionSection({ article }: { article: ArticleModel }) {
   return (
     <>
-      <span className="text-xl sm:text-2xl font-bold">
+      <span className="text-xl sm:text-2xl font-bold animate-fadeIn">
         More articles for you
       </span>
       {[...Array(10)].map((e, idx) => (

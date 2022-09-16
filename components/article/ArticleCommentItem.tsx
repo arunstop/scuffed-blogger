@@ -28,6 +28,7 @@ function ArticleCommentItem({
   const userAvatar = userAvatarLinkGet(comment.userId);
   const upvoted = comment.upvote?.includes(user?.id || "");
   const downvoted = comment.downvote?.includes(user?.id || "");
+  const isLoggedIn = user;
 
   const actions: CommentActionProps[] = [
     {
@@ -36,7 +37,7 @@ function ArticleCommentItem({
       className: `${upvoted && comment.upvote?.length ? "text-success" : ""}`,
       minimize: false,
       action: async () => {
-        if (!user) return;
+        if (!isLoggedIn) return alert("You must login to do this action.");
         const newComment = await fbCommentReact({
           data: {
             react: upvoted ? "upCancel" : "up",
@@ -54,7 +55,7 @@ function ArticleCommentItem({
       className: `${downvoted && comment.downvote?.length ? "text-error" : ""}`,
       minimize: false,
       action: async () => {
-        if (!user) return;
+        if (!isLoggedIn) return alert("You must login to do this action.");
         const newComment = await fbCommentReact({
           data: {
             react: downvoted ? "downCancel" : "down",
@@ -70,6 +71,7 @@ function ArticleCommentItem({
       label: "Reply",
       icon: <BsChatSquareText />,
       action: () => {
+        if (!isLoggedIn) return alert("You must login to do this action.");
         router.push(
           {
             pathname: routeTrimQuery(router.asPath),
@@ -104,25 +106,27 @@ function ArticleCommentItem({
             </span>
           </div>
           {/* <div className="dropdown dropdown-end ml-auto"> */}
-          <Link
-            href={{
-              pathname: router.asPath,
-              query: {
-                option: comment.id,
-              },
-            }}
-            shallow
-          >
-            <a
-              className="btn btn-ghost ml-auto aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
-              title="Options"
-              tabIndex={0}
-              // href="#options"
-              role={"button"}
+          {isLoggedIn && (
+            <Link
+              href={{
+                pathname: router.asPath,
+                query: {
+                  option: comment.id,
+                },
+              }}
+              shallow
             >
-              <MdMoreHoriz className="text-2xl sm:text-3xl" />
-            </a>
-          </Link>
+              <a
+                className="btn btn-ghost ml-auto aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
+                title="Options"
+                tabIndex={0}
+                // href="#options"
+                role={"button"}
+              >
+                <MdMoreHoriz className="text-2xl sm:text-3xl" />
+              </a>
+            </Link>
+          )}
           <>
             {/* <ul
               tabIndex={0}
@@ -181,7 +185,7 @@ function ArticleCommentItem({
           {/* </div> */}
         </div>
         <span className="text-sm sm:text-base">{comment.content}</span>
-        <div className="flex gap-2 sm:gap-4 items-center justify-end">
+        <div className={`flex gap-2 sm:gap-4 items-center justify-end `}>
           {actions.map((e, idx) => {
             return <ArticleCommentItemActionButton key={idx} {...e} />;
           })}

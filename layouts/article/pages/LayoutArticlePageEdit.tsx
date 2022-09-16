@@ -1,8 +1,10 @@
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+import MainContainer from "../../../components/main/MainContainer";
 import { StatusPlaceholderProps } from "../../../components/placeholder/StatusPlaceholder";
 import { useWritingPanelCtx } from "../../../utils/contexts/writingPanel/WritingPanelHook";
+import { WritingPanelProvider } from "../../../utils/contexts/writingPanel/WritingPanelProvider";
 import { WritingPanelFormProps } from "../../../utils/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse, netLoading } from "../../../utils/data/Main";
 import { ArticleModel } from "../../../utils/data/models/ArticleModel";
@@ -20,15 +22,15 @@ export interface ArticleSubmissionProps {
 }
 
 export function LayoutArticlePageEdit({
-  oldArticle,
+  articleContentless,
 }: {
   // contentless oldArticle
-  oldArticle: ArticleModel;
+  articleContentless: ArticleModel;
 }) {
   const { state: wpState, action: wpAction } = useWritingPanelCtx();
   const router = useRouter();
 
-  const [oldArticleUpdated, setOldArticleUpdated] = useState(oldArticle);
+  const [oldArticleUpdated, setOldArticleUpdated] = useState(articleContentless);
 
   const submitArticle = useCallback(
     async ({
@@ -92,7 +94,7 @@ export function LayoutArticlePageEdit({
                   {
                     label: "Go to the article",
                     callback: () => {
-                      router.push(`/article/${oldArticle.slug}/`);
+                      router.push(`/article/${articleContentless.slug}/`);
                     },
                   },
                   {
@@ -115,7 +117,7 @@ export function LayoutArticlePageEdit({
   );
   async function getContent() {
     if (!wpState.formData) return;
-    const content = await fbArticleContentGet({ id: oldArticle.id });
+    const content = await fbArticleContentGet({ id: articleContentless.id });
     const contentDecoded = decodeURIComponent(content || "");
     // set the content on the writingPanelCtx
     wpAction.setFormData({
@@ -123,7 +125,7 @@ export function LayoutArticlePageEdit({
       content: contentDecoded,
     });
     // set the content on oldArticle
-    setOldArticleUpdated({ ...oldArticle, content: contentDecoded });
+    setOldArticleUpdated({ ...articleContentless, content: contentDecoded });
   }
 
   useEffect(() => {
@@ -131,8 +133,21 @@ export function LayoutArticlePageEdit({
   }, []);
 
   return (
-    <>
-      <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
-    </>
+
+    <MainContainer className="">
+        <WritingPanelProvider
+          initFormData={{
+            desc: articleContentless.desc,
+            content: articleContentless.content,
+            tags: articleContentless.tags.join(","),
+            title: articleContentless.title,
+            topics: articleContentless.topics?.join(",") || "",
+            defaultThumbnailPreview: articleContentless.thumbnail,
+          }}
+        >
+                <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
+
+        </WritingPanelProvider>
+      </MainContainer>
   );
 }

@@ -19,7 +19,7 @@ function LoadingPlaceholder({
       gap-2 sm:gap-4 rounded-[10%] py-2 sm:py-4 px-4 sm:px-8 min-w-[50%] sm:max-w-2xl text-center
       my-4 sm:my-8 pb-4"
     >
-      <MdWorkspaces className="text-[4rem] sm:text-[5rem] animate-spin text-primary" />
+      <MdWorkspaces className="text-[4rem] sm:text-[5rem] animate-twSpin text-primary" />
       <p className="flex flex-col gap-1 sm:gap-2 text-center">
         <span className="font-black text-2xl sm:text-3xl">{title}</span>
         <span className="text-sm sm:text-base font-semibold">{desc}</span>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import {
   MdArticle,
@@ -9,7 +10,7 @@ import {
   MdLogout,
   MdPerson,
   MdPlaylistAddCheck,
-  MdWatchLater
+  MdWatchLater,
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
@@ -17,6 +18,7 @@ import { waitFor } from "../../utils/helpers/DelayHelpers";
 import { useUiSidebarBehaviorHook } from "../../utils/hooks/UiSidebarBehaviorHook";
 import ModalConfirmation from "../modal/ModalConfirmation";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
+import MobileHeader from "./MobileHeader";
 
 function Sidebar() {
   const {
@@ -166,32 +168,69 @@ function Sidebar() {
             htmlFor="main-drawer"
             className="drawer-overlay pointer-events-auto !cursor-default backdrop-blur-sm !bg-black/60 hidden sm:block"
           />
-          <div className="flex flex-col gap-4 p-4 overflow-y-auto sm:w-80 bg-base-100 pointer-events-auto mb-[3rem] sm:mb-0 w-full">
-            <div className="flex flex-col gap-2 sm:gap-4 items-center">
-              <div
-                className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
-              h-12 w-12 sm:h-20 sm:w-20 "
-              >
-                <img
-                  src={user?.avatar}
-                  className="h-full w-full object-cover"
-                />
+          {!user && (
+            <div className="flex bg-base-100 pointer-events-auto  w-full p-8">
+              <div className="m-auto flex flex-col   gap-4 text-center">
+                <span className="text-xl font-bold mb-4">
+                  Join us and let the world know your thought!
+                </span>
+                <Link
+                  href={{
+                    pathname: "/auth",
+                  }}
+                  passHref
+                >
+                  <a className="btn btn-primary text-xl">Login</a>
+                </Link>
+                <Link
+                  href={{
+                    pathname: "/auth",
+                  }}
+                  passHref
+                >
+                  <a className="btn btn-primary text-xl">Register</a>
+                </Link>
+                <button
+                  className="btn btn-primary text-xl btn-outline"
+                  onClick={() => closeSidebar()}
+                >
+                  Not now
+                </button>
               </div>
-              <p className="text-center">
-                <span className="line-clamp-2 font-bold text-md sm:text-lg md:text-xl">
-                  {user?.name}
-                </span>
-                <span className="font-bold text-sm sm:text-md md:text-lg text-base-content text-opacity-50">
-                  {`@${user?.username}`}
-                </span>
-              </p>
             </div>
-            <ul className="menu">
-              {shownMenus.map((e, idx) => (
-                <MainMenuItem key={idx} {...e} />
-              ))}
-            </ul>
-          </div>
+          )}
+          {user && (
+            <div className="flex flex-col gap-4 overflow-y-auto sm:w-80 bg-base-100 pointer-events-auto mb-[3rem] sm:mb-0 w-full">
+              <MobileHeader back={() => closeSidebar()} title="Account" />
+              <div className="flex flex-col gap-4 p-4 overflow-y-auto w-full">
+              <div className="flex flex-col gap-2 sm:gap-4 items-center">
+                <div
+                  className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
+              h-12 w-12 sm:h-20 sm:w-20 "
+                >
+                  <img
+                    src={user?.avatar}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <p className="text-center">
+                  <span className="line-clamp-2 font-bold text-md sm:text-lg md:text-xl">
+                    {user?.name}
+                  </span>
+                  <span className="font-bold text-sm sm:text-md md:text-lg text-base-content text-opacity-50">
+                    {`@${user?.username}`}
+                  </span>
+                </p>
+              </div>
+              <ul className="menu">
+                {shownMenus.map((e, idx) => (
+                  <MainMenuItem key={idx} {...e} />
+                ))}
+              </ul>
+
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <ModalConfirmation

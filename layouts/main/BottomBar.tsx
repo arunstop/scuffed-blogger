@@ -24,7 +24,6 @@ function BottomBar() {
       icon: <MdHome />,
       active: router.pathname === "/",
       action: () => {
-        if (router.pathname !== "/") return router.back();
         return router.push("/");
       },
     },
@@ -53,7 +52,7 @@ function BottomBar() {
       },
     },
     {
-      title: "Me",
+      title: "Account",
       icon: <MdPerson />,
       active: sidebar,
       action: () => {
