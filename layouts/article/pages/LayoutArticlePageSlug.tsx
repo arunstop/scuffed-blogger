@@ -115,12 +115,10 @@ function LayoutArticlePageSlug({
           </figure>
         </div>
 
-        {loadContentSection ? (
+        {article.content ? (
           <>
             <MainMarkdownContainer
-              content={decodeURIComponent(
-                article?.content || "Article's Content",
-              )}
+              content={decodeURIComponent(article?.content)}
             />
             <ArticleSectionAction article={article} />
             <LayoutArticleMoreSection article={article} />

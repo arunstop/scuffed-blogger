@@ -34,6 +34,7 @@ function MainMarkdownContainer({
 
   return (
     <article
+    key={Math.random()+1}
       id="main-markdown-container"
       className={`prose grow rounded-sm prose-sm md:prose lg:prose-lg !max-w-none prose-img:rounded-lg
       prose-th:!border-x-2 prose-td:border-2 prose-td:!p-2
@@ -47,6 +48,7 @@ function MainMarkdownContainer({
       first:prose-th:!border-l-0 last:prose-th:!border-r-0 prose-thead:!border-y-base-100
       even:prose-tr:prose-table:bg-base-300
       ${className}
+      animate-fadeIn  animate-duration-700
       `}
     >
       <ReactMarkdown remarkPlugins={[gfm]}>
