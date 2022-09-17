@@ -84,17 +84,17 @@ const StatusPlaceholder = React.forwardRef<
         >
           {status === "error" && (
             <IoMdCloseCircle
-              className={`text-[4rem] sm:text-[5rem] animate-twPulse ${style.textColor}`}
+              className={`text-[4rem] sm:text-[5rem] animate-twPulse animate-infinite ${style.textColor}`}
             />
           )}
           {status === "success" && (
             <FaCheckCircle
-              className={`text-[4rem] sm:text-[5rem] animate-twPulse ${style.textColor}`}
+              className={`text-[4rem] sm:text-[5rem] animate-twPulse animate-infinite ${style.textColor}`}
             />
           )}
           {status === "loading" && (
             <MdWorkspaces
-              className={`animate-twSpin text-[4rem] ${style.textColor} sm:text-[5rem]`}
+              className={`animate-twSpin animate-infinite text-[4rem] ${style.textColor} sm:text-[5rem]`}
             />
           )}
         </Transition.Child>

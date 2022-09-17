@@ -25,8 +25,8 @@ export const getServerSideProps: GetServerSideProps<{
   return { props: { articleContentless: articleContentless } };
 };
 
-const LazyLayoutArticlePageSlug = dynamic(
-  () => import("../../../layouts/article/pages/LayoutArticlePageSlug"),
+const LazyLayoutArticlePageEdit = dynamic(
+  () => import("../../../layouts/article/pages/LayoutArticlePageEdit"),
   {
     ssr: false,
     loading(loadingProps) {
@@ -43,7 +43,7 @@ function Edit({ articleContentless }: { articleContentless: ArticleModel }) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={APP_DESC} />
       </Head>
-      <LazyLayoutArticlePageSlug articleContentless={articleContentless} />
+      <LazyLayoutArticlePageEdit articleContentless={articleContentless} />
     </>
   );
 }

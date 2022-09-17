@@ -16,7 +16,7 @@ const LoadingIndicator = React.forwardRef<
       text-center text-lg font-bold sm:gap-4 sm:text-xl md:my-8 lg:my-12 xl:my-16"
     >
       {spinner && (
-        <MdWorkspaces className="animate-twSpin text-2xl sm:text-3xl " />
+        <MdWorkspaces className="animate-twSpin animate-infinite text-2xl sm:text-3xl " />
       )}
       <span>{text}</span>
     </div>

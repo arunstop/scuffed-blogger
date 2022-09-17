@@ -21,16 +21,17 @@ export interface ArticleSubmissionProps {
   clearResp: () => void;
 }
 
-export function LayoutArticlePageEdit({
+// a custom wrapper component so LayoutArticlePageEdit can use the provider
+function LayoutArticlePageEditContent({
   articleContentless,
 }: {
-  // contentless oldArticle
   articleContentless: ArticleModel;
 }) {
   const { state: wpState, action: wpAction } = useWritingPanelCtx();
   const router = useRouter();
 
-  const [oldArticleUpdated, setOldArticleUpdated] = useState(articleContentless);
+  const [oldArticleUpdated, setOldArticleUpdated] =
+    useState(articleContentless);
 
   const submitArticle = useCallback(
     async ({
@@ -43,8 +44,9 @@ export function LayoutArticlePageEdit({
       setResp(
         netLoading<StatusPlaceholderProps>("", {
           status: "loading",
-          title: "Loading title",
-          desc: "Loading Description",
+          title: "Updating the article",
+          desc: `Hold your horses! We are updating your once well-written article, with even better well-written 
+          you just wrote. We'll be very quick!`,
           actions: [
             {
               label: "Cancel",
@@ -83,8 +85,16 @@ export function LayoutArticlePageEdit({
               netLoading<StatusPlaceholderProps>("", {
                 status: resp.status,
                 title: resp.message,
-                desc: "Updating the shit success",
+                desc: "Congratulations! Your article is updated! It will be even better right? Or is it?",
                 actions: [
+                  {
+                    label: "Edit again",
+                    callback: () => {
+                      // update the current `oldArticle`
+                      setOldArticleUpdated(resp.data as ArticleModel);
+                      clearResp();
+                    },
+                  },
                   {
                     label: "Go to My Posts",
                     callback: () => {
@@ -95,14 +105,6 @@ export function LayoutArticlePageEdit({
                     label: "Go to the article",
                     callback: () => {
                       router.push(`/article/${articleContentless.slug}/`);
-                    },
-                  },
-                  {
-                    label: "Edit again",
-                    callback: () => {
-                      // update the current `oldArticle`
-                      setOldArticleUpdated(resp.data as ArticleModel);
-                      clearResp();
                     },
                   },
                 ],
@@ -131,23 +133,31 @@ export function LayoutArticlePageEdit({
   useEffect(() => {
     getContent();
   }, []);
-
   return (
-
     <MainContainer className="">
-        <WritingPanelProvider
-          initFormData={{
-            desc: articleContentless.desc,
-            content: articleContentless.content,
-            tags: articleContentless.tags.join(","),
-            title: articleContentless.title,
-            topics: articleContentless.topics?.join(",") || "",
-            defaultThumbnailPreview: articleContentless.thumbnail,
-          }}
-        >
-                <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
+      <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
+    </MainContainer>
+  );
+}
 
-        </WritingPanelProvider>
-      </MainContainer>
+export default function LayoutArticlePageEdit({
+  articleContentless,
+}: {
+  // contentless oldArticle
+  articleContentless: ArticleModel;
+}) {
+  return (
+    <WritingPanelProvider
+      initFormData={{
+        desc: articleContentless.desc,
+        content: articleContentless.content,
+        tags: articleContentless.tags.join(","),
+        title: articleContentless.title,
+        topics: articleContentless.topics?.join(",") || "",
+        defaultThumbnailPreview: articleContentless.thumbnail,
+      }}
+    >
+      <LayoutArticlePageEditContent articleContentless={articleContentless} />
+    </WritingPanelProvider>
   );
 }

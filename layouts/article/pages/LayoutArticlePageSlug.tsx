@@ -8,9 +8,9 @@ import MainContainer from "../../../components/main/MainContainer";
 import MainMarkdownContainer from "../../../components/main/MainMarkdownContainer";
 import MainPostStatusChip from "../../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../../components/main/MainPostUserPopup";
-import MainUserLabel from "../../../components/main/MainUserLabel";
 import MobileHeader from "../../../components/main/MobileHeader";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
+import UserHeader from "../../../components/user/UserHeader";
 import { ArticleModel } from "../../../utils/data/models/ArticleModel";
 import useLazyScrollerHook from "../../../utils/hooks/LazyScrollerHook";
 import { fbArticleContentGet } from "../../../utils/services/network/FirebaseApi/ArticleModules";
@@ -53,8 +53,8 @@ function LayoutArticlePageSlug({
       <MobileHeader back={() => router.back()} title="Read Article" />
       <MainContainer>
         <div className="inline-flex justify-start">
-          <div className="dropdown-hover dropdown self-start">
-            <MainUserLabel id={articleId + ""} />
+          <div className="dropdown-hover dropdown self-start w-full">
+            <UserHeader id={article.author} />
 
             <div tabIndex={0} className="dropdown-content pt-2">
               <MainUserPopup id={articleId + ""} />
