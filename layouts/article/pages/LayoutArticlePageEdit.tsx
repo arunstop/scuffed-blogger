@@ -85,8 +85,16 @@ function LayoutArticlePageEditContent({
               netLoading<StatusPlaceholderProps>("", {
                 status: resp.status,
                 title: resp.message,
-                desc: "Congratulation! Your article is updated! It will be even better right? Or does it?",
+                desc: "Congratulations! Your article is updated! It will be even better right? Or is it?",
                 actions: [
+                  {
+                    label: "Edit again",
+                    callback: () => {
+                      // update the current `oldArticle`
+                      setOldArticleUpdated(resp.data as ArticleModel);
+                      clearResp();
+                    },
+                  },
                   {
                     label: "Go to My Posts",
                     callback: () => {
@@ -97,14 +105,6 @@ function LayoutArticlePageEditContent({
                     label: "Go to the article",
                     callback: () => {
                       router.push(`/article/${articleContentless.slug}/`);
-                    },
-                  },
-                  {
-                    label: "Edit again",
-                    callback: () => {
-                      // update the current `oldArticle`
-                      setOldArticleUpdated(resp.data as ArticleModel);
-                      clearResp();
                     },
                   },
                 ],
