@@ -338,7 +338,7 @@ export async function fbArticleUpdate({
     });
   } catch (error) {
     console.log(error);
-    errorCb("Error when creating article", error as FirebaseError);
+    errorCb("Error when updating article", error as FirebaseError);
     return null;
   }
 
@@ -348,7 +348,7 @@ export async function fbArticleUpdate({
       await fsArticleContentUpdate(article.id, article.content);
     } catch (error) {
       console.log(error);
-      errorCb("Error when creating article", error as FirebaseError);
+      errorCb("Error when updating article", error as FirebaseError);
       return null;
     }
   }
@@ -385,7 +385,7 @@ export async function fbArticleUpdate({
       }
     } catch (error) {
       console.log(error);
-      errorCb("Error when creating thumbnail", error as FirebaseError);
+      errorCb("Error when updating thumbnail", error as FirebaseError);
       return null;
     }
   }
@@ -395,11 +395,11 @@ export async function fbArticleUpdate({
     await rtArticleMirrorUpdate(articleContentless);
   } catch (error) {
     console.log(error);
-    errorCb("Error when creating thumbnail", error as FirebaseError);
+    errorCb("Error when updating thumbnail", error as FirebaseError);
     return null;
   }
 
-  callback?.(netSuccess<ArticleModel>("Success creating article", article));
+  callback?.(netSuccess<ArticleModel>("Success updating article", article));
   return article;
 }
 

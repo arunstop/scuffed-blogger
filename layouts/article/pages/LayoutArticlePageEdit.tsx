@@ -10,7 +10,7 @@ import { MainNetworkResponse, netLoading } from "../../../utils/data/Main";
 import { ArticleModel } from "../../../utils/data/models/ArticleModel";
 import {
   fbArticleContentGet,
-  fbArticleUpdate
+  fbArticleUpdate,
 } from "../../../utils/services/network/FirebaseApi/ArticleModules";
 import LayoutArticleForm from "../LayoutArticleForm";
 
@@ -44,8 +44,9 @@ function LayoutArticlePageEditContent({
       setResp(
         netLoading<StatusPlaceholderProps>("", {
           status: "loading",
-          title: "Loading title",
-          desc: "Loading Description",
+          title: "Updating the article",
+          desc: `Hold your horses! We are updating your once well-written article, with even better well-written 
+          you just wrote. We'll be very quick!`,
           actions: [
             {
               label: "Cancel",
@@ -84,7 +85,7 @@ function LayoutArticlePageEditContent({
               netLoading<StatusPlaceholderProps>("", {
                 status: resp.status,
                 title: resp.message,
-                desc: "Updating the shit success",
+                desc: "Congratulation! Your article is updated! It will be even better right? Or does it?",
                 actions: [
                   {
                     label: "Go to My Posts",
