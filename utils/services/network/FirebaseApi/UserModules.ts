@@ -8,6 +8,7 @@ import { nanoid } from "nanoid";
 import { LoginFields } from "../../../../components/auth/AuthLoginForm";
 import { AuthRegisterProps } from "../../../../components/auth/AuthRegisterForm";
 import {
+  MainApiResponse,
   MainNetworkResponse,
   netError,
   netLoading,
@@ -19,6 +20,12 @@ import { fsUserAdd, fsUserGetByEmail, fsUserUpdate } from "../FirestoreModules";
 import { rtdbSessionAdd, rtdbSessionLatestSet } from "../RtdbModules";
 import { stFileDeleteByFullLink } from "../StorageModules";
 import { uploadFile } from "./FileModules";
+import {
+  rtUserDisplayAdd,
+  rtUserDisplayGetById,
+  rtUserDisplayUpdate,
+  UserDisplayModel,
+} from "../RealtimeDatabase/RealtimeUserModules";
 
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;
@@ -188,6 +195,12 @@ export async function fbUserAdd({
   try {
     await fsUserAdd(user);
     data = user;
+    await rtUserDisplayAdd({
+      id: data.id,
+      name: data.name,
+      avatar: data.avatar,
+      username: data.username,
+    });
     // Show success
     callback?.(
       netSuccess<AddUserCallbackProps>(
@@ -228,7 +241,7 @@ export async function fbUserUpdate({
       const imageUrl = await uploadFile({
         file: file[0],
         directory: "images/avatars",
-        name:user.id,
+        name: user.id,
       });
       // console.log("imageUrl : " + imageUrl);
       if (!imageUrl) {
@@ -267,6 +280,13 @@ export async function fbUserUpdate({
     await fsUserUpdate(updatedUserData);
     // change the latest session to match the latest dateUpdated
     await rtdbSessionLatestSet(updatedUserData);
+    // update user display
+    await rtUserDisplayUpdate({
+      id: updatedUserData.id,
+      name: updatedUserData.name,
+      avatar: updatedUserData.avatar,
+      username: updatedUserData.username,
+    });
     callback?.(
       netSuccess<UserModel>("Success updating profile", updatedUserData),
     );
@@ -307,6 +327,25 @@ export async function fbUserGet({
         "Error when getting user data",
         error as FirebaseError,
       ),
+    );
+    return null;
+  }
+}
+
+export async function fbUserDisplayGet({
+  data,
+  callback,
+}: MainApiResponse<
+  { userId: string },
+  UserDisplayModel | null | FirebaseError
+>): Promise<UserDisplayModel | null> {
+  try {
+    const res = await rtUserDisplayGetById(data.userId);
+    callback?.(netSuccess("Success getting user display data", res));
+    return res;
+  } catch (error) {
+    callback?.(
+      netError("Error when getting user display data.", error as FirebaseError),
     );
     return null;
   }
