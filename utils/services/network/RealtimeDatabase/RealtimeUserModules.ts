@@ -12,23 +12,24 @@ export interface UserDisplayModel {
 }
 
 export async function rtUserDisplayGetById(userId: string) {
-  const path = `userDisplay/${userId}`;
+  const path = `userDisplayList/${userId}`;
   const rr = ref(getRtdb(), path);
   const res = await get(rr);
   if (!res.exists()) return null;
   const dataRaw = res.val();
   const data = dataRaw as UserDisplayModel;
+  console.log("data", data);
   return data;
 }
 
 export async function rtUserDisplayAdd(userDisplay: UserDisplayModel) {
-  const path = `userList/${userDisplay.id}`;
+  const path = `userDisplayList/${userDisplay.id}`;
   const rr = ref(getRtdb(), path);
   return await set(rr, userDisplay);
 }
 
 export async function rtUserDisplayUpdate(userDisplay: UserDisplayModel) {
-  const path = `userList/${userDisplay.id}`;
+  const path = `userDisplayList/${userDisplay.id}`;
   const rr = ref(getRtdb(), path);
   return await update(rr, userDisplay);
 }

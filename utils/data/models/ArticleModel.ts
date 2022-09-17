@@ -106,7 +106,7 @@ export function toArticleModel({
     desc: formData.desc,
     content: encodeURIComponent(formData.content),
     thumbnail: thumbnail,
-    author: user.email,
+    author: user.id,
     dateAdded: date,
     dateUpdated: date,
     deleted: 0,
