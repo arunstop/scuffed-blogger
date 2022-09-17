@@ -10,7 +10,7 @@ import { MainNetworkResponse, netLoading } from "../../../utils/data/Main";
 import { ArticleModel } from "../../../utils/data/models/ArticleModel";
 import {
   fbArticleContentGet,
-  fbArticleUpdate,
+  fbArticleUpdate
 } from "../../../utils/services/network/FirebaseApi/ArticleModules";
 import LayoutArticleForm from "../LayoutArticleForm";
 
@@ -21,16 +21,17 @@ export interface ArticleSubmissionProps {
   clearResp: () => void;
 }
 
-export function LayoutArticlePageEdit({
+// a custom wrapper component so LayoutArticlePageEdit can use the provider
+function LayoutArticlePageEditContent({
   articleContentless,
 }: {
-  // contentless oldArticle
   articleContentless: ArticleModel;
 }) {
   const { state: wpState, action: wpAction } = useWritingPanelCtx();
   const router = useRouter();
 
-  const [oldArticleUpdated, setOldArticleUpdated] = useState(articleContentless);
+  const [oldArticleUpdated, setOldArticleUpdated] =
+    useState(articleContentless);
 
   const submitArticle = useCallback(
     async ({
@@ -131,23 +132,31 @@ export function LayoutArticlePageEdit({
   useEffect(() => {
     getContent();
   }, []);
-
   return (
-
     <MainContainer className="">
-        <WritingPanelProvider
-          initFormData={{
-            desc: articleContentless.desc,
-            content: articleContentless.content,
-            tags: articleContentless.tags.join(","),
-            title: articleContentless.title,
-            topics: articleContentless.topics?.join(",") || "",
-            defaultThumbnailPreview: articleContentless.thumbnail,
-          }}
-        >
-                <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
+      <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
+    </MainContainer>
+  );
+}
 
-        </WritingPanelProvider>
-      </MainContainer>
+export default function LayoutArticlePageEdit({
+  articleContentless,
+}: {
+  // contentless oldArticle
+  articleContentless: ArticleModel;
+}) {
+  return (
+    <WritingPanelProvider
+      initFormData={{
+        desc: articleContentless.desc,
+        content: articleContentless.content,
+        tags: articleContentless.tags.join(","),
+        title: articleContentless.title,
+        topics: articleContentless.topics?.join(",") || "",
+        defaultThumbnailPreview: articleContentless.thumbnail,
+      }}
+    >
+      <LayoutArticlePageEditContent articleContentless={articleContentless} />
+    </WritingPanelProvider>
   );
 }
