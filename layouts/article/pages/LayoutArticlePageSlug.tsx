@@ -53,7 +53,7 @@ function LayoutArticlePageSlug({
       <MobileHeader back={() => router.back()} title="Read Article" />
       <MainContainer>
         <div className="inline-flex justify-start">
-          <div className="dropdown-hover dropdown self-start">
+          <div className="dropdown-hover dropdown self-start w-full">
             <UserHeader id={article.author} />
 
             <div tabIndex={0} className="dropdown-content pt-2">
