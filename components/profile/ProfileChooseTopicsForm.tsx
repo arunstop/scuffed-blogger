@@ -16,7 +16,7 @@ import InputText from "../input/InputText";
 import GradientBackground from "../main/GradientBackground";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import StatusPlaceholder, {
-  StatusPlaceholderProps
+  StatusPlaceholderProps,
 } from "../placeholder/StatusPlaceholder";
 
 export interface SetupProfileFormFields {
@@ -77,7 +77,7 @@ function ProfileChooseTopicsForm() {
 
   const getTopics = async () => {
     // get topics from rtdb
-    const topicsFromDb = await fbTopicGetAll({keyword:""});
+    const topicsFromDb = await fbTopicGetAll({ keyword: "" });
     // set states
     setLoadingTopics(false);
     setTopics(topicsFromDb);
@@ -273,7 +273,7 @@ function ProfileChooseTopicsForm() {
             >
               <div className="flex flex-col gap-2 sm:gap-4 items-center">
                 <span
-                  className={`text-xs sm:text-sm md:text-md lg:text-lg font-bold text-center whitespace-pre ${
+                  className={`text-xs sm:text-sm md:text-md lg:text-lg font-bold text-center ${
                     errors.topics ? "text-error" : ""
                   }`}
                 >
@@ -283,9 +283,11 @@ function ProfileChooseTopicsForm() {
                       } more topics`
                     : selectedTopics.length === 0
                     ? "Choose at least 3 topics of your interest to continue.\nYou can change it anytime."
-                    : `You have choosen: ${selectedTopics.join(
-                        ", ",
-                      )}\nThis will determine what kind of article you will be shown`}
+                    : `You have choosen: ${selectedTopics.join(", ")}`}
+                  <br />
+                  <span>
+                    This will determine what kind of article you will be shown
+                  </span>
                 </span>
               </div>
               <div className="flex gap-2 sm:gap-4 items-center">

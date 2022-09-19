@@ -44,7 +44,7 @@ function UserHeader({
         to-primary/70 animate-twPulse animate-duration-1000 animate-infinite"
       ></div>
       <div
-        className="h-10 sm:h-12  w-[50%] bg-gradient-to-r from-primary/30 via-primary/50 to-primary/70 
+        className="h-10 sm:h-12 min-w-[12rem]  w-[50%] bg-gradient-to-r from-primary/30 via-primary/50 to-primary/70 
         rounded-lg animate-twPulse animate-duration-1000 animate-infinite"
       ></div>
     </div>
