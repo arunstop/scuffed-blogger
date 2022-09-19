@@ -1,11 +1,12 @@
 import { Combobox, Transition } from "@headlessui/react";
-import Link from "next/dist/client/link";
-import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { dateDistanceGet } from "../../utils/helpers/MainHelpers";
 import { fbArticleSearch } from "../../utils/services/network/FirebaseApi/ArticleModules";
 import InputText from "../input/InputText";
+import LoadingIndicator from "../placeholder/LoadingIndicator";
 
 // function debounce(callback: () => void, delay = 500) {
 //   let timeout;
@@ -24,11 +25,17 @@ const debounce = (fn: (...args: any[]) => void, ms = 300) => {
 };
 
 function MainHeaderBigSearchBar() {
-  const [showResult, setShowResult] = useState(false);
+  const router = useRouter();
   const [smBreakpoint, setSmBreakpoint] = useState(false);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
   // list of contentless article
   const [result, setResult] = useState<ArticleModel[]>([]);
+  // search bar variables
+  const searchBarRef = useRef<HTMLInputElement>(null);
+  const searchBar = searchBarRef.current;
+
+  // for axios request of fbAritcleSearch
   let controller = new AbortController();
 
   const debounceSearch = useCallback(
@@ -42,21 +49,24 @@ function MainHeaderBigSearchBar() {
         },
       });
       if (!res) return;
-      console.log(res);
+      // console.log(res);
       setResult(res);
-    }, 1000),
+      setLoading(false);
+    }, 500),
     [],
   );
 
   const handleSearch = useCallback(
     async (ev: React.ChangeEvent<HTMLInputElement>) => {
       // console.log(ev.target.value);
+      setLoading(true);
       setSearch(ev.target.value);
       if (controller.signal.aborted) controller = new AbortController();
       const val = ev.target.value;
-      console.log(val.length);
+      // console.log(val.length);
       if (!val.length) {
-        console.log("cacnel search");
+        setLoading(false);
+        // console.log("cancel search");
         return controller.abort("Idk");
       }
       debounceSearch(val, controller.signal);
@@ -68,9 +78,8 @@ function MainHeaderBigSearchBar() {
     // console.log(ev);
     if (ev.ctrlKey) {
       if (ev.key === "/") {
-        const searchBar = document.getElementsByClassName("id-search-bar")[0];
         if (searchBar) {
-          // searchBar.focus();
+          searchBar.focus();
         }
       }
     }
@@ -88,12 +97,12 @@ function MainHeaderBigSearchBar() {
     if (smBreakpoint) {
       window.removeEventListener("keydown", handleKeyPress);
     } else {
-      window.addEventListener("keydown", handleKeyPress);
+      if (searchBar) window.addEventListener("keydown", handleKeyPress);
     }
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [smBreakpoint]);
+  }, [smBreakpoint,searchBar]);
 
   useEffect(() => {
     toggleSmBreakpoint();
@@ -126,11 +135,13 @@ function MainHeaderBigSearchBar() {
           <Combobox
             value={result[0]}
             onChange={(e) => {
-              console.log(e);
+              router.push(`/article/${e.slug}`);
+              setSearch("");
             }}
           >
             <div className="relative">
               <Combobox.Input
+                ref={searchBarRef}
                 onChange={handleSearch}
                 placeholder="Search - CTRL + /"
                 icon={<MdSearch />}
@@ -138,58 +149,63 @@ function MainHeaderBigSearchBar() {
                 // clearable={search.trim().length >= 2}
                 // clearAction={clear}
                 minLength={2}
-                className="id-search-bar bg-opacity-50 md:w-96 lg:w-[30rem]"
+                className="bg-opacity-50 md:w-96 lg:w-[30rem]"
                 displayValue={(e) => search}
+                value={search}
                 // displayValue={(person) => person.name}
                 as={InputText}
               ></Combobox.Input>
 
               <Combobox.Options
                 className="absolute mt-1 max-h-60 w-full overflow-auto bg-base-100 rounded-xl p-1 shadow-lg 
-                ring-1 ring-black ring-opacity-5 focus:outline-none list-none"
+                ring-1 ring-base-content/10 focus:outline-none list-none gap-1 flex flex-col"
                 as={"div"}
               >
                 {/* {!result.length && (
                 <div className="font-bold text-center text-xl">No result found.</div>
               )} */}
-                {result.map((e, idx) => {
-                  return (
-                    <Combobox.Option
-                      key={e.id + idx}
-                      value={e}
-                      className={({ active }) =>
-                        `relative cursor-default select-none rounded-xl overflow-hidden
+                {loading && (
+                  <LoadingIndicator spinner text="Searching articles..." />
+                )}
+                {!loading &&
+                  result.map((e, idx) => {
+                    return (
+                      <Combobox.Option
+                        key={e.id + idx}
+                        value={e}
+                        className={({ active }) =>
+                          `relative cursor-default select-none rounded-xl overflow-hidden
                         ${active ? ` bg-primary/50` : ``}
                         `
-                      }
-                    >
-                      {({ selected, active }) => (
-                        <>
-                          {!result.length && <div>No result found.</div>}
-                          {result.length && (
-                            <div className="flex gap-4 relative">
-                              <img
-                                className="h-full aspect-video rounded-xl  absolute inset-0"
-                                src={
-                                  e.thumbnail ||
-                                  `https://picsum.photos/id/${e.dateAdded
-                                    .toString()
-                                    .split("")
-                                    .slice(-2)
-                                    .join("")}/500/300`
-                                }
-                              ></img>
-                              <div
-                                className={`h-full  inset-0  absolute  bg-gradient-to-r
+                        }
+                      >
+                        {({ selected, active }) => (
+                          <>
+                            {!result.length && <div>No result found.</div>}
+                            {result.length && (
+                              <div className="flex gap-4 relative">
+                                <img
+                                  className="h-full aspect-video rounded-xl  absolute inset-0"
+                                  src={
+                                    e.thumbnail ||
+                                    `https://picsum.photos/id/${e.dateAdded
+                                      .toString()
+                                      .split("")
+                                      .slice(-2)
+                                      .join("")}/500/300`
+                                  }
+                                ></img>
+                                <div
+                                  className={`h-full  inset-0  absolute  bg-gradient-to-r
                                 ${
                                   active
                                     ? `w-full from-primary/50 via-primary to-transparent`
                                     : `w-[80%] from-base-100/50 via-base-100 to-base-100`
                                 }
                                 `}
-                              ></div>
-                              <Link passHref href={`/article/${e.slug}`}>
-                                <a
+                                ></div>
+                                {/* <Link  href={`/article/${e.slug}`}> */}
+                                <div
                                   className={`flex flex-col z-[1] p-4 gap-4 w-full ${
                                     active ? "underline" : ""
                                   }`}
@@ -201,15 +217,15 @@ function MainHeaderBigSearchBar() {
                                     e.dateAdded,
                                     Date.now(),
                                   )} ago`}</div>
-                                </a>
-                              </Link>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </Combobox.Option>
-                  );
-                })}
+                                </div>
+                                {/* </Link> */}
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </Combobox.Option>
+                    );
+                  })}
               </Combobox.Options>
             </div>
           </Combobox>
