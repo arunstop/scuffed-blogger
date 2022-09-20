@@ -104,9 +104,9 @@ function LayoutArticlePageSlug({
               className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2] bg-primary"
               src={
                 article?.thumbnail ||
-                `https://picsum.photos/id/${Math.floor(
-                  Math.random() * 10,
-                )}/500/300`
+                `https://picsum.photos/id/${article.dateAdded
+                  .toString()
+                  .substring(0, -2)}/500/300`
               }
               alt="Image"
               width={240}
