@@ -62,15 +62,15 @@ function LayoutArticlePageSlug({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 text-base sm:text-lg">
+        <div className="block text-base sm:text-lg [&>.separator]:mx-[0.5rem]">
           <span className="first-letter:uppercase">
             {`${formatDistance(article.dateAdded, Date.now())} ago`}
           </span>
-          <span className="font-black">&middot;</span>
+          <span className="separator font-black">&middot;</span>
           <span className="">{`${Math.ceil(article.duration)} min${
             Math.ceil(article.duration) >= 2 ? "s" : ""
           } read`}</span>
-          <span className="font-black">&middot;</span>
+          <span className="separator font-black">&middot;</span>
           <span className="">{`${article.topics?.join(", ")}`}</span>
         </div>
 
