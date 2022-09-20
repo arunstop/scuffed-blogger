@@ -1,6 +1,6 @@
 import { Combobox, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { dateDistanceGet } from "../../utils/helpers/MainHelpers";
@@ -32,8 +32,12 @@ function MainHeaderBigSearchBar() {
   // list of contentless article
   const [result, setResult] = useState<ArticleModel[]>([]);
   // search bar variables
-  const searchBarRef = useRef<HTMLInputElement>(null);
-  const searchBar = searchBarRef.current;
+  const [searchBar, setSearchBar] = useState<HTMLElement | null>(null);
+
+  const onSearchBarRefChange = useCallback((node: HTMLElement | null) => {
+    setSearchBar(node);
+  }, []);
+  // console.log(searchBar);
 
   // for axios request of fbAritcleSearch
   let controller = new AbortController();
@@ -74,16 +78,18 @@ function MainHeaderBigSearchBar() {
     [],
   );
 
-  function handleKeyPress(ev: KeyboardEvent) {
-    // console.log(ev);
-    if (ev.ctrlKey) {
-      if (ev.key === "/") {
-        if (searchBar) {
-          searchBar.focus();
+  const handleKeyPress = useCallback(
+    (ev: KeyboardEvent) => {
+      if (ev.ctrlKey) {
+        if (ev.key === "/") {
+          if (searchBar) {
+            searchBar.focus();
+          }
         }
       }
-    }
-  }
+    },
+    [searchBar],
+  );
 
   function toggleSmBreakpoint() {
     if (window.innerWidth < 768) {
@@ -94,15 +100,16 @@ function MainHeaderBigSearchBar() {
   }
 
   useEffect(() => {
+    // console.log(searchBar);
     if (smBreakpoint) {
       window.removeEventListener("keydown", handleKeyPress);
     } else {
-      if (searchBar) window.addEventListener("keydown", handleKeyPress);
+      window.addEventListener("keydown", handleKeyPress);
     }
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [smBreakpoint,searchBar]);
+  }, [smBreakpoint, searchBar]);
 
   useEffect(() => {
     toggleSmBreakpoint();
@@ -135,13 +142,14 @@ function MainHeaderBigSearchBar() {
           <Combobox
             value={result[0]}
             onChange={(e) => {
-              router.push(`/article/${e.slug}`);
+              // (document.activeElement as HTMLElement).blur();
               setSearch("");
+              router.push(`/article/${e.slug}`);
             }}
           >
             <div className="relative">
               <Combobox.Input
-                ref={searchBarRef}
+                ref={onSearchBarRefChange}
                 onChange={handleSearch}
                 placeholder="Search - CTRL + /"
                 icon={<MdSearch />}
@@ -157,8 +165,9 @@ function MainHeaderBigSearchBar() {
               ></Combobox.Input>
 
               <Combobox.Options
-                className="absolute mt-1 max-h-60 w-full overflow-auto bg-base-100 rounded-xl p-1 shadow-lg 
-                ring-1 ring-base-content/10 focus:outline-none list-none gap-1 flex flex-col"
+                className={`absolute mt-1 max-h-60 w-full overflow-auto bg-base-100 rounded-xl p-1 shadow-lg 
+                ring-1 ring-base-content/10 focus:outline-none list-none gap-1 flex flex-col
+                ${search.length ? "" : "hidden"}`}
                 as={"div"}
               >
                 {/* {!result.length && (
@@ -166,6 +175,11 @@ function MainHeaderBigSearchBar() {
               )} */}
                 {loading && (
                   <LoadingIndicator spinner text="Searching articles..." />
+                )}
+                {!result.length && !loading && !!search.length && (
+                  <div className="w-full text-center p-4 text-xl font-bold">
+                    No result found.
+                  </div>
                 )}
                 {!loading &&
                   result.map((e, idx) => {
@@ -181,7 +195,6 @@ function MainHeaderBigSearchBar() {
                       >
                         {({ selected, active }) => (
                           <>
-                            {!result.length && <div>No result found.</div>}
                             {result.length && (
                               <div className="flex gap-4 relative">
                                 <img
@@ -204,7 +217,7 @@ function MainHeaderBigSearchBar() {
                                 }
                                 `}
                                 ></div>
-                                {/* <Link  href={`/article/${e.slug}`}> */}
+                                {/* <Link  href={`/article/${e.slug}`} passHref> */}
                                 <div
                                   className={`flex flex-col z-[1] p-4 gap-4 w-full ${
                                     active ? "underline" : ""
