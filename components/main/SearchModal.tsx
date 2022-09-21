@@ -1,5 +1,5 @@
 import debounce from "lodash/debounce";
-import Link from "next/dist/client/link";
+import { useRouter } from "next/dist/client/router";
 import React, { useCallback, useState } from "react";
 import { MdSearch, MdWorkspaces } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
@@ -12,7 +12,7 @@ import MainSectionSkeleton from "./MainSectionSkeleton";
 
 const SearchModal = React.memo(function SearchModal() {
   const { searchModal, closeSearchModal } = useUiModalSearchBehaviorHook();
-
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [articles, setArticles] = useState<ArticleModel[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -69,7 +69,13 @@ const SearchModal = React.memo(function SearchModal() {
               value={search}
               onChange={handleSearch}
               placeholder="Search articles..."
-              icon={loading ? <MdWorkspaces className="animate-twSpin animate-infinite"  /> : <MdSearch />}
+              icon={
+                loading ? (
+                  <MdWorkspaces className="animate-twSpin animate-infinite" />
+                ) : (
+                  <MdSearch />
+                )
+              }
               clearIcon
               clearable={search.trim().length >= 2}
               clearAction={() => setSearch("")}
@@ -91,11 +97,17 @@ const SearchModal = React.memo(function SearchModal() {
               {articles &&
                 articles.map((e, idx) => {
                   return (
-                    <Link key={idx} href={`/article/${e.slug}`} passHref>
-                      <a className="hover:underline bg-base-100 rounded-xl animate-[]">
-                        <PostItemSearchResult article={e} active={false} />
-                      </a>
-                    </Link>
+                    <div
+                      key={e.id}
+                      className="hover:underline bg-base-100 rounded-xl animate-[button-pop_300ms_ease-out]"
+                      onClick={() => {
+                        const body =document.body;
+                        body.scrollTo({top:0});
+                        router.push(`/article/${e.slug}/`);
+                      }}
+                    >
+                      <PostItemSearchResult article={e} active={false} />
+                    </div>
                   );
                 })}
             </>
