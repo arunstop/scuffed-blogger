@@ -1,6 +1,6 @@
 import { Combobox, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MdSearch, MdWorkspaces } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { fbArticleSearch } from "../../utils/services/network/FirebaseApi/ArticleModules";
@@ -39,13 +39,13 @@ function MainHeaderBigSearchBar() {
   // console.log(searchBar);
 
   // for axios request of fbAritcleSearch
-  let controller = new AbortController();
+  const controllerRef = useRef<AbortController>(new AbortController());
 
   const debounceSearch = useCallback(
     debounce(async (str: string, abortSignal: AbortSignal) => {
       const res = await fbArticleSearch({
         data: {
-          abortSignal: controller.signal,
+          abortSignal: abortSignal,
           count: 5,
           start: 0,
           keyword: str,
@@ -64,7 +64,10 @@ function MainHeaderBigSearchBar() {
       // console.log(ev.target.value);
       setLoading(true);
       setSearch(ev.target.value);
-      if (controller.signal.aborted) controller = new AbortController();
+      // set new controller
+      const controller = controllerRef.current;
+      if (controller.signal.aborted)
+        controllerRef.current = new AbortController();
       const val = ev.target.value;
       // console.log(val.length);
       if (!val.length) {

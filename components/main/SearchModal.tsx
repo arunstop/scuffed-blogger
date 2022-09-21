@@ -1,6 +1,6 @@
 import debounce from "lodash/debounce";
 import { useRouter } from "next/dist/client/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { MdSearch, MdWorkspaces } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { useUiModalSearchBehaviorHook } from "../../utils/hooks/UiModalSearchBehaviorHook";
@@ -17,13 +17,12 @@ const SearchModal = React.memo(function SearchModal() {
   const [articles, setArticles] = useState<ArticleModel[] | null>(null);
   const [loading, setLoading] = useState(false);
   // for axios request of fbAritcleSearch
-  let controller = new AbortController();
-
+  const controllerRef =useRef<AbortController>(new AbortController());
   const debounceSearch = debounce(
     async (str: string, abortSignal: AbortSignal) => {
       const res = await fbArticleSearch({
         data: {
-          abortSignal: controller.signal,
+          abortSignal: abortSignal,
           count: 5,
           start: 0,
           keyword: str,
@@ -41,7 +40,9 @@ const SearchModal = React.memo(function SearchModal() {
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       setLoading(true);
       setSearch(ev.target.value);
-      if (controller.signal.aborted) controller = new AbortController();
+      const controller = controllerRef.current;
+      if (controller.signal.aborted)
+        controllerRef.current = new AbortController();
       const val = ev.target.value;
       // console.log(val.length);
       if (!val.length) {
@@ -101,8 +102,8 @@ const SearchModal = React.memo(function SearchModal() {
                       key={e.id}
                       className="hover:underline bg-base-100 rounded-xl animate-[button-pop_300ms_ease-out]"
                       onClick={() => {
-                        const body =document.body;
-                        body.scrollTo({top:0});
+                        const body = document.body;
+                        body.scrollTo({ top: 0 });
                         router.push(`/article/${e.slug}/`);
                       }}
                     >
