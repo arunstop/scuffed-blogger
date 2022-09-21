@@ -70,7 +70,7 @@ function MainHeaderBigSearchBar() {
       if (!val.length) {
         setLoading(false);
         // console.log("cancel search");
-        return controller.abort("Idk");
+        return controller.abort("cancelled by user");
       }
       debounceSearch(val, controller.signal);
     },
