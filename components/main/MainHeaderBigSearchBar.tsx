@@ -1,12 +1,11 @@
 import { Combobox, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import { MdSearch } from "react-icons/md";
+import { MdSearch, MdWorkspaces } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
-import { dateDistanceGet } from "../../utils/helpers/MainHelpers";
 import { fbArticleSearch } from "../../utils/services/network/FirebaseApi/ArticleModules";
 import InputText from "../input/InputText";
-import LoadingIndicator from "../placeholder/LoadingIndicator";
+import PostItemSearchResult from "../post/PostItemSearchResult";
 
 // function debounce(callback: () => void, delay = 500) {
 //   let timeout;
@@ -152,13 +151,19 @@ function MainHeaderBigSearchBar() {
                 ref={onSearchBarRefChange}
                 onChange={handleSearch}
                 placeholder="Search - CTRL + /"
-                icon={<MdSearch />}
+                icon={
+                  !loading ? (
+                    <MdSearch />
+                  ) : (
+                    <MdWorkspaces className="animate-twSpin animate-infinite" />
+                  )
+                }
                 // clearIcon
                 // clearable={search.trim().length >= 2}
                 // clearAction={clear}
                 minLength={2}
                 className="bg-opacity-50 md:w-96 lg:w-[30rem]"
-                displayValue={(e) => search}
+                // displayValue={(e) => search}
                 value={search}
                 // displayValue={(person) => person.name}
                 as={InputText}
@@ -166,22 +171,22 @@ function MainHeaderBigSearchBar() {
 
               <Combobox.Options
                 className={`absolute mt-1 max-h-60 w-full overflow-auto bg-base-100 rounded-xl p-1 shadow-lg 
-                ring-1 ring-base-content/10 focus:outline-none list-none gap-1 flex flex-col
+                ring-2 ring-base-content/10 focus:outline-none list-none gap-1 flex flex-col
                 ${search.length ? "" : "hidden"}`}
                 as={"div"}
               >
                 {/* {!result.length && (
                 <div className="font-bold text-center text-xl">No result found.</div>
               )} */}
-                {loading && (
+                {/* {loading && (
                   <LoadingIndicator spinner text="Searching articles..." />
-                )}
-                {!result.length && !loading && !!search.length && (
-                  <div className="w-full text-center p-4 text-xl font-bold">
+                )} */}
+                {!result.length && !!search.length && (
+                  <div className="w-full p-4 text-center text-xl font-bold">
                     No result found.
                   </div>
                 )}
-                {!loading &&
+                {!!result.length &&
                   result.map((e, idx) => {
                     return (
                       <Combobox.Option
@@ -194,47 +199,7 @@ function MainHeaderBigSearchBar() {
                         }
                       >
                         {({ selected, active }) => (
-                          <>
-                            {result.length && (
-                              <div className="flex gap-4 relative">
-                                <img
-                                  className="h-full aspect-video rounded-xl  absolute inset-0"
-                                  src={
-                                    e.thumbnail ||
-                                    `https://picsum.photos/id/${e.dateAdded
-                                      .toString()
-                                      .split("")
-                                      .slice(-2)
-                                      .join("")}/500/300`
-                                  }
-                                ></img>
-                                <div
-                                  className={`h-full  inset-0  absolute  bg-gradient-to-r
-                                ${
-                                  active
-                                    ? `w-full from-primary/50 via-primary to-transparent`
-                                    : `w-[80%] from-base-100/50 via-base-100 to-base-100`
-                                }
-                                `}
-                                ></div>
-                                {/* <Link  href={`/article/${e.slug}`} passHref> */}
-                                <div
-                                  className={`flex flex-col z-[1] p-4 gap-4 w-full ${
-                                    active ? "underline" : ""
-                                  }`}
-                                >
-                                  <div className="font-bold text-lg line-clamp-2">
-                                    {e.title}
-                                  </div>
-                                  <div className="self-end">{`${dateDistanceGet(
-                                    e.dateAdded,
-                                    Date.now(),
-                                  )} ago`}</div>
-                                </div>
-                                {/* </Link> */}
-                              </div>
-                            )}
-                          </>
+                          <PostItemSearchResult article={e} active={active} />
                         )}
                       </Combobox.Option>
                     );
@@ -245,7 +210,7 @@ function MainHeaderBigSearchBar() {
           {/* <div
             className={
               `absolute mt-[3.5rem] bg-base-100 ring-1 ring-gray-600/20 w-full
-            rounded-xl shadow-lg shadow-base-content/20 overflow-hidden transition-all animate-fadeIn
+            rounded-xl shadow-lg shadow-base-content/20 o verflow-hidden transition-all animate-fadeIn
             animate-duration-300 ` + //
               `${showResult ? "block z-20" : "hidden"}`
             }
