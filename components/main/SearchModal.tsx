@@ -69,7 +69,7 @@ const SearchModal = React.memo(function SearchModal() {
               value={search}
               onChange={handleSearch}
               placeholder="Search articles..."
-              icon={loading ? <MdWorkspaces /> : <MdSearch />}
+              icon={loading ? <MdWorkspaces className="animate-twSpin animate-infinite"  /> : <MdSearch />}
               clearIcon
               clearable={search.trim().length >= 2}
               clearAction={() => setSearch("")}
