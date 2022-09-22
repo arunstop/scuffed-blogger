@@ -1,32 +1,70 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
-import {
-  MdBookmarkAdd,
-  MdForum,
-  MdMoreHoriz,
-  MdStar,
-  MdTrendingUp,
-} from "react-icons/md";
+import React, { useState } from "react";
+import { MdBookmarkAdd, MdMoreHoriz } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
-import MainPostStatusChip from "../main/MainPostFilterChip";
+import { getElById } from "../../utils/helpers/UiHelpers";
+import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
 import MainUserPopup from "../main/MainPostUserPopup";
 import MainUserLabel from "../main/MainUserLabel";
 import PostLinker from "./PostLinker";
 
-function PostItem({ article }: { article: ArticleModel }) {
+interface PostItemProps {
+  article: ArticleModel;
+  observe?: boolean;
+}
+function PostItem({ article, observe }: PostItemProps) {
+  const [visible, setVisible] = useState(true);
+  const elementId = `article-${article.id}`;
+  const element = getElById(elementId);
+  return observe ? (
+    <MainIntersectionObserverTrigger
+      id={elementId}
+      callback={(intersecting) => setVisible(intersecting)}
+      className=""
+      style={
+        visible
+          ? undefined
+          : {
+              height: `${element?.clientHeight}px`,
+              width: `1px`,
+            }
+      }
+    >
+      {visible && <PostItemContent article={article} />}
+    </MainIntersectionObserverTrigger>
+  ) : (
+    <PostItemContent article={article} />
+  );
+}
+
+//new
+// const PostItemContent = React.forwardRef<
+//   HTMLDivElement,
+//   React.PropsWithChildren<
+//     { article: ArticleModel } & React.HTMLAttributes<HTMLDivElement>
+//   >
+// >((props, ref) => {
+//   const router = useRouter();
+//   const { article, style } = props;
+
+// old
+const PostItemContent = ({ article }: { article: ArticleModel }) => {
   const router = useRouter();
+
   return (
     <div
       className="group flex w-full flex-col rounded-xl bg-primary
       bg-opacity-10 shadow-lg ring-1 ring-base-content/20 transition-all
-      hover:bg-opacity-40 sm:flex-row sm:min-h-[20rem]
-      "
+      hover:bg-opacity-40 sm:flex-row sm:min-h-[20rem] animate-fadeIn animate-duration-300
+      relative overflow-hidden"
     >
       <PostLinker
         href={`/article/${article.slug}`}
-        className="relative aspect-square h-60 w-full overflow-hidden rounded-t-xl 
-        rounded-bl-none bg-base-content sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none"
+        className=" aspect-square  w-full overflow-hidden rounded-t-xl 
+        rounded-bl-none bg-base-300 sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none
+        absolute sm:relative inset-0 h-full
+        "
       >
         <img
           className="h-full w-full max-w-none object-cover transition-transform 
@@ -42,8 +80,9 @@ function PostItem({ article }: { article: ArticleModel }) {
           alt="Image"
           width={240}
           height={240}
+          loading="lazy"
         />
-        <div className=" absolute left-0 bottom-0 flex flex-wrap justify-start gap-2 overflow-hidden p-2">
+        {/* <div className=" absolute left-0 bottom-0 flex flex-wrap justify-start gap-2 overflow-hidden p-2">
           <MainPostStatusChip
             icon={<MdStar className="text-xl sm:text-2xl" />}
             title="Favorited"
@@ -59,15 +98,19 @@ function PostItem({ article }: { article: ArticleModel }) {
             title="Active"
             color="bg-blue-500"
           />
-        </div>
+        </div> */}
       </PostLinker>
+      {/* shading layer for small viewport */}
+      <div className="inset-0 absolute   bg-gradient-to-b from-base-300/50 to-primary/70 sm:hidden" />
+      {/* the actual content */}
+      <div className="flex flex-1 flex-col gap-2 sm:gap-4 p-4 z-[1]">
+        <div className="inline-flex items-center gap-2 sm:gap-4">
+          <div className="dropdown-hover dropdown self-start sm:dropdown-end z-[2]">
+            <MainUserLabel
+              id={article.dateUpdated.toString().substring(0, -2)}
+            />
 
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <div className="inline-flex items-center gap-4">
-          <div className="dropdown-hover dropdown self-start sm:dropdown-end">
-            <MainUserLabel id={article.slug} />
-
-            <div tabIndex={0} className="dropdown-content pt-2">
+            <div tabIndex={0} className="dropdown-content pt-2 hidden sm:block">
               <MainUserPopup id={article.slug} />
             </div>
           </div>
@@ -132,6 +175,5 @@ function PostItem({ article }: { article: ArticleModel }) {
       </div>
     </div>
   );
-}
-
+};
 export default React.memo(PostItem);

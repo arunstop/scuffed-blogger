@@ -77,7 +77,7 @@ function LayoutIndexPostSection() {
           <>
             <div className="flex flex-col gap-4 sm:gap-8" id="main-content">
               {(posts.data as ArticleModelFromDb).articles.map((e) => {
-                return <PostItem key={e.id} article={e} />;
+                return <PostItem key={e.id} article={e} observe/>;
               })}
             </div>
             <PostOptionModal />
