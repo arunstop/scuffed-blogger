@@ -271,23 +271,38 @@ function ProfileChooseTopicsForm() {
               sm:p-8 md:max-w-lg lg:max-w-xl"
               // onSubmit={handleSubmit(onSubmit)}
             >
-              <div className="flex flex-col gap-2 sm:gap-4 items-center">
-                <span
-                  className={`text-xs sm:text-sm md:text-md lg:text-lg font-bold text-center ${
-                    errors.topics ? "text-error" : ""
-                  }`}
-                >
-                  {selectedTopics.length < 3 && selectedTopics.length !== 0
-                    ? `You have choosen: ${selectedTopics.join(", ")}\nChoose ${
-                        3 - selectedTopics.length
-                      } more topics`
-                    : selectedTopics.length === 0
-                    ? "Choose at least 3 topics of your interest to continue.\nYou can change it anytime."
-                    : `You have choosen: ${selectedTopics.join(", ")}`}
-                  <br />
-                  <span>
-                    This will determine what kind of article you will be shown
+              <div className="flex flex-col gap-2 sm:gap-4 text-center text-xs sm:text-sm md:text-md lg:text-lg font-bold text-center">
+                {!selectedTopics.length && (
+                  <span className="whitespace-pre">
+                    {`Choose at least 3 topics of your interest to continue.\nYou can change them anytime.`}
                   </span>
+                )}
+                {/* topics amount not yet satisfied */}
+                {!!selectedTopics.length && selectedTopics.length < 3 && (
+                  <div className="flex flex-col gap-1">
+                    <span>You have choosen : </span>
+                    <div  className="p-2 sm:p-4 rounded-xl bg-error/50 animate-fadeIn animate-duration-500">
+                      <span key={selectedTopics.length} className="animate-fadeIn animate-duration-300">{selectedTopics.join(` ${String.fromCharCode(8212)} `)}</span>
+                    </div>
+                    <span className="text-error">
+                      {`Please choose ${3 - selectedTopics.length} more`}
+                    </span>
+                  </div>
+                )}
+                {selectedTopics.length >= 3 && (
+                  <div className="flex flex-col gap-1">
+                    <span>You have choosen : </span>
+                    <div  className="p-2 sm:p-4 rounded-xl bg-primary/50 animate-fadeIn animate-duration-500">
+                      <span key={selectedTopics.length} className="animate-fadeIn animate-duration-300">{selectedTopics.join(` ${String.fromCharCode(8212)} `)}</span>
+                    </div>
+                    <span>
+                      {` ${ selectedTopics.length} you can proceed now.`}
+                    </span>
+                  </div>
+                )}
+
+                <span>
+                  This will determine what kind of article you will be shown
                 </span>
               </div>
               <div className="flex gap-2 sm:gap-4 items-center">
