@@ -145,7 +145,7 @@ function MainHeaderBigSearchBar() {
             value={result[0]}
             onChange={(e) => {
               // (document.activeElement as HTMLElement).blur();
-              setSearch("");
+              // setSearch("");
               router.push(`/article/${e.slug}`);
             }}
           >
@@ -170,11 +170,12 @@ function MainHeaderBigSearchBar() {
                 value={search}
                 // displayValue={(person) => person.name}
                 as={InputText}
+                autoComplete="off"
               ></Combobox.Input>
 
               <Combobox.Options
-                className={`absolute mt-1 max-h-60 w-full overflow-auto bg-base-100 rounded-xl p-1 shadow-lg 
-                ring-2 ring-base-content/10 focus:outline-none list-none gap-1 flex flex-col
+                className={`absolute mt-1 overflow-hidden w-full bg-base-100 rounded-xl shadow-lg 
+                ring-2 ring-base-content/10 focus:outline-none 
                 ${search.length ? "" : "hidden"}`}
                 as={"div"}
               >
@@ -189,6 +190,7 @@ function MainHeaderBigSearchBar() {
                     No result found.
                   </div>
                 )}
+                <div className=" gap-1 flex flex-col list-none max-h-60 w-full overflow-auto p-1">
                 {!!result.length &&
                   result.map((e, idx) => {
                     return (
@@ -196,9 +198,8 @@ function MainHeaderBigSearchBar() {
                         key={e.id + idx}
                         value={e}
                         className={({ active }) =>
-                          `relative cursor-default select-none rounded-xl overflow-hidden
-                        ${active ? ` bg-primary/50` : ``}
-                        `
+                          ` rounded-xl
+                          ${active ? ` bg-primary/50` : ``}`
                         }
                       >
                         {({ selected, active }) => (
@@ -207,6 +208,7 @@ function MainHeaderBigSearchBar() {
                       </Combobox.Option>
                     );
                   })}
+                </div>
               </Combobox.Options>
             </div>
           </Combobox>

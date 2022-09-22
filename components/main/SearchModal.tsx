@@ -17,7 +17,7 @@ const SearchModal = React.memo(function SearchModal() {
   const [articles, setArticles] = useState<ArticleModel[] | null>(null);
   const [loading, setLoading] = useState(false);
   // for axios request of fbAritcleSearch
-  const controllerRef =useRef<AbortController>(new AbortController());
+  const controllerRef = useRef<AbortController>(new AbortController());
   const debounceSearch = debounce(
     async (str: string, abortSignal: AbortSignal) => {
       const res = await fbArticleSearch({
@@ -61,7 +61,7 @@ const SearchModal = React.memo(function SearchModal() {
       onClose={closeSearchModal}
       title="Search Tuturku"
       fullscreen
-      className="!z-20"
+      className="!z-[13]"
     >
       <div className="flex flex-col gap-2 sm:gap-4 pb-[3rem] sm:pb-0">
         <div className="form-control">
@@ -90,29 +90,25 @@ const SearchModal = React.memo(function SearchModal() {
           </div>
         </div>
         <div className="flex flex-col gap-2 rounded-xl min-h-screen">
-          {search.length >= 2 && (
-            <>
-              {!articles?.length && (
-                <MainSectionSkeleton text="No result found." />
-              )}
-              {articles &&
-                articles.map((e, idx) => {
-                  return (
-                    <div
-                      key={e.id}
-                      className="hover:underline bg-base-100 rounded-xl animate-[button-pop_300ms_ease-out]"
-                      onClick={() => {
-                        const body = document.body;
-                        body.scrollTo({ top: 0 });
-                        router.push(`/article/${e.slug}/`);
-                      }}
-                    >
-                      <PostItemSearchResult article={e} active={false} />
-                    </div>
-                  );
-                })}
-            </>
+          {!articles?.length && !loading && (
+            <MainSectionSkeleton text="No result found." />
           )}
+          {articles &&
+            articles.map((e, idx) => {
+              return (
+                <div
+                  key={e.id}
+                  className="hover:underline bg-base-100 rounded-xl animate-[button-pop_300ms_ease-out]"
+                  onClick={() => {
+                    const body = document.body;
+                    body.scrollTo({ top: 0 });
+                    router.push(`/article/${e.slug}/`);
+                  }}
+                >
+                  <PostItemSearchResult article={e} active={false} />
+                </div>
+              );
+            })}
         </div>
       </div>
     </ModalTemplate>

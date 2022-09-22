@@ -9,7 +9,7 @@ function PostItemSearchResult({
   active: boolean;
 }) {
   return (
-    <div className="flex gap-4 relative rounded-xl overflow-hidden animate-fadeIn animate-duration-500">
+    <div className="flex gap-4 relative rounded-xl overflow-hidden animate-fadeIn animate-duration-500 cursor-pointer">
       <img
         className="h-full aspect-video rounded-xl  absolute inset-0"
         src={
