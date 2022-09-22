@@ -98,7 +98,7 @@ const SearchModal = React.memo(function SearchModal() {
               return (
                 <div
                   key={e.id}
-                  className="hover:underline bg-base-100 rounded-xl animate-[button-pop_300ms_ease-out]"
+                  className="hover:underline bg-base-100 rounded-xl animate-pop"
                   onClick={() => {
                     const body = document.body;
                     body.scrollTo({ top: 0 });
