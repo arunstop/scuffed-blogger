@@ -1,3 +1,4 @@
+import { axiosClient } from "./../AxiosClient";
 import { FirebaseError } from "firebase/app";
 import { get, ref, remove, set } from "firebase/database";
 import _ from "lodash";
@@ -10,7 +11,7 @@ import { ArticleModelFromDb } from "../FirebaseApi/ArticleModules";
 import { firebaseClient } from "../FirebaseClient";
 
 const db = firebaseClient.rtdb;
-
+const rtdbUrl = `https://tuturku-3e16b-default-rtdb.asia-southeast1.firebasedatabase.app/`;
 export async function rtArticleGetById(
   id: string,
 ): Promise<ArticleModel | null> {
@@ -37,7 +38,7 @@ export async function rtArticleGetAll({
 
     const dataRaw = _.values(res.val() as ArticleModel[]);
     let data: ArticleModel[] = [];
-    
+
     if (keyword) {
       const kw = keyword?.toLowerCase().trim() || "";
       data = dataRaw.filter((e) => {
@@ -101,4 +102,16 @@ export async function rtArticleMirrorDelete(
   const rr = ref(db, path);
   await remove(rr);
   return true;
+}
+
+export function rtArticleSearch(abortSignal:AbortSignal) {
+  const path = `articleList.json`;
+  return (
+    axiosClient
+      //
+      .get(`${rtdbUrl}/${path}`, {
+        method: "GET",
+        signal: abortSignal,
+      })
+  );
 }

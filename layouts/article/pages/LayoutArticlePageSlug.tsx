@@ -53,7 +53,7 @@ function LayoutArticlePageSlug({
       <MobileHeader back={() => router.back()} title="Read Article" />
       <MainContainer>
         <div className="inline-flex justify-start">
-          <div className="dropdown-hover dropdown self-start w-full">
+          <div className="dropdown-hover dropdown">
             <UserHeader id={article.author} />
 
             <div tabIndex={0} className="dropdown-content pt-2">
@@ -62,15 +62,15 @@ function LayoutArticlePageSlug({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 text-base sm:text-lg">
+        <div className="block text-base sm:text-lg [&>.separator]:mx-[0.5rem]">
           <span className="first-letter:uppercase">
             {`${formatDistance(article.dateAdded, Date.now())} ago`}
           </span>
-          <span className="font-black">&middot;</span>
+          <span className="separator font-black">&middot;</span>
           <span className="">{`${Math.ceil(article.duration)} min${
             Math.ceil(article.duration) >= 2 ? "s" : ""
           } read`}</span>
-          <span className="font-black">&middot;</span>
+          <span className="separator font-black">&middot;</span>
           <span className="">{`${article.topics?.join(", ")}`}</span>
         </div>
 
@@ -104,9 +104,9 @@ function LayoutArticlePageSlug({
               className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2] bg-primary"
               src={
                 article?.thumbnail ||
-                `https://picsum.photos/id/${Math.floor(
-                  Math.random() * 10,
-                )}/500/300`
+                `https://picsum.photos/id/${article.dateAdded
+                  .toString()
+                  .substring(0, -2)}/500/300`
               }
               alt="Image"
               width={240}

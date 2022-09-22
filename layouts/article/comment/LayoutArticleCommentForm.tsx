@@ -49,7 +49,7 @@ function LayoutArticleCommentForm({
     }
   };
   return (
-    <div className="flex flex-row gap-4 items-start">
+    <div className="flex flex-row gap-4 items-start animate-fadeIn">
       <div className="avatar">
         <div
           className="w-10 rounded-lg border-[1px] border-base-content 

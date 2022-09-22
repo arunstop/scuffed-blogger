@@ -52,8 +52,8 @@ function Header() {
   return (
     <>
       <div
-        className={`sticky hidden sm:flex flex-row gap-4 top-0 z-10 h-12 sm:h-16 w-full items-center 
-        px-2 sm:px-4 justify-between transition-all duration-[600ms] text-primary
+        className={`sticky hidden sm:flex flex-row gap-4 top-0 z-20 h-12 sm:h-16 w-full items-center 
+        px-2 sm:px-4 justify-between transition-all duration-[600ms] text-primary animate-fadeInDown 
         `}
         id="header"
       >

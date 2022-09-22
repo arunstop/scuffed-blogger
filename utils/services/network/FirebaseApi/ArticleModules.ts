@@ -1,4 +1,5 @@
 import { FirebaseError } from "firebase/app";
+import { values } from "lodash";
 import { nanoid } from "nanoid";
 import { WritingPanelFormProps } from "../../../data/contexts/WritingPanelTypes";
 import {
@@ -30,12 +31,14 @@ import {
   rtArticleMirrorAdd,
   rtArticleMirrorDelete,
   rtArticleMirrorUpdate,
+  rtArticleSearch,
 } from "../RealtimeDatabase/RealtimeArticleModules";
 
 import { stDirectoryDelete, stFileDeleteByFullLink } from "../StorageModules";
 import { MainApiResponse } from "./../../../data/Main";
 import { ArticleListModel } from "./../../../data/models/ArticleListModel";
 import { uploadFile } from "./FileModules";
+import Fuse from "fuse.js";
 
 // Adding article, now using direct firebaseClient
 interface PropsAddArticle {
@@ -421,6 +424,42 @@ export async function fbArticleReact({
   } catch (error) {
     console.log(error);
     callback?.(netError("Success liking the article", error as FirebaseError));
+    return null;
+  }
+}
+
+export async function fbArticleSearch({
+  data,
+  callback,
+}: MainApiResponse<
+  ApiPagingReqProps & { abortSignal: AbortSignal },
+  ArticleModel[] | null | FirebaseError
+>): Promise<ArticleModel[] | null> {
+  console.log("searching...", data.keyword);
+  const { keyword, count, start, abortSignal } = data;
+  try {
+    const res: ArticleModel[] = await rtArticleSearch(data.abortSignal).then(
+      (e) => {
+        if (e.status !== 200) return [];
+        let articles = values(e.data) as ArticleModel[];
+        const kw = (keyword || "").toLowerCase().trim();
+        // show all articles if no keyword
+        if (!kw) {
+          articles = articles.slice(0, count);
+          return articles;
+        }
+        const fuzz = new Fuse(articles, {
+          keys: ["title", "desc", "tags", "community", "slug"],
+        });
+        // show filtered articles if there is a keyword
+        const searchResult = fuzz.search(kw).map((e) => e.item);
+        articles = searchResult.slice(0,count);
+        // articles = (fuzz.search(kw) as unknown as ArticleModel[]).slice(0, count);
+        return articles;
+      },
+    );
+    return res;
+  } catch (error) {
     return null;
   }
 }

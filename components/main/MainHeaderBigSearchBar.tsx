@@ -1,43 +1,97 @@
-import { Transition } from "@headlessui/react";
-import React, { useCallback, useEffect, useState } from "react";
-import { MdSearch } from "react-icons/md";
-import { SEARCH_SUGGESTIONS_DUMMY } from "../../utils/helpers/Constants";
+import { Combobox, Transition } from "@headlessui/react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { MdSearch, MdWorkspaces } from "react-icons/md";
+import { ArticleModel } from "../../utils/data/models/ArticleModel";
+import { fbArticleSearch } from "../../utils/services/network/FirebaseApi/ArticleModules";
 import InputText from "../input/InputText";
-import MainSearchSuggestionItem from "./MainSearchSuggestionItem";
-import MainSectionSkeleton from "./MainSectionSkeleton";
+import PostItemSearchResult from "../post/PostItemSearchResult";
+
+// function debounce(callback: () => void, delay = 500) {
+//   let timeout;
+//   clearTimeout(timeout);
+//   return (timeout = setTimeout(() => {
+//     callback();
+//   }, delay));
+// }
+
+const debounce = (fn: (...args: any[]) => void, ms = 300) => {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return function (this: any, ...args: any[]) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), ms);
+  };
+};
 
 function MainHeaderBigSearchBar() {
-  const [search, setSearch] = useState("");
-  const [showSuggestion, setShowSuggestion] = useState(false);
+  const router = useRouter();
   const [smBreakpoint, setSmBreakpoint] = useState(false);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  // list of contentless article
+  const [result, setResult] = useState<ArticleModel[]>([]);
+  // search bar variables
+  const [searchBar, setSearchBar] = useState<HTMLElement | null>(null);
 
-  const clear = useCallback(() => {
-    setSearch("");
-    // setShowSuggestion(true);
+  const onSearchBarRefChange = useCallback((node: HTMLElement | null) => {
+    setSearchBar(node);
   }, []);
+  // console.log(searchBar);
 
-  const onChange = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(ev.target.value);
-    setShowSuggestion(true);
-  }, []);
+  // for axios request of fbAritcleSearch
+  const controllerRef = useRef<AbortController>(new AbortController());
 
-  const filteredData = SEARCH_SUGGESTIONS_DUMMY.filter((e) =>
-    search === ""
-      ? true
-      : e.title.toLowerCase().includes(search.trim().toLowerCase()),
+  const debounceSearch = useCallback(
+    debounce(async (str: string, abortSignal: AbortSignal) => {
+      const res = await fbArticleSearch({
+        data: {
+          abortSignal: abortSignal,
+          count: 5,
+          start: 0,
+          keyword: str,
+        },
+      });
+      if (!res) return;
+      // console.log(res);
+      setResult(res);
+      setLoading(false);
+    }, 500),
+    [],
   );
 
-  function handleKeyPress(ev: KeyboardEvent) {
-    // console.log(ev);
-    if (ev.ctrlKey) {
-      if (ev.key === "/") {
-        const searchBar = document.getElementById("main-header-big-search-bar");
-        if (searchBar) {
-          searchBar.focus();
+  const handleSearch = useCallback(
+    async (ev: React.ChangeEvent<HTMLInputElement>) => {
+      // console.log(ev.target.value);
+      setLoading(true);
+      setSearch(ev.target.value);
+      // set new controller
+      const controller = controllerRef.current;
+      if (controller.signal.aborted)
+        controllerRef.current = new AbortController();
+      const val = ev.target.value;
+      // console.log(val.length);
+      if (!val.length) {
+        setLoading(false);
+        // console.log("cancel search");
+        return controller.abort("cancelled by user");
+      }
+      debounceSearch(val, controller.signal);
+    },
+    [],
+  );
+
+  const handleKeyPress = useCallback(
+    (ev: KeyboardEvent) => {
+      if (ev.ctrlKey) {
+        if (ev.key === "/") {
+          if (searchBar) {
+            searchBar.focus();
+          }
         }
       }
-    }
-  }
+    },
+    [searchBar],
+  );
 
   function toggleSmBreakpoint() {
     if (window.innerWidth < 768) {
@@ -48,6 +102,7 @@ function MainHeaderBigSearchBar() {
   }
 
   useEffect(() => {
+    // console.log(searchBar);
     if (smBreakpoint) {
       window.removeEventListener("keydown", handleKeyPress);
     } else {
@@ -56,7 +111,7 @@ function MainHeaderBigSearchBar() {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [smBreakpoint]);
+  }, [smBreakpoint, searchBar]);
 
   useEffect(() => {
     toggleSmBreakpoint();
@@ -86,55 +141,103 @@ function MainHeaderBigSearchBar() {
     >
       <div className="form-control">
         <div className="relative flex flex-col items-center gap-2 sm:gap-4">
-          <InputText
-            id="main-header-big-search-bar"
-            value={search}
-            onChange={onChange}
-            placeholder="Search - CTRL + /"
-            icon={<MdSearch />}
-            clearIcon
-            clearable={search.trim().length >= 2}
-            clearAction={clear}
-            minLength={2}
-            className="bg-opacity-50 md:w-96 lg:w-[30rem]"
-            onFocus={(_) => {
-              setShowSuggestion(true);
+          <Combobox
+            value={result[0]}
+            onChange={(e) => {
+              // (document.activeElement as HTMLElement).blur();
+              // setSearch("");
+              router.push(`/article/${e.slug}`);
             }}
-            onBlur={(_) => {
-              setTimeout(() => {
-                if (showSuggestion) setShowSuggestion(false);
-                clear();
-              }, 100);
-              //   setShowSuggestion(false);
-            }}
-          />
+          >
+            <div className="relative">
+              <Combobox.Input
+                ref={onSearchBarRefChange}
+                onChange={handleSearch}
+                placeholder="Search - CTRL + /"
+                icon={
+                  !loading ? (
+                    <MdSearch />
+                  ) : (
+                    <MdWorkspaces className="animate-twSpin animate-infinite" />
+                  )
+                }
+                // clearIcon
+                // clearable={search.trim().length >= 2}
+                // clearAction={clear}
+                minLength={2}
+                className="bg-opacity-50 md:w-96 lg:w-[30rem]"
+                // displayValue={(e) => search}
+                value={search}
+                // displayValue={(person) => person.name}
+                as={InputText}
+                autoComplete="off"
+              ></Combobox.Input>
 
-          <Transition
-            show={showSuggestion && search.trim().length >= 2}
-            as={"div"}
-            className={`absolute mt-[3.5rem] bg-base-100 ring-1 ring-gray-600/20 w-full
-            rounded-xl shadow-lg shadow-base-content/20 overflow-hidden transition-all`}
-            enter="ease-out duration-200"
-            enterFrom="opacity-0 -translate-y-72 scale-125"
-            enterTo="opacity-100 -translate-y-0 scale-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
+              <Combobox.Options
+                className={`absolute mt-1 overflow-hidden w-full bg-base-100 rounded-xl shadow-lg 
+                ring-2 ring-base-content/10 focus:outline-none 
+                ${search.length ? "" : "hidden"}`}
+                as={"div"}
+              >
+                {/* {!result.length && (
+                <div className="font-bold text-center text-xl">No result found.</div>
+              )} */}
+                {/* {loading && (
+                  <LoadingIndicator spinner text="Searching articles..." />
+                )} */}
+                {!result.length && !!search.length && (
+                  <div className="w-full p-4 text-center text-xl font-bold">
+                    No result found.
+                  </div>
+                )}
+                <div className=" gap-1 flex flex-col list-none max-h-60 w-full overflow-auto p-1">
+                {!!result.length &&
+                  result.map((e, idx) => {
+                    return (
+                      <Combobox.Option
+                        key={e.id + idx}
+                        value={e}
+                        className={({ active }) =>
+                          ` rounded-xl
+                          ${active ? ` bg-primary/50` : ``}`
+                        }
+                      >
+                        {({ selected, active }) => (
+                          <PostItemSearchResult article={e} active={active} />
+                        )}
+                      </Combobox.Option>
+                    );
+                  })}
+                </div>
+              </Combobox.Options>
+            </div>
+          </Combobox>
+          {/* <div
+            className={
+              `absolute mt-[3.5rem] bg-base-100 ring-1 ring-gray-600/20 w-full
+            rounded-xl shadow-lg shadow-base-content/20 o verflow-hidden transition-all animate-fadeIn
+            animate-duration-300 ` + //
+              `${showResult ? "block z-20" : "hidden"}`
+            }
           >
             <div
-              className="flex max-h-[24rem] min-h-[12rem] flex-col
-                divide-y divide-gray-600/20 overflow-auto p-4 transition-all"
+              className="max-h-[24rem] min-h-[12rem] flex-col divide-y divide-gray-600/20 overflow-auto p-4 
+            transition-all  flex"
             >
-              {!filteredData.length && (
+              {!result.length && (
                 <MainSectionSkeleton text="No result found." />
               )}
-              {filteredData.map((e, idx) => {
+              {result.map((e, idx) => {
                 return (
-                  <MainSearchSuggestionItem key={idx} val={e.title} id={e.id} />
+                  <MainSearchSuggestionItem
+                    key={e.id + idx}
+                    val={e.title}
+                    id={e.id}
+                  />
                 );
               })}
             </div>
-          </Transition>
+          </div> */}
         </div>
       </div>
     </Transition>

@@ -149,7 +149,7 @@ function Sidebar() {
 
   return (
     <>
-      <div className="fixed inset-0 drawer drawer-end z-10 pointer-events-none">
+      <div className="fixed inset-0 drawer drawer-end z-20 pointer-events-none">
         <input
           id="main-drawer"
           type="checkbox"

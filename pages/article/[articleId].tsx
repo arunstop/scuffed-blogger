@@ -44,7 +44,10 @@ function Article({ articleContentless }: { articleContentless: ArticleModel }) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content="Scuffed blogs, for scuffed people" />
       </Head>
-      <LazyLayoutArticlePageSlug articleContentless={articleContentless} />
+      <LazyLayoutArticlePageSlug
+        key={articleContentless.id}
+        articleContentless={articleContentless}
+      />
     </>
   );
 }

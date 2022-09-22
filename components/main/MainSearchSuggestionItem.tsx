@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
-function MainSearchSuggestionItem({ val, id }: { val: string; id: number }) {
+function MainSearchSuggestionItem({ val, id }: { val: string; id: string }) {
   return (
     <Link href={`/article/${id}`} passHref onMouseDown={()=>alert("XD")}>
       <a
@@ -23,7 +23,6 @@ function MainSearchSuggestionItem({ val, id }: { val: string; id: number }) {
         {/* <div className="inline-flex justify-between"> */}
         <span className="text-base sm:text-lg">
           {"Kevin Kronk"}
-          {id % 2 === 0 && " on Photography"}
         </span>
         <div className="flex flex-1 flex-wrap gap-x-2 text-sm sm:text-base">
           <span className="">2d ago</span>
