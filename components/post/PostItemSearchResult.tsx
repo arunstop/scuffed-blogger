@@ -8,8 +8,12 @@ function PostItemSearchResult({
   article: ArticleModel;
   active: boolean;
 }) {
+  const duration = Math.ceil(article.duration);
   return (
-    <div className="flex gap-4 relative rounded-xl overflow-hidden animate-fadeIn animate-duration-500 cursor-pointer">
+    <div
+      className="flex gap-4 relative rounded-xl overflow-hidden animate-fadeIn animate-duration-500 cursor-pointer
+      ring-1 ring-base-content/10"
+    >
       <img
         className="h-full aspect-video rounded-xl  absolute inset-0"
         src={
@@ -37,10 +41,20 @@ function PostItemSearchResult({
         }`}
       >
         <div className="font-bold text-lg line-clamp-2">{article.title}</div>
-        <div className="self-end">{`${dateDistanceGet(
-          article.dateAdded,
-          Date.now(),
-        )} ago`}</div>
+        <div className="block text-xs sm:text-sm [&>b]:mx-[0.25rem] line-clamp-1 font-medium self-end text-end">
+          <span className="">323 views</span>
+          <b className="font-black">&middot;</b>
+
+          <span className="">
+            {`${dateDistanceGet(article.dateAdded, Date.now())} ago`}
+          </span>
+          <b className="font-black">&middot;</b>
+          <span className="">{`${duration} min${
+            duration > 1 ? "s" : ""
+          }`}</span>
+          <b className="font-black">&middot;</b>
+          <span className="">{article.topics.join(", ")}</span>
+        </div>
       </div>
       {/* </Link> */}
     </div>
