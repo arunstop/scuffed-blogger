@@ -75,7 +75,7 @@ function LayoutIndexPostSection() {
         </Transition>
         {!loading && posts?.status === "success" && (
           <>
-            <div className="flex flex-col gap-4 sm:gap-8" id="main-content">
+            <div className="flex flex-col gap-4 sm:gap-8 w-full" id="main-content">
               {(posts.data as ArticleModelFromDb).articles.map((e) => {
                 return <PostItem key={e.id} article={e} observe/>;
               })}

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MdBookmarkAdd, MdMoreHoriz } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
+import { dateDistanceGet } from "../../utils/helpers/MainHelpers";
 import { getElById } from "../../utils/helpers/UiHelpers";
 import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
 import MainUserPopup from "../main/MainPostUserPopup";
@@ -26,7 +27,7 @@ function PostItem({ article, observe }: PostItemProps) {
           ? undefined
           : {
               height: `${element?.clientHeight}px`,
-              width: `1px`,
+              width: `100%`,
             }
       }
     >
@@ -53,16 +54,16 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
 
   return (
     <div
-      className="group flex w-full flex-col rounded-xl bg-primary
-      bg-opacity-10 shadow-lg ring-1 ring-base-content/20 transition-all
-      hover:bg-opacity-40 sm:flex-row sm:min-h-[20rem] animate-fadeIn animate-duration-300
-      relative overflow-hidden"
+      className="group relative flex w-full animate-fadeIn flex-col
+      overflow-hidden rounded-xl bg-primary bg-opacity-10 shadow-lg
+      ring-1 ring-base-content/20 transition-all animate-duration-300 hover:bg-opacity-40
+      sm:min-h-[10rem] sm:flex-row"
     >
     <Link href={`/article/${article.slug}`} passHref>
     <a
-        className=" aspect-square  w-full overflow-hidden rounded-t-xl 
-        rounded-bl-none bg-base-300 sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none
-        absolute sm:relative inset-0 h-full
+        className=" absolute  inset-0 aspect-square h-full 
+        w-full overflow-hidden rounded-t-xl rounded-bl-none bg-base-300 sm:relative
+        sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none
         "
       >
         <img
@@ -102,16 +103,16 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
     </Link>
       
       {/* shading layer for small viewport */}
-      <div className="inset-0 absolute   bg-gradient-to-b from-base-300/50 to-primary/70 sm:hidden" />
+      <div className="absolute inset-0   bg-gradient-to-b from-base-300/50 to-primary/70 sm:hidden" />
       {/* the actual content */}
-      <div className="flex flex-1 flex-col gap-2 sm:gap-4 p-4 z-[1]">
+      <div className="z-[1] flex flex-1 flex-col gap-2 p-4 sm:gap-4">
         <div className="inline-flex items-center gap-2 sm:gap-4">
-          <div className="dropdown-hover dropdown self-start sm:dropdown-end z-[2]">
+          <div className="dropdown-hover dropdown z-[2] self-start sm:dropdown-end">
             <MainUserLabel
               id={article.dateUpdated.toString().substring(0, -2)}
             />
 
-            <div tabIndex={0} className="dropdown-content pt-2 hidden sm:block">
+            <div tabIndex={0} className="dropdown-content hidden pt-2 sm:block">
               <MainUserPopup id={article.slug} />
             </div>
           </div>
@@ -128,34 +129,34 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
             passHref
           >
             <a
-              className="btn btn-ghost ml-auto aspect-square rounded-xl p-0 
+              className="btn-ghost btn ml-auto aspect-square rounded-xl p-0 
               opacity-80 hover:opacity-100"
               title="Options"
             >
-              <MdMoreHoriz className="text-2xl sm:text-3xl" />
+              <MdMoreHoriz className="text-xl sm:text-2xl" />
             </a>
           </Link>
         </div>
 
         <Link href={`/article/${article.slug}`} passHref>
-          <a className="text-2xl font-black group-hover:underline sm:text-3xl line-clamp-2">
+          <a className="text-lg font-black line-clamp-2 group-hover:underline sm:text-xl">
             {`${article.title}`}
           </a>
         </Link>
-        <span className="text-base sm:text-lg line-clamp-3">
+        <span className="text-sm font-semibold line-clamp-3 sm:text-base">
           {`${article.desc}`}
         </span>
-        <div className="flex flex-wrap gap-2 text-sm font-light sm:text-base">
-          <span className="">2d ago</span>
+        <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
+          <span className="">{dateDistanceGet(article.dateAdded,Date.now())}</span>
           <span className="font-black">&middot;</span>
-          <span className="">2mins read</span>
+          <span className="">{`${article.duration} min${article.duration>1?'s':''}`}</span>
           <span className="font-black">&middot;</span>
-          <span className="">Technology</span>
+          <span className="line-clamp-1">{article.topics.join(", ")}</span>
         </div>
         {/* Action */}
-        <div className="flex flex-row items-center mt-auto justify-end gap-2 sm:gap-4">
+        <div className="mt-auto flex flex-row items-center justify-end gap-2 sm:gap-4">
           <button
-            className="btn-neutral btn-outline btn btn-sm btn-circle
+            className="btn-neutral btn-outline btn-sm btn-circle btn
             font-bold normal-case opacity-80
             group-hover:opacity-100 sm:btn-md"
             title="Add to bookmark"
@@ -166,7 +167,7 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
           </button>
           <Link href={`/article/${article.slug}`} passHref>
             <a
-              className="btn-neutral btn-outline btn btn-sm w-32
+              className="btn-neutral btn-outline btn-sm btn w-32
               text-lg font-bold normal-case opacity-80
               group-hover:opacity-100 sm:btn-md sm:!text-xl"
             >
