@@ -4,7 +4,7 @@ import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
 function Footer() {
   return (
     <>
-    <footer className="footer h-[20rem] bg-base-300 p-10">
+    <footer className="footer h-[20rem] bg-base-300 p-10 hidden sm:block">
       <div>
         <FaBloggerB className="text-5xl text-primary-focus sm:text-[4rem]" />
         <p>
