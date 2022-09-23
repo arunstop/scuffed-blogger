@@ -51,7 +51,7 @@ function PostItem({ article, observe }: PostItemProps) {
 // old
 const PostItemContent = ({ article }: { article: ArticleModel }) => {
   const router = useRouter();
-
+  const duration = Math.ceil(article.duration);
   return (
     <div
       className="group relative flex w-full animate-fadeIn flex-col
@@ -59,30 +59,30 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
       ring-1 ring-base-content/20 transition-all animate-duration-300 hover:bg-opacity-40
       sm:min-h-[10rem] sm:flex-row"
     >
-    <Link href={`/article/${article.slug}`} passHref>
-    <a
-        className=" absolute  inset-0 aspect-square h-full 
+      <Link href={`/article/${article.slug}`} passHref>
+        <a
+          className=" absolute  inset-0 aspect-square h-full 
         w-full overflow-hidden rounded-t-xl rounded-bl-none bg-base-300 sm:relative
         sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none
         "
-      >
-        <img
-          className="h-full w-full max-w-none object-cover transition-transform 
+        >
+          <img
+            className="h-full w-full max-w-none object-cover transition-transform 
           duration-1000 group-hover:scale-[1.2]"
-          src={`${
-            article.thumbnail ||
-            `https://picsum.photos/id/${article.dateAdded
-              .toString()
-              .split("")
-              .slice(-2)
-              .join("")}/500/300`
-          }`}
-          alt="Image"
-          width={240}
-          height={240}
-          loading="lazy"
-        />
-        {/* <div className=" absolute left-0 bottom-0 flex flex-wrap justify-start gap-2 overflow-hidden p-2">
+            src={`${
+              article.thumbnail ||
+              `https://picsum.photos/id/${article.dateAdded
+                .toString()
+                .split("")
+                .slice(-2)
+                .join("")}/500/300`
+            }`}
+            alt="Image"
+            width={240}
+            height={240}
+            loading="lazy"
+          />
+          {/* <div className=" absolute left-0 bottom-0 flex flex-wrap justify-start gap-2 overflow-hidden p-2">
           <MainPostStatusChip
             icon={<MdStar className="text-xl sm:text-2xl" />}
             title="Favorited"
@@ -99,9 +99,9 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
             color="bg-blue-500"
           />
         </div> */}
-      </a>
-    </Link>
-      
+        </a>
+      </Link>
+
       {/* shading layer for small viewport */}
       <div className="absolute inset-0   bg-gradient-to-b from-base-300/50 to-primary/70 sm:hidden" />
       {/* the actual content */}
@@ -117,7 +117,7 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
             </div>
           </div>
 
-          <Link as={"a"}
+          <Link
             href={{
               pathname: router.asPath,
 
@@ -143,15 +143,22 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
             {`${article.title}`}
           </a>
         </Link>
-        <span className="text-sm font-semibold line-clamp-3 sm:text-base">
+        <span className="text-sm font-semibold line-clamp-2 sm:line-clamp-3 sm:text-base">
           {`${article.desc}`}
         </span>
-        <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
-          <span className="">{dateDistanceGet(article.dateAdded,Date.now())}</span>
-          <span className="font-black">&middot;</span>
-          <span className="">{`${article.duration} min${article.duration>1?'s':''}`}</span>
-          <span className="font-black">&middot;</span>
-          <span className="line-clamp-1">{article.topics.join(", ")}</span>
+        <div className="block text-xs sm:text-sm [&>b]:mx-[0.5rem] line-clamp-1 font-medium">
+        <span className="">323 views</span>
+        <b className="font-black">&middot;</b>
+          
+          <span className="">
+            {`${dateDistanceGet(article.dateAdded, Date.now())} ago`}
+          </span>
+          <b className="font-black">&middot;</b>
+          <span className="">{`${duration} min${
+            duration > 1 ? "s" : ""
+          }`}</span>
+          <b className="font-black">&middot;</b>
+          <span className="">{article.topics.join(", ")}</span>
         </div>
         {/* Action */}
         <div className="mt-auto flex flex-row items-center justify-end gap-2 sm:gap-4">
