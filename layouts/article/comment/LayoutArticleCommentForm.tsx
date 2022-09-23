@@ -63,6 +63,7 @@ function LayoutArticleCommentForm({
         onSubmit={handleSubmit(onComment)}
       >
         <InputTextArea
+        id="article-comment-input"
           className="min-h-[12rem]"
           placeholder="Add a comment..."
           {...register("comment", {

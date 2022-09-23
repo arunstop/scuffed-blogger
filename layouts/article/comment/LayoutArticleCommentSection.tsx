@@ -9,6 +9,8 @@ import {
 import { fbCommentGet } from "../../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import LayoutArticleCommentForm from "./LayoutArticleCommentForm";
 import Link from "next/link";
+import Alert from "../../../components/main/Alert";
+import { getElById } from "../../../utils/helpers/UiHelpers";
 
 function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
   const {
@@ -115,9 +117,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
         />
       )}
       {!user && (
-        <div
-          className="my-4 flex w-full animate-fadeIn flex-col rounded-xl bg-primary/10 p-4 text-center sm:my-8 sm:p-8"
-        >
+        <div className="my-4 flex w-full animate-fadeIn flex-col rounded-xl bg-primary/10 p-4 text-center sm:my-8 sm:p-8">
           <div className="flex w-full flex-wrap items-center justify-center gap-4 sm:gap-8">
             <span className="flex-2 w-full text-lg font-bold  sm:text-xl">
               Join us now, let us know what do you think about this amazing
@@ -148,9 +148,19 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
       )}
 
       {!commentList?.comments.length ? (
-        <span className="my-16 text-center text-sm  font-bold opacity-80 sm:text-base animate-fadeIn">
-          {`No comments yet, let the people know, what's your thought about this article..`}
-        </span>
+        <Alert
+          actions={[
+            {
+              label: "Comment",
+              className: "",
+              action() {
+                getElById("article-comment-input")?.focus();
+              },
+            },
+          ]}
+        >
+          <span>{`No comments yet, let the people know, what's your thought about this article..`}</span>
+        </Alert>
       ) : (
         <ArticleComments commentList={commentList} />
       )}
