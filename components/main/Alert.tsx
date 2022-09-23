@@ -30,11 +30,11 @@ const Alert = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
         {children}
       </div>
       {actions && (
-        <div className="flex  gap-2 sm:gap-4 flex-col sm:flex-row w-full sm:w-auto px-4 sm:px-0">
+        <div className="flex  gap-2 sm:gap-4 flex-col sm:flex-row w-full sm:w-auto px-4 sm:px-0 items-center">
           {actions.map((e, idx) => (
             <button
               key={idx}
-              className={`btn btn-sm ${e.className}`}
+              className={`btn btn-sm !min-w-[6rem] ${e.className}`}
               onClick={e.action}
             >
               {e.icon}
