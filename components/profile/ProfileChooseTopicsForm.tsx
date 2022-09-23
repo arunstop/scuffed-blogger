@@ -13,6 +13,7 @@ import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { fbTopicGetAll } from "../../utils/services/network/FirebaseApi/TopicModules";
 import { fbUserUpdate } from "../../utils/services/network/FirebaseApi/UserModules";
 import InputText from "../input/InputText";
+import Alert from "../main/Alert";
 import GradientBackground from "../main/GradientBackground";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import StatusPlaceholder, {
@@ -281,9 +282,14 @@ function ProfileChooseTopicsForm() {
                 {!!selectedTopics.length && selectedTopics.length < 3 && (
                   <div className="flex flex-col gap-1">
                     <span>You have choosen : </span>
-                    <div  className="p-2 sm:p-4 rounded-xl bg-error/50 animate-fadeIn animate-duration-500">
-                      <span key={selectedTopics.length} className="animate-fadeIn animate-duration-300">{selectedTopics.join(` ${String.fromCharCode(8212)} `)}</span>
-                    </div>
+                    <Alert className="bg-error/50">
+                      <span
+                        key={selectedTopics.length}
+                        className="animate-fadeIn animate-duration-300"
+                      >
+                        {selectedTopics.join(` ${String.fromCharCode(8212)} `)}
+                      </span>
+                    </Alert>
                     <span className="text-error">
                       {`Please choose ${3 - selectedTopics.length} more`}
                     </span>
@@ -292,11 +298,16 @@ function ProfileChooseTopicsForm() {
                 {selectedTopics.length >= 3 && (
                   <div className="flex flex-col gap-1">
                     <span>You have choosen : </span>
-                    <div  className="p-2 sm:p-4 rounded-xl bg-primary/50 animate-fadeIn animate-duration-500">
-                      <span key={selectedTopics.length} className="animate-fadeIn animate-duration-300">{selectedTopics.join(` ${String.fromCharCode(8212)} `)}</span>
-                    </div>
+                    <Alert>
+                      <span
+                        key={selectedTopics.length}
+                        className="animate-fadeIn animate-duration-300"
+                      >
+                        {selectedTopics.join(` ${String.fromCharCode(8212)} `)}
+                      </span>
+                    </Alert>
                     <span>
-                      {` ${ selectedTopics.length} you can proceed now.`}
+                      {` ${selectedTopics.length} topics selected, you can proceed now.`}
                     </span>
                   </div>
                 )}
