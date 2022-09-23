@@ -1,11 +1,13 @@
 import { Transition } from "@headlessui/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { MdSearch, MdAdd } from "react-icons/md";
+import { MdSearch, MdEdit } from "react-icons/md";
 import InputText from "../../../components/input/InputText";
 import MainContainer from "../../../components/main/MainContainer";
 import MainLazyScrollTrigger from "../../../components/main/MainLazyScrollTrigger";
+import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemMini from "../../../components/post/PostItemMini";
@@ -24,7 +26,7 @@ function LayoutUserPagePosts() {
     authStt: { user },
     authAct,
   } = useAuthCtx();
-
+  const router= useRouter();
   const [articleData, setArticleData] = useState<ArticleListModelByUser>();
   const [articleDataInit, setArticleDataInit] =
     useState<ArticleListModelByUser>();
@@ -150,9 +152,26 @@ function LayoutUserPagePosts() {
   }, [articleDataInit]);
   return (
     <>
+      <MobileHeader
+        title={`My Posts`}
+        back={() => {
+          router.back();
+        }}
+        actions={[
+          {
+            label: "Write",
+            icon: <MdEdit/>,
+            action() {
+              router.push("/write");
+            },
+          },
+        ]}
+      />
       <MainContainer>
         {/* title */}
-        <div className="text-4xl font-bold sm:text-5xl">My Posts</div>
+        <div className="text-4xl font-bold sm:text-5xl hidden sm:block">
+          My Posts
+        </div>
         {/* toolbar */}
         {!!articleDataInit?.articles.length && (
           <div className="tabs-boxed w-full rounded-xl min-h-[2rem] flex p-2 sm:p-4">
@@ -183,13 +202,13 @@ function LayoutUserPagePosts() {
                   </a>
                 </Link>
               </div>
-              <div className="sm:hidden fixed z-[2] right-0 bottom-0 p-2 pointer-events-none [&>*]:pointer-events-auto mb-[3rem]">
+              {/* <div className="sm:hidden fixed z-[2] right-0 bottom-0 p-2 pointer-events-none [&>*]:pointer-events-auto mb-[3rem]">
                 <Link href={"/write"} passHref>
                   <a className="btn btn-primary btn-circle">
                     <MdAdd className="text-2xl transition-colors" />
                   </a>
                 </Link>
-              </div>
+              </div> */}
             </div>
           </div>
         )}
