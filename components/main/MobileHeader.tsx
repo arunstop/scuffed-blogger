@@ -15,7 +15,7 @@ function MobileHeader({ title, back, actions }: MobileHeaderProps) {
       <div className="flex gap-2">
         {back && (
           <button
-            className="btn btn-circle btn-ghost self-start min-h-0 !h-9 !w-9"
+            className="btn rounded-xl btn-sm btn-ghost text-2xl text-primary aspect-square p-0 self-start"
             onClick={() => {
               back?.();
             }}
