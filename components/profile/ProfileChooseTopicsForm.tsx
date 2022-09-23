@@ -101,8 +101,9 @@ function ProfileChooseTopicsForm() {
         value: true,
         data: {
           status: "loading",
-          title: "Processing your data",
-          desc: "Loding to execute your action",
+          title: "Updating your choosen topics",
+          desc: `Just determining what kind of amazing articles we will show you, based on those topics you have chhosen. 
+          We promise this will be quick.`,
           actions: [
             {
               label: "Cancel",
@@ -158,11 +159,11 @@ function ProfileChooseTopicsForm() {
             ...resp,
             data: {
               title: "Setup Complete!",
-              desc: "Congratulations! Your account is now completely set up! Redirecting you to the main page...",
+              desc: "Congratulations! Your account is now completely set up! Brace yourself! Ocean of amazing articles ahead!",
               status: "success",
               actions: [
                 {
-                  label: "Cancel",
+                  label: "Choose again",
                   callback: () => {
                     setLoading({ value: false, data: null });
                   },
@@ -313,7 +314,7 @@ function ProfileChooseTopicsForm() {
                 )}
 
                 <span>
-                  This will determine what kind of article you will be shown
+                  This will determine what kind of articles you will be shown
                 </span>
               </div>
               <div className="flex gap-2 sm:gap-4 items-center">
