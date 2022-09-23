@@ -31,7 +31,7 @@ function MobileHeader({ title, back, actions }: MobileHeaderProps) {
             return (
               <button
                 key={idx}
-                className="btn rounded-xl btn-sm btn-ghost text-2xl text-primary"
+                className="btn rounded-xl btn-sm btn-ghost text-2xl text-primary aspect-square p-0"
                 onClick={e.action}
                 title={e.label}
               >
