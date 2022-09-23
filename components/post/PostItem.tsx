@@ -7,7 +7,6 @@ import { getElById } from "../../utils/helpers/UiHelpers";
 import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
 import MainUserPopup from "../main/MainPostUserPopup";
 import MainUserLabel from "../main/MainUserLabel";
-import PostLinker from "./PostLinker";
 
 interface PostItemProps {
   article: ArticleModel;
@@ -59,8 +58,8 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
       hover:bg-opacity-40 sm:flex-row sm:min-h-[20rem] animate-fadeIn animate-duration-300
       relative overflow-hidden"
     >
-      <PostLinker
-        href={`/article/${article.slug}`}
+    <Link href={`/article/${article.slug}`} passHref>
+    <a
         className=" aspect-square  w-full overflow-hidden rounded-t-xl 
         rounded-bl-none bg-base-300 sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none
         absolute sm:relative inset-0 h-full
@@ -99,7 +98,9 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
             color="bg-blue-500"
           />
         </div> */}
-      </PostLinker>
+      </a>
+    </Link>
+      
       {/* shading layer for small viewport */}
       <div className="inset-0 absolute   bg-gradient-to-b from-base-300/50 to-primary/70 sm:hidden" />
       {/* the actual content */}
@@ -115,7 +116,7 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
             </div>
           </div>
 
-          <Link
+          <Link as={"a"}
             href={{
               pathname: router.asPath,
 
@@ -124,6 +125,7 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
               },
             }}
             shallow
+            passHref
           >
             <a
               className="btn btn-ghost ml-auto aspect-square rounded-xl p-0 
@@ -135,11 +137,11 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
           </Link>
         </div>
 
-        <PostLinker href={`/article/${article.slug}`}>
-          <h1 className="text-2xl font-black group-hover:underline sm:text-3xl line-clamp-2">
+        <Link href={`/article/${article.slug}`} passHref>
+          <a className="text-2xl font-black group-hover:underline sm:text-3xl line-clamp-2">
             {`${article.title}`}
-          </h1>
-        </PostLinker>
+          </a>
+        </Link>
         <span className="text-base sm:text-lg line-clamp-3">
           {`${article.desc}`}
         </span>
@@ -162,15 +164,15 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
               <MdBookmarkAdd />
             </span>
           </button>
-          <PostLinker href={`/article/${article.slug}`}>
-            <button
+          <Link href={`/article/${article.slug}`} passHref>
+            <a
               className="btn-neutral btn-outline btn btn-sm w-32
               text-lg font-bold normal-case opacity-80
               group-hover:opacity-100 sm:btn-md sm:!text-xl"
             >
               Read
-            </button>
-          </PostLinker>
+            </a>
+          </Link>
         </div>
       </div>
     </div>
