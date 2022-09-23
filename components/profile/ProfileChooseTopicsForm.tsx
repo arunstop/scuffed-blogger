@@ -274,7 +274,7 @@ function ProfileChooseTopicsForm() {
             >
               <div className="flex flex-col gap-2 sm:gap-4 text-center text-xs sm:text-sm md:text-md lg:text-lg font-bold text-center">
                 {!selectedTopics.length && (
-                  <span className="whitespace-pre">
+                  <span className="whitespace-pre-line">
                     {`Choose at least 3 topics of your interest to continue.\nYou can change them anytime.`}
                   </span>
                 )}
@@ -338,7 +338,7 @@ function ProfileChooseTopicsForm() {
                 )}
               </div>
 
-              <div className="flex flex-wrap gap-1 sm:gap-2 content-start justify-center h-96 overflow-auto">
+              <div className="flex flex-wrap gap-1 sm:gap-2 content-start justify-center h-96 overflow-auto px-2">
                 {/* Loading indicator */}
                 {loadingTopics ? (
                   <div className={`w-full`}>
