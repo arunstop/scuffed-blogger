@@ -9,6 +9,7 @@ import InputText from "../input/InputText";
 import ModalTemplate from "../modal/ModalTemplate";
 import PostItemSearchResult from "../post/PostItemSearchResult";
 import MainSectionSkeleton from "./MainSectionSkeleton";
+import MobileHeader from "./MobileHeader";
 
 const SearchModal = React.memo(function SearchModal() {
   const { searchModal, closeSearchModal } = useUiModalSearchBehaviorHook();
@@ -62,8 +63,15 @@ const SearchModal = React.memo(function SearchModal() {
       title="Search Tuturku"
       fullscreen
       className="!z-[13]"
+      noHeader
     >
-      <div className="flex flex-col gap-2 sm:gap-4 pb-[3rem] sm:pb-0">
+      <MobileHeader
+        back={() => {
+          closeSearchModal();
+        }}
+        title="Search articles"
+      />
+      <div className="flex flex-col gap-2 sm:gap-4 pb-[3rem] sm:pb-0 p-4 z-0">
         <div className="form-control">
           <div className="inline-flex items-center gap-2 sm:gap-4">
             <InputText
