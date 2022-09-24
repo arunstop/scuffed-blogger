@@ -31,7 +31,7 @@ function LayoutIndexPostSection() {
       },
     });
     // removing delay at initial load
-    if (!posts) await waitFor(200);
+    if (posts) await waitFor(200);
     if (!articlesFromDb) return;
     setPosts((prev) => {
       if (prev)
