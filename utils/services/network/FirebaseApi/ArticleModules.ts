@@ -66,6 +66,7 @@ export async function fbArticleMirrorGetAll({
   ApiPagingReqProps,
   ArticleModelFromDb | null | FirebaseError
 >): Promise<ArticleModelFromDb | null> {
+  callback?.(netLoading("Error when fetching articles", null));
   try {
     const res = await rtArticleGetAll(data);
     if (res) {
