@@ -30,7 +30,8 @@ function LayoutIndexPostSection() {
         setResp({ ...resp, data: null });
       },
     });
-    await waitFor(200);
+    // removing delay at initial load
+    if (!posts) await waitFor(200);
     if (!articlesFromDb) return;
     setPosts((prev) => {
       if (prev)
@@ -82,17 +83,16 @@ function LayoutIndexPostSection() {
             </>
 
             {/* when loading */}
-            {resp?.status !== "error" &&
-              posts.articles.length < posts.total && (
-                <MainIntersectionObserverTrigger
-                  callback={(intersecting) => {
-                    if (intersecting) return loadPosts();
-                  }}
-                  className="animate-fadeIn"
-                >
-                  <LoadingIndicator spinner />
-                </MainIntersectionObserverTrigger>
-              )}
+            {resp?.status !== "error" && posts.articles.length < posts.total && (
+              <MainIntersectionObserverTrigger
+                callback={(intersecting) => {
+                  if (intersecting) return loadPosts();
+                }}
+                className="animate-fadeIn"
+              >
+                <LoadingIndicator spinner />
+              </MainIntersectionObserverTrigger>
+            )}
           </>
         )}
         {/* when error */}
