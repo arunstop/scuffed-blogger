@@ -53,7 +53,7 @@ const PostItemMiniContent = ({ article }: { article: ArticleModel }) => {
       animate-pop"
     >
       {/* <Link href={`/article/${post.id}`} passHref> */}
-      <a className="relative aspect-video w-24 sm:w-48 overflow-hidden">
+      <a className="relative aspect-video w-24 sm:w-48 overflow-hidden bg-base-content/30">
         <img
           className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2] animate"
           src={

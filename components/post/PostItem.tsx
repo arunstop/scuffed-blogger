@@ -62,7 +62,7 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
       <Link href={`/article/${article.slug}`} passHref>
         <a
           className=" absolute  inset-0 aspect-square h-full 
-        w-full overflow-hidden rounded-t-xl rounded-bl-none bg-base-300 sm:relative
+        w-full overflow-hidden rounded-t-xl rounded-bl-none bg-base-content/30 sm:relative
         sm:h-auto sm:w-72 sm:rounded-l-xl sm:rounded-tr-none
         "
         >

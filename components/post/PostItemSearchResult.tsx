@@ -15,7 +15,7 @@ function PostItemSearchResult({
       ring-1 ring-base-content/10"
     >
       <img
-        className="h-full aspect-video rounded-xl  absolute inset-0"
+        className="h-full aspect-video rounded-xl  absolute inset-0 bg-base-content/30"
         src={
           article.thumbnail ||
           `https://picsum.photos/id/${article.dateAdded
