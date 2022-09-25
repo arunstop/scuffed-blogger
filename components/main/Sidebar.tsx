@@ -206,7 +206,7 @@ function Sidebar() {
               <div className="flex flex-col gap-2 sm:gap-4 items-center">
                 <div
                   className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
-              h-12 w-12 sm:h-20 sm:w-20 "
+              h-12 w-12 sm:h-20 sm:w-20 bg-base-content/30"
                 >
                   <img
                     src={user?.avatar}
