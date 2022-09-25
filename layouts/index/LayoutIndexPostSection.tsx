@@ -13,7 +13,7 @@ import {
 } from "../../utils/services/network/FirebaseApi/ArticleModules";
 
 function LayoutIndexPostSection() {
-  const [posts, setPosts] = useState<ArticleModelFromDb | null>(null);
+  const [feed, setFeed] = useState<ArticleModelFromDb | null>(null);
   const [resp, setResp] = useState<MainNetworkResponse>();
   // const [loading, setLoading] = useState(true);
   // const [status, setStatus] = useState<MainNetworkResponse>();
@@ -23,7 +23,7 @@ function LayoutIndexPostSection() {
     const articlesFromDb = await fbArticleMirrorGetAll({
       data: {
         count: 2,
-        start: posts?.offset || 0,
+        start: feed?.offset || 0,
       },
       callback: (resp) => {
         // extracting the data so it won't duplicate
@@ -31,9 +31,9 @@ function LayoutIndexPostSection() {
       },
     });
     // removing delay at initial load
-    if (posts) await waitFor(200);
+    if (feed) await waitFor(200);
     if (!articlesFromDb) return;
-    setPosts((prev) => {
+    setFeed((prev) => {
       if (prev)
         return {
           ...articlesFromDb,
@@ -43,7 +43,7 @@ function LayoutIndexPostSection() {
     });
     // await waitFor(4000);
     // setStatus(false);
-  }, [posts]);
+  }, [feed]);
 
   useEffect(() => {
     loadPosts();
@@ -65,17 +65,17 @@ function LayoutIndexPostSection() {
       /> */}
       <div className="flex flex-col w-full gap-2 sm:gap-4 items-center min-h-screen">
         {/* when success */}
-        {resp?.status === "loading" && !posts && (
+        {resp?.status === "loading" && !feed && (
           <LoadingIndicator text="Loading articles..." spinner />
         )}
-        {!!posts && (
+        {!!feed && (
           <>
             <>
               <div
                 className="flex flex-col gap-4 sm:gap-8 w-full"
                 id="main-content"
               >
-                {posts.articles.map((e) => {
+                {feed.articles.map((e) => {
                   return <PostItem key={e.id} article={e} observe />;
                 })}
               </div>
@@ -83,8 +83,9 @@ function LayoutIndexPostSection() {
             </>
 
             {/* when loading */}
-            {resp?.status !== "error" && posts.articles.length < posts.total && (
+            {resp?.status !== "error" && feed.articles.length < feed.total && (
               <MainIntersectionObserverTrigger
+              key={feed.offset}
                 callback={(intersecting) => {
                   if (intersecting) return loadPosts();
                 }}
