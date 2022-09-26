@@ -22,7 +22,7 @@ function LayoutIndexPostSection() {
     // setLoading(true);
     const articlesFromDb = await fbArticleMirrorGetAll({
       data: {
-        count: 2,
+        count: 5,
         start: feed?.offset || 0,
       },
       callback: (resp) => {
