@@ -1,24 +1,22 @@
 import { Transition } from "@headlessui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { MdSearch, MdEdit } from "react-icons/md";
+import { useCallback, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { MdEdit, MdSearch } from "react-icons/md";
 import InputText from "../../../components/input/InputText";
 import MainContainer from "../../../components/main/MainContainer";
 import MainLazyScrollTrigger from "../../../components/main/MainLazyScrollTrigger";
 import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
-import PostItemMini from "../../../components/post/PostItemMini";
+import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
 import { useAuthCtx } from "../../../utils/contexts/auth/AuthHook";
 import { waitFor } from "../../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../../utils/helpers/UiTransitionHelpers";
 import { useModalRoutedBehaviorHook } from "../../../utils/hooks/ModalRoutedBehaviorHook";
 import {
-  ArticleListModelByUser,
-  fbArticleGetByUser,
-  fbArticleDelete,
+  ArticleListModelByUser, fbArticleDelete, fbArticleGetByUser
 } from "../../../utils/services/network/FirebaseApi/ArticleModules";
 
 function LayoutUserPagePosts() {
@@ -222,7 +220,7 @@ function LayoutUserPagePosts() {
         {articles.length ? (
           <div className="flex flex-col gap-2 sm:gap-4 min-h-[24rem]">
             {articles.map((e, idx) => {
-              return <PostItemMini key={e.id} article={e} observe />;
+              return <PostItemSearchResult key={e.id} article={e} observe />;
             })}
           </div>
         ) : null}

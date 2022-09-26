@@ -1,18 +1,54 @@
+import { useState } from "react";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { dateDistanceGet } from "../../utils/helpers/MainHelpers";
+import { getElById } from "../../utils/helpers/UiHelpers";
+import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
 
+interface PostItemSearchResultProps {
+  article: ArticleModel;
+  active?: boolean;
+  observe: boolean;
+}
 function PostItemSearchResult({
   article,
   active,
-}: {
-  article: ArticleModel;
-  active: boolean;
-}) {
+  observe,
+}: PostItemSearchResultProps) {
+  const [visible, setVisible] = useState(true);
+  const elementId = `article-${article.id}`;
+  const element = getElById(elementId);
+  return observe ? (
+    <MainIntersectionObserverTrigger
+      id={elementId}
+      callback={(intersecting) => setVisible(intersecting)}
+      className=""
+      style={
+        visible
+          ? undefined
+          : {
+              height: `${element?.clientHeight}px`,
+              width: `100%`,
+            }
+      }
+    >
+      {visible && (
+        <PostItemSearchResultContent article={article} active={active} />
+      )}
+    </MainIntersectionObserverTrigger>
+  ) : (
+    <PostItemSearchResultContent article={article} active={active} />
+  );
+}
+
+function PostItemSearchResultContent({
+  article,
+  active,
+}: Omit<PostItemSearchResultProps, "observe">) {
   const duration = Math.ceil(article.duration);
   return (
     <div
       className="flex gap-4 relative rounded-xl overflow-hidden animate-fadeIn animate-duration-500 cursor-pointer
-      ring-1 ring-base-content/10"
+  ring-1 ring-base-content/10"
     >
       <img
         className="h-full aspect-video rounded-xl  absolute inset-0 bg-base-content/30"
@@ -27,12 +63,12 @@ function PostItemSearchResult({
       ></img>
       <div
         className={`h-full  inset-0  absolute  bg-gradient-to-r
-                                ${
-                                  active
-                                    ? `w-full from-primary/50 via-primary to-transparent`
-                                    : `w-[80%] from-base-100/50 via-base-100 to-base-100`
-                                }
-                                `}
+                            ${
+                              active
+                                ? `w-full from-primary/50 via-primary to-transparent`
+                                : `w-[80%] from-base-100/50 via-base-100 to-base-100`
+                            }
+                            `}
       ></div>
       {/* <Link  href={`/article/${article.slug}`} passHref> */}
       <div
