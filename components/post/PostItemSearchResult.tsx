@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { HTMLAttributes, useState } from "react";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { dateDistanceGet } from "../../utils/helpers/MainHelpers";
 import { getElById } from "../../utils/helpers/UiHelpers";
@@ -13,7 +13,8 @@ function PostItemSearchResult({
   article,
   active,
   observe,
-}: PostItemSearchResultProps) {
+  ...props
+}: PostItemSearchResultProps&HTMLAttributes<HTMLDivElement>) {
   const [visible, setVisible] = useState(true);
   const elementId = `article-${article.id}`;
   const element = getElById(elementId);
@@ -21,7 +22,7 @@ function PostItemSearchResult({
     <MainIntersectionObserverTrigger
       id={elementId}
       callback={(intersecting) => setVisible(intersecting)}
-      className=""
+      {...props}
       style={
         visible
           ? undefined
