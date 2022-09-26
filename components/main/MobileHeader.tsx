@@ -42,7 +42,7 @@ function MobileHeader({ title, back, actions }: MobileHeaderProps) {
                 ${e.disabled ? "" : "btn-ghost text-primary"}`}
                 onClick={e.disabled ? undefined : e.action}
                 title={e.label}
-                disabled
+                disabled={e.disabled}
               >
                 {e.icon}
               </button>
