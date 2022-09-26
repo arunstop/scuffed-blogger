@@ -81,15 +81,23 @@ function BottomBar() {
 function BottomBarTab({ title, active, icon, action }: BottomBarTabProps) {
   return (
     <div
-      className={`btn btn-ghost px-1 py-px transition-all animation-duration-500
+      className={`btn btn-ghost px-1 py-px transition-all 
       flex-nowrap !flex !flex-col flex-[1_1_0px] !h-auto overflow-hidden rounded-none
-      ${active ? `!bg-primary/70 !text-primary-content animate-bounceIn` : ""}
+      ${active ? `!bg-primary/70 !text-primary-content  ` : ""}
       `}
       onClick={() => {
         action?.();
       }}
     >
-      <div className="text-2xl mb-px">{icon}</div>
+      <div
+        className={`text-2xl mb-px  ${
+          active
+            ? "rotate-360 scale-125 duration-1000 transition-transform"
+            : "transition-all  scale-[0.9] duration-500"
+        }`}
+      >
+        {icon}
+      </div>
       <div className="overflow-hidden w-full truncate text-sm">{title}</div>
     </div>
   );
