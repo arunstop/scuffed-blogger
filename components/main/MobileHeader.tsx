@@ -39,7 +39,7 @@ function MobileHeader({ title, back, actions }: MobileHeaderProps) {
               <button
                 key={idx}
                 className={`btn rounded-xl btn-sm  text-2xl  aspect-square p-0
-                ${e.disabled ? "" : "btn-ghost text-primary"}`}
+                ${e.disabled ? "!bg-opacity-10" : "btn-ghost text-primary"}`}
                 onClick={e.disabled ? undefined : e.action}
                 title={e.label}
                 disabled={e.disabled}
