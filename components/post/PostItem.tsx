@@ -103,7 +103,7 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
       </Link>
 
       {/* shading layer for small viewport */}
-      <div className="absolute inset-0   bg-gradient-to-b from-base-300/50 to-primary/70 sm:hidden" />
+      <div className="absolute inset-0 bg-base-300/50  bg-gradient-to-b from-base-300/50 via-base-300/70 to-primary/50 sm:hidden" />
       {/* the actual content */}
       <div className="z-[1] flex flex-1 flex-col gap-2 p-4 sm:gap-4">
         <div className="inline-flex items-center gap-2 sm:gap-4">
