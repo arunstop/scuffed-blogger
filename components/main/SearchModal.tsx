@@ -67,7 +67,7 @@ const SearchModal = React.memo(function SearchModal() {
         action() {
           setArticles(null);
           setSearch('');
-          alert('creating articles');
+          // alert('creating articles');
         },
         icon: <MdClearAll />,
         disabled:!articles?.length,
