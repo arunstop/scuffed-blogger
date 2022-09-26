@@ -10,6 +10,7 @@ interface ModalTemplateProps {
   noHeader?: boolean;
   noCloseButton?: boolean;
   className?: string;
+  initialFocus?: React.MutableRefObject<HTMLElement | null>;
   // closeBtnText?: string; // use text instead of icon
 }
 
@@ -22,6 +23,7 @@ const ModalTemplate = ({
   noHeader = false,
   noCloseButton = false,
   className = "",
+  initialFocus,
 }: // closeBtnText,
 ModalProps & ModalTemplateProps) => {
   return (
@@ -30,6 +32,7 @@ ModalProps & ModalTemplateProps) => {
         as="div"
         className={`fixed inset-0 z-[999] flex justify-center items-end sm:items-center ${className}`}
         onClose={onClose}
+        initialFocus={initialFocus}
       >
         {/* OVERLAY */}
         {!fullscreen && (
