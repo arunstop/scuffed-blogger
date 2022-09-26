@@ -16,7 +16,7 @@ interface MobileHeaderProps {
 function MobileHeader({ title, back, actions }: MobileHeaderProps) {
   return (
     <div
-      className="sm:hidden sticky inset-x-0 top-0 flex gap-2 justify-between items-center z-[1] bg-base-100/70 p-2 
+      className="sm:hidden sticky inset-x-0 top-0 flex gap-2 justify-between items-center z-[10] bg-base-100/70 p-2 
        -mt-2 backdrop-blur-md animate-fadeInDown animate-duration-500"
     >
       <div className="flex gap-2 items-center">
