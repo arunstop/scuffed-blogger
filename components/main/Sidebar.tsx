@@ -130,7 +130,7 @@ function Sidebar() {
   }
 
   function handleKeyPress(ev: KeyboardEvent) {
-    console.log(ev.key);
+    // console.log(ev.key);
     if (ev.key === "Escape") {
       closeDrawer();
     }
@@ -203,31 +203,30 @@ function Sidebar() {
             <div className="flex flex-col gap-4 overflow-y-auto sm:w-80 bg-base-100 pointer-events-auto mb-[3rem] sm:mb-0 w-full">
               <MobileHeader back={() => closeSidebar()} title="Account" />
               <div className="flex flex-col gap-4 p-4 overflow-y-auto w-full">
-              <div className="flex flex-col gap-2 sm:gap-4 items-center">
-                <div
-                  className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
+                <div className="flex flex-col gap-2 sm:gap-4 items-center">
+                  <div
+                    className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
               h-12 w-12 sm:h-20 sm:w-20 bg-base-content/30"
-                >
-                  <img
-                    src={user?.avatar}
-                    className="h-full w-full object-cover"
-                  />
+                  >
+                    <img
+                      src={user?.avatar}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <p className="text-center">
+                    <span className="line-clamp-2 font-bold text-md sm:text-lg md:text-xl">
+                      {user?.name}
+                    </span>
+                    <span className="font-bold text-sm sm:text-md md:text-lg text-base-content text-opacity-50">
+                      {`@${user?.username}`}
+                    </span>
+                  </p>
                 </div>
-                <p className="text-center">
-                  <span className="line-clamp-2 font-bold text-md sm:text-lg md:text-xl">
-                    {user?.name}
-                  </span>
-                  <span className="font-bold text-sm sm:text-md md:text-lg text-base-content text-opacity-50">
-                    {`@${user?.username}`}
-                  </span>
-                </p>
-              </div>
-              <ul className="menu">
-                {shownMenus.map((e, idx) => (
-                  <MainMenuItem key={idx} {...e} />
-                ))}
-              </ul>
-
+                <ul className="menu">
+                  {shownMenus.map((e, idx) => (
+                    <MainMenuItem key={idx} {...e} />
+                  ))}
+                </ul>
               </div>
             </div>
           )}
@@ -235,15 +234,16 @@ function Sidebar() {
       </div>
       <ModalConfirmation
         value={dialogLogout}
+        title={`Log out`}
+        desc={`Any unsaved progress will be lost. Are you sure you want to end this session?`}
         onClose={() => setDialogLogout(false)}
-        title={"Logout"}
-        desc={`Are you sure you want to end this authentication session?`}
         onConfirm={async () => {
           setDialogLogout(false);
           closeDrawer();
           await waitFor(1000);
           authAct.unsetUser();
         }}
+        labelOk={"Logout"}
       />
     </>
   );
