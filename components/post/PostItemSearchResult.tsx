@@ -1,4 +1,6 @@
+import Link from "next/dist/client/link";
 import { HTMLAttributes, useState } from "react";
+import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { dateDistanceGet } from "../../utils/helpers/MainHelpers";
 import { getElById } from "../../utils/helpers/UiHelpers";
@@ -14,7 +16,7 @@ function PostItemSearchResult({
   active,
   observe,
   ...props
-}: PostItemSearchResultProps&HTMLAttributes<HTMLDivElement>) {
+}: PostItemSearchResultProps & HTMLAttributes<HTMLDivElement>) {
   const [visible, setVisible] = useState(true);
   const elementId = `article-${article.id}`;
   const element = getElById(elementId);
@@ -48,11 +50,11 @@ function PostItemSearchResultContent({
   const duration = Math.ceil(article.duration);
   return (
     <div
-      className="flex gap-4 relative rounded-xl overflow-hidden animate-fadeIn animate-duration-500 cursor-pointer
-  ring-1 ring-base-content/10"
+      className="group relative flex animate-fadeIn cursor-pointer gap-4 overflow-hidden rounded-xl
+      ring-1 ring-base-content/10 animate-duration-500"
     >
       <img
-        className="h-full aspect-video rounded-xl  absolute inset-0 bg-base-content/30"
+        className="absolute inset-0 aspect-video  h-full rounded-xl bg-base-content/30"
         src={
           article.thumbnail ||
           `https://picsum.photos/id/${article.dateAdded
@@ -77,8 +79,8 @@ function PostItemSearchResultContent({
           active ? "underline" : ""
         }`}
       >
-        <div className="font-bold text-lg line-clamp-2">{article.title}</div>
-        <div className="block text-xs sm:text-sm [&>b]:mx-[0.25rem] line-clamp-1 font-medium self-end text-end">
+        <div className="text-lg font-bold line-clamp-2">{article.title}</div>
+        <div className="block self-end text-end text-xs font-medium line-clamp-1 sm:text-sm [&>b]:mx-[0.25rem]">
           <span className="">323 views</span>
           <b className="font-black">&middot;</b>
 
@@ -91,6 +93,53 @@ function PostItemSearchResultContent({
           }`}</span>
           <b className="font-black">&middot;</b>
           <span className="">{article.topics.join(", ")}</span>
+        </div>
+      </div>
+      {/* Actions */}
+      <div className=" absolute inset-0 z-[2] hidden bg-primary/30 backdrop-blur-lg animate-fadeIn  animate-duration-500  group-hover:flex">
+        {/* <div className="blur-lg z-10 absolute bg-primary/90 inset-0"></div> */}
+        <div className="m-auto  grid grid-cols-3 gap-2 px-4 sm:gap-4 sm:px-8">
+          <div className="animate-fadeInUp animate-duration-500 animate-delay-200">
+            <Link href={`/article/${article.slug}`} passHref>
+              <a
+                className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
+              sm:!flex-row w-full "
+              >
+                <MdVisibility className="text-2xl sm:text-3xl" />
+                <span className="font-bold">Read</span>
+              </a>
+            </Link>
+          </div>
+          <div className="animate-fadeInUp animate-duration-500 animate-delay-300">
+            <Link href={`/article/edit/${article.id}`} passHref>
+              <a
+                className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
+              sm:!flex-row w-full btn-primary"
+              >
+                <MdEdit className="text-2xl sm:text-3xl" />
+                <span className="font-bold">Edit</span>
+              </a>
+            </Link>
+          </div>
+          <div className="animate-fadeInUp animate-duration-500 animate-delay-[400ms]">
+            <Link
+              href={{
+                query: {
+                  articleId: article.id,
+                },
+              }}
+              shallow
+              passHref
+            >
+              <a
+                className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
+              sm:!flex-row w-full btn-error"
+              >
+                <MdDelete className="text-2xl sm:text-3xl" />
+                <span className="font-bold">Delete</span>
+              </a>
+            </Link>
+          </div>
         </div>
       </div>
       {/* </Link> */}

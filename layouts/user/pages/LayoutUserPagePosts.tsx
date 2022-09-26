@@ -16,7 +16,9 @@ import { waitFor } from "../../../utils/helpers/DelayHelpers";
 import { transitionPullV } from "../../../utils/helpers/UiTransitionHelpers";
 import { useModalRoutedBehaviorHook } from "../../../utils/hooks/ModalRoutedBehaviorHook";
 import {
-  ArticleListModelByUser, fbArticleDelete, fbArticleGetByUser
+  ArticleListModelByUser,
+  fbArticleDelete,
+  fbArticleGetByUser,
 } from "../../../utils/services/network/FirebaseApi/ArticleModules";
 
 function LayoutUserPagePosts() {
@@ -24,7 +26,7 @@ function LayoutUserPagePosts() {
     authStt: { user },
     authAct,
   } = useAuthCtx();
-  const router= useRouter();
+  const router = useRouter();
   const [articleData, setArticleData] = useState<ArticleListModelByUser>();
   const [articleDataInit, setArticleDataInit] =
     useState<ArticleListModelByUser>();
@@ -158,7 +160,7 @@ function LayoutUserPagePosts() {
         actions={[
           {
             label: "Write",
-            icon: <MdEdit/>,
+            icon: <MdEdit />,
             action() {
               router.push("/write");
             },
@@ -220,7 +222,11 @@ function LayoutUserPagePosts() {
         {articles.length ? (
           <div className="flex flex-col gap-2 sm:gap-4 min-h-[24rem]">
             {articles.map((e, idx) => {
-              return <PostItemSearchResult key={e.id} article={e} observe />;
+              return (
+                <div key={e.id}  className="flex">
+                  <PostItemSearchResult article={e} observe className="w-full"/>
+                </div>
+              );
             })}
           </div>
         ) : null}
