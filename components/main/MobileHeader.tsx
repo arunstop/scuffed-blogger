@@ -1,10 +1,17 @@
 import { ReactNode } from "react";
 import { MdArrowBack } from "react-icons/md";
 
+export interface MobileHeaderActionProps {
+  label: string;
+  icon: ReactNode;
+  action: () => void;
+  disabled? : boolean;
+}
+
 interface MobileHeaderProps {
   title: string;
   back?: () => void;
-  actions?: { label: string; icon: ReactNode; action: () => void }[];
+  actions?: MobileHeaderActionProps[];
 }
 function MobileHeader({ title, back, actions }: MobileHeaderProps) {
   return (
@@ -32,7 +39,7 @@ function MobileHeader({ title, back, actions }: MobileHeaderProps) {
               <button
                 key={idx}
                 className="btn rounded-xl btn-sm btn-ghost text-2xl text-primary aspect-square p-0"
-                onClick={e.action}
+                onClick={e.disabled ? undefined : e.action}
                 title={e.label}
               >
                 {e.icon}
