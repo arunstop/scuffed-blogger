@@ -7,7 +7,7 @@ import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTri
 interface PostItemSearchResultProps {
   article: ArticleModel;
   active?: boolean;
-  observe: boolean;
+  observe?: boolean;
 }
 function PostItemSearchResult({
   article,
