@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { MdArrowBack } from "react-icons/md";
+import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 
 export interface MobileHeaderActionProps {
   label: string;
@@ -30,7 +31,9 @@ function MobileHeader({ title, back, actions }: MobileHeaderProps) {
             <MdArrowBack className="text-3xl text-primary" />
           </button>
         )}
-        <span className="text-2xl font-bold">{title}</span>
+        <span className="text-2xl font-bold" onClick={() => scrollToTop(true)}>
+          {title}
+        </span>
       </div>
       {!!actions?.length && (
         <div className="flex gap-2 items-center">
