@@ -5,6 +5,8 @@ import InputTextArea from "../../../components/input/InputTextArea";
 import { useAuthCtx } from "../../../utils/contexts/auth/AuthHook";
 import { CommentModel } from "../../../utils/data/models/CommentModel";
 import { fbCommentAdd } from "../../../utils/services/network/FirebaseApi/FirebaseCommentModules";
+import UserAvatar from "../../../components/user/UserAvatar";
+import { userAvatarLinkGet } from "../../../utils/helpers/MainHelpers";
 
 function LayoutArticleCommentForm({
   articleId,
@@ -40,7 +42,7 @@ function LayoutArticleCommentForm({
       userId: user.id,
       userName: user.name,
       upvote: [user.id],
-      downvote:[],
+      downvote: [],
     };
     const res = await fbCommentAdd({ data: { comment: commentEntry } });
     if (res) {
@@ -48,22 +50,17 @@ function LayoutArticleCommentForm({
       reset();
     }
   };
+  const userAvatar = userAvatarLinkGet(user?.id||"");
+
   return (
     <div className="flex flex-row gap-4 items-start animate-fadeIn">
-      <div className="avatar">
-        <div
-          className="w-10 rounded-lg border-[1px] border-base-content 
-            group-hover:rounded-[50%] sm:w-12 sm:border-2 z-0 transition-all"
-        >
-          <img src={`${user?.avatar}`} alt={`${user?.name || "Avatar"}`} />
-        </div>
-      </div>
+      <UserAvatar src={userAvatar} />
       <form
         className="form-control flex-1 rounded-xl gap-4"
         onSubmit={handleSubmit(onComment)}
       >
         <InputTextArea
-        id="article-comment-input"
+          id="article-comment-input"
           className="min-h-[12rem]"
           placeholder="Add a comment..."
           {...register("comment", {
