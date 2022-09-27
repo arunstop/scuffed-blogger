@@ -103,7 +103,7 @@ function Sidebar() {
         <MdDarkMode className="text-blue-500" />
       ),
       action: () => {
-        closeDrawer();
+        // closeDrawer();
         uiAct.toggleDarkMode(!darkMode);
       },
       show: true,
