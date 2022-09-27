@@ -111,7 +111,7 @@ function PostItemSearchResultContent({
         <div className=" absolute inset-0 z-[2] hidden bg-primary/30 backdrop-blur-lg animate-fadeIn  animate-duration-500  group-hover:flex">
           {/* <div className="blur-lg z-10 absolute bg-primary/90 inset-0"></div> */}
           <div className="m-auto  grid grid-cols-3 gap-2 px-4 sm:gap-4 sm:px-8">
-            <div className="animate-fadeInUp animate-duration-500 animate-delay-200">
+            <div className="animate-fadeInUp animate-duration-500 animate-delay-100">
               <Link href={`/article/${article.slug}`} passHref>
                 <a
                   className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
@@ -122,7 +122,7 @@ function PostItemSearchResultContent({
                 </a>
               </Link>
             </div>
-            <div className="animate-fadeInUp animate-duration-500 animate-delay-300">
+            <div className="animate-fadeInUp animate-duration-500 animate-delay-200">
               <Link href={`/article/edit/${article.id}`} passHref>
                 <a
                   className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
@@ -133,7 +133,7 @@ function PostItemSearchResultContent({
                 </a>
               </Link>
             </div>
-            <div className="animate-fadeInUp animate-duration-500 animate-delay-[400ms]">
+            <div className="animate-fadeInUp animate-duration-500 animate-delay-300">
               <Link
                 href={{
                   query: {
