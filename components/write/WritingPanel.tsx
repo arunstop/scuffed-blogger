@@ -103,7 +103,7 @@ function WritingPanel() {
       className={`flex flex-col justify-start gap-4 sm:gap-8 w-full`}
       {...transitionPullV()}
     >
-      <div className="text-4xl font-bold sm:text-5xl">Write Article</div>
+      <div className="text-4xl font-bold sm:text-5xl hidden sm:block">Write Article</div>
 
       <div className="relative min-w-full">
         <Transition

@@ -13,6 +13,7 @@ import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
 import { fbTopicGetAll } from "../../utils/services/network/FirebaseApi/TopicModules";
 import { fbUserUpdate } from "../../utils/services/network/FirebaseApi/UserModules";
 import InputText from "../input/InputText";
+import Alert from "../main/Alert";
 import GradientBackground from "../main/GradientBackground";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import StatusPlaceholder, {
@@ -100,8 +101,9 @@ function ProfileChooseTopicsForm() {
         value: true,
         data: {
           status: "loading",
-          title: "Processing your data",
-          desc: "Loding to execute your action",
+          title: "Updating your choosen topics",
+          desc: `Just determining what kind of amazing articles we will show you, based on those topics you have chhosen. 
+          We promise this will be quick.`,
           actions: [
             {
               label: "Cancel",
@@ -157,11 +159,11 @@ function ProfileChooseTopicsForm() {
             ...resp,
             data: {
               title: "Setup Complete!",
-              desc: "Congratulations! Your account is now completely set up! Redirecting you to the main page...",
+              desc: "Congratulations! Your account is now completely set up! Brace yourself! Ocean of amazing articles ahead!",
               status: "success",
               actions: [
                 {
-                  label: "Cancel",
+                  label: "Choose again",
                   callback: () => {
                     setLoading({ value: false, data: null });
                   },
@@ -271,23 +273,48 @@ function ProfileChooseTopicsForm() {
               sm:p-8 md:max-w-lg lg:max-w-xl"
               // onSubmit={handleSubmit(onSubmit)}
             >
-              <div className="flex flex-col gap-2 sm:gap-4 items-center">
-                <span
-                  className={`text-xs sm:text-sm md:text-md lg:text-lg font-bold text-center ${
-                    errors.topics ? "text-error" : ""
-                  }`}
-                >
-                  {selectedTopics.length < 3 && selectedTopics.length !== 0
-                    ? `You have choosen: ${selectedTopics.join(", ")}\nChoose ${
-                        3 - selectedTopics.length
-                      } more topics`
-                    : selectedTopics.length === 0
-                    ? "Choose at least 3 topics of your interest to continue.\nYou can change it anytime."
-                    : `You have choosen: ${selectedTopics.join(", ")}`}
-                  <br />
-                  <span>
-                    This will determine what kind of article you will be shown
+              <div className="flex flex-col gap-2 sm:gap-4 text-center text-xs sm:text-sm md:text-md lg:text-lg font-bold text-center">
+                {!selectedTopics.length && (
+                  <span className="whitespace-pre-line">
+                    {`Choose at least 3 topics of your interest to continue.\nYou can change them anytime.`}
                   </span>
+                )}
+                {/* topics amount not yet satisfied */}
+                {!!selectedTopics.length && selectedTopics.length < 3 && (
+                  <div className="flex flex-col gap-1">
+                    <span>You have choosen : </span>
+                    <Alert className="bg-error/50">
+                      <span
+                        key={selectedTopics.length}
+                        className="animate-fadeIn animate-duration-300"
+                      >
+                        {selectedTopics.join(` ${String.fromCharCode(8212)} `)}
+                      </span>
+                    </Alert>
+                    <span className="text-error">
+                      {`Please choose ${3 - selectedTopics.length} more`}
+                    </span>
+                  </div>
+                )}
+                {selectedTopics.length >= 3 && (
+                  <div className="flex flex-col gap-1">
+                    <span>You have choosen : </span>
+                    <Alert>
+                      <span
+                        key={selectedTopics.length}
+                        className="animate-fadeIn animate-duration-300"
+                      >
+                        {selectedTopics.join(` ${String.fromCharCode(8212)} `)}
+                      </span>
+                    </Alert>
+                    <span>
+                      {` ${selectedTopics.length} topics selected, you can proceed now.`}
+                    </span>
+                  </div>
+                )}
+
+                <span>
+                  This will determine what kind of articles you will be shown
                 </span>
               </div>
               <div className="flex gap-2 sm:gap-4 items-center">
@@ -312,7 +339,7 @@ function ProfileChooseTopicsForm() {
                 )}
               </div>
 
-              <div className="flex flex-wrap gap-1 sm:gap-2 content-start justify-center h-96 overflow-auto">
+              <div className="flex flex-wrap gap-1 sm:gap-2 content-start justify-center h-96 overflow-auto px-2">
                 {/* Loading indicator */}
                 {loadingTopics ? (
                   <div className={`w-full`}>

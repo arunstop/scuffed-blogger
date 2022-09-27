@@ -1,8 +1,7 @@
-import { Transition, Dialog } from "@headlessui/react";
-import React, { Fragment, ReactNode } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, ReactNode } from "react";
 import { FaTimes } from "react-icons/fa";
 import { ModalProps } from "../../utils/data/Main";
-import GradientBackground from "../main/GradientBackground";
 
 interface ModalTemplateProps {
   title: string;
@@ -11,6 +10,7 @@ interface ModalTemplateProps {
   noHeader?: boolean;
   noCloseButton?: boolean;
   className?: string;
+  initialFocus?: React.MutableRefObject<HTMLElement | null>;
   // closeBtnText?: string; // use text instead of icon
 }
 
@@ -23,6 +23,7 @@ const ModalTemplate = ({
   noHeader = false,
   noCloseButton = false,
   className = "",
+  initialFocus,
 }: // closeBtnText,
 ModalProps & ModalTemplateProps) => {
   return (
@@ -31,6 +32,7 @@ ModalProps & ModalTemplateProps) => {
         as="div"
         className={`fixed inset-0 z-[999] flex justify-center items-end sm:items-center ${className}`}
         onClose={onClose}
+        initialFocus={initialFocus}
       >
         {/* OVERLAY */}
         {!fullscreen && (
@@ -63,9 +65,10 @@ ModalProps & ModalTemplateProps) => {
             ${fullscreen ? "h-full" : "max-h-full sm:p-8"}`}
           >
             <div
+              id={`modal-content`}
               className={`modal-box !pointer-events-auto relative flex w-full flex-1 
               !translate-y-0 !scale-[1] flex-col gap-4 ring-1 ring-base-content/20
-              p-3 sm:p-6
+              p-0
               ${
                 fullscreen
                   ? "!rounded-none !max-w-[100vw] !w-screen !max-h-screen "
@@ -73,7 +76,7 @@ ModalProps & ModalTemplateProps) => {
               }`}
             >
               {/* gradient background */}
-              <GradientBackground height="100%" />
+              {/* <GradientBackground height="100%" /> */}
               {noHeader || (
                 <Dialog.Title as="div" className="">
                   <div className="flex flex-row items-center justify-between">

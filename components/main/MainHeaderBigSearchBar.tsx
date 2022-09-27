@@ -6,6 +6,8 @@ import { ArticleModel } from "../../utils/data/models/ArticleModel";
 import { fbArticleSearch } from "../../utils/services/network/FirebaseApi/ArticleModules";
 import InputText from "../input/InputText";
 import PostItemSearchResult from "../post/PostItemSearchResult";
+import MainSectionSkeleton from "./MainSectionSkeleton";
+
 
 // function debounce(callback: () => void, delay = 500) {
 //   let timeout;
@@ -186,9 +188,7 @@ function MainHeaderBigSearchBar() {
                   <LoadingIndicator spinner text="Searching articles..." />
                 )} */}
                 {!result.length && !!search.length && (
-                  <div className="w-full p-4 text-center text-xl font-bold">
-                    No result found.
-                  </div>
+                  <MainSectionSkeleton text="No result found." />
                 )}
                 <div className=" gap-1 flex flex-col list-none max-h-60 w-full overflow-auto p-1">
                 {!!result.length &&

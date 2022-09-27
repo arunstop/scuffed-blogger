@@ -5,6 +5,8 @@ import useOptionModalConfirmationHook from "../../utils/hooks/PostOptionConfirma
 import GradientBackground from "../main/GradientBackground";
 import ModalActionItem from "./ModalActionItem";
 import ModalActionConfirmation from "./ModalActionConfirmation";
+import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
+import React from "react";
 
 export interface ModalActionConfirmation {
   title: string;
@@ -17,6 +19,12 @@ export interface ModalActionAction {
   icon?: ReactNode;
   label: string;
   confirmation?: ModalActionConfirmation;
+  action?: () => void;
+}
+
+export interface ModalConfirmation {
+  className?: string;
+  label: string;
   action?: () => void;
 }
 
@@ -34,18 +42,23 @@ const ModalActionTemplate = ({
   desc,
   children,
   fullscreen = false,
-  actions = [],
+  actions,
+  confirmations,
 }: ModalProps &
-  MainActionModalTemplateProps & { actions: ModalActionAction[] }) => {
+  MainActionModalTemplateProps & {
+    actions?: ModalActionAction[];
+    confirmations?: ModalConfirmation[];
+  }) => {
   const confirmation = useOptionModalConfirmationHook();
 
   function closeModal() {
     confirmation.close();
     onClose();
   }
-  // console.log("render ActionModal Template " + confirmation.data?.title);
 
-  // const laggedConfirmation = useMemo(() => confirmation, [confirmation]);
+  const isConfirmation = !!confirmations?.length;
+  const isAction = !!actions?.length;
+
   return (
     <Transition appear show={value} as={Fragment}>
       <Dialog
@@ -71,12 +84,9 @@ const ModalActionTemplate = ({
 
         <Transition.Child
           as={Fragment}
-          enter="ease-out duration-200"
-          enterFrom="opacity-0 translate-y-72 sm:translate-y-0 sm:scale-150"
-          enterTo="opacity-100 translate-y-0 sm:translate-y-0 sm:scale-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100 translate-y-0 sm:translate-y-0 sm:scale-100"
-          leaveTo="opacity-0 translate-y-72 sm:translate-y-0 sm:scale-0"
+          {...transitionPullV({
+            enter: "!duration-300",
+          })}
         >
           {/* Container */}
           <Dialog.Panel
@@ -95,12 +105,12 @@ const ModalActionTemplate = ({
               }`}
             >
               {/* gradient background */}
-              <GradientBackground className="rounded-t-xl" />
+              <GradientBackground className={`rounded-t-xl `} />
               {/* Modal box */}
               <ul
-                className="relative z-10 flex flex-col divide-y 
+                className={`relative z-10 flex flex-col divide-y 
                 divide-gray-600/20 overflow-hidden !rounded-xl shadow-xl
-                ring-1 ring-gray-600/20"
+                ring-1 ring-gray-600/20 `}
               >
                 {/* Backdrop blur */}
                 <div className="absolute inset-0 z-[-1] rounded-xl bg-base-300/60 backdrop-blur-md" />
@@ -108,56 +118,81 @@ const ModalActionTemplate = ({
                 {/* Title section */}
                 <Dialog.Title
                   as="div"
-                  className="min-h-9 p-2 sm:min-h-12 sm:p-4"
+                  className={`min-h-12  sm:min-h-16 ${
+                    isConfirmation ? `p-4 sm:p-8` : `p-2 sm:p-4`
+                  }`}
                 >
-                  <div className="flex flex-col items-center justify-center">
+                  <div
+                    className={`flex flex-col items-center justify-center  ${
+                      isConfirmation ? `gap-4 sm:gap-8` : `gap-1 sm:gap-2`
+                    } `}
+                  >
                     <span className="text-center text-xl font-bold sm:text-2xl">
                       {title}
                     </span>
                     {desc && (
-                      <span className="text-center text-base text-base-content text-opacity-75 sm:text-lg">
+                      <span className="text-center text-base text-base-content sm:text-lg">
                         {desc}
                       </span>
                     )}
                   </div>
                 </Dialog.Title>
 
-                {/* Action section */}
-                <>
-                  {actions.map((e, idx) => (
-                    <ModalActionItem
-                      key={idx}
-                      openConfirmation={confirmation.open}
-                      {...e}
+                {isAction && (
+                  <>
+                    {/* Action section */}
+                    <>
+                      {actions.map((e, idx) => (
+                        <ModalActionItem
+                          key={idx}
+                          openConfirmation={confirmation.open}
+                          {...e}
+                        />
+                      ))}
+                    </>
+                    {/* Confirmation dialog */}
+                    <ModalActionConfirmation
+                      value={confirmation.show}
+                      onClose={() => confirmation.close()}
+                      confirmation={confirmation.data}
                     />
-                  ))}
-                </>
-                {/* Confirmation dialog */}
-                <ModalActionConfirmation
-                  value={confirmation.show}
-                  onClose={() => confirmation.close()}
-                  confirmation={confirmation.data}
-                />
+                  </>
+                )}
               </ul>
 
               {/* Basic navigation */}
-              <div className="flex flex-row-reverse gap-2 sm:gap-4">
-                {/* <a
-                  className="--btn-resp btn-primary  btn flex-1 rounded-xl border-0 shadow-lg ring-1 
-                  ring-1 ring-gray-600/20"
-                  onClick={onClose}
-                  role={"button"}
-                >
-                  OK
-                </a> */}
-                <button
-                  className="--btn-resp --btn-base  btn flex-1 rounded-xl border-0 shadow-xl
-                  ring-1 ring-gray-600/20"
-                  onClick={closeModal}
-                  role={"button"}
-                >
-                  Cancel
-                </button>
+              <div className="flex flex-col sm:flex-row-reverse gap-2 sm:gap-4">
+                {isConfirmation &&
+                  confirmations.map((e, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        className=" animate-fadeInUp animate-duration-500 w-full flex-1 flex"
+                        style={{ animationDelay: `${(idx + 1) * 100}ms` }}
+                      >
+                        <button
+                          className={`--btn-resp --btn-base  btn rounded-xl border-0 shadow-xl
+                        ring-1 ring-gray-600/20 w-full ${e.className}`}
+                          onClick={e.action}
+                          role={"button"}
+                        >
+                          {e.label}
+                        </button>
+                      </div>
+                    );
+                  })}
+                {!isConfirmation && (
+                  <div className="animate-fadeInUp animate-duration-500 animate-delay-100 flex-1 flex">
+                    <button
+                      className="--btn-resp --btn-base  btn rounded-xl border-0 shadow-xl 
+                      ring-1 ring-gray-600/20 w-full"
+                      onClick={closeModal}
+                      role={"button"}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
               </div>
               {/* {children} */}
             </div>
@@ -168,4 +203,4 @@ const ModalActionTemplate = ({
   );
 };
 
-export default ModalActionTemplate;
+export default React.memo(ModalActionTemplate);

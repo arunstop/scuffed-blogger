@@ -1,7 +1,7 @@
 import React from "react";
 import { MdBookmarkAdd, MdPlaylistAdd } from "react-icons/md";
-import PostLinker from "../post/PostLinker";
 
+import Link from "next/link";
 const UserListItem = ({ id }: { id: string }) => {
   return (
     <div
@@ -9,7 +9,8 @@ const UserListItem = ({ id }: { id: string }) => {
       bg-opacity-10 shadow-lg transition-all hover:bg-opacity-40 sm:flex-row
   "
     >
-      <PostLinker
+      <Link
+        as={"a"}
         href={`/list/${id}`}
         className="relative aspect-video h-60 w-full overflow-hidden 
         rounded-t-xl rounded-bl-none bg-base-content sm:h-auto sm:w-96 
@@ -35,14 +36,14 @@ const UserListItem = ({ id }: { id: string }) => {
             <span className="">12 mins read</span>
           </div>
         </div>
-      </PostLinker>
+      </Link>
 
       <div className="flex flex-1 flex-col gap-4 p-4">
-        <PostLinker href={`/list/${id}`}>
+        <Link as={"a"} href={`/list/${id}`}>
           <h1 className="text-2xl font-black group-hover:underline sm:text-3xl">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit.
           </h1>
-        </PostLinker>
+        </Link>
         <span className="text-base sm:text-lg">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
           commodi? Suscipit illum maxime, repellat inventore et distinctio
@@ -70,7 +71,7 @@ const UserListItem = ({ id }: { id: string }) => {
           >
             <MdBookmarkAdd />
           </button>
-          <PostLinker href={`/article/${id}`}>
+          <Link as={"a"} href={`/article/${id}`}>
             <button
               className="btn-neutral btn-outline btn btn-sm w-32
               bg-opacity-50 text-lg font-bold normal-case opacity-80
@@ -78,7 +79,7 @@ const UserListItem = ({ id }: { id: string }) => {
             >
               View
             </button>
-          </PostLinker>
+          </Link>
         </div>
       </div>
     </div>

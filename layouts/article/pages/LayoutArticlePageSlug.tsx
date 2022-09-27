@@ -1,7 +1,13 @@
 import { formatDistance } from "date-fns";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { MdForum, MdStar, MdTrendingUp } from "react-icons/md";
+import {
+  MdForum,
+  MdMoreVert,
+  MdRefresh,
+  MdStar,
+  MdTrendingUp,
+} from "react-icons/md";
 import ArticleSectionAction from "../../../components/article/ArticleActions";
 import ArticleProgressBar from "../../../components/article/ArticleProgressBar";
 import MainContainer from "../../../components/main/MainContainer";
@@ -50,7 +56,26 @@ function LayoutArticlePageSlug({
   return (
     <>
       <ArticleProgressBar />
-      <MobileHeader back={() => router.back()} title="Read Article" />
+      <MobileHeader
+        back={() => router.back()}
+        title="Read Article"
+        actions={[
+          {
+            label: "Reload",
+            icon: <MdRefresh />,
+            action() {
+              router.reload();
+            },
+          },
+          {
+            label: "Options",
+            icon: <MdMoreVert />,
+            action() {
+              alert("should show more options");
+            },
+          },
+        ]}
+      />
       <MainContainer>
         <div className="inline-flex justify-start">
           <div className="dropdown-hover dropdown">
