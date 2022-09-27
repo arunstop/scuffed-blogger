@@ -7,17 +7,19 @@ import { MdMoreHoriz } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { CommentModel } from "../../utils/data/models/CommentModel";
 import {
-  dateDistanceGet,
-  routeTrimQuery,
-  userAvatarLinkGet,
+  dateDistanceGet, userAvatarLinkGet
 } from "../../utils/helpers/MainHelpers";
 import { fbCommentReact } from "../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import UserAvatar from "../user/UserAvatar";
 
 function ArticleCommentItem({
   comment: commentProps,
+  optionParam,
+  replyParam,
 }: {
   comment: CommentModel;
+  optionParam: string;
+  replyParam: string;
 }) {
   const router = useRouter();
   const {
@@ -74,9 +76,9 @@ function ArticleCommentItem({
         if (!isLoggedIn) return alert("You must login to do this action.");
         router.push(
           {
-            pathname: routeTrimQuery(router.asPath),
             query: {
-              reply: comment.id,
+              ...router.query,
+              [replyParam]: comment.id,
             },
           },
           undefined,
@@ -109,9 +111,10 @@ function ArticleCommentItem({
           {isLoggedIn && (
             <Link
               href={{
-                pathname: router.asPath,
+                // pathname: router.asPath,
                 query: {
-                  option: comment.id,
+                  ...router.query,
+                  [optionParam]: comment.id,
                 },
               }}
               shallow

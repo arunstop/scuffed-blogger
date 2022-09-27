@@ -1,16 +1,17 @@
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdSort } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
+import Alert from "../../../components/main/Alert";
 import { useAuthCtx } from "../../../utils/contexts/auth/AuthHook";
 import {
-  CommentModelsSortType,
   CommentModelListPagedSorted,
+  CommentModelsSortType,
 } from "../../../utils/data/models/CommentModel";
+import { getElById } from "../../../utils/helpers/UiHelpers";
 import { fbCommentGet } from "../../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import LayoutArticleCommentForm from "./LayoutArticleCommentForm";
-import Link from "next/link";
-import Alert from "../../../components/main/Alert";
-import { getElById } from "../../../utils/helpers/UiHelpers";
+import LayoutArticleCommentSectionExpandedModal from "./LayoutArticleCommentSectionExpandedModal";
 
 function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
   const {
@@ -69,102 +70,110 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
 
   // console.log("render ArticleCommentSection");
   return (
-    <div className="flex flex-col gap-4 sm:gap-8">
-      {commentList?.comments.length && (
-        <div className="flex animate-fadeIn items-center justify-between gap-2 sm:justify-start sm:gap-4 z-[1]">
-          <span className="truncate text-sm font-bold sm:text-base">{`${commentList.comments.length} Comments`}</span>
-          <div className="dropdown-end dropdown">
-            <label
-              tabIndex={0}
-              className="btn-ghost btn flex-nowrap gap-2 rounded-xl sm:gap-4 "
-            >
-              <label className="text-xl sm:text-2xl">
-                <MdSort />
+    <>
+      <div className="flex flex-col gap-4 sm:gap-8">
+        {commentList?.comments.length && (
+          <div className="flex animate-fadeIn items-center justify-between gap-2 sm:justify-start sm:gap-4 z-[1]">
+            <span className="truncate text-sm font-bold sm:text-base">{`${commentList.total} Comments`}</span>
+            <div className="dropdown-end dropdown">
+              <label
+                tabIndex={0}
+                className="btn-ghost btn flex-nowrap gap-2 rounded-xl sm:gap-4 "
+              >
+                <label className="text-xl sm:text-2xl">
+                  <MdSort />
+                </label>
+                <span className="truncate text-sm sm:text-base">
+                  Sorted by{" "}
+                  <span className="underline">{getSortedByLabel()}</span>
+                </span>
               </label>
-              <span className="truncate text-sm sm:text-base">
-                Sorted by{" "}
-                <span className="underline">{getSortedByLabel()}</span>
-              </span>
-            </label>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu !z-[1] w-52 rounded-xl bg-base-300 p-2 text-sm
-              font-bold ring-[1px] ring-base-content/10 sm:text-base [&_a]:!rounded-xl"
-            >
-              {sorts.map((e, idx) => {
-                return (
-                  <li key={idx}>
-                    <a
-                      onClick={() => {
-                        e.action?.();
-                        (document.activeElement as HTMLElement).blur();
-                      }}
-                    >
-                      {e.label}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu !z-[1] w-52 rounded-xl bg-base-300 p-2 text-sm
+            font-bold ring-[1px] ring-base-content/10 sm:text-base [&_a]:!rounded-xl"
+              >
+                {sorts.map((e, idx) => {
+                  return (
+                    <li key={idx}>
+                      <a
+                        onClick={() => {
+                          e.action?.();
+                          (document.activeElement as HTMLElement).blur();
+                        }}
+                      >
+                        {e.label}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {user && (
-        <LayoutArticleCommentForm
+        {user && (
+          <LayoutArticleCommentForm
+            articleId={articleId}
+            loadComments={loadComments}
+          />
+        )}
+        {!user && (
+          <div className="my-4 flex w-full animate-fadeIn flex-col rounded-xl bg-primary/10 p-4 text-center sm:my-8 sm:p-8">
+            <div className="flex w-full flex-wrap items-center justify-center gap-4 sm:gap-8">
+              <span className="flex-2 w-full text-lg font-bold  sm:text-xl">
+                Join us now, let us know what do you think about this amazing
+                article!
+              </span>
+              <Link
+                href={{
+                  pathname: "/auth",
+                }}
+                passHref
+              >
+                <a className="--btn-resp flex-2 btn-primary btn w-full gap-2 font-bold normal-case sm:flex-[2_2_0%]">
+                  Login, if have account
+                </a>
+              </Link>
+              <Link
+                href={{
+                  pathname: "/auth",
+                }}
+                passHref
+              >
+                <a className="--btn-resp flex-2 btn-primary btn w-full gap-2 font-bold normal-case sm:flex-[2_2_0%]">
+                  {`Register, if you don't`}
+                </a>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {!commentList?.comments.length ? (
+          <Alert
+            actions={[
+              {
+                label: "Comment",
+                className: "",
+                action() {
+                  getElById("article-comment-input")?.focus();
+                },
+              },
+            ]}
+          >
+            <span>{`No comments yet, let the people know, what's your thought about this article..`}</span>
+          </Alert>
+        ) : (
+          <ArticleComments commentList={commentList} />
+        )}
+      </div>
+      {!!commentList?.comments.length && (
+        <LayoutArticleCommentSectionExpandedModal
+          commentList={commentList}
           articleId={articleId}
-          loadComments={loadComments}
         />
       )}
-      {!user && (
-        <div className="my-4 flex w-full animate-fadeIn flex-col rounded-xl bg-primary/10 p-4 text-center sm:my-8 sm:p-8">
-          <div className="flex w-full flex-wrap items-center justify-center gap-4 sm:gap-8">
-            <span className="flex-2 w-full text-lg font-bold  sm:text-xl">
-              Join us now, let us know what do you think about this amazing
-              article!
-            </span>
-            <Link
-              href={{
-                pathname: "/auth",
-              }}
-              passHref
-            >
-              <a className="--btn-resp flex-2 btn-primary btn w-full gap-2 font-bold normal-case sm:flex-[2_2_0%]">
-                Login, if have account
-              </a>
-            </Link>
-            <Link
-              href={{
-                pathname: "/auth",
-              }}
-              passHref
-            >
-              <a className="--btn-resp flex-2 btn-primary btn w-full gap-2 font-bold normal-case sm:flex-[2_2_0%]">
-                {`Register, if you don't`}
-              </a>
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {!commentList?.comments.length ? (
-        <Alert
-          actions={[
-            {
-              label: "Comment",
-              className: "",
-              action() {
-                getElById("article-comment-input")?.focus();
-              },
-            },
-          ]}
-        >
-          <span>{`No comments yet, let the people know, what's your thought about this article..`}</span>
-        </Alert>
-      ) : (
-        <ArticleComments commentList={commentList} />
-      )}
-    </div>
+    </>
   );
 }
 
