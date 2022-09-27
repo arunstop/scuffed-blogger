@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from "react";
-import { MdRefresh } from "react-icons/md";
+import { useMemo, useState } from "react";
+import { MdMoreHoriz, MdRefresh } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
 import MobileHeader, {
-  MobileHeaderActionProps,
+  MobileHeaderActionProps
 } from "../../../components/main/MobileHeader";
 import ModalTemplate from "../../../components/modal/ModalTemplate";
 import { CommentModelsWithPaging } from "../../../utils/data/models/CommentModel";
@@ -35,13 +35,15 @@ function LayoutArticleCommentSectionExpandedModal({
   );
   return (
     <>
+      {/* trigger */}
       <button
-        className="btn btn-ghost sm:btn-lg"
+        className="btn btn-ghost sm:btn-lg gap-2 sm:gap-4"
         onClick={() => {
           setModalComments(true, true);
         }}
       >
-        Show more comments {commentList.comments.length}
+        <MdMoreHoriz className="text-2xl sm:text-3xl"/>
+        Show more comments
       </button>
       <ModalTemplate
         value={modalComments}
