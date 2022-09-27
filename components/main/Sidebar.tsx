@@ -1,5 +1,6 @@
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 import {
   MdArticle,
   MdBookmark,
@@ -15,12 +16,15 @@ import {
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
 import { waitFor } from "../../utils/helpers/DelayHelpers";
+import { useModalRoutedBehaviorHook } from "../../utils/hooks/ModalRoutedBehaviorHook";
 import { useUiSidebarBehaviorHook } from "../../utils/hooks/UiSidebarBehaviorHook";
 import ModalConfirmation from "../modal/ModalConfirmation";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 import MobileHeader from "./MobileHeader";
 
 function Sidebar() {
+  const router = useRouter();
+
   const {
     authStt: { user },
     authAct,
@@ -111,7 +115,12 @@ function Sidebar() {
       title: "Logout",
       icon: <MdLogout />,
       action: async () => {
-        setDialogLogout(true);
+        router.push({
+          query: {
+            ...router.query,
+            logout: true,
+          },
+        },undefined,{shallow:true});
       },
       show: true,
     },
@@ -119,7 +128,8 @@ function Sidebar() {
 
   const shownMenus = allMenus.filter((e) => e.show);
 
-  const [dialogLogout, setDialogLogout] = useState(false);
+  const { show: dialogLogout, toggle: setDialogLogout } =
+    useModalRoutedBehaviorHook("logout");
 
   const { sidebar, openSidebar, closeSidebar } = useUiSidebarBehaviorHook();
 
