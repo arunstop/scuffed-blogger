@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import {
   MdArticle,
@@ -11,7 +10,7 @@ import {
   MdLogout,
   MdPerson,
   MdPlaylistAddCheck,
-  MdWatchLater,
+  MdWatchLater
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
@@ -23,8 +22,6 @@ import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 import MobileHeader from "./MobileHeader";
 
 function Sidebar() {
-  const router = useRouter();
-
   const {
     authStt: { user },
     authAct,
@@ -115,12 +112,7 @@ function Sidebar() {
       title: "Logout",
       icon: <MdLogout />,
       action: async () => {
-        router.push({
-          query: {
-            ...router.query,
-            logout: true,
-          },
-        },undefined,{shallow:true});
+        setDialogLogout(true, true);
       },
       show: true,
     },
