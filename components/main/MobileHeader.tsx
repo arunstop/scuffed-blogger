@@ -22,7 +22,7 @@ function MobileHeader({ title, back, actions, toTop }: MobileHeaderProps) {
       className="sm:hidden sticky inset-x-0 top-0 flex gap-2 justify-between items-center z-[10] bg-base-100/70 p-2 
        -mt-2 backdrop-blur-md animate-fadeInDown animate-duration-500"
     >
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-1 items-center">
         {back && (
           <button
             className="btn rounded-xl btn-sm btn-ghost text-2xl text-primary aspect-square p-0 self-start"
@@ -34,8 +34,8 @@ function MobileHeader({ title, back, actions, toTop }: MobileHeaderProps) {
           </button>
         )}
         <span
-          className={`text-2xl font-bold ${toTop ? `cursor-pointer` : ``}`}
-          onClick={() => toTop?.() || scrollToTop(true)}
+          className={`text-xl font-bold ${toTop ? `cursor-pointer` : ``}`}
+          onClick={() => toTop ? toTop():scrollToTop(true)}
         >
           {title}
         </span>
