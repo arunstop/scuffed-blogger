@@ -13,8 +13,10 @@ interface MobileHeaderProps {
   title: string;
   back?: () => void;
   actions?: MobileHeaderActionProps[];
+  // if undefined then scroll the main content to top
+  toTop?: () => void;
 }
-function MobileHeader({ title, back, actions }: MobileHeaderProps) {
+function MobileHeader({ title, back, actions, toTop }: MobileHeaderProps) {
   return (
     <div
       className="sm:hidden sticky inset-x-0 top-0 flex gap-2 justify-between items-center z-[10] bg-base-100/70 p-2 
@@ -31,7 +33,10 @@ function MobileHeader({ title, back, actions }: MobileHeaderProps) {
             <MdArrowBack className="text-3xl text-primary" />
           </button>
         )}
-        <span className="text-2xl font-bold" onClick={() => scrollToTop(true)}>
+        <span
+          className="text-2xl font-bold"
+          onClick={() => toTop?.() || scrollToTop()}
+        >
           {title}
         </span>
       </div>
