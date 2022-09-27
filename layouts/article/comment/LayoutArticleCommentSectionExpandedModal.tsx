@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { MdMoreHoriz, MdRefresh } from "react-icons/md";
+import { MdExpandMore, MdRefresh } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
 import MobileHeader, {
   MobileHeaderActionProps
@@ -37,13 +37,13 @@ function LayoutArticleCommentSectionExpandedModal({
     <>
       {/* trigger */}
       <button
-        className="btn btn-ghost sm:btn-lg gap-2 sm:gap-4"
+        className="btn btn-ghost bg-primary/30 hover:bg-primary/100 transition-all gap-2 sm:gap-4 rounded-xl mx-auto"
         onClick={() => {
           setModalComments(true, true);
         }}
       >
-        <MdMoreHoriz className="text-2xl sm:text-3xl"/>
-        Show more comments
+        <MdExpandMore className="text-2xl sm:text-3xl"/>
+        <span className="text-sm sm:text-base">Show more comments</span>
       </button>
       <ModalTemplate
         value={modalComments}
