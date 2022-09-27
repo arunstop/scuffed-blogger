@@ -167,7 +167,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
           <ArticleComments commentList={commentList} />
         )}
       </div>
-      {!!commentList?.comments.length && (
+      {commentList && commentList.total > 5 && (
         <LayoutArticleCommentSectionExpandedModal
           commentList={commentList}
           articleId={articleId}
