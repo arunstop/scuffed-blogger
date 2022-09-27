@@ -65,38 +65,47 @@ ModalProps & ModalTemplateProps) => {
             ${fullscreen ? "h-full" : "max-h-full sm:p-8"}`}
           >
             <div
-              id={`modal-content`}
               className={`modal-box !pointer-events-auto relative flex w-full flex-1 
-              !translate-y-0 !scale-[1] flex-col gap-4 ring-1 ring-base-content/20
-              p-0
+              !translate-y-0 !scale-[1] ring-1 ring-base-content/20
+              p-0 overflow-hidden
               ${
                 fullscreen
                   ? "!rounded-none !max-w-[100vw] !w-screen !max-h-screen "
-                  : "rounded-t-xl rounded-b-none sm:!rounded-xl sm:!max-w-md md:!max-w-lg lg:!max-w-xl !max-h-screen "
+                  : `rounded-t-xl rounded-b-none max-w-full sm:!rounded-xl sm:!max-w-md md:!max-w-lg lg:!max-w-xl 
+                  !max-h-[90vh]`
               }`}
             >
-              {/* gradient background */}
-              {/* <GradientBackground height="100%" /> */}
-              {noHeader || (
-                <Dialog.Title as="div" className="">
-                  <div className="flex flex-row items-center justify-between">
-                    <span className="text-xl font-bold sm:text-2xl">
-                      {title}
-                    </span>
-                    {noCloseButton || (
-                      <span
-                        className="btn btn-ghost btn-sm aspect-square !h-9 !w-9 rounded-xl 
-                        !p-0 opacity-80 hover:opacity-100 sm:btn-md sm:!h-12 sm:!w-12"
-                        title="Back"
-                        onClick={onClose}
-                      >
-                        <FaTimes className="text-2xl sm:text-3xl" />
+              <div
+                id={`modal-content`}
+                className={`flex flex-col gap-4 overflow-auto w-full`}
+              >
+                {/* gradient background */}
+                {/* <GradientBackground height="100%" /> */}
+                {noHeader || (
+                  <Dialog.Title
+                    as="div"
+                    className="hidden sm:block p-2 sm:p-4 z-[1] bg-base-100/70 backdrop-blur-md animate-fadeInDown
+                  sticky top-0 duration-500"
+                  >
+                    <div className="flex flex-row items-center justify-between">
+                      <span className="text-xl font-bold sm:text-2xl">
+                        {title}
                       </span>
-                    )}
-                  </div>
-                </Dialog.Title>
-              )}
-              {children}
+                      {noCloseButton || (
+                        <span
+                          className="btn btn-ghost btn-sm aspect-square !h-9 !w-9 rounded-xl 
+                        !p-0 opacity-80 hover:opacity-100 sm:btn-md sm:!h-12 sm:!w-12"
+                          title="Back"
+                          onClick={onClose}
+                        >
+                          <FaTimes className="text-2xl sm:text-3xl" />
+                        </span>
+                      )}
+                    </div>
+                  </Dialog.Title>
+                )}
+                {children}
+              </div>
             </div>
           </Dialog.Panel>
         </Transition.Child>
