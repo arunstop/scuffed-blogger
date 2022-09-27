@@ -35,7 +35,7 @@ function MobileHeader({ title, back, actions, toTop }: MobileHeaderProps) {
         )}
         <span
           className={`text-2xl font-bold ${toTop ? `cursor-pointer` : ``}`}
-          onClick={() => toTop?.() || scrollToTop()}
+          onClick={() => toTop?.() || scrollToTop(true)}
         >
           {title}
         </span>
