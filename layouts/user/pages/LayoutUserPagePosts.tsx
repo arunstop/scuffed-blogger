@@ -224,7 +224,7 @@ function LayoutUserPagePosts() {
             {articles.map((e, idx) => {
               return (
                 <div key={e.id}  className="flex">
-                  <PostItemSearchResult article={e} observe className="w-full"/>
+                  <PostItemSearchResult article={e} observe withActions className="w-full" />
                 </div>
               );
             })}

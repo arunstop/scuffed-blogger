@@ -10,11 +10,13 @@ interface PostItemSearchResultProps {
   article: ArticleModel;
   active?: boolean;
   observe?: boolean;
+  withActions?: boolean;
 }
 function PostItemSearchResult({
   article,
   active,
   observe,
+  withActions,
   ...props
 }: PostItemSearchResultProps & HTMLAttributes<HTMLDivElement>) {
   const [visible, setVisible] = useState(true);
@@ -35,17 +37,26 @@ function PostItemSearchResult({
       }
     >
       {visible && (
-        <PostItemSearchResultContent article={article} active={active} />
+        <PostItemSearchResultContent
+          article={article}
+          active={active}
+          withActions={withActions}
+        />
       )}
     </MainIntersectionObserverTrigger>
   ) : (
-    <PostItemSearchResultContent article={article} active={active} />
+    <PostItemSearchResultContent
+      article={article}
+      active={active}
+      withActions={withActions}
+    />
   );
 }
 
 function PostItemSearchResultContent({
   article,
   active,
+  withActions,
 }: Omit<PostItemSearchResultProps, "observe">) {
   const duration = Math.ceil(article.duration);
   return (
@@ -96,52 +107,54 @@ function PostItemSearchResultContent({
         </div>
       </div>
       {/* Actions */}
-      <div className=" absolute inset-0 z-[2] hidden bg-primary/30 backdrop-blur-lg animate-fadeIn  animate-duration-500  group-hover:flex">
-        {/* <div className="blur-lg z-10 absolute bg-primary/90 inset-0"></div> */}
-        <div className="m-auto  grid grid-cols-3 gap-2 px-4 sm:gap-4 sm:px-8">
-          <div className="animate-fadeInUp animate-duration-500 animate-delay-200">
-            <Link href={`/article/${article.slug}`} passHref>
-              <a
-                className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
+      {withActions && (
+        <div className=" absolute inset-0 z-[2] hidden bg-primary/30 backdrop-blur-lg animate-fadeIn  animate-duration-500  group-hover:flex">
+          {/* <div className="blur-lg z-10 absolute bg-primary/90 inset-0"></div> */}
+          <div className="m-auto  grid grid-cols-3 gap-2 px-4 sm:gap-4 sm:px-8">
+            <div className="animate-fadeInUp animate-duration-500 animate-delay-200">
+              <Link href={`/article/${article.slug}`} passHref>
+                <a
+                  className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
               sm:!flex-row w-full "
-              >
-                <MdVisibility className="text-2xl sm:text-3xl" />
-                <span className="font-bold">Read</span>
-              </a>
-            </Link>
-          </div>
-          <div className="animate-fadeInUp animate-duration-500 animate-delay-300">
-            <Link href={`/article/edit/${article.id}`} passHref>
-              <a
-                className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
+                >
+                  <MdVisibility className="text-2xl sm:text-3xl" />
+                  <span className="font-bold text-base sm:text-lg">Read</span>
+                </a>
+              </Link>
+            </div>
+            <div className="animate-fadeInUp animate-duration-500 animate-delay-300">
+              <Link href={`/article/edit/${article.id}`} passHref>
+                <a
+                  className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
               sm:!flex-row w-full btn-primary"
+                >
+                  <MdEdit className="text-2xl sm:text-3xl" />
+                  <span className="font-bold text-base sm:text-lg">Edit</span>
+                </a>
+              </Link>
+            </div>
+            <div className="animate-fadeInUp animate-duration-500 animate-delay-[400ms]">
+              <Link
+                href={{
+                  query: {
+                    articleId: article.id,
+                  },
+                }}
+                shallow
+                passHref
               >
-                <MdEdit className="text-2xl sm:text-3xl" />
-                <span className="font-bold">Edit</span>
-              </a>
-            </Link>
-          </div>
-          <div className="animate-fadeInUp animate-duration-500 animate-delay-[400ms]">
-            <Link
-              href={{
-                query: {
-                  articleId: article.id,
-                },
-              }}
-              shallow
-              passHref
-            >
-              <a
-                className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
+                <a
+                  className="btn-sm btn gap-2 rounded-xl sm:btn-md sm:gap-4 !flex !flex-col !h-auto p-2  flex-nowrap
               sm:!flex-row w-full btn-error"
-              >
-                <MdDelete className="text-2xl sm:text-3xl" />
-                <span className="font-bold">Delete</span>
-              </a>
-            </Link>
+                >
+                  <MdDelete className="text-2xl sm:text-3xl" />
+                  <span className="font-bold text-base sm:text-lg">Delete</span>
+                </a>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       {/* </Link> */}
     </div>
   );
