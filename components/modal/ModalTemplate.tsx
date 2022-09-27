@@ -65,6 +65,7 @@ ModalProps & ModalTemplateProps) => {
             ${fullscreen ? "h-full" : "max-h-full sm:p-8"}`}
           >
             <div
+              id={`modal-content`}
               className={`modal-box !pointer-events-auto relative flex w-full flex-1 
               !translate-y-0 !scale-[1] flex-col gap-4 ring-1 ring-base-content/20
               p-0
