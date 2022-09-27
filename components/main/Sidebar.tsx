@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   MdArticle,
   MdBookmark,
@@ -10,7 +10,7 @@ import {
   MdLogout,
   MdPerson,
   MdPlaylistAddCheck,
-  MdWatchLater
+  MdWatchLater,
 } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { useUiCtx } from "../../utils/contexts/ui/UiHook";
@@ -138,6 +138,15 @@ function Sidebar() {
     }
   }
 
+  const scrollContentToTop = useCallback(() => {
+    const ElModalContent = document.getElementById("sidebar-content");
+    if (ElModalContent)
+      return ElModalContent.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+  }, []);
+
   //   Key listener
   useEffect(() => {
     //   only listen to keydown when drawer shows
@@ -151,7 +160,7 @@ function Sidebar() {
 
   return (
     <>
-      <div className="fixed inset-0 drawer drawer-end z-20 pointer-events-none">
+      <div className="drawer drawer-end pointer-events-none fixed inset-0 z-20">
         <input
           id="main-drawer"
           type="checkbox"
@@ -168,12 +177,12 @@ function Sidebar() {
           {/* OVERLAY */}
           <label
             htmlFor="main-drawer"
-            className="drawer-overlay pointer-events-auto !cursor-default backdrop-blur-sm !bg-black/60 hidden sm:block"
+            className="drawer-overlay pointer-events-auto hidden !cursor-default !bg-black/60 backdrop-blur-sm sm:block"
           />
           {!user && (
-            <div className="flex bg-base-100 pointer-events-auto  w-full p-8">
+            <div className="pointer-events-auto flex w-full  bg-base-100 p-8">
               <div className="m-auto flex flex-col   gap-4 text-center">
-                <span className="text-xl font-bold mb-4">
+                <span className="mb-4 text-xl font-bold">
                   Join us and let the world know your thought!
                 </span>
                 <Link
@@ -182,7 +191,7 @@ function Sidebar() {
                   }}
                   passHref
                 >
-                  <a className="btn btn-primary text-xl">Login</a>
+                  <a className="btn-primary btn text-xl">Login</a>
                 </Link>
                 <Link
                   href={{
@@ -190,10 +199,10 @@ function Sidebar() {
                   }}
                   passHref
                 >
-                  <a className="btn btn-primary text-xl">Register</a>
+                  <a className="btn-primary btn text-xl">Register</a>
                 </Link>
                 <button
-                  className="btn btn-primary text-xl btn-outline"
+                  className="btn-outline btn-primary btn text-xl"
                   onClick={() => closeSidebar()}
                 >
                   Not now
@@ -202,13 +211,20 @@ function Sidebar() {
             </div>
           )}
           {user && (
-            <div className="flex flex-col gap-4 overflow-y-auto sm:w-80 bg-base-100 pointer-events-auto mb-[3rem] sm:mb-0 w-full">
-              <MobileHeader back={() => closeSidebar()} title="Account" />
-              <div className="flex flex-col gap-4 p-4 overflow-y-auto w-full">
-                <div className="flex flex-col gap-2 sm:gap-4 items-center">
+            <div className="pointer-events-auto mb-[3rem] flex w-full flex-col gap-4 overflow-y-auto bg-base-100 sm:mb-0 sm:w-80">
+              <MobileHeader
+                back={() => closeSidebar()}
+                title="Account"
+                toTop={scrollContentToTop}
+              />
+              <div
+                id={`sidebar-content`}
+                className="flex w-full flex-col gap-4 overflow-y-auto p-4"
+              >
+                <div className="flex flex-col items-center gap-2 sm:gap-4">
                   <div
-                    className="overflow-hidden rounded-full border-[1px] sm:border-2 border-offset-2 border-base-content 
-              h-12 w-12 sm:h-20 sm:w-20 bg-base-content/30"
+                    className="border-offset-2 h-12 w-12 overflow-hidden rounded-full border-[1px] 
+              border-base-content bg-base-content/30 sm:h-20 sm:w-20 sm:border-2"
                   >
                     <img
                       src={user?.avatar}
@@ -216,10 +232,10 @@ function Sidebar() {
                     />
                   </div>
                   <p className="text-center">
-                    <span className="line-clamp-2 font-bold text-md sm:text-lg md:text-xl">
+                    <span className="text-md font-bold line-clamp-2 sm:text-lg md:text-xl">
                       {user?.name}
                     </span>
-                    <span className="font-bold text-sm sm:text-md md:text-lg text-base-content text-opacity-50">
+                    <span className="sm:text-md text-sm font-bold text-base-content text-opacity-50 md:text-lg">
                       {`@${user?.username}`}
                     </span>
                   </p>

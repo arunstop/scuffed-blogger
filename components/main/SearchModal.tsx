@@ -21,6 +21,7 @@ const SearchModal = React.memo(function SearchModal() {
   const [loading, setLoading] = useState(false);
   // for axios request of fbAritcleSearch
   const controllerRef = useRef<AbortController>(new AbortController());
+
   const debounceSearch = debounce(
     async (str: string, abortSignal: AbortSignal) => {
       const res = await fbArticleSearch({
@@ -66,14 +67,23 @@ const SearchModal = React.memo(function SearchModal() {
         label: "Clear history",
         action() {
           setArticles(null);
-          setSearch('');
+          setSearch("");
           // alert('creating articles');
         },
         icon: <MdClearAll />,
-        disabled:!articles?.length,
+        disabled: !articles?.length,
       },
     ] as MobileHeaderActionProps[];
   }, [articles]);
+
+  const scrollContentToTop = useCallback(() => {
+    const ElModalContent = document.getElementById("modal-content");
+    if (ElModalContent)
+      return ElModalContent.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+  }, []);
 
   return (
     <ModalTemplate
@@ -91,6 +101,7 @@ const SearchModal = React.memo(function SearchModal() {
         }}
         title="Search articles"
         actions={headerActions}
+        toTop={scrollContentToTop}
       />
       <div className="flex flex-col gap-2 sm:gap-4 pb-[3rem] sm:pb-0 p-4 z-0">
         <div className="form-control">
