@@ -9,9 +9,11 @@ const optionParam = "option";
 const replyParam = "reply";
 function ArticleComments({
   commentList,
+  observe,
 }: // addComment,
 {
   commentList: CommentModelsWithPaging;
+  observe?: boolean;
   // addComment: (comments:Comment[]) => void;
 }) {
   const optionModal = useModalRoutedBehaviorHook(optionParam);
@@ -26,6 +28,7 @@ function ArticleComments({
             comment={e}
             optionParam={optionParam}
             replyParam={replyParam}
+            observe={observe}
           />
         ))}
       </div>

@@ -7,20 +7,53 @@ import { MdMoreHoriz } from "react-icons/md";
 import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
 import { CommentModel } from "../../utils/data/models/CommentModel";
 import {
-  dateDistanceGet, userAvatarLinkGet
+  dateDistanceGet,
+  userAvatarLinkGet,
 } from "../../utils/helpers/MainHelpers";
+import { getElById } from "../../utils/helpers/UiHelpers";
 import { fbCommentReact } from "../../utils/services/network/FirebaseApi/FirebaseCommentModules";
+import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
 import UserAvatar from "../user/UserAvatar";
-
-function ArticleCommentItem({
-  comment: commentProps,
-  optionParam,
-  replyParam,
-}: {
+import ArticleCommentItemActionButton from "./ArticleCommentItemActionButton";
+interface ArticleCommentItemProps {
   comment: CommentModel;
   optionParam: string;
   replyParam: string;
-}) {
+}
+
+function ArticleCommentItem({
+  observe,
+  ...props
+}: ArticleCommentItemProps & { observe?: boolean }) {
+  const [visible, setVisible] = useState(true);
+  const elementId = `comment-${{ ...props }.comment.id}`;
+  const element = getElById(elementId);
+  return observe ? (
+    <MainIntersectionObserverTrigger
+      id={elementId}
+      callback={(intersecting) => setVisible(intersecting)}
+      className=""
+      style={
+        visible
+          ? undefined
+          : {
+              height: `${element?.clientHeight}px`,
+              width: `100%`,
+            }
+      }
+    >
+      {visible && <ArticleCommentItemContent {...props} />}
+    </MainIntersectionObserverTrigger>
+  ) : (
+    <ArticleCommentItemContent {...props} />
+  );
+}
+
+function ArticleCommentItemContent({
+  comment: commentProps,
+  optionParam,
+  replyParam,
+}: ArticleCommentItemProps) {
   const router = useRouter();
   const {
     authStt: { user },
@@ -205,31 +238,5 @@ export interface CommentActionProps {
   minimize?: boolean;
   action?: () => void;
 }
-
-const ArticleCommentItemActionButton = ({
-  label,
-  icon,
-  className,
-  minimize = true,
-  action = () => {},
-}: CommentActionProps) => {
-  return (
-    <span
-      className={`btn btn-ghost rounded-xl p-1 sm:p-2 opacity-75 hover:opacity-100
-      !flex !flex-nowrap max-w-none gap-1 sm:gap-2 !h-auto aspect-square sm:aspect-auto
-      !font-black
-      group ${className || ""}`}
-      title="Upvote"
-      onClick={() => action()}
-    >
-      {icon && <span className="text-xl sm:text-2xl">{icon}</span>}
-      {label && (
-        <span className={minimize ? "hidden sm:block" : "!text-sm sm:!text-md"}>
-          {label}
-        </span>
-      )}
-    </span>
-  );
-};
 
 export default React.memo(ArticleCommentItem);

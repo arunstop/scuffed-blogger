@@ -5,13 +5,13 @@ import ArticleComments from "../../../components/article/ArticleComments";
 import { DropdownOption } from "../../../components/main/Dropdown";
 import MainIntersectionObserverTrigger from "../../../components/main/MainIntersectionObserverTrigger";
 import MobileHeader, {
-  MobileHeaderActionProps
+  MobileHeaderActionProps,
 } from "../../../components/main/MobileHeader";
 import ModalTemplate from "../../../components/modal/ModalTemplate";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import {
   CommentModelsSortType,
-  CommentModelsWithPaging
+  CommentModelsWithPaging,
 } from "../../../utils/data/models/CommentModel";
 import { getElById } from "../../../utils/helpers/UiHelpers";
 import { useModalRoutedBehaviorHook } from "../../../utils/hooks/ModalRoutedBehaviorHook";
@@ -25,7 +25,7 @@ function LayoutArticleCommentSectionExpandedModal({
   commentList: CommentModelsWithPaging;
   articleId: string;
   loadComments: (sortBy?: CommentModelsSortType) => Promise<void>;
-  sortOptions:DropdownOption[],
+  sortOptions: DropdownOption[];
 }) {
   const { show: modalComments, toggle: setModalComments } =
     useModalRoutedBehaviorHook("comments");
@@ -35,7 +35,7 @@ function LayoutArticleCommentSectionExpandedModal({
         {
           label: "Sort",
           icon: <MdSort />,
-          options:sortOptions,
+          options: sortOptions,
         },
         {
           label: "Reload",
@@ -80,7 +80,7 @@ function LayoutArticleCommentSectionExpandedModal({
           }}
         />
         <div className="flex flex-col gap-2 p-2 sm:gap-4 sm:p-4">
-          <ArticleComments commentList={commentList} />
+          <ArticleComments commentList={commentList} observe />
           {!loading && commentList.comments.length < commentList.total && (
             <MainIntersectionObserverTrigger
               className="h-24 w-full "
