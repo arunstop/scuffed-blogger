@@ -29,6 +29,8 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
   const loadComments = useCallback(
     async (newSortingType?: CommentModelsSortType) => {
       // define where to start
+      // console.log('123');
+
       const startFrom = newSortingType || !commentList ? 0 : commentList.offset;
       const commentsFromDb = await fbCommentGet({
         data: {
@@ -150,7 +152,9 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
         {user && (
           <LayoutArticleCommentForm
             articleId={articleId}
-            loadComments={loadComments}
+            loadComments={async ()=>{
+              await loadComments("new");
+            }}
           />
         )}
         {!user && (
