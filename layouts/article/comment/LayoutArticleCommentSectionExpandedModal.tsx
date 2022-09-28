@@ -75,7 +75,7 @@ function LayoutArticleCommentSectionExpandedModal({
           <ArticleComments commentList={commentList} />
           {!loading && commentList.comments.length < commentList.total && (
             <MainIntersectionObserverTrigger
-              className="w-full h-24 bg-red-500"
+              className="w-full h-24 "
               callback={async (intersecting) => {
                 // console.log(intersecting);
                 if (intersecting) {
