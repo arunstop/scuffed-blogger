@@ -26,7 +26,7 @@ function ArticleCommentItem({
     authStt: { user },
   } = useAuthCtx();
   const [comment, setComment] = useState(commentProps);
-  const postedAt = dateDistanceGet(comment.dateAdded, Date.now());
+  const postedAt = `${dateDistanceGet(comment.dateAdded, Date.now())} ago`;
   const userAvatar = userAvatarLinkGet(comment.userId);
   const upvoted = comment.upvote?.includes(user?.id || "");
   const downvoted = comment.downvote?.includes(user?.id || "");
