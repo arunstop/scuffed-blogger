@@ -1,8 +1,9 @@
 import Link from "next/link";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { MdSort } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
 import Alert from "../../../components/main/Alert";
+import Dropdown,{ DropdownOption } from "../../../components/main/Dropdown";
 import { useAuthCtx } from "../../../utils/contexts/auth/AuthHook";
 import {
   CommentModelListPagedSorted,
@@ -60,37 +61,31 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
     [commentList?.offset],
   );
 
-  const sorts: {
-    type: CommentModelsSortType | "cancel";
-    label: string;
-    action?: () => void;
-  }[] = [
-    {
-      type: "new",
-      label: "Newest first",
-      action: () => {
-        setSortedBy("new");
+  const sortOptions: DropdownOption[] = useMemo(
+    () => [
+      {
+        label: "Newest first",
+        action: () => {
+          setSortedBy("new");
+        },
       },
-    },
-    {
-      type: "top",
-      label: "Top comments",
-      action: () => {
-        setSortedBy("top");
+      {
+        label: "Top comments",
+        action: () => {
+          setSortedBy("top");
+        },
       },
-    },
-    {
-      type: "cancel",
-      label: "Cancel",
-      // action: () => {},
-    },
-  ];
+    ],
+    [],
+  );
 
   function getSortedByLabel() {
     if (sortedBy === "new") return "newest first";
     if (sortedBy === "top") return "top comments";
     else return "";
   }
+
+  // console.log(sortOptions);
   // console.log("sortedBy", sortedBy);
   useEffect(() => {
     loadComments();
@@ -112,7 +107,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
         {commentList?.comments.length && (
           <div className="flex animate-fadeIn items-center justify-between gap-2 sm:justify-start sm:gap-4 z-[1]">
             <span className="truncate text-sm font-bold sm:text-base">{`${commentList.total} Comments`}</span>
-            <div className="dropdown-end dropdown">
+            <Dropdown options={sortOptions}>
               <label
                 tabIndex={0}
                 className="btn-ghost btn flex-nowrap gap-2 rounded-xl sm:gap-4 "
@@ -125,34 +120,14 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
                   <span className="underline">{getSortedByLabel()}</span>
                 </span>
               </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu !z-[1] w-52 rounded-xl bg-base-300 p-2 text-sm
-                font-bold ring-[1px] ring-base-content/10 sm:text-base [&_a]:!rounded-xl"
-              >
-                {sorts.map((e, idx) => {
-                  return (
-                    <li key={idx}>
-                      <a
-                        onClick={() => {
-                          e.action?.();
-                          (document.activeElement as HTMLElement).blur();
-                        }}
-                      >
-                        {e.label}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            </Dropdown>
           </div>
         )}
 
         {user && (
           <LayoutArticleCommentForm
             articleId={articleId}
-            loadComments={async ()=>{
+            loadComments={async () => {
               await loadComments("new");
             }}
           />
@@ -214,6 +189,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
             await waitFor(300);
             await loadComments();
           }}
+          sortOptions={sortOptions}
         />
       )}
     </>

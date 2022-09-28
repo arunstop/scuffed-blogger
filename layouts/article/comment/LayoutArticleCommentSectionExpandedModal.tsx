@@ -1,16 +1,17 @@
 import { isEqual } from "lodash";
 import React, { useMemo, useState } from "react";
-import { MdExpandMore, MdRefresh } from "react-icons/md";
+import { MdExpandMore, MdRefresh, MdSort } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
+import { DropdownOption } from "../../../components/main/Dropdown";
 import MainIntersectionObserverTrigger from "../../../components/main/MainIntersectionObserverTrigger";
 import MobileHeader, {
-  MobileHeaderActionProps,
+  MobileHeaderActionProps
 } from "../../../components/main/MobileHeader";
 import ModalTemplate from "../../../components/modal/ModalTemplate";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import {
   CommentModelsSortType,
-  CommentModelsWithPaging,
+  CommentModelsWithPaging
 } from "../../../utils/data/models/CommentModel";
 import { getElById } from "../../../utils/helpers/UiHelpers";
 import { useModalRoutedBehaviorHook } from "../../../utils/hooks/ModalRoutedBehaviorHook";
@@ -19,16 +20,23 @@ function LayoutArticleCommentSectionExpandedModal({
   commentList,
   articleId,
   loadComments,
+  sortOptions,
 }: {
   commentList: CommentModelsWithPaging;
   articleId: string;
   loadComments: (sortBy?: CommentModelsSortType) => Promise<void>;
+  sortOptions:DropdownOption[],
 }) {
   const { show: modalComments, toggle: setModalComments } =
     useModalRoutedBehaviorHook("comments");
   const headerActions: MobileHeaderActionProps[] = useMemo(
     () =>
       [
+        {
+          label: "Sort",
+          icon: <MdSort />,
+          options:sortOptions,
+        },
         {
           label: "Reload",
           icon: <MdRefresh />,
@@ -44,7 +52,7 @@ function LayoutArticleCommentSectionExpandedModal({
     <>
       {/* trigger */}
       <button
-        className="btn btn-ghost bg-primary/30 hover:bg-primary/100 transition-all gap-2 sm:gap-4 rounded-xl mx-auto"
+        className="btn-ghost btn mx-auto gap-2 rounded-xl bg-primary/30 transition-all hover:bg-primary/100 sm:gap-4"
         onClick={() => {
           setModalComments(true, true);
         }}
@@ -71,11 +79,11 @@ function LayoutArticleCommentSectionExpandedModal({
               return modalContentEl.scrollTo({ top: 0, behavior: "smooth" });
           }}
         />
-        <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4">
+        <div className="flex flex-col gap-2 p-2 sm:gap-4 sm:p-4">
           <ArticleComments commentList={commentList} />
           {!loading && commentList.comments.length < commentList.total && (
             <MainIntersectionObserverTrigger
-              className="w-full h-24 "
+              className="h-24 w-full "
               callback={async (intersecting) => {
                 // console.log(intersecting);
                 if (intersecting) {
