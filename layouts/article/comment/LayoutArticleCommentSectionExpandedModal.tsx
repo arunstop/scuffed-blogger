@@ -1,9 +1,13 @@
 import { isEqual } from "lodash";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { MdExpandMore, MdRefresh } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
-import MobileHeader, { MobileHeaderActionProps } from "../../../components/main/MobileHeader";
+import MainIntersectionObserverTrigger from "../../../components/main/MainIntersectionObserverTrigger";
+import MobileHeader, {
+  MobileHeaderActionProps,
+} from "../../../components/main/MobileHeader";
 import ModalTemplate from "../../../components/modal/ModalTemplate";
+import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import {
   CommentModelsSortType,
   CommentModelsWithPaging,
@@ -18,9 +22,8 @@ function LayoutArticleCommentSectionExpandedModal({
 }: {
   commentList: CommentModelsWithPaging;
   articleId: string;
-  loadComments: (sortBy?: CommentModelsSortType) => void;
+  loadComments: (sortBy?: CommentModelsSortType) => Promise<void>;
 }) {
-  console.log("render this");
   const { show: modalComments, toggle: setModalComments } =
     useModalRoutedBehaviorHook("comments");
   const headerActions: MobileHeaderActionProps[] = useMemo(
@@ -36,6 +39,7 @@ function LayoutArticleCommentSectionExpandedModal({
       ] as MobileHeaderActionProps[],
     [],
   );
+  const [loading, setLoading] = useState(false);
   return (
     <>
       {/* trigger */}
@@ -69,14 +73,20 @@ function LayoutArticleCommentSectionExpandedModal({
         />
         <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4">
           <ArticleComments commentList={commentList} />
-          <div
-            className="w-full h-24"
-            onClick={() => {
-              loadComments("top");
-            }}
-          >
-            loading trigger
-          </div>
+          {!loading && commentList.comments.length < commentList.total && (
+            <MainIntersectionObserverTrigger
+              className="w-full h-24 bg-red-500"
+              callback={async (intersecting) => {
+                // console.log(intersecting);
+                if (intersecting) {
+                  setLoading(intersecting);
+                  await loadComments();
+                  setLoading(false);
+                }
+              }}
+            />
+          )}
+          {loading && <LoadingIndicator spinner />}
         </div>
       </ModalTemplate>
     </>

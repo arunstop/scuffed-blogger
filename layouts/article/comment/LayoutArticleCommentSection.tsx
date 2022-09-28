@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { MdSort } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
 import Alert from "../../../components/main/Alert";
@@ -8,6 +8,7 @@ import {
   CommentModelListPagedSorted,
   CommentModelsSortType,
 } from "../../../utils/data/models/CommentModel";
+import { waitFor } from "../../../utils/helpers/DelayHelpers";
 import { getElById } from "../../../utils/helpers/UiHelpers";
 import { fbCommentGet } from "../../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import LayoutArticleCommentForm from "./LayoutArticleCommentForm";
@@ -20,17 +21,42 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
 
   const [commentList, setCommentList] = useState<CommentModelListPagedSorted>();
   const [sortedBy, setSortedBy] = useState<CommentModelsSortType>("new");
+  const commentListPreview: CommentModelListPagedSorted = {
+    ...commentList,
+    comments: commentList?.comments.slice(0, 5) || [],
+  } as CommentModelListPagedSorted;
 
-  const loadComments = async (sortBy?: CommentModelsSortType) => {
-    const commentsFromDb = await fbCommentGet({
-      data: { articleId, start: 0, count: 5, sortBy: sortBy || sortedBy },
-    });
-    console.log("commentsFromDb", commentsFromDb);
-    if (commentsFromDb) {
-      setCommentList(commentsFromDb);
-      setSortedBy(sortBy || sortedBy);
-    }
-  };
+  const loadComments = useCallback(
+    async (newSortingType?: CommentModelsSortType) => {
+      // define where to start
+      const startFrom = newSortingType || !commentList ? 0 : commentList.offset;
+      const commentsFromDb = await fbCommentGet({
+        data: {
+          articleId,
+          start: startFrom,
+          count: 5,
+          sortBy: newSortingType || commentList?.sortBy || sortedBy,
+        },
+      });
+      // console.log("commentsFromDb", commentsFromDb);
+      if (commentsFromDb) {
+        setCommentList((prev) => {
+          // if previous value is not empty
+          // and using the same sort method
+          if (prev && !newSortingType) {
+            return {
+              ...commentsFromDb,
+              comments: [...prev.comments, ...commentsFromDb.comments],
+            } as CommentModelListPagedSorted;
+          }
+          // else
+          return commentsFromDb;
+        });
+        // setSortedBy(sortBy || sortedBy);
+      }
+    },
+    [commentList?.offset],
+  );
 
   const sorts: {
     type: CommentModelsSortType | "cancel";
@@ -65,12 +91,12 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
   }
   // console.log("sortedBy", sortedBy);
   useEffect(() => {
-    loadComments;
+    loadComments();
     return () => {};
   }, []);
-  
+
   useEffect(() => {
-    loadComments();
+    loadComments(sortedBy);
     return () => {};
   }, [sortedBy]);
 
@@ -100,7 +126,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
               <ul
                 tabIndex={0}
                 className="dropdown-content menu !z-[1] w-52 rounded-xl bg-base-300 p-2 text-sm
-            font-bold ring-[1px] ring-base-content/10 sm:text-base [&_a]:!rounded-xl"
+                font-bold ring-[1px] ring-base-content/10 sm:text-base [&_a]:!rounded-xl"
               >
                 {sorts.map((e, idx) => {
                   return (
@@ -173,14 +199,17 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
             <span>{`No comments yet, let the people know, what's your thought about this article..`}</span>
           </Alert>
         ) : (
-          <ArticleComments commentList={commentList} />
+          <ArticleComments commentList={commentListPreview} />
         )}
       </div>
       {commentList && commentList?.total > 5 && (
         <LayoutArticleCommentSectionExpandedModal
           commentList={commentList}
           articleId={articleId}
-          loadComments={loadComments}
+          loadComments={async () => {
+            await waitFor(300);
+            await loadComments();
+          }}
         />
       )}
     </>
