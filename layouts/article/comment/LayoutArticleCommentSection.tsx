@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdSort } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
 import Alert from "../../../components/main/Alert";
@@ -23,10 +23,13 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
 
   const loadComments = async (sortBy?: CommentModelsSortType) => {
     const commentsFromDb = await fbCommentGet({
-      data: { articleId, start: 0, count: 5, sortBy: sortedBy },
+      data: { articleId, start: 0, count: 5, sortBy: sortBy || sortedBy },
     });
-    // console.log("commentsFromDb", commentsFromDb);
-    if (commentsFromDb) setCommentList(commentsFromDb);
+    console.log("commentsFromDb", commentsFromDb);
+    if (commentsFromDb) {
+      setCommentList(commentsFromDb);
+      setSortedBy(sortBy || sortedBy);
+    }
   };
 
   const sorts: {
@@ -60,12 +63,18 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
     if (sortedBy === "top") return "top comments";
     else return "";
   }
-
+  // console.log("sortedBy", sortedBy);
+  useEffect(() => {
+    loadComments;
+    return () => {};
+  }, []);
+  
   useEffect(() => {
     loadComments();
+    return () => {};
   }, [sortedBy]);
 
-  console.log(user);
+  // console.log(user);
   // console.log("commentList", commentList);
 
   // console.log("render ArticleCommentSection");
@@ -167,14 +176,15 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
           <ArticleComments commentList={commentList} />
         )}
       </div>
-      {commentList && commentList.total > 5 && (
+      {commentList && commentList?.total > 5 && (
         <LayoutArticleCommentSectionExpandedModal
           commentList={commentList}
           articleId={articleId}
+          loadComments={loadComments}
         />
       )}
     </>
   );
 }
 
-export default LayoutArticleCommentSection;
+export default React.memo(LayoutArticleCommentSection);

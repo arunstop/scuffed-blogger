@@ -1,23 +1,26 @@
-import { useMemo, useState } from "react";
+import { isEqual } from "lodash";
+import React, { useMemo } from "react";
 import { MdExpandMore, MdRefresh } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
-import MobileHeader, {
-  MobileHeaderActionProps
-} from "../../../components/main/MobileHeader";
+import MobileHeader, { MobileHeaderActionProps } from "../../../components/main/MobileHeader";
 import ModalTemplate from "../../../components/modal/ModalTemplate";
-import { CommentModelsWithPaging } from "../../../utils/data/models/CommentModel";
+import {
+  CommentModelsSortType,
+  CommentModelsWithPaging,
+} from "../../../utils/data/models/CommentModel";
 import { getElById } from "../../../utils/helpers/UiHelpers";
 import { useModalRoutedBehaviorHook } from "../../../utils/hooks/ModalRoutedBehaviorHook";
 
 function LayoutArticleCommentSectionExpandedModal({
   commentList,
   articleId,
+  loadComments,
 }: {
   commentList: CommentModelsWithPaging;
   articleId: string;
+  loadComments: (sortBy?: CommentModelsSortType) => void;
 }) {
-  const [comments, setComments] =
-    useState<CommentModelsWithPaging>(commentList);
+  console.log("render this");
   const { show: modalComments, toggle: setModalComments } =
     useModalRoutedBehaviorHook("comments");
   const headerActions: MobileHeaderActionProps[] = useMemo(
@@ -42,7 +45,7 @@ function LayoutArticleCommentSectionExpandedModal({
           setModalComments(true, true);
         }}
       >
-        <MdExpandMore className="text-2xl sm:text-3xl"/>
+        <MdExpandMore className="text-2xl sm:text-3xl" />
         <span className="text-sm sm:text-base">Show more comments</span>
       </button>
       <ModalTemplate
@@ -65,12 +68,29 @@ function LayoutArticleCommentSectionExpandedModal({
           }}
         />
         <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4">
-          <ArticleComments commentList={comments} />
-          <div className="w-full h-24">loading trigger</div>
+          <ArticleComments commentList={commentList} />
+          <div
+            className="w-full h-24"
+            onClick={() => {
+              loadComments("top");
+            }}
+          >
+            loading trigger
+          </div>
         </div>
       </ModalTemplate>
     </>
   );
 }
 
-export default LayoutArticleCommentSectionExpandedModal;
+export default React.memo(
+  LayoutArticleCommentSectionExpandedModal,
+  (prev, next) => {
+    // console.log("prev", prev);
+    // console.log("next", next);
+    const propsAreEqual = isEqual(prev.commentList, next.commentList);
+    // console.log(propsAreEqual);
+
+    return propsAreEqual;
+  },
+);
