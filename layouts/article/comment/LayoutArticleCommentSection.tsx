@@ -32,7 +32,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
       // define where to start
       // console.log('123');
 
-      const startFrom = newSortingType || !commentList ? 0 : commentList.offset;
+      const startFrom = !!newSortingType || !commentList ? 0 : commentList.offset;
       const commentsFromDb = await fbCommentGet({
         data: {
           articleId,
@@ -58,7 +58,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
         // setSortedBy(sortBy || sortedBy);
       }
     },
-    [commentList?.offset],
+    [commentList],
   );
 
   const sortOptions: DropdownOption[] = useMemo(

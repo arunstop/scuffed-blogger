@@ -71,7 +71,7 @@ function LayoutArticleCommentSectionExpandedModal({
           back={() => {
             setModalComments(false);
           }}
-          title="Comments"
+          title={`Comments`}
           actions={headerActions}
           toTop={() => {
             const modalContentEl = getElById("modal-content");
@@ -79,10 +79,11 @@ function LayoutArticleCommentSectionExpandedModal({
               return modalContentEl.scrollTo({ top: 0, behavior: "smooth" });
           }}
         />
-        <div className="flex flex-col gap-2 p-2 sm:gap-4 sm:p-4">
+        <div className="flex flex-col gap-2 p-2 sm:gap-4 sm:p-4 animate-slideInUp animate-duration-300 animate-delay-[1]">
           <ArticleComments commentList={commentList} observe />
           {!loading && commentList.comments.length < commentList.total && (
             <MainIntersectionObserverTrigger
+              key={commentList.offset}
               className="h-24 w-full "
               callback={async (intersecting) => {
                 // console.log(intersecting);
@@ -112,3 +113,4 @@ export default React.memo(
     return propsAreEqual;
   },
 );
+// export default LayoutArticleCommentSectionExpandedModal;
