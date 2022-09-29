@@ -41,9 +41,6 @@ function LayoutArticlePageSlug({
       setArticle((prev) => ({ ...prev, content: content }));
       await fbArticleUpdateView({
         data: { id: article.id },
-        callback(resp) {
-          alert(resp.message);
-        },
       });
     }
   }, []);
