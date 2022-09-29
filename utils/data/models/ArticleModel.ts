@@ -22,6 +22,7 @@ export interface ArticleModel {
   community: string;
   likes: string[];
   dislikes: string[];
+  views: number;
 }
 
 export function isArticleModel(value: unknown) {
@@ -47,6 +48,7 @@ export function isArticleModel(value: unknown) {
     "community" in value &&
     "likes" in value &&
     "dislikes" in value;
+  "vies" in value;
   // list all properties
   const props = [
     "id",
@@ -65,6 +67,7 @@ export function isArticleModel(value: unknown) {
     "community",
     "likes",
     "dislikes",
+    "views",
   ];
   // check if `value` has props that is not in the required on the props
   const unrequiredPropsValid =
@@ -116,6 +119,7 @@ export function toArticleModel({
     likes: [],
     dislikes: [],
     community: "",
+    views: 0,
   };
 }
 
@@ -139,6 +143,7 @@ export function factoryArticleComplete(
     community: partial.community || "",
     likes: partial.likes || [],
     dislikes: partial.dislikes || [],
+    views: partial.views || 0,
   };
   return res;
 }
@@ -178,7 +183,9 @@ export function toArticleModelUpdated({
   };
 }
 
-export function factoryArticleRemoveContent(article: ArticleModel): ArticleModel {
+export function factoryArticleRemoveContent(
+  article: ArticleModel,
+): ArticleModel {
   return { ...article, content: "" };
 }
 
@@ -206,5 +213,6 @@ export function toArticleModelDraft(
     likes: [],
     dislikes: [],
     community: "",
+    views: 0,
   };
 }
