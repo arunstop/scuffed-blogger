@@ -1,6 +1,6 @@
 import { formatDistance } from "date-fns";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   MdForum,
   MdMoreVert,
@@ -11,6 +11,7 @@ import {
 import ArticleSectionAction from "../../../components/article/ArticleActions";
 import ArticleProgressBar from "../../../components/article/ArticleProgressBar";
 import MainContainer from "../../../components/main/MainContainer";
+import MainIntersectionObserverTrigger from "../../../components/main/MainIntersectionObserverTrigger";
 import MainMarkdownContainer from "../../../components/main/MainMarkdownContainer";
 import MainPostStatusChip from "../../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../../components/main/MainPostUserPopup";
@@ -18,8 +19,10 @@ import MobileHeader from "../../../components/main/MobileHeader";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import UserHeader from "../../../components/user/UserHeader";
 import { ArticleModel } from "../../../utils/data/models/ArticleModel";
-import useLazyScrollerHook from "../../../utils/hooks/LazyScrollerHook";
-import { fbArticleContentGet } from "../../../utils/services/network/FirebaseApi/ArticleModules";
+import {
+  fbArticleContentGet,
+  fbArticleUpdateView,
+} from "../../../utils/services/network/FirebaseApi/ArticleModules";
 import LayoutArticleMoreSection from "../LayoutArticleMoreSection";
 
 function LayoutArticlePageSlug({
@@ -32,25 +35,24 @@ function LayoutArticlePageSlug({
 
   const [article, setArticle] = useState(articleContentless);
 
-  const getContent = async () => {
+  const getContent = useCallback(async () => {
     const content = await fbArticleContentGet({ id: article.id });
     if (content) {
       setArticle((prev) => ({ ...prev, content: content }));
+      await fbArticleUpdateView({
+        data: { id: article.id },
+        callback(resp) {
+          alert(resp.message);
+        },
+      });
     }
-  };
-  const {
-    load: loadContentSection,
-    ref: contentSectionRef,
-    setLoad: setLoadContentSection,
-  } = useLazyScrollerHook({
-    callback: () => {
-      getContent();
-    },
-  });
+  }, []);
 
   // reload article content on slug change
   useEffect(() => {
-    setLoadContentSection(false);
+    // removing article content
+
+    setArticle((prev) => ({ ...prev, content: "" }));
   }, [articleId]);
 
   return (
@@ -149,11 +151,15 @@ function LayoutArticlePageSlug({
             <LayoutArticleMoreSection article={article} />
           </>
         ) : (
-          <LoadingIndicator
-            ref={contentSectionRef}
-            spinner
-            text="Loading content"
-          />
+          <MainIntersectionObserverTrigger
+            callback={(intersecting) => {
+              if (intersecting) {
+                return getContent();
+              }
+            }}
+          >
+            <LoadingIndicator spinner text="Loading content" />
+          </MainIntersectionObserverTrigger>
         )}
       </MainContainer>
     </>
