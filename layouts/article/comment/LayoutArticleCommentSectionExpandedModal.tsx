@@ -29,13 +29,26 @@ function LayoutArticleCommentSectionExpandedModal({
 }) {
   const { show: modalComments, toggle: setModalComments } =
     useModalRoutedBehaviorHook("comments");
+  function toTop() {
+    const modalContentEl = getElById("modal-content");
+    if (modalContentEl)
+      return modalContentEl.scrollTo({ top: 0, behavior: "smooth" });
+  }
   const headerActions: MobileHeaderActionProps[] = useMemo(
     () =>
       [
         {
           label: "Sort",
           icon: <MdSort />,
-          options: sortOptions,
+          options: sortOptions.map((e) => {
+            return {
+              ...e,
+              action() {
+                e.action?.();
+                toTop();
+              },
+            };
+          }),
         },
         {
           label: "Reload",
@@ -73,11 +86,7 @@ function LayoutArticleCommentSectionExpandedModal({
           }}
           title={`Comments`}
           actions={headerActions}
-          toTop={() => {
-            const modalContentEl = getElById("modal-content");
-            if (modalContentEl)
-              return modalContentEl.scrollTo({ top: 0, behavior: "smooth" });
-          }}
+          toTop={toTop}
         />
         <div className="flex flex-col gap-2 p-2 sm:gap-4 sm:p-4 animate-slideInUp animate-duration-300 animate-delay-[1]">
           <ArticleComments commentList={commentList} observe />
