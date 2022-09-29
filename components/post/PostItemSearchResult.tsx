@@ -92,7 +92,7 @@ function PostItemSearchResultContent({
       >
         <div className="text-lg font-bold line-clamp-2">{article.title}</div>
         <div className="block self-end text-end text-xs font-medium line-clamp-1 sm:text-sm [&>b]:mx-[0.25rem]">
-          <span className="">323 views</span>
+          <span className="">{article.views} views</span>
           <b className="font-black">&middot;</b>
 
           <span className="">

@@ -147,7 +147,7 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
           {`${article.desc}`}
         </span>
         <div className="block text-xs sm:text-sm [&>b]:mx-[0.5rem] line-clamp-1 font-medium">
-        <span className="">323 views</span>
+        <span className="">{article.views} views</span>
         <b className="font-black">&middot;</b>
           
           <span className="">
