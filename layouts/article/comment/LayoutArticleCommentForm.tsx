@@ -98,4 +98,4 @@ function LayoutArticleCommentForm({
   );
 }
 
-export default LayoutArticleCommentForm;
+export default React.memo(LayoutArticleCommentForm);

@@ -1,3 +1,4 @@
+import { omit } from "lodash";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
@@ -30,11 +31,17 @@ export function useModalRoutedBehaviorHook(mainParam: string) {
 
   // close state
   const close = useCallback(() => {
-    // const currentPath = routeTrimQuery(router.asPath);
-    // router.replace(currentPath, undefined, {
-    //   shallow: true,
-    // });
-    if(value) router.back();
+    const queryAfterBacking = omit(router.query, [mainParam]);
+    router.replace(
+      {
+        query: queryAfterBacking,
+      },
+      undefined,
+      {
+        shallow: true,
+      },
+    );
+    // if(value) router.back();
   }, [value]);
 
   // Determine on what query/param on url, the state will change

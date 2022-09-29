@@ -1,19 +1,23 @@
 import React from "react";
 import { CommentModelsWithPaging } from "../../utils/data/models/CommentModel";
-import { useArticleModalsBehaviorHook } from "../../utils/hooks/ArticleModalsBehaviorHook";
+import { useModalRoutedBehaviorHook } from "../../utils/hooks/ModalRoutedBehaviorHook";
 import ArticleCommentItem from "./ArticleCommentItem";
 import ArticleCommentOptionModal from "./ArticleCommentOptionModal";
 import ArticleCommentReplyModal from "./ArticleCommentReplyModal";
 
+const optionParam = "option";
+const replyParam = "reply";
 function ArticleComments({
   commentList,
+  observe,
 }: // addComment,
 {
   commentList: CommentModelsWithPaging;
+  observe?: boolean;
   // addComment: (comments:Comment[]) => void;
 }) {
-  const { optionModal, closeOptionModal, replyModal, closeReplyModal } =
-    useArticleModalsBehaviorHook();
+  const optionModal = useModalRoutedBehaviorHook(optionParam);
+  const replyModal = useModalRoutedBehaviorHook(replyParam);
 
   return (
     <>
@@ -22,18 +26,19 @@ function ArticleComments({
           <ArticleCommentItem
             key={e.id}
             comment={e}
-            // openOptionModal={openOptionModal}
-            // openReplyModal={openReplyModal}
+            optionParam={optionParam}
+            replyParam={replyParam}
+            observe={observe}
           />
         ))}
       </div>
       <ArticleCommentOptionModal
-        value={optionModal !== null}
-        onClose={closeOptionModal}
+        value={optionModal.show}
+        onClose={() => optionModal.toggle(false)}
       />
       <ArticleCommentReplyModal
-        value={replyModal !== null}
-        onClose={closeReplyModal}
+        value={replyModal.show}
+        onClose={() => replyModal.toggle(false)}
       />
     </>
   );
