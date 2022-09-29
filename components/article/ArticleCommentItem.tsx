@@ -130,7 +130,7 @@ function ArticleCommentItemContent({
   return (
     <div className="flex flex-row items-start gap-2 sm:gap-4">
       <UserAvatar src={userAvatar} />
-      <div className="flex flex-1 flex-col gap-2">
+      <div className="flex flex-1 flex-col gap-2 overflow-hidden">
         <div className="inline-flex gap-4">
           <div className="flex flex-col">
             <span className="text-base font-bold !leading-[1.2] sm:text-lg capitalize">
@@ -220,7 +220,7 @@ function ArticleCommentItemContent({
           </>
           {/* </div> */}
         </div>
-        <span className="text-sm sm:text-base">{comment.content}</span>
+        <span className="text-sm sm:text-base truncate whitespace-pre-line">{`${comment.content}`}</span>
         <div className={`flex gap-2 sm:gap-4 items-center justify-end `}>
           {actions.map((e, idx) => {
             return <ArticleCommentItemActionButton key={idx} {...e} />;
