@@ -1,10 +1,8 @@
 import { get, orderByChild, query, ref, set } from "firebase/database";
 import uaParser from "ua-parser-js";
-import { UserModel, UserSession } from "../../../base/data/models/UserModel";
-import {
-  ArticleModel
-} from "../../../base/data/models/ArticleModel";
-import { firebaseClient } from "./FirebaseClient";
+import { firebaseClient } from "../clients/FirebaseClient";
+import { ArticleModel } from "../data/models/ArticleModel";
+import { UserModel, UserSession } from "../data/models/UserModel";
 // Modules for realtime database
 
 const db = firebaseClient.rtdb;

@@ -5,27 +5,35 @@ import {
   User,
 } from "firebase/auth";
 import { nanoid } from "nanoid";
-import { LoginFields } from "../../../../components/auth/AuthLoginForm";
-import { AuthRegisterProps } from "../../../../components/auth/AuthRegisterForm";
+import { firebaseAuth } from "../../base/clients/FirebaseClient";
 import {
-  MainApiResponse,
   MainNetworkResponse,
   netError,
-  netLoading,
   netSuccess,
-} from "../../../../base/data/Main";
-import { createUserModel, UserModel } from "../../../../base/data/models/UserModel";
-import { firebaseAuth } from "../FirebaseClient";
-import { fsUserAdd, fsUserGetByEmail, fsUserUpdate } from "../FirestoreModules";
-import { rtdbSessionAdd, rtdbSessionLatestSet } from "../RtdbModules";
-import { stFileDeleteByFullLink } from "../StorageModules";
-import { uploadFile } from "./FileModules";
+  netLoading,
+  MainApiResponse,
+} from "../../base/data/Main";
+import { UserModel, createUserModel } from "../../base/data/models/UserModel";
+import {
+  fsUserUpdate,
+  fsUserGetByEmail,
+  fsUserAdd,
+} from "../../base/repos/firestoreDb/FirestoreUserRepo";
 import {
   rtUserDisplayAdd,
-  rtUserDisplayGetById,
   rtUserDisplayUpdate,
   UserDisplayModel,
-} from "../RealtimeDatabase/RealtimeUserModules";
+  rtUserDisplayGetById,
+} from "../../base/repos/realtimeDb/RealtimeUserRepo";
+import {
+  rtdbSessionAdd,
+  rtdbSessionLatestSet,
+} from "../../base/repos/RtdbModules";
+import { stFileDeleteByFullLink } from "../../base/repos/StorageModules";
+import { LoginFields } from "../../components/auth/AuthLoginForm";
+import { AuthRegisterProps } from "../../components/auth/AuthRegisterForm";
+
+import { uploadFile } from "./FileModules";
 
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;

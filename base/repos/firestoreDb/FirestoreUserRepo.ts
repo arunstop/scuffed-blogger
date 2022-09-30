@@ -3,9 +3,9 @@ import {
   getDoc, setDoc,
   updateDoc
 } from "firebase/firestore/lite";
-import { toJsonFriendly } from "../../app/helpers/MainHelpers";
-import { firebaseClient } from "../clients/FirebaseClient";
-import { UserModel } from "../data/models/UserModel";
+import { toJsonFriendly } from "../../../app/helpers/MainHelpers";
+import { firebaseClient } from "../../clients/FirebaseClient";
+import { UserModel } from "../../data/models/UserModel";
 
 // =============================
 // IMPORTANT : converting JSON stringify and then parse again

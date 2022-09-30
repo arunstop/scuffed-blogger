@@ -25,7 +25,7 @@ import {
   fsArticleDelete,
   fsArticleGetByUser,
   fsArticleUpdate
-} from "../../base/repos/firestoreDb/FirestoreArticleModules";
+} from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
   rtArticleGetAll,
   rtArticleMirrorAdd,
@@ -33,7 +33,7 @@ import {
   rtArticleMirrorUpdate,
   rtArticleSearch,
   rtArticleUpdateView
-} from "../../base/repos/realtimeDb/RealtimeArticleModules";
+} from "../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 import Fuse from "fuse.js";
 import { MainApiResponse } from "../../base/data/Main";

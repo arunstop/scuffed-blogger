@@ -1,6 +1,6 @@
 import { ref, deleteObject, listAll } from "firebase/storage";
-import { getStorageDirectory } from "../../../app/helpers/MainHelpers";
-import { firebaseClient } from "./FirebaseClient";
+import { getStorageDirectory } from "../../app/helpers/MainHelpers";
+import { firebaseClient } from "../clients/FirebaseClient";
 
 export async function stFileDeleteByFullLink(link: string) {
   // get link of the file

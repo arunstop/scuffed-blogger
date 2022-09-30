@@ -2,7 +2,7 @@ import { MainNetworkResponse } from "../../../base/data/Main";
 import { ArticleModel } from "../../../base/data/models/ArticleModel";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { rtArticleGetById } from "../../../base/repos/realtimeDb/RealtimeArticleModules";
+import { rtArticleGetById } from "../../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 // type Data = {
 //   name: string;
