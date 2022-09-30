@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ModalActionConfirmation } from "../../components/modal/ModalActionTemplate";
+import { ModalActionConfirmation } from "../../ui/components/modal/ModalActionTemplate";
 
 function useOptionModalConfirmationHook() {
   const [confirmation, setConfirmation] = useState<{

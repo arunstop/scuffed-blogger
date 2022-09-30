@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import SplashScreen from "../../components/placeholder/SplashScreen";
+import SplashScreen from "../../ui/components/placeholder/SplashScreen";
 import { ArticleModel } from "../../base/data/models/ArticleModel";
 import { APP_NAME } from "../../app/helpers/Constants";
 import { mainApi } from "../../app/services/MainApi";
@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps<{
 };
 
 const LazyLayoutArticlePageSlug = dynamic(
-  () => import("../../layouts/article/pages/LayoutArticlePageSlug"),
+  () => import("../../ui/layouts/article/pages/LayoutArticlePageSlug"),
   {
     ssr: false,
     loading(loadingProps) {

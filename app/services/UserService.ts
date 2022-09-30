@@ -30,8 +30,8 @@ import {
   rtdbSessionLatestSet,
 } from "../../base/repos/RtdbModules";
 import { stFileDeleteByFullLink } from "../../base/repos/StorageModules";
-import { LoginFields } from "../../components/auth/AuthLoginForm";
-import { AuthRegisterProps } from "../../components/auth/AuthRegisterForm";
+import { LoginFields } from "../../ui/components/auth/AuthLoginForm";
+import { AuthRegisterProps } from "../../ui/components/auth/AuthRegisterForm";
 
 import { uploadFile } from "./FileService";
 

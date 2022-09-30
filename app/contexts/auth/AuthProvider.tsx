@@ -1,14 +1,13 @@
 import { useRouter } from "next/router";
 import { destroyCookie, setCookie } from "nookies";
 import { ReactNode, useEffect, useReducer } from "react";
+import { firebaseAuth } from "../../../base/clients/FirebaseClient";
 import { AuthAction, AuthContextProps } from "../../../base/data/contexts/AuthTypes";
 import { UserModel } from "../../../base/data/models/UserModel";
+import { rtdbSessionAdd } from "../../../base/repos/RtdbModules";
 import { COOKIE_USER_AUTH } from "../../helpers/Constants";
-import { fbUserGet } from "../../../utils/services/network/FirebaseApi/UserModules";
-import { firebaseAuth } from "../../../utils/services/network/FirebaseClient";
-import {
-  rtdbSessionAdd
-} from "../../../utils/services/network/RtdbModules";
+import { fbUserGet } from "../../services/UserService";
+
 import { AuthContext } from "./AuthContext";
 import { authReducer } from "./AuthReducer";
 

@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import React from "react";
-import SplashScreen from "../components/placeholder/SplashScreen";
+import SplashScreen from "../ui/components/placeholder/SplashScreen";
 import { APP_DESC, APP_NAME } from "../app/helpers/Constants";
 
 // const LazyMainPostSection = dynamic(
@@ -13,7 +13,7 @@ import { APP_DESC, APP_NAME } from "../app/helpers/Constants";
 // );
 
 const LazyLayoutIndexPage = dynamic(
-  () => import("../layouts/index/pages/LayoutIndexPage"),
+  () => import("../ui/layouts/index/pages/LayoutIndexPage"),
   {
     ssr: false,
     loading(loadingProps) {
