@@ -6,13 +6,8 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { nanoid } from "nanoid";
-import {
-  MainNetworkResponse,
-  netLoading,
-  netError,
-  netSuccess,
-} from "../../../../base/data/Main";
-import { firebaseClient } from "../FirebaseClient";
+import { firebaseClient } from "../../base/clients/FirebaseClient";
+import { MainNetworkResponse, netLoading, netError, netSuccess } from "../../base/data/Main";
 
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file

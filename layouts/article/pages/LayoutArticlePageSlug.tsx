@@ -22,7 +22,7 @@ import { ArticleModel } from "../../../base/data/models/ArticleModel";
 import {
   fbArticleContentGet,
   fbArticleUpdateView,
-} from "../../../app/services/ArticleModules";
+} from "../../../app/services/ArticleService";
 import LayoutArticleMoreSection from "../LayoutArticleMoreSection";
 
 function LayoutArticlePageSlug({

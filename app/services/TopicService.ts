@@ -1,5 +1,5 @@
-import { MainNetworkResponse } from "../../../../base/data/Main";
-import { rtdbTopicGet } from "../RtdbModules";
+import { MainNetworkResponse } from "../../base/data/Main";
+import { rtdbTopicGet } from "../../base/repos/RtdbModules";
 
 export async function fbTopicGetAll({
   keyword,

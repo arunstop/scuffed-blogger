@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MdSearch, MdWorkspaces } from "react-icons/md";
 import { ArticleModel } from "../../base/data/models/ArticleModel";
-import { fbArticleSearch } from "../../app/services/ArticleModules";
+import { fbArticleSearch } from "../../app/services/ArticleService";
 import InputText from "../input/InputText";
 import PostItemSearchResult from "../post/PostItemSearchResult";
 import MainSectionSkeleton from "./MainSectionSkeleton";

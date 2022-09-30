@@ -7,7 +7,7 @@ import {
   ArticleModel,
   factoryArticleComplete,
 } from "../../data/models/ArticleModel";
-import { ArticleModelFromDb } from "../../../app/services/ArticleModules";
+import { ArticleModelFromDb } from "../../../app/services/ArticleService";
 import { firebaseClient } from "../../clients/FirebaseClient";
 
 const db = firebaseClient.rtdb;

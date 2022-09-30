@@ -19,7 +19,7 @@ import {
   ArticleListModelByUser,
   fbArticleDelete,
   fbArticleGetByUser,
-} from "../../../app/services/ArticleModules";
+} from "../../../app/services/ArticleService";
 
 function LayoutUserPagePosts() {
   const {

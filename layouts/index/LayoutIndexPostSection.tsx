@@ -10,7 +10,7 @@ import { waitFor } from "../../app/helpers/DelayHelpers";
 import {
   ArticleModelFromDb,
   fbArticleMirrorGetAll,
-} from "../../app/services/ArticleModules";
+} from "../../app/services/ArticleService";
 
 function LayoutIndexPostSection() {
   const [feed, setFeed] = useState<ArticleModelFromDb | null>(null);

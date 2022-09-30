@@ -1,6 +1,6 @@
 import { get, ref, remove, set } from "firebase/database";
 import _ from "lodash";
-import { FbCommentReactProps } from "../../../app/services/FirebaseCommentModules";
+import { FbCommentReactProps } from "../../../app/services/CommentService";
 import { firebaseClient } from "../../clients/FirebaseClient";
 import { ApiPagingReqProps } from "../../data/Main";
 import { CommentModel, CommentModelListPagedSorted, CommentModelsSortType } from "../../data/models/CommentModel";

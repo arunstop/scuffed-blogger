@@ -11,7 +11,7 @@ import { ArticleModel } from "../../../base/data/models/ArticleModel";
 import {
   fbArticleContentGet,
   fbArticleUpdate,
-} from "../../../app/services/ArticleModules";
+} from "../../../app/services/ArticleService";
 import LayoutArticleForm from "../LayoutArticleForm";
 
 export interface ArticleSubmissionProps {

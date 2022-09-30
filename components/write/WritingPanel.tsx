@@ -15,7 +15,7 @@ import { UserModel } from "../../base/data/models/UserModel";
 import { waitFor } from "../../app/helpers/DelayHelpers";
 import { transitionPullV } from "../../app/helpers/UiTransitionHelpers";
 import { scrollToTop } from "../../app/hooks/RouteChangeHook";
-import { fbArticleAdd } from "../../app/services/ArticleModules";
+import { fbArticleAdd } from "../../app/services/ArticleService";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";

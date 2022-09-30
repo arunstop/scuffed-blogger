@@ -1,22 +1,23 @@
 import { FirebaseError } from "firebase/app";
 import {
+  MainApiResponse,
+  netSuccess,
+  netError,
+  ApiPagingReqProps,
+} from "../../base/data/Main";
+import {
   CommentModel,
+  CommentModelsSortType,
+  CommentModelsWithPaging,
   CommentModelListPagedSorted,
-  CommentModelsSortType
-} from "../../../../base/data/models/CommentModel";
+} from "../../base/data/models/CommentModel";
 import {
   rtCommentAdd,
-  rtCommentDelete,
   rtCommentGet,
+  rtCommentUpdate,
   rtCommentReact,
-  rtCommentUpdate
-} from "../RealtimeDatabase/RealtimeCommentModules";
-import {
-  ApiPagingReqProps,
-  MainApiResponse, netError,
-  netSuccess
-} from "../../../../base/data/Main";
-import { CommentModelsWithPaging } from "../../../../base/data/models/CommentModel";
+  rtCommentDelete,
+} from "../../base/repos/realtimeDb/RealtimeCommentRepo";
 
 export async function fbCommentAdd({
   data,

@@ -38,7 +38,7 @@ import {
 import Fuse from "fuse.js";
 import { MainApiResponse } from "../../base/data/Main";
 import { ArticleListModel } from "../../base/data/models/ArticleListModel";
-import { uploadFile } from "./FileModules";
+import { uploadFile } from "./FileService";
 import { stDirectoryDelete, stFileDeleteByFullLink } from "../../base/repos/StorageModules";
 
 // Adding article, now using direct firebaseClient

@@ -12,7 +12,7 @@ import {
   ArticleModel,
   factoryArticleRemoveContent as factoryArticleContentRemove,
 } from "../../base/data/models/ArticleModel";
-import { fbArticleReact } from "../../app/services/ArticleModules";
+import { fbArticleReact } from "../../app/services/ArticleService";
 interface ArticleReactProps {
   value: boolean;
   action: () => void;

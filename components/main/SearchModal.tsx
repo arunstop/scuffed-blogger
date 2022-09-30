@@ -4,7 +4,7 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { MdClearAll, MdSearch, MdWorkspaces } from "react-icons/md";
 import { ArticleModel } from "../../base/data/models/ArticleModel";
 import { useUiModalSearchBehaviorHook } from "../../app/hooks/UiModalSearchBehaviorHook";
-import { fbArticleSearch } from "../../app/services/ArticleModules";
+import { fbArticleSearch } from "../../app/services/ArticleService";
 import InputText from "../input/InputText";
 import ModalTemplate from "../modal/ModalTemplate";
 import PostItemSearchResult from "../post/PostItemSearchResult";

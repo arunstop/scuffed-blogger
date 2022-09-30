@@ -33,7 +33,7 @@ import { stFileDeleteByFullLink } from "../../base/repos/StorageModules";
 import { LoginFields } from "../../components/auth/AuthLoginForm";
 import { AuthRegisterProps } from "../../components/auth/AuthRegisterForm";
 
-import { uploadFile } from "./FileModules";
+import { uploadFile } from "./FileService";
 
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;

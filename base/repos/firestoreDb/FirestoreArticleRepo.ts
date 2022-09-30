@@ -21,7 +21,7 @@ import {
   ArticleModel,
   factoryArticleComplete,
 } from "../../data/models/ArticleModel";
-import { ArticleListModelByUser } from "../../../app/services/ArticleModules";
+import { ArticleListModelByUser } from "../../../app/services/ArticleService";
 import { firebaseClient } from "../../clients/FirebaseClient";
 
 const articleDb = firebaseClient.collections.articles;
