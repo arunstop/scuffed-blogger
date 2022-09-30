@@ -1,5 +1,5 @@
 import React from "react";
-import useLazyScrollerHook from "../../utils/hooks/LazyScrollerHook";
+import useLazyScrollerHook from "../../app/hooks/LazyScrollerHook";
 
 function MainLazyScrollTrigger({
   callback,

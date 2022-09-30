@@ -11,12 +11,12 @@ import {
   MdNotes,
   MdPerson
 } from "react-icons/md";
-import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { UserModel } from "../../utils/data/models/UserModel";
-import { waitFor } from "../../utils/helpers/DelayHelpers";
-import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
-import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
-import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
+import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
+import { UserModel } from "../../base/data/models/UserModel";
+import { waitFor } from "../../app/helpers/DelayHelpers";
+import { transitionPullV } from "../../app/helpers/UiTransitionHelpers";
+import { useNetworkAction } from "../../app/hooks/NetworkActionHook";
+import { scrollToTop } from "../../app/hooks/RouteChangeHook";
 import { fbUserUpdate } from "../../utils/services/network/FirebaseApi/UserModules";
 import InputTextArea from "../input/InputTextArea";
 import InputText from "../input/InputText";

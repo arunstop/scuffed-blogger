@@ -1,14 +1,14 @@
 import { Transition } from "@headlessui/react";
 import React, { ReactNode } from "react";
 import { MdClose } from "react-icons/md";
-import { BreakpointTypes } from "../../utils/data/UI";
+import { BreakpointTypes } from "../../base/data/UI";
 import {
   getScalingIcon,
   getScalingInput,
   getScalingInputClearIcon,
   getScalingInputIcon,
-} from "../../utils/helpers/InputStyleHelpers";
-import { transitionScaleY } from "../../utils/helpers/UiTransitionHelpers";
+} from "../../app/helpers/InputStyleHelpers";
+import { transitionScaleY } from "../../app/helpers/UiTransitionHelpers";
 
 type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   clearable?: boolean;

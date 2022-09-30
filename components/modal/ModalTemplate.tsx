@@ -1,7 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, ReactNode } from "react";
 import { FaTimes } from "react-icons/fa";
-import { ModalProps } from "../../utils/data/Main";
+import { ModalProps } from "../../base/data/Main";
 
 interface ModalTemplateProps {
   title: string;

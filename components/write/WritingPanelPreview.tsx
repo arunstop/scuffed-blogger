@@ -1,11 +1,11 @@
 import { Transition } from "@headlessui/react";
 import { useEffect, useState } from "react";
-import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
+import { useWritingPanelCtx } from "../../app/contexts/writingPanel/WritingPanelHook";
 import {
   ArticleModel,
   toArticleModelDraft,
-} from "../../utils/data/models/ArticleModel";
-import { UserModel } from "../../utils/data/models/UserModel";
+} from "../../base/data/models/ArticleModel";
+import { UserModel } from "../../base/data/models/UserModel";
 import ArticleContent from "../article/ArticleContent";
 // import MainMarkdownContainer from "../main/MainMarkdownContainer";
 import LoadingIndicator from "../placeholder/LoadingIndicator";

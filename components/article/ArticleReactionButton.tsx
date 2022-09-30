@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { MainColorTypes } from "../../utils/data/Colors";
+import { MainColorTypes } from "../../base/data/Colors";
 
 interface ActionButtonProps {
   icon?: ReactNode;

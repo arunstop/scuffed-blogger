@@ -12,9 +12,9 @@ import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import {
   CommentModelsSortType,
   CommentModelsWithPaging,
-} from "../../../utils/data/models/CommentModel";
-import { getElById } from "../../../utils/helpers/UiHelpers";
-import { useModalRoutedBehaviorHook } from "../../../utils/hooks/ModalRoutedBehaviorHook";
+} from "../../../base/data/models/CommentModel";
+import { getElById } from "../../../app/helpers/UiHelpers";
+import { useModalRoutedBehaviorHook } from "../../../app/hooks/ModalRoutedBehaviorHook";
 
 function LayoutArticleCommentSectionExpandedModal({
   commentList,

@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { MdHome, MdNotifications, MdPerson, MdSearch } from "react-icons/md";
-import { routeTrimQuery } from "../../utils/helpers/MainHelpers";
-import { useUiSidebarBehaviorHook } from "../../utils/hooks/UiSidebarBehaviorHook";
+import { routeTrimQuery } from "../../app/helpers/MainHelpers";
+import { useUiSidebarBehaviorHook } from "../../app/hooks/UiSidebarBehaviorHook";
 
 interface BottomBarTabProps {
   title: string;

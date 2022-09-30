@@ -2,11 +2,11 @@ import { nanoid } from "nanoid";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import InputTextArea from "../../../components/input/InputTextArea";
-import { useAuthCtx } from "../../../utils/contexts/auth/AuthHook";
-import { CommentModel } from "../../../utils/data/models/CommentModel";
+import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
+import { CommentModel } from "../../../base/data/models/CommentModel";
 import { fbCommentAdd } from "../../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import UserAvatar from "../../../components/user/UserAvatar";
-import { userAvatarLinkGet } from "../../../utils/helpers/MainHelpers";
+import { userAvatarLinkGet } from "../../../app/helpers/MainHelpers";
 
 function LayoutArticleCommentForm({
   articleId,

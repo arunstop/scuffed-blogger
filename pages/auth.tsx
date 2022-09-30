@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import SplashScreen from "../components/placeholder/SplashScreen";
-import { APP_NAME } from "../utils/helpers/Constants";
+import { APP_NAME } from "../app/helpers/Constants";
 
 const LazyLayoutAuthPage = dynamic(
   () => import("../layouts/auth/pages/LayoutAuthPage"),

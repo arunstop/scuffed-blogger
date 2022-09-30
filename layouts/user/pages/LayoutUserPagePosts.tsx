@@ -11,15 +11,15 @@ import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
-import { useAuthCtx } from "../../../utils/contexts/auth/AuthHook";
-import { waitFor } from "../../../utils/helpers/DelayHelpers";
-import { transitionPullV } from "../../../utils/helpers/UiTransitionHelpers";
-import { useModalRoutedBehaviorHook } from "../../../utils/hooks/ModalRoutedBehaviorHook";
+import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
+import { waitFor } from "../../../app/helpers/DelayHelpers";
+import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
+import { useModalRoutedBehaviorHook } from "../../../app/hooks/ModalRoutedBehaviorHook";
 import {
   ArticleListModelByUser,
   fbArticleDelete,
   fbArticleGetByUser,
-} from "../../../utils/services/network/FirebaseApi/ArticleModules";
+} from "../../../app/services/ArticleModules";
 
 function LayoutUserPagePosts() {
   const {

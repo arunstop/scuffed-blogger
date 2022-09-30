@@ -1,8 +1,8 @@
-import { MainNetworkResponse } from "./../../../utils/data/Main";
-import { ArticleModel } from "./../../../utils/data/models/ArticleModel";
+import { MainNetworkResponse } from "../../../base/data/Main";
+import { ArticleModel } from "../../../base/data/models/ArticleModel";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { rtArticleGetById } from "../../../utils/services/network/RealtimeDatabase/RealtimeArticleModules";
+import { rtArticleGetById } from "../../../base/repos/realtimeDb/RealtimeArticleModules";
 
 // type Data = {
 //   name: string;

@@ -1,8 +1,8 @@
 import NextNProgress from "nextjs-progressbar";
 import { ReactNode } from "react";
-import { AuthProvider } from "../../utils/contexts/auth/AuthProvider";
-import { UiProvider } from "../../utils/contexts/ui/UiProvider";
-import { UserModel } from "../../utils/data/models/UserModel";
+import { AuthProvider } from "../../app/contexts/auth/AuthProvider";
+import { UiProvider } from "../../app/contexts/ui/UiProvider";
+import { UserModel } from "../../base/data/models/UserModel";
 import LayoutMainWrapper from "./LayoutMainWrapper";
 
 function LayoutAppWrapper({

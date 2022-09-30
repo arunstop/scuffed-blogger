@@ -5,12 +5,12 @@ import ErrorPlaceholder from "../../components/placeholder/ErrorPlaceholder";
 import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
 import PostItem from "../../components/post/PostItem";
 import PostOptionModal from "../../components/post/PostOptionModal";
-import { MainNetworkResponse } from "../../utils/data/Main";
-import { waitFor } from "../../utils/helpers/DelayHelpers";
+import { MainNetworkResponse } from "../../base/data/Main";
+import { waitFor } from "../../app/helpers/DelayHelpers";
 import {
   ArticleModelFromDb,
   fbArticleMirrorGetAll,
-} from "../../utils/services/network/FirebaseApi/ArticleModules";
+} from "../../app/services/ArticleModules";
 
 function LayoutIndexPostSection() {
   const [feed, setFeed] = useState<ArticleModelFromDb | null>(null);

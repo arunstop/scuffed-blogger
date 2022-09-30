@@ -7,12 +7,12 @@ import {
   MdThumbDown,
   MdThumbUp,
 } from "react-icons/md";
-import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
+import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
 import {
   ArticleModel,
   factoryArticleRemoveContent as factoryArticleContentRemove,
-} from "../../utils/data/models/ArticleModel";
-import { fbArticleReact } from "../../utils/services/network/FirebaseApi/ArticleModules";
+} from "../../base/data/models/ArticleModel";
+import { fbArticleReact } from "../../app/services/ArticleModules";
 interface ArticleReactProps {
   value: boolean;
   action: () => void;

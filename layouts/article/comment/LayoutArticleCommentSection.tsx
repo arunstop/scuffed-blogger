@@ -4,13 +4,13 @@ import { MdSort } from "react-icons/md";
 import ArticleComments from "../../../components/article/ArticleComments";
 import Alert from "../../../components/main/Alert";
 import Dropdown,{ DropdownOption } from "../../../components/main/Dropdown";
-import { useAuthCtx } from "../../../utils/contexts/auth/AuthHook";
+import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import {
   CommentModelListPagedSorted,
   CommentModelsSortType,
-} from "../../../utils/data/models/CommentModel";
-import { waitFor } from "../../../utils/helpers/DelayHelpers";
-import { getElById } from "../../../utils/helpers/UiHelpers";
+} from "../../../base/data/models/CommentModel";
+import { waitFor } from "../../../app/helpers/DelayHelpers";
+import { getElById } from "../../../app/helpers/UiHelpers";
 import { fbCommentGet } from "../../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import LayoutArticleCommentForm from "./LayoutArticleCommentForm";
 import LayoutArticleCommentSectionExpandedModal from "./LayoutArticleCommentSectionExpandedModal";

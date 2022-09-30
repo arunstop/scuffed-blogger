@@ -1,5 +1,5 @@
 import { MdWorkspaces } from "react-icons/md";
-import { APP_NAME } from "../../utils/helpers/Constants";
+import { APP_NAME } from "../../app/helpers/Constants";
 
 function SplashScreen() {
   return (

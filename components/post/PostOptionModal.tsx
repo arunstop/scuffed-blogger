@@ -7,7 +7,7 @@ import {
   MdReport,
   MdShare
 } from "react-icons/md";
-import { usePostOptionModalBehaviorHook } from "../../utils/hooks/PostOptionModalBehaviorHook";
+import { usePostOptionModalBehaviorHook } from "../../app/hooks/PostOptionModalBehaviorHook";
 import ModalActionTemplate, {
   ModalActionAction
 } from "../modal/ModalActionTemplate";

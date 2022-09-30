@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
-import { ModalProps } from "../../utils/data/Main";
+import { ModalProps } from "../../base/data/Main";
 import { ModalActionConfirmation } from "./ModalActionTemplate";
 
 

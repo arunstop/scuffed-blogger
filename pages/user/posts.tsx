@@ -2,8 +2,8 @@ import _ from "lodash";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import SplashScreen from "../../components/placeholder/SplashScreen";
-import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { APP_NAME } from "../../utils/helpers/Constants";
+import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
+import { APP_NAME } from "../../app/helpers/Constants";
 
 const LazyLayoutUserPagePosts = dynamic(
   () => import("../../layouts/user/pages/LayoutUserPagePosts"),

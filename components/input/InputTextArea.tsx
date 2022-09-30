@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
-import { transitionScaleY } from "../../utils/helpers/UiTransitionHelpers";
+import { transitionScaleY } from "../../app/helpers/UiTransitionHelpers";
 
 type InputTextArea =
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {

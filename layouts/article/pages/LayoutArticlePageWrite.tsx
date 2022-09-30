@@ -3,7 +3,7 @@ import React from "react";
 import MainContainer from "../../../components/main/MainContainer";
 import MobileHeader from "../../../components/main/MobileHeader";
 import WritingPanel from "../../../components/write/WritingPanel";
-import { WritingPanelProvider } from "../../../utils/contexts/writingPanel/WritingPanelProvider";
+import { WritingPanelProvider } from "../../../app/contexts/writingPanel/WritingPanelProvider";
 
 function LayoutArticlePageWrite() {
   const router = useRouter();

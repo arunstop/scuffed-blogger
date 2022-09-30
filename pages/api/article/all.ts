@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { MainNetworkResponse } from "../../../utils/data/Main";
-import { ArticleModel } from "../../../utils/data/models/ArticleModel";
-import { fsArticleGetAll } from "../../../utils/services/network/FirestoreDatabase/FirestoreArticleModules";
+import { MainNetworkResponse } from "../../../base/data/Main";
+import { ArticleModel } from "../../../base/data/models/ArticleModel";
+import { fsArticleGetAll } from "../../../base/repos/firestoreDb/FirestoreArticleModules";
 
 export default async function handler(
   req: NextApiRequest,

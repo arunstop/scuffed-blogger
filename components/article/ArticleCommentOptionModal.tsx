@@ -1,7 +1,7 @@
 import React from "react";
 import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import { MdDelete, MdFlag, MdPersonOff, MdReport } from "react-icons/md";
-import { ModalProps } from "../../utils/data/Main";
+import { ModalProps } from "../../base/data/Main";
 import ModalActionTemplate, {
   ModalActionAction
 } from "../modal/ModalActionTemplate";

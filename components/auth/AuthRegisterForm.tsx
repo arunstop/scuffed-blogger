@@ -7,10 +7,10 @@ import {
   MdOutlineVpnKey,
   MdVpnKey,
 } from "react-icons/md";
-import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
-import { UserModel } from "../../utils/data/models/UserModel";
-import { waitFor } from "../../utils/helpers/DelayHelpers";
+import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
+import { MainNetworkResponse, netLoading } from "../../base/data/Main";
+import { UserModel } from "../../base/data/models/UserModel";
+import { waitFor } from "../../app/helpers/DelayHelpers";
 import { fbUserAuthRegister } from "../../utils/services/network/FirebaseApi/UserModules";
 import InputText from "../input/InputText";
 import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";

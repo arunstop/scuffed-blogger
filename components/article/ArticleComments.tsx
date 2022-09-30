@@ -1,6 +1,6 @@
 import React from "react";
-import { CommentModelsWithPaging } from "../../utils/data/models/CommentModel";
-import { useModalRoutedBehaviorHook } from "../../utils/hooks/ModalRoutedBehaviorHook";
+import { CommentModelsWithPaging } from "../../base/data/models/CommentModel";
+import { useModalRoutedBehaviorHook } from "../../app/hooks/ModalRoutedBehaviorHook";
 import ArticleCommentItem from "./ArticleCommentItem";
 import ArticleCommentOptionModal from "./ArticleCommentOptionModal";
 import ArticleCommentReplyModal from "./ArticleCommentReplyModal";

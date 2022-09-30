@@ -1,5 +1,5 @@
 import { FaBloggerB, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
-import { APP_DESC, APP_NAME } from "../utils/helpers/Constants";
+import { APP_DESC, APP_NAME } from "../app/helpers/Constants";
 
 function Footer() {
   return (

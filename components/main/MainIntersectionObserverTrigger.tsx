@@ -1,5 +1,5 @@
 import React from "react";
-import { useIntersectionObserverHook } from "../../utils/hooks/IntersectionObserverHook";
+import { useIntersectionObserverHook } from "../../app/hooks/IntersectionObserverHook";
 
 // old
 function MainIntersectionObserverTrigger({

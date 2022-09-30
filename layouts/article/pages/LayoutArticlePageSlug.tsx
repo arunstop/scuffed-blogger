@@ -18,11 +18,11 @@ import MainUserPopup from "../../../components/main/MainPostUserPopup";
 import MobileHeader from "../../../components/main/MobileHeader";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import UserHeader from "../../../components/user/UserHeader";
-import { ArticleModel } from "../../../utils/data/models/ArticleModel";
+import { ArticleModel } from "../../../base/data/models/ArticleModel";
 import {
   fbArticleContentGet,
   fbArticleUpdateView,
-} from "../../../utils/services/network/FirebaseApi/ArticleModules";
+} from "../../../app/services/ArticleModules";
 import LayoutArticleMoreSection from "../LayoutArticleMoreSection";
 
 function LayoutArticlePageSlug({

@@ -7,15 +7,15 @@ import StatusPlaceholder, {
 } from "../../components/placeholder/StatusPlaceholder";
 import WritingPanelForm from "../../components/write/WritingPanelForm";
 import WritingPanelPreview from "../../components/write/WritingPanelPreview";
-import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
+import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
+import { useWritingPanelCtx } from "../../app/contexts/writingPanel/WritingPanelHook";
 import {
   WritingPanelFormProps,
   WritingPanelTabTypes,
-} from "../../utils/data/contexts/WritingPanelTypes";
-import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
-import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
-import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
+} from "../../base/data/contexts/WritingPanelTypes";
+import { transitionPullV } from "../../app/helpers/UiTransitionHelpers";
+import { useNetworkAction } from "../../app/hooks/NetworkActionHook";
+import { scrollToTop } from "../../app/hooks/RouteChangeHook";
 import { ArticleSubmissionProps } from "./pages/LayoutArticlePageEdit";
 
 const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [

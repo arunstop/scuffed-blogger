@@ -3,19 +3,19 @@ import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";    
-import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
+import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
+import { useWritingPanelCtx } from "../../app/contexts/writingPanel/WritingPanelHook";
 import {
   WritingPanelFormProps,
   WritingPanelTabTypes,
-} from "../../utils/data/contexts/WritingPanelTypes";
-import { MainNetworkResponse, netLoading } from "../../utils/data/Main";
-import { ArticleModel } from "../../utils/data/models/ArticleModel";
-import { UserModel } from "../../utils/data/models/UserModel";
-import { waitFor } from "../../utils/helpers/DelayHelpers";
-import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
-import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
-import { fbArticleAdd } from "../../utils/services/network/FirebaseApi/ArticleModules";
+} from "../../base/data/contexts/WritingPanelTypes";
+import { MainNetworkResponse, netLoading } from "../../base/data/Main";
+import { ArticleModel } from "../../base/data/models/ArticleModel";
+import { UserModel } from "../../base/data/models/UserModel";
+import { waitFor } from "../../app/helpers/DelayHelpers";
+import { transitionPullV } from "../../app/helpers/UiTransitionHelpers";
+import { scrollToTop } from "../../app/hooks/RouteChangeHook";
+import { fbArticleAdd } from "../../app/services/ArticleModules";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";

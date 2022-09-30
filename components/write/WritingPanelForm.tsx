@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { MdAdd, MdEdit } from "react-icons/md";
-import { useWritingPanelCtx } from "../../utils/contexts/writingPanel/WritingPanelHook";
-import { WritingPanelFormProps } from "../../utils/data/contexts/WritingPanelTypes";
+import { useWritingPanelCtx } from "../../app/contexts/writingPanel/WritingPanelHook";
+import { WritingPanelFormProps } from "../../base/data/contexts/WritingPanelTypes";
 // import { RegisterFormFields } from "../auth/AuthRegisterForm";
 import InputTextArea from "../input/InputTextArea";
 import InputText from "../input/InputText";

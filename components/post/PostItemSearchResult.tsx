@@ -1,9 +1,9 @@
 import Link from "next/dist/client/link";
 import { HTMLAttributes, useState } from "react";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
-import { ArticleModel } from "../../utils/data/models/ArticleModel";
-import { dateDistanceGet } from "../../utils/helpers/MainHelpers";
-import { getElById } from "../../utils/helpers/UiHelpers";
+import { ArticleModel } from "../../base/data/models/ArticleModel";
+import { dateDistanceGet } from "../../app/helpers/MainHelpers";
+import { getElById } from "../../app/helpers/UiHelpers";
 import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
 
 interface PostItemSearchResultProps {

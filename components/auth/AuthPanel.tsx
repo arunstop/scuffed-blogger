@@ -1,13 +1,13 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
 import React, { Fragment, useCallback, useState } from "react";
-import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { MainNetworkResponse } from "../../utils/data/Main";
-import { UserModel } from "../../utils/data/models/UserModel";
-import { APP_NAME } from "../../utils/helpers/Constants";
-import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
-import { useNetworkAction } from "../../utils/hooks/NetworkActionHook";
-import { scrollToTop } from "../../utils/hooks/RouteChangeHook";
+import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
+import { MainNetworkResponse } from "../../base/data/Main";
+import { UserModel } from "../../base/data/models/UserModel";
+import { APP_NAME } from "../../app/helpers/Constants";
+import { transitionPullV } from "../../app/helpers/UiTransitionHelpers";
+import { useNetworkAction } from "../../app/hooks/NetworkActionHook";
+import { scrollToTop } from "../../app/hooks/RouteChangeHook";
 import GradientBackground from "../main/GradientBackground";
 import StatusPlaceholder, {
   StatusPlaceholderProps,

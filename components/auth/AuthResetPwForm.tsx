@@ -1,6 +1,6 @@
 import React from "react";
 import { MdEmail } from "react-icons/md";
-import { APP_NAME } from "../../utils/helpers/Constants";
+import { APP_NAME } from "../../app/helpers/Constants";
 import InputText from "../input/InputText";
 import { AuthFormProps } from "./AuthPanel";
 

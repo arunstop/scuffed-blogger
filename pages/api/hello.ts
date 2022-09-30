@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { MainNetworkResponse } from "../../utils/data/Main";
+import { MainNetworkResponse } from "../../base/data/Main";
 
 // type Data = {
 //   name: string;

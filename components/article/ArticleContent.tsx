@@ -1,5 +1,5 @@
 import React from "react";
-import { ArticleModel } from "../../utils/data/models/ArticleModel";
+import { ArticleModel } from "../../base/data/models/ArticleModel";
 import MainMarkdownContainer from "../main/MainMarkdownContainer";
 
 function ArticleContent({ article }: { article: ArticleModel }) {

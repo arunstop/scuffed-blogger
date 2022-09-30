@@ -1,7 +1,7 @@
 import LayoutArticleSuggestionSection from "./LayoutArticleSuggestionSection";
 import LayoutArticleCommentSection from "./comment/LayoutArticleCommentSection";
-import { ArticleModel } from "../../utils/data/models/ArticleModel";
-import useLazyScrollerHook from "../../utils/hooks/LazyScrollerHook";
+import { ArticleModel } from "../../base/data/models/ArticleModel";
+import useLazyScrollerHook from "../../app/hooks/LazyScrollerHook";
 import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
 
 // Supposed to serve as container of comment and suggestion section

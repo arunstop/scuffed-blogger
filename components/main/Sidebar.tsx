@@ -12,11 +12,11 @@ import {
   MdPlaylistAddCheck,
   MdWatchLater,
 } from "react-icons/md";
-import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { useUiCtx } from "../../utils/contexts/ui/UiHook";
-import { waitFor } from "../../utils/helpers/DelayHelpers";
-import { useModalRoutedBehaviorHook } from "../../utils/hooks/ModalRoutedBehaviorHook";
-import { useUiSidebarBehaviorHook } from "../../utils/hooks/UiSidebarBehaviorHook";
+import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
+import { useUiCtx } from "../../app/contexts/ui/UiHook";
+import { waitFor } from "../../app/helpers/DelayHelpers";
+import { useModalRoutedBehaviorHook } from "../../app/hooks/ModalRoutedBehaviorHook";
+import { useUiSidebarBehaviorHook } from "../../app/hooks/UiSidebarBehaviorHook";
 import ModalConfirmation from "../modal/ModalConfirmation";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 import MobileHeader from "./MobileHeader";

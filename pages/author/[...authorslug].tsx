@@ -4,7 +4,7 @@ import Head from "next/head";
 import React, { useState } from "react";
 import MainContainer from "../../components/main/MainContainer";
 import MainSectionSkeleton from "../../components/main/MainSectionSkeleton";
-import { APP_NAME } from "../../utils/helpers/Constants";
+import { APP_NAME } from "../../app/helpers/Constants";
 
 interface AuthorPageProps {
   author: string;

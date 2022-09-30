@@ -1,6 +1,6 @@
 import React from "react";
-import { factoryArticleComplete } from "../../utils/data/models/ArticleModel";
-import { LOREM } from "../../utils/helpers/Constants";
+import { factoryArticleComplete } from "../../base/data/models/ArticleModel";
+import { LOREM } from "../../app/helpers/Constants";
 import PostItem from "../post/PostItem";
 import PostOptionModal from "../post/PostOptionModal";
 

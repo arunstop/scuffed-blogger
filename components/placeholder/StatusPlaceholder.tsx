@@ -3,8 +3,8 @@ import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdWorkspaces } from "react-icons/md";
-import { NetworkResponseStatus } from "../../utils/data/Main";
-import { transitionPullV } from "../../utils/helpers/UiTransitionHelpers";
+import { NetworkResponseStatus } from "../../base/data/Main";
+import { transitionPullV } from "../../app/helpers/UiTransitionHelpers";
 
 // INTERFACES
 export interface StatusPlaceholderAction {

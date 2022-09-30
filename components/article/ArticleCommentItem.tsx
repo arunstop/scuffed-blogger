@@ -4,13 +4,13 @@ import React, { ReactNode, useState } from "react";
 import { BsChatSquareText, BsShare } from "react-icons/bs";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { MdMoreHoriz } from "react-icons/md";
-import { useAuthCtx } from "../../utils/contexts/auth/AuthHook";
-import { CommentModel } from "../../utils/data/models/CommentModel";
+import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
+import { CommentModel } from "../../base/data/models/CommentModel";
 import {
   dateDistanceGet,
   userAvatarLinkGet,
-} from "../../utils/helpers/MainHelpers";
-import { getElById } from "../../utils/helpers/UiHelpers";
+} from "../../app/helpers/MainHelpers";
+import { getElById } from "../../app/helpers/UiHelpers";
 import { fbCommentReact } from "../../utils/services/network/FirebaseApi/FirebaseCommentModules";
 import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
 import UserAvatar from "../user/UserAvatar";

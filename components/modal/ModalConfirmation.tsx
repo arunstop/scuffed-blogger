@@ -1,4 +1,4 @@
-import { ModalProps } from "../../utils/data/Main";
+import { ModalProps } from "../../base/data/Main";
 import ModalActionTemplate from "./ModalActionTemplate";
 
 interface ModalConfirmationProps {
