@@ -17,7 +17,10 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore/lite";
-import { ArticleModel } from "../../../data/models/ArticleModel";
+import {
+  ArticleModel,
+  factoryArticleComplete,
+} from "../../../data/models/ArticleModel";
 import { firebaseClient } from "../FirebaseClient";
 import { ArticleListModelByUser } from "../FirebaseApi/ArticleModules";
 
@@ -28,7 +31,9 @@ const articleContentDb = firebaseClient.collections.articleContents;
 export async function fsArticleGetAll(): Promise<ArticleModel[] | null> {
   const snapshot = await getDocs(articleDb);
   // console.log(snapshot);
-  const list = snapshot.docs.map((doc) => doc.data() as ArticleModel);
+  const list = snapshot.docs.map((doc) =>
+    factoryArticleComplete(doc.data() as ArticleModel),
+  );
   return list;
 }
 
@@ -124,8 +129,8 @@ export async function fsArticleUpdate({
   userPostsRef: string;
 }) {
   const ref = doc(articleDb, userPostsRef);
-  console.log( oldArticle);
-  console.log( article);
+  console.log(oldArticle);
+  console.log(article);
   // delete the old article
   await updateDoc(ref, {
     articles: arrayRemove(oldArticle),

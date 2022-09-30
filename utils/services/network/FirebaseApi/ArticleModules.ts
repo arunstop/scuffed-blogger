@@ -32,6 +32,7 @@ import {
   rtArticleMirrorDelete,
   rtArticleMirrorUpdate,
   rtArticleSearch,
+  rtArticleUpdateView,
 } from "../RealtimeDatabase/RealtimeArticleModules";
 
 import { stDirectoryDelete, stFileDeleteByFullLink } from "../StorageModules";
@@ -454,13 +455,36 @@ export async function fbArticleSearch({
         });
         // show filtered articles if there is a keyword
         const searchResult = fuzz.search(kw).map((e) => e.item);
-        articles = searchResult.slice(0,count);
+        articles = searchResult.slice(0, count);
         // articles = (fuzz.search(kw) as unknown as ArticleModel[]).slice(0, count);
         return articles;
       },
     );
     return res;
   } catch (error) {
+    return null;
+  }
+}
+
+export async function fbArticleUpdateView({
+  data,
+  callback,
+}: MainApiResponse<
+  { id: string },
+  ArticleModel | null | FirebaseError
+>): Promise<ArticleModel | null> {
+  const { id } = data;
+  try {
+    const res: ArticleModel | null = await rtArticleUpdateView(id);
+    if (res) {
+      callback?.(netSuccess("Success Updating Views", res));
+      return res;
+    }
+    callback?.(netError("Error Updating Views", res));
+    return res;
+  } catch (error) {
+    callback?.(netError("Error Updating Views", error as FirebaseError));
+    console.error(error as FirebaseError);
     return null;
   }
 }

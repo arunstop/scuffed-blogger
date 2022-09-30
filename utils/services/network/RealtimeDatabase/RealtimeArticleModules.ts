@@ -104,7 +104,7 @@ export async function rtArticleMirrorDelete(
   return true;
 }
 
-export function rtArticleSearch(abortSignal:AbortSignal) {
+export function rtArticleSearch(abortSignal: AbortSignal) {
   const path = `articleList.json`;
   return (
     axiosClient
@@ -114,4 +114,15 @@ export function rtArticleSearch(abortSignal:AbortSignal) {
         signal: abortSignal,
       })
   );
+}
+
+export async function rtArticleUpdateView(articleId: string) {
+  const target = await rtArticleGetById(articleId);
+  if (target) {
+    // get the targeted article then add the views props by 1
+    const updatedArticle = await rtArticleMirrorUpdate({ ...target, views: target.views + 1 });
+    if (updatedArticle) return updatedArticle;
+    return null;
+  }
+  return null;
 }
