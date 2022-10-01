@@ -12,7 +12,7 @@ import {
   ArticleModel,
   factoryArticleRemoveContent as factoryArticleContentRemove,
 } from "../../../base/data/models/ArticleModel";
-import { fbArticleReact } from "../../../app/services/ArticleService";
+import { serviceArticleReact } from "../../../app/services/ArticleService";
 interface ArticleReactProps {
   value: boolean;
   action: () => void;
@@ -72,7 +72,7 @@ function ArticleSectionAction({ article }: { article: ArticleModel }) {
     : false;
   const like = async () => {
     if (!user) return;
-    await fbArticleReact({
+    await serviceArticleReact({
       data: {
         article: getArticleAfterReaction({
           type: "like",
@@ -88,7 +88,7 @@ function ArticleSectionAction({ article }: { article: ArticleModel }) {
 
   const dislike = async () => {
     if (!user) return;
-    await fbArticleReact({
+    await serviceArticleReact({
       data: {
         article: getArticleAfterReaction({
           type: "dislike",

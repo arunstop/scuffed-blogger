@@ -9,7 +9,7 @@ import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
 import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import {
-  ArticleListModelByUser, fbArticleDelete, fbArticleGetByUser
+  ArticleListModelByUser, serviceArticleDelete, serviceArticleGetByUser
 } from "../../../../app/services/ArticleService";
 import InputText from "../../../components/input/InputText";
 import Container from "../../../components/common/Container";
@@ -58,7 +58,7 @@ function LayoutUserPagePosts() {
     // console.log("param", offset);
     // console.log("articleData", articleData?.offset);
     if (!user) return;
-    const articleByUser = await fbArticleGetByUser({
+    const articleByUser = await serviceArticleGetByUser({
       articleListId: user.list.posts,
       keyword: keyword || "",
       paging: { start: offset, end: offset + 2 },
@@ -89,7 +89,7 @@ function LayoutUserPagePosts() {
     const articleTarget = articleData.articles.find((e) => e.id === articleId);
 
     if (articleTarget) {
-      await fbArticleDelete({
+      await serviceArticleDelete({
         article: articleTarget,
         user: user,
       }).then(async (user) => {

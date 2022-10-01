@@ -1,7 +1,7 @@
 import { MainNetworkResponse } from "../../base/data/Main";
-import { rtdbTopicGet } from "../../base/repos/RtdbModules";
+import { repoRtTopicGet } from "../../base/repos/RtdbModules";
 
-export async function fbTopicGetAll({
+export async function serviceTopicGetAll({
   keyword,
   callback,
 }: {
@@ -9,7 +9,7 @@ export async function fbTopicGetAll({
   callback?: (resp: MainNetworkResponse<string[]>) => void;
 }): Promise<string[]> {
   try {
-    const topics = await rtdbTopicGet();
+    const topics = await repoRtTopicGet();
     // console.log(topics);
     return topics;
   } catch (error) {

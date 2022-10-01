@@ -4,7 +4,7 @@ import { MdSort } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { getElById } from "../../../../app/helpers/UiHelpers";
-import { fbCommentGet } from "../../../../app/services/CommentService";
+import { serviceCommentGet } from "../../../../app/services/CommentService";
 import { CommentModelListPagedSorted, CommentModelsSortType } from "../../../../base/data/models/CommentModel";
 import ArticleComments from "../../../components/article/ArticleComments";
 import Alert from "../../../components/common/Alert";
@@ -30,7 +30,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
       // console.log('123');
 
       const startFrom = !!newSortingType || !commentList ? 0 : commentList.offset;
-      const commentsFromDb = await fbCommentGet({
+      const commentsFromDb = await serviceCommentGet({
         data: {
           articleId,
           start: startFrom,

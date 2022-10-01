@@ -18,7 +18,7 @@ export type ArticleLiteModel = Pick<
   };
 };
 
-export async function rtdbTopicGet(): Promise<string[]> {
+export async function repoRtTopicGet(): Promise<string[]> {
   const path = `topicList`;
   // const query = child(ref(db),path);
   const rr = ref(db, path);

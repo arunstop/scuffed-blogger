@@ -31,7 +31,7 @@ import { repoStFileDeleteByFullLink } from "../../base/repos/StorageModules";
 import { LoginFields } from "../../ui/components/auth/AuthLoginForm";
 import { AuthRegisterProps } from "../../ui/components/auth/AuthRegisterForm";
 
-import { uploadFile } from "./FileService";
+import { serviceFileUpload } from "./FileService";
 
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;
@@ -244,7 +244,7 @@ export async function fbUserUpdate({
   // Upload image if there is one
   if (file) {
     try {
-      const imageUrl = await uploadFile({
+      const imageUrl = await serviceFileUpload({
         file: file[0],
         directory: "images/avatars",
         name: user.id,

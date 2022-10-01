@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MdSearch, MdWorkspaces } from "react-icons/md";
 import { ArticleModel } from "../../../base/data/models/ArticleModel";
-import { fbArticleSearch } from "../../../app/services/ArticleService";
+import { serviceArticleSearch } from "../../../app/services/ArticleService";
 import InputText from "../input/InputText";
 import PostItemSearchResult from "../post/PostItemSearchResult";
 import SectionSkeleton from "../placeholder/SectionSkeleton";
@@ -45,7 +45,7 @@ function MainHeaderBigSearchBar() {
 
   const debounceSearch = useCallback(
     debounce(async (str: string, abortSignal: AbortSignal) => {
-      const res = await fbArticleSearch({
+      const res = await serviceArticleSearch({
         data: {
           abortSignal: abortSignal,
           count: 5,

@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
-import { ArticleModelFromDb, fbArticleMirrorGetAll } from "../../../app/services/ArticleService";
+import { ArticleModelFromDb, serviceArticleMirrorGetAll } from "../../../app/services/ArticleService";
 import { MainNetworkResponse } from "../../../base/data/Main";
 import IntersectionObserverTrigger from "../../components/utils/IntesectionObserverTrigger";
 import ErrorPlaceholder from "../../components/placeholder/ErrorPlaceholder";
@@ -17,7 +17,7 @@ function LayoutIndexPostSection() {
   const loadPosts = useCallback(async () => {
     // show loading indicator
     // setLoading(true);
-    const articlesFromDb = await fbArticleMirrorGetAll({
+    const articlesFromDb = await serviceArticleMirrorGetAll({
       data: {
         count: 5,
         start: feed?.offset || 0,

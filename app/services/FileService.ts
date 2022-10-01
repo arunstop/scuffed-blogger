@@ -12,7 +12,7 @@ import { MainNetworkResponse, netLoading, netError, netSuccess } from "../../bas
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file
 // @Returns the download url
-export async function uploadFile({
+export async function serviceFileUpload({
   file,
   directory,
   name,

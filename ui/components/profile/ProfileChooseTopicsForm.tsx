@@ -17,7 +17,7 @@ import LoadingIndicator from "../placeholder/LoadingIndicator";
 import StatusPlaceholder, {
   StatusPlaceholderProps,
 } from "../placeholder/StatusPlaceholder";
-import { fbTopicGetAll } from "../../../app/services/TopicService";
+import { serviceTopicGetAll } from "../../../app/services/TopicService";
 import { fbUserUpdate } from "../../../app/services/UserService";
 
 export interface SetupProfileFormFields {
@@ -78,7 +78,7 @@ function ProfileChooseTopicsForm() {
 
   const getTopics = async () => {
     // get topics from rtdb
-    const topicsFromDb = await fbTopicGetAll({ keyword: "" });
+    const topicsFromDb = await serviceTopicGetAll({ keyword: "" });
     // set states
     setLoadingTopics(false);
     setTopics(topicsFromDb);

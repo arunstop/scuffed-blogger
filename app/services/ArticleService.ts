@@ -38,8 +38,9 @@ import {
 import Fuse from "fuse.js";
 import { MainApiResponse } from "../../base/data/Main";
 import { ArticleListModel } from "../../base/data/models/ArticleListModel";
-import { uploadFile } from "./FileService";
+import { serviceFileUpload } from "./FileService";
 import { repoStDirectoryDelete, repoStFileDeleteByFullLink } from "../../base/repos/StorageModules";
+import { axiosClient } from "../../base/clients/AxiosClient";
 
 // Adding article, now using direct firebaseClient
 interface PropsAddArticle {
@@ -60,7 +61,7 @@ export type ArticleModelFromDb = {
   articles: ArticleModel[];
 } & ApiPagingResultProps;
 
-export async function fbArticleMirrorGetAll({
+export async function serviceArticleMirrorGetAll({
   data,
   callback,
 }: MainApiResponse<
@@ -85,7 +86,7 @@ export async function fbArticleMirrorGetAll({
   }
 }
 
-export async function fbArticleGetByUser({
+export async function serviceArticleGetByUser({
   articleListId,
   keyword,
   paging,
@@ -123,7 +124,7 @@ export async function fbArticleGetByUser({
   }
 }
 
-export async function fbArticleAdd({
+export async function serviceArticleAdd({
   rawArticle,
   user,
   callback,
@@ -176,7 +177,7 @@ export async function fbArticleAdd({
     try {
       callback?.(netLoading<ArticleModel>("Uploading the thumbnail", article));
       // uploading thumbnail
-      const thumbnailUrl = await uploadFile({
+      const thumbnailUrl = await serviceFileUpload({
         file: thumbnail[0],
         directory: `/thumbnails/${article.id}/`,
         name: article.id,
@@ -206,7 +207,7 @@ export async function fbArticleAdd({
   return article;
 }
 
-export async function fbArticleDelete({
+export async function serviceArticleDelete({
   article,
   user,
   callback,
@@ -282,7 +283,7 @@ export async function fbArticleDelete({
   return user;
 }
 
-export async function fbArticleContentGet({
+export async function serviceArticleContentGet({
   id,
   callback,
 }: {
@@ -314,7 +315,7 @@ type PropsEditArticle = {
   ) => void;
 };
 
-export async function fbArticleUpdate({
+export async function serviceArticleUpdate({
   oldArticle,
   rawArticle,
   userPostsRef,
@@ -378,7 +379,7 @@ export async function fbArticleUpdate({
 
     // upload/replace the new one
     try {
-      const thumbnailUrl = await uploadFile({
+      const thumbnailUrl = await serviceFileUpload({
         file: thumbnail[0],
         directory: `/thumbnails/${article.id}/`,
         name: article.id,
@@ -408,7 +409,7 @@ export async function fbArticleUpdate({
   return article;
 }
 
-export async function fbArticleReact({
+export async function serviceArticleReact({
   data,
   callback,
 }: MainApiResponse<
@@ -430,7 +431,7 @@ export async function fbArticleReact({
   }
 }
 
-export async function fbArticleSearch({
+export async function serviceArticleSearch({
   data,
   callback,
 }: MainApiResponse<
@@ -466,7 +467,7 @@ export async function fbArticleSearch({
   }
 }
 
-export async function fbArticleUpdateView({
+export async function serviceArticleUpdateView({
   data,
   callback,
 }: MainApiResponse<
@@ -487,4 +488,45 @@ export async function fbArticleUpdateView({
     console.error(error as FirebaseError);
     return null;
   }
+}
+
+export async function serviceArticleGetById({
+  id,
+  callback,
+}: {
+  id: string;
+  callback?: (resp: MainNetworkResponse<ArticleModel | null>) => void;
+}): Promise<ArticleModel | null> {
+  // callback?.({
+  //   data: null,
+  //   message: "Submitting your article...",
+  //   status: "loading",
+  // });
+  console.log(id);
+  let data: MainNetworkResponse<ArticleModel | null> | null = null;
+  // await waitFor(2000);
+  try {
+    //   Call the endpoint
+    const result = await axiosClient
+      .get(`/api/article/${id}`, {
+        // .get(`/api/hello`, {
+        method: "GET",
+      })
+      .then((resp) => {
+        // console.log(resp.data);
+        return resp;
+      });
+    data = result.data as MainNetworkResponse<ArticleModel | null>;
+    callback?.(data);
+  } catch (error) {
+    callback?.({
+      data: null,
+      message: `${error}`,
+      status: "error",
+    });
+    // console.log(error);
+  }
+  // Returns data if it exist
+  // returns null otherwise
+  return data?.data || null;
 }

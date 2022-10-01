@@ -4,7 +4,7 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { MdClearAll, MdSearch, MdWorkspaces } from "react-icons/md";
 import { ArticleModel } from "../../../base/data/models/ArticleModel";
 import { useUiModalSearchBehaviorHook } from "../../../app/hooks/UiModalSearchBehaviorHook";
-import { fbArticleSearch } from "../../../app/services/ArticleService";
+import { serviceArticleSearch } from "../../../app/services/ArticleService";
 import InputText from "../input/InputText";
 import ModalTemplate from "../modal/ModalTemplate";
 import PostItemSearchResult from "../post/PostItemSearchResult";
@@ -24,7 +24,7 @@ const SearchModal = React.memo(function SearchModal() {
 
   const debounceSearch = debounce(
     async (str: string, abortSignal: AbortSignal) => {
-      const res = await fbArticleSearch({
+      const res = await serviceArticleSearch({
         data: {
           abortSignal: abortSignal,
           count: 5,

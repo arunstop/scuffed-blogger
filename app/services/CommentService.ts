@@ -19,7 +19,7 @@ import {
   repoRtCommentDelete,
 } from "../../base/repos/realtimeDb/RealtimeCommentRepo";
 
-export async function fbCommentAdd({
+export async function serviceCommentAdd({
   data,
   callback,
 }: MainApiResponse<
@@ -39,7 +39,7 @@ export async function fbCommentAdd({
   }
 }
 
-export async function fbCommentGet({
+export async function serviceCommentGet({
   data,
   callback,
 }: MainApiResponse<
@@ -59,7 +59,7 @@ export async function fbCommentGet({
   }
 }
 
-export async function fbCommentUpdate({
+export async function serviceCommentUpdate({
   data,
   callback,
 }: MainApiResponse<
@@ -86,7 +86,7 @@ export interface FbCommentReactProps {
   userId: string;
 }
 
-export async function fbCommentReact({
+export async function serviceCommentReact({
   data,
   callback,
 }: MainApiResponse<
@@ -104,7 +104,7 @@ export async function fbCommentReact({
   }
 }
 
-export async function fbCommentDelete({
+export async function serviceCommentDelete({
   data,
   callback,
 }: MainApiResponse<
