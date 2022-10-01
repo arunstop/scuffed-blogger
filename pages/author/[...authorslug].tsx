@@ -32,7 +32,7 @@ const getServerSideProps: GetServerSideProps<AuthorPageProps> = async (
 };
 
 const LazyUserContent = dynamic(
-  () => import("../../ui/ui/components/user/UserContent"),
+  () => import("../../ui/components/user/UserContent"),
   {
     loading: () => <MainSectionSkeleton text="Loading User's information..." />,
     ssr: false,
