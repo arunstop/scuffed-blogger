@@ -2,7 +2,7 @@ import { ref, deleteObject, listAll } from "firebase/storage";
 import { getStorageDirectory } from "../../app/helpers/MainHelpers";
 import { firebaseClient } from "../clients/FirebaseClient";
 
-export async function stFileDeleteByFullLink(link: string) {
+export async function repoStFileDeleteByFullLink(link: string) {
   // get link of the file
   const linkDirectory = getStorageDirectory(link);
   //   check if link exist
@@ -12,15 +12,7 @@ export async function stFileDeleteByFullLink(link: string) {
   return await deleteObject(deleteFileRef);
 }
 
-export async function stFileDeleteByDirectory(dir: string) {
-  //   check if directory is valid
-  if (!dir) return;
-  //   delete if it does
-  const deleteFileRef = ref(firebaseClient.storage, dir);
-  return await deleteObject(deleteFileRef);
-}
-
-export async function stDirectoryDelete(dir: string) {
+export async function repoStDirectoryDelete(dir: string) {
   //   check if directory is valid
   if (!dir) return;
   //   delete if it does

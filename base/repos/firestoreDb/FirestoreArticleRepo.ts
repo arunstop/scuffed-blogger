@@ -28,7 +28,7 @@ const articleDb = firebaseClient.collections.articles;
 const articleContentDb = firebaseClient.collections.articleContents;
 
 // @return all articles
-export async function fsArticleGetAll(): Promise<ArticleModel[] | null> {
+export async function repoFsArticleGetAll(): Promise<ArticleModel[] | null> {
   const snapshot = await getDocs(articleDb);
   // console.log(snapshot);
   const list = snapshot.docs.map((doc) =>
@@ -38,7 +38,7 @@ export async function fsArticleGetAll(): Promise<ArticleModel[] | null> {
 }
 
 // @return all articles
-export async function fsArticleGetByUser(
+export async function repoFsArticleGetByUser(
   articleListId: string,
   keyword: string,
   paging: {
@@ -88,7 +88,7 @@ export async function fsArticleGetByUser(
 }
 
 // @return an article based on `id`
-export async function fsArticleGetById(
+export async function repoFsArticleGetById(
   id: string,
 ): Promise<ArticleModel | null> {
   // Get the requested document
@@ -102,7 +102,7 @@ export async function fsArticleGetById(
 }
 
 // Adds an article to article list to database
-export async function fsArticleAdd(articleList: ArticleListModel) {
+export async function repoFsArticleAdd(articleList: ArticleListModel) {
   const ref = doc(articleDb, articleList.id);
   const snapshot = await getDoc(ref);
   // check if document exists, update if it does
@@ -119,7 +119,7 @@ export async function fsArticleAdd(articleList: ArticleListModel) {
 }
 
 // Update an article to firestore database
-export async function fsArticleUpdate({
+export async function repoFsArticleUpdate({
   oldArticle,
   article,
   userPostsRef,
@@ -172,7 +172,7 @@ export async function fsArticleContentGet(id: string): Promise<string | null> {
 //   return await updateDoc(ref, toJsonFriendly(article));
 // }
 
-export async function fsArticleDelete({
+export async function repoFsArticleDelete({
   article,
   userPostsRef,
 }: {
@@ -186,16 +186,16 @@ export async function fsArticleDelete({
   });
 }
 
-export async function fsArticleContentAdd(id: string, content: string) {
+export async function repoFsArticleContentAdd(id: string, content: string) {
   const ref = doc(articleContentDb, id);
   await setDoc(ref, { content: content });
 }
-export async function fsArticleContentUpdate(id: string, content: string) {
+export async function repoFsArticleContentUpdate(id: string, content: string) {
   const ref = doc(articleContentDb, id);
   await setDoc(ref, { content: content });
 }
 
-export async function fsArticleContentDelete(id: string) {
+export async function repoFsArticleContentDelete(id: string) {
   const ref = doc(articleContentDb, id);
   await deleteDoc(ref);
 }

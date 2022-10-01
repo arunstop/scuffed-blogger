@@ -2,12 +2,14 @@ import { useRouter } from "next/router";
 import { destroyCookie, setCookie } from "nookies";
 import { ReactNode, useEffect, useReducer } from "react";
 import { firebaseAuth } from "../../../base/clients/FirebaseClient";
-import { AuthAction, AuthContextProps } from "../../../base/data/contexts/AuthTypes";
+import {
+  AuthAction,
+  AuthContextProps,
+} from "../../../base/data/contexts/AuthTypes";
 import { UserModel } from "../../../base/data/models/UserModel";
-import { rtdbSessionAdd } from "../../../base/repos/RtdbModules";
 import { COOKIE_USER_AUTH } from "../../helpers/Constants";
 import { fbUserGet } from "../../services/UserService";
-
+import { repoRtUserSessionAdd } from "../../../base/repos/realtimeDb/RealtimeUserRepo";
 import { AuthContext } from "./AuthContext";
 import { authReducer } from "./AuthReducer";
 
@@ -96,7 +98,7 @@ export const AuthProvider = ({
 
           // if failed getting user data
           if (!newUserData) return action.unsetUser();
-          const userWithNewSession = await rtdbSessionAdd({
+          const userWithNewSession = await repoRtUserSessionAdd({
             ...newUserData,
             localAuthData: user,
           });

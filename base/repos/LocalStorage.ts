@@ -1,15 +1,15 @@
-export function storageSave(key: string, value: string) {
+export function repoLocalSave(key: string, value: string) {
   localStorage.setItem(key, value);
 }
 
-export function storageGet(key: string): string {
+export function repoLocalGet(key: string): string {
   return localStorage.getItem(key) || "null";
 }
 
-export function storageCheck(key: string){
+export function repoLocalCheck(key: string){
   return localStorage.getItem(key);
 }
 
-export function storageRemove(key: string) {
+export function repoLocalRemove(key: string) {
   localStorage.removeItem(key);
 }

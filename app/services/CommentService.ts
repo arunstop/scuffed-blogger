@@ -12,11 +12,11 @@ import {
   CommentModelListPagedSorted,
 } from "../../base/data/models/CommentModel";
 import {
-  rtCommentAdd,
-  rtCommentGet,
-  rtCommentUpdate,
-  rtCommentReact,
-  rtCommentDelete,
+  repoRtCommentAdd,
+  repoRtCommentGet,
+  repoRtCommentUpdate,
+  repoRtCommentReact,
+  repoRtCommentDelete,
 } from "../../base/repos/realtimeDb/RealtimeCommentRepo";
 
 export async function fbCommentAdd({
@@ -28,7 +28,7 @@ export async function fbCommentAdd({
 >): Promise<boolean> {
   const { comment } = data;
   try {
-    await rtCommentAdd({
+    await repoRtCommentAdd({
       comment: comment,
     });
     callback?.(netSuccess("Success adding comment", comment));
@@ -50,7 +50,7 @@ export async function fbCommentGet({
   CommentModelsWithPaging | null | FirebaseError
 >): Promise<CommentModelListPagedSorted | null> {
   try {
-    const res = await rtCommentGet(data);
+    const res = await repoRtCommentGet(data);
     callback?.(netSuccess("Success getting comments", res));
     return res;
   } catch (error) {
@@ -68,7 +68,7 @@ export async function fbCommentUpdate({
 >) {
   const { comment } = data;
   try {
-    await rtCommentUpdate({
+    await repoRtCommentUpdate({
       comment: comment,
     });
     callback?.(netSuccess("Success updating comment", comment));
@@ -94,7 +94,7 @@ export async function fbCommentReact({
   CommentModel | null | FirebaseError
 >): Promise<CommentModel | null> {
   try {
-    const res = await rtCommentReact(data);
+    const res = await repoRtCommentReact(data);
     callback?.(netSuccess("Success updating comment", res));
     console.log(res);
     return res;
@@ -112,7 +112,7 @@ export async function fbCommentDelete({
   CommentModel | null | FirebaseError
 >) {
   try {
-    await rtCommentDelete(data);
+    await repoRtCommentDelete(data);
     callback?.(netSuccess("Success deleting comment", null));
     return;
   } catch (error) {

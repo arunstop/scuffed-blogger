@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { MainNetworkResponse } from "../../../base/data/Main";
 import { ArticleModel } from "../../../base/data/models/ArticleModel";
-import { fsArticleGetAll } from "../../../base/repos/firestoreDb/FirestoreArticleRepo";
+import { repoFsArticleGetAll } from "../../../base/repos/firestoreDb/FirestoreArticleRepo";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method !== "GET") return res.status(500).json({});
-  const articles = await fsArticleGetAll().then((e) => {
+  const articles = await repoFsArticleGetAll().then((e) => {
     return e;
   });
   res.status(200).json({

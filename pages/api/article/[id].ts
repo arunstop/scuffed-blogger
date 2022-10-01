@@ -2,7 +2,7 @@ import { MainNetworkResponse } from "../../../base/data/Main";
 import { ArticleModel } from "../../../base/data/models/ArticleModel";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { rtArticleGetById } from "../../../base/repos/realtimeDb/RealtimeArticleRepo";
+import { repoRtArticleGetById } from "../../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 // type Data = {
 //   name: string;
@@ -17,7 +17,7 @@ export default async function handler(
   if (!id) return res.status(500);
   // only proceed if the method is `GET`
   if (req.method === "GET") {
-    const requestedArticle = await rtArticleGetById(id as string).then(
+    const requestedArticle = await repoRtArticleGetById(id as string).then(
       (e) =>
         ({
           message: e
