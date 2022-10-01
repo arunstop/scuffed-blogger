@@ -2,7 +2,7 @@ import { omit } from "lodash";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
-export function useModalRoutedBehaviorHook(mainParam: string) {
+export function useRoutedModalHook(mainParam: string) {
   const [show, setShow] = useState(false);
   const router = useRouter();
 

@@ -2,11 +2,11 @@ import { isEqual } from "lodash";
 import React, { useMemo, useState } from "react";
 import { MdExpandMore, MdRefresh, MdSort } from "react-icons/md";
 import { getElById } from "../../../../app/helpers/UiHelpers";
-import { useModalRoutedBehaviorHook } from "../../../../app/hooks/ModalRoutedBehaviorHook";
+import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import { CommentModelsSortType, CommentModelsWithPaging } from "../../../../base/data/models/CommentModel";
 import ArticleComments from "../../../components/article/ArticleComments";
 import { DropdownOption } from "../../../components/main/Dropdown";
-import MainIntersectionObserverTrigger from "../../../components/main/MainIntersectionObserverTrigger";
+import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 import MobileHeader, {
   MobileHeaderActionProps
 } from "../../../components/main/MobileHeader";
@@ -25,7 +25,7 @@ function LayoutArticleCommentSectionExpandedModal({
   sortOptions: DropdownOption[];
 }) {
   const { show: modalComments, toggle: setModalComments } =
-    useModalRoutedBehaviorHook("comments");
+    useRoutedModalHook("comments");
   function toTop() {
     const modalContentEl = getElById("modal-content");
     if (modalContentEl)
@@ -88,7 +88,7 @@ function LayoutArticleCommentSectionExpandedModal({
         <div className="flex flex-col gap-2 p-2 sm:gap-4 sm:p-4 animate-slideInUp animate-duration-300 animate-delay-[1]">
           <ArticleComments commentList={commentList} observe />
           {!loading && commentList.comments.length < commentList.total && (
-            <MainIntersectionObserverTrigger
+            <IntersectionObserverTrigger
               key={commentList.offset}
               className="h-24 w-full "
               callback={async (intersecting) => {

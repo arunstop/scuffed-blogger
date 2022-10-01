@@ -7,11 +7,13 @@ import { MdEdit, MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
-import { useModalRoutedBehaviorHook } from "../../../../app/hooks/ModalRoutedBehaviorHook";
-import { ArticleListModelByUser, fbArticleGetByUser, fbArticleDelete } from "../../../../app/services/ArticleService";
+import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
+import {
+  ArticleListModelByUser, fbArticleDelete, fbArticleGetByUser
+} from "../../../../app/services/ArticleService";
 import InputText from "../../../components/input/InputText";
 import MainContainer from "../../../components/main/MainContainer";
-import MainLazyScrollTrigger from "../../../components/main/MainLazyScrollTrigger";
+import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
@@ -29,7 +31,7 @@ function LayoutUserPagePosts() {
   const [loadingArticles, setLoadingArticles] = useState(true);
   // const [keyword, setKeyword] = useState("");
   // routed modal
-  const modalDelete = useModalRoutedBehaviorHook("articleId");
+  const modalDelete = useRoutedModalHook("articleId");
 
   const {
     register,
@@ -219,8 +221,13 @@ function LayoutUserPagePosts() {
           <div className="flex flex-col gap-2 sm:gap-4 min-h-[24rem]">
             {articles.map((e, idx) => {
               return (
-                <div key={e.id}  className="flex">
-                  <PostItemSearchResult article={e} observe withActions className="w-full" />
+                <div key={e.id} className="flex">
+                  <PostItemSearchResult
+                    article={e}
+                    observe
+                    withActions
+                    className="w-full"
+                  />
                 </div>
               );
             })}
@@ -277,13 +284,13 @@ function LayoutUserPagePosts() {
         ) : (
           articleData &&
           articleData.offset < articleData.totalArticle && (
-            <MainLazyScrollTrigger
+            <IntersectionObserverTrigger
               key={articleData.offset + ""}
               callback={async () => {
                 loadMoreArticles();
               }}
               className="flex w-full "
-            ></MainLazyScrollTrigger>
+            ></IntersectionObserverTrigger>
           )
         )}
 

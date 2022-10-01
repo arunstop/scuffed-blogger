@@ -11,7 +11,7 @@ import {
   userAvatarLinkGet,
 } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
-import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
+import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
 import UserAvatar from "../user/UserAvatar";
 import ArticleCommentItemActionButton from "./ArticleCommentItemActionButton";
 import { fbCommentReact } from "../../../app/services/CommentService";
@@ -29,7 +29,7 @@ function ArticleCommentItem({
   const elementId = `comment-${{ ...props }.comment.id}`;
   const element = getElById(elementId);
   return observe ? (
-    <MainIntersectionObserverTrigger
+    <IntersectionObserverTrigger
       id={elementId}
       callback={(intersecting) => setVisible(intersecting)}
       className=""
@@ -43,7 +43,7 @@ function ArticleCommentItem({
       }
     >
       {visible && <ArticleCommentItemContent {...props} />}
-    </MainIntersectionObserverTrigger>
+    </IntersectionObserverTrigger>
   ) : (
     <ArticleCommentItemContent {...props} />
   );

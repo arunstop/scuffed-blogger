@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
 import { ArticleModelFromDb, fbArticleMirrorGetAll } from "../../../app/services/ArticleService";
 import { MainNetworkResponse } from "../../../base/data/Main";
-import MainIntersectionObserverTrigger from "../../components/main/MainIntersectionObserverTrigger";
+import IntersectionObserverTrigger from "../../components/utils/IntesectionObserverTrigger";
 import ErrorPlaceholder from "../../components/placeholder/ErrorPlaceholder";
 import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
 import PostItem from "../../components/post/PostItem";
@@ -81,7 +81,7 @@ function LayoutIndexPostSection() {
 
             {/* when loading */}
             {resp?.status !== "error" && feed.articles.length < feed.total && (
-              <MainIntersectionObserverTrigger
+              <IntersectionObserverTrigger
               key={feed.offset}
                 callback={(intersecting) => {
                   if (intersecting) return loadPosts();
@@ -89,7 +89,7 @@ function LayoutIndexPostSection() {
                 className="animate-fadeIn"
               >
                 <LoadingIndicator spinner />
-              </MainIntersectionObserverTrigger>
+              </IntersectionObserverTrigger>
             )}
           </>
         )}
