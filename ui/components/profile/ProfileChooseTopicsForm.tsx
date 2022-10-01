@@ -11,8 +11,8 @@ import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../../app/hooks/NetworkActionHook";
 import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
 import InputText from "../input/InputText";
-import Alert from "../main/Alert";
-import GradientBackground from "../main/GradientBackground";
+import Alert from "../common/Alert";
+import GradientBackground from "../utils/GradientBackground";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import StatusPlaceholder, {
   StatusPlaceholderProps,

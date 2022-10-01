@@ -12,7 +12,7 @@ import {
   ArticleListModelByUser, fbArticleDelete, fbArticleGetByUser
 } from "../../../../app/services/ArticleService";
 import InputText from "../../../components/input/InputText";
-import MainContainer from "../../../components/main/MainContainer";
+import Container from "../../../components/common/Container";
 import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
@@ -165,7 +165,7 @@ function LayoutUserPagePosts() {
           },
         ]}
       />
-      <MainContainer>
+      <Container>
         {/* title */}
         <div className="text-4xl font-bold sm:text-5xl hidden sm:block">
           My Posts
@@ -295,7 +295,7 @@ function LayoutUserPagePosts() {
         )}
 
         {/* pagination */}
-      </MainContainer>
+      </Container>
       <ModalConfirmation
         value={modalDelete.show}
         title="Delete article"

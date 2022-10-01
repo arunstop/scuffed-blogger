@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { WritingPanelProvider } from "../../../../app/contexts/writingPanel/WritingPanelProvider";
-import MainContainer from "../../../components/main/MainContainer";
+import Container from "../../../components/common/Container";
 import MobileHeader from "../../../components/main/MobileHeader";
 import WritingPanel from "../../../components/write/WritingPanel";
 
@@ -15,11 +15,11 @@ function LayoutArticlePageWrite() {
         }}
         title={`Write Article`}
       />
-      <MainContainer>
+      <Container>
         <WritingPanelProvider>
           <WritingPanel />
         </WritingPanelProvider>
-      </MainContainer>
+      </Container>
     </>
   );
 }

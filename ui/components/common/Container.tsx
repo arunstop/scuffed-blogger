@@ -5,7 +5,7 @@ interface MainContainerProps {
   className?: string;
   children: ReactNode;
 }
-function MainContainer({
+function Container({
   className,
   children,
   ...props
@@ -22,11 +22,11 @@ function MainContainer({
     >
       <main
         className={`mx-auto flex min-h-screen max-w-[60rem] 
-      flex-col justify-start gap-4 bg-base-100 p-4 relative
-      sm:gap-8 sm:p-8 overflow-hidden rounded-xl
-      transition-colors duration-500
-      ${className}
-      `}
+        flex-col justify-start gap-4 bg-base-100 p-4 relative
+        sm:gap-8 sm:p-8 overflow-hidden rounded-xl
+        transition-colors duration-500
+        ${className}
+        `}
         {...props}
       >
         {children}
@@ -35,4 +35,4 @@ function MainContainer({
   );
 }
 
-export default MainContainer;
+export default Container;

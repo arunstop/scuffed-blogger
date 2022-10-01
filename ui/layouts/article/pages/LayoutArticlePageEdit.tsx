@@ -7,7 +7,7 @@ import { fbArticleContentGet, fbArticleUpdate } from "../../../../app/services/A
 import { WritingPanelFormProps } from "../../../../base/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse, netLoading } from "../../../../base/data/Main";
 import { ArticleModel } from "../../../../base/data/models/ArticleModel";
-import MainContainer from "../../../components/main/MainContainer";
+import Container from "../../../components/common/Container";
 import { StatusPlaceholderProps } from "../../../components/placeholder/StatusPlaceholder";
 import LayoutArticleForm from "../LayoutArticleForm";
 
@@ -131,9 +131,9 @@ function LayoutArticlePageEditContent({
     getContent();
   }, []);
   return (
-    <MainContainer className="">
+    <Container className="">
       <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
-    </MainContainer>
+    </Container>
   );
 }
 

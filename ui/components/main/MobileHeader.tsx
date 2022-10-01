@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { MdArrowBack } from "react-icons/md";
 import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
-import Dropdown, { DropdownOption } from "./Dropdown";
+import Dropdown, { DropdownOption } from "../common/Dropdown";
 
 export interface MobileHeaderActionProps {
   label: string;

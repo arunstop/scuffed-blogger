@@ -7,8 +7,8 @@ import { getElById } from "../../../../app/helpers/UiHelpers";
 import { fbCommentGet } from "../../../../app/services/CommentService";
 import { CommentModelListPagedSorted, CommentModelsSortType } from "../../../../base/data/models/CommentModel";
 import ArticleComments from "../../../components/article/ArticleComments";
-import Alert from "../../../components/main/Alert";
-import Dropdown,{ DropdownOption } from "../../../components/main/Dropdown";
+import Alert from "../../../components/common/Alert";
+import Dropdown,{ DropdownOption } from "../../../components/common/Dropdown";
 import LayoutArticleCommentForm from "./LayoutArticleCommentForm";
 import LayoutArticleCommentSectionExpandedModal from "./LayoutArticleCommentSectionExpandedModal";
 

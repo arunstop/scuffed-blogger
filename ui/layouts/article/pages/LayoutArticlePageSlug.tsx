@@ -12,7 +12,7 @@ import { fbArticleContentGet, fbArticleUpdateView } from "../../../../app/servic
 import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import ArticleSectionAction from "../../../components/article/ArticleActions";
 import ArticleProgressBar from "../../../components/article/ArticleProgressBar";
-import MainContainer from "../../../components/main/MainContainer";
+import Container from "../../../components/common/Container";
 import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 import MainMarkdownContainer from "../../../components/main/MainMarkdownContainer";
 import MainPostStatusChip from "../../../components/main/MainPostFilterChip";
@@ -72,7 +72,7 @@ function LayoutArticlePageSlug({
           },
         ]}
       />
-      <MainContainer>
+      <Container>
         <div className="inline-flex justify-start">
           <div className="dropdown-hover dropdown">
             <UserHeader id={article.author} />
@@ -155,7 +155,7 @@ function LayoutArticlePageSlug({
             <LoadingIndicator spinner text="Loading content" />
           </IntersectionObserverTrigger>
         )}
-      </MainContainer>
+      </Container>
     </>
   );
 }

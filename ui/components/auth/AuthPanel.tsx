@@ -8,7 +8,7 @@ import { APP_NAME } from "../../../app/helpers/Constants";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../../app/hooks/NetworkActionHook";
 import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
-import GradientBackground from "../main/GradientBackground";
+import GradientBackground from "../utils/GradientBackground";
 import StatusPlaceholder, {
   StatusPlaceholderProps,
 } from "../placeholder/StatusPlaceholder";

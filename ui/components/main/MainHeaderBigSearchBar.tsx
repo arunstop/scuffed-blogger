@@ -6,7 +6,7 @@ import { ArticleModel } from "../../../base/data/models/ArticleModel";
 import { fbArticleSearch } from "../../../app/services/ArticleService";
 import InputText from "../input/InputText";
 import PostItemSearchResult from "../post/PostItemSearchResult";
-import MainSectionSkeleton from "./MainSectionSkeleton";
+import SectionSkeleton from "../placeholder/SectionSkeleton";
 
 
 // function debounce(callback: () => void, delay = 500) {
@@ -188,7 +188,7 @@ function MainHeaderBigSearchBar() {
                   <LoadingIndicator spinner text="Searching articles..." />
                 )} */}
                 {!result.length && !!search.length && (
-                  <MainSectionSkeleton text="No result found." />
+                  <SectionSkeleton text="No result found." />
                 )}
                 <div className=" gap-1 flex flex-col list-none max-h-60 w-full overflow-auto p-1">
                 {!!result.length &&

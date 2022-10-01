@@ -8,8 +8,8 @@ import { fbArticleSearch } from "../../../app/services/ArticleService";
 import InputText from "../input/InputText";
 import ModalTemplate from "../modal/ModalTemplate";
 import PostItemSearchResult from "../post/PostItemSearchResult";
-import Alert from "./Alert";
-import MainSectionSkeleton from "./MainSectionSkeleton";
+import Alert from "../common/Alert";
+import SectionSkeleton from "../placeholder/SectionSkeleton";
 import MobileHeader, { MobileHeaderActionProps } from "./MobileHeader";
 
 const SearchModal = React.memo(function SearchModal() {
@@ -143,7 +143,7 @@ const SearchModal = React.memo(function SearchModal() {
           )}
           {/* no result */}
           {!articles?.length && !loading && search.length >= 2 && (
-            <MainSectionSkeleton text="No result found." />
+            <SectionSkeleton text="No result found." />
           )}
           {articles &&
             articles.map((e, idx) => {

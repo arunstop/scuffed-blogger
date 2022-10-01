@@ -5,7 +5,7 @@ import { getElById } from "../../../../app/helpers/UiHelpers";
 import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import { CommentModelsSortType, CommentModelsWithPaging } from "../../../../base/data/models/CommentModel";
 import ArticleComments from "../../../components/article/ArticleComments";
-import { DropdownOption } from "../../../components/main/Dropdown";
+import { DropdownOption } from "../../../components/common/Dropdown";
 import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 import MobileHeader, {
   MobileHeaderActionProps

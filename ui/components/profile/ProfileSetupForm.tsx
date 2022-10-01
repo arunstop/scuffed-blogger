@@ -20,7 +20,7 @@ import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
 import { fbUserUpdate } from "../../../app/services/UserService";
 import InputTextArea from "../input/InputTextArea";
 import InputText from "../input/InputText";
-import GradientBackground from "../main/GradientBackground";
+import GradientBackground from "../utils/GradientBackground";
 import StatusPlaceholder, {
   StatusPlaceholderProps
 } from "../placeholder/StatusPlaceholder";
