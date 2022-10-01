@@ -2,9 +2,9 @@ import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import React, { useState } from "react";
-import MainContainer from "../../components/main/MainContainer";
-import MainSectionSkeleton from "../../components/main/MainSectionSkeleton";
-import { APP_NAME } from "../../utils/helpers/Constants";
+import MainContainer from "../../ui/components/main/MainContainer";
+import MainSectionSkeleton from "../../ui/components/main/MainSectionSkeleton";
+import { APP_NAME } from "../../app/helpers/Constants";
 
 interface AuthorPageProps {
   author: string;
@@ -32,7 +32,7 @@ const getServerSideProps: GetServerSideProps<AuthorPageProps> = async (
 };
 
 const LazyUserContent = dynamic(
-  () => import("../../components/user/UserContent"),
+  () => import("../../ui/components/user/UserContent"),
   {
     loading: () => <MainSectionSkeleton text="Loading User's information..." />,
     ssr: false,

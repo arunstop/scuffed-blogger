@@ -3,10 +3,9 @@ const withAnimations = require("animated-tailwindcss");
 module.exports = withAnimations({
   content: [
     "./pages/**/*.tsx",
-    "./components/**/*.tsx",
-    "./layouts/**/*.tsx",
-    "./utils/**/*.tsx",
-    "./utils/helpers/*.ts",
+    "./ui/**/*.tsx",
+    "./app/**/*.tsx",
+    "./app/helpers/*.ts",
   ],
   theme: {
     extend: {

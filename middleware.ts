@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isUserModel } from "./utils/data/models/UserModel";
-import { COOKIE_USER_AUTH } from "./utils/helpers/Constants";
+import { isUserModel } from "./base/data/models/UserModel";
+import { COOKIE_USER_AUTH } from "./app/helpers/Constants";
 
 const protectedRoutes = ["/write", "/user/posts", "/auth", "/profile"];
 

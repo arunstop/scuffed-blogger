@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import SplashScreen from "../../components/placeholder/SplashScreen";
-import { APP_NAME } from "../../utils/helpers/Constants";
+import SplashScreen from "../../ui/components/placeholder/SplashScreen";
+import { APP_NAME } from "../../app/helpers/Constants";
 
 const LazyLayoutProfilePageChooseTopics = dynamic(
-  () => import("../../layouts/profile/pages/LayoutProfilePageChooseTopics"),
+  () => import("../../ui/layouts/profile/pages/LayoutProfilePageChooseTopics"),
   {
     ssr: false,
     loading(loadingProps) {

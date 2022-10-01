@@ -6,10 +6,10 @@ import "../styles/globals.css";
 import dynamic from "next/dynamic";
 import  Head  from "next/head";
 import { parseCookies } from "nookies";
-import SplashScreen from "../components/placeholder/SplashScreen";
-import { isUserModel, UserModel } from "../utils/data/models/UserModel";
-import { APP_DESC, APP_NAME, COOKIE_USER_AUTH } from "../utils/helpers/Constants";
-import { useRouteChange } from "../utils/hooks/RouteChangeHook";
+import SplashScreen from "../ui/components/placeholder/SplashScreen";
+import { isUserModel, UserModel } from "../base/data/models/UserModel";
+import { APP_DESC, APP_NAME, COOKIE_USER_AUTH } from "../app/helpers/Constants";
+import { useRouteChange } from "../app/hooks/RouteChangeHook";
 
 interface AdditionalAppProps {
   user?: UserModel;
@@ -19,7 +19,7 @@ const LazyNextProgressBar = dynamic(() => import("nextjs-progressbar"), {
 });
 
 const LazyLayoutMainWrapper = dynamic(
-  () => import("../layouts/main/LayoutMainWrapper"),
+  () => import("../ui/layouts/main/LayoutMainWrapper"),
   {
     ssr: false,
     loading(loadingProps) {
@@ -29,7 +29,7 @@ const LazyLayoutMainWrapper = dynamic(
 );
 
 const LazyLayoutAppWrapper = dynamic(
-  () => import("../layouts/main/LayoutAppWrapper"),
+  () => import("../ui/layouts/main/LayoutAppWrapper"),
   {
     ssr: false,
     loading(loadingProps) {
