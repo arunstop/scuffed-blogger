@@ -1,5 +1,5 @@
 import { KEY_CLIENT_DARK_MODE } from "./Constants";
-import { storageSave } from "../../base/repos/LocalStorage";
+import { repoLocalSave } from "../../base/repos/LocalStorage";
 
 export const getBodyEl = () => document.getElementsByTagName("BODY")[0];
 export const getHeaderEl = () => document.getElementById("header");
@@ -20,7 +20,7 @@ export const toggleClientDarkMode = (newVal: boolean) => {
     body.setAttribute("data-theme", "cupcake");
   }
   // Save dark mode to localStorage
-  storageSave(KEY_CLIENT_DARK_MODE, JSON.stringify(newVal));
+  repoLocalSave(KEY_CLIENT_DARK_MODE, JSON.stringify(newVal));
 };
 
 export const initClientDarkMode = (toggler: (val: boolean) => void) => {

@@ -7,11 +7,13 @@ import { MdEdit, MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
-import { useModalRoutedBehaviorHook } from "../../../../app/hooks/ModalRoutedBehaviorHook";
-import { ArticleListModelByUser, fbArticleGetByUser, fbArticleDelete } from "../../../../app/services/ArticleService";
+import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
+import {
+  ArticleListModelByUser, serviceArticleDelete, serviceArticleGetByUser
+} from "../../../../app/services/ArticleService";
 import InputText from "../../../components/input/InputText";
-import MainContainer from "../../../components/main/MainContainer";
-import MainLazyScrollTrigger from "../../../components/main/MainLazyScrollTrigger";
+import Container from "../../../components/common/Container";
+import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
@@ -29,7 +31,7 @@ function LayoutUserPagePosts() {
   const [loadingArticles, setLoadingArticles] = useState(true);
   // const [keyword, setKeyword] = useState("");
   // routed modal
-  const modalDelete = useModalRoutedBehaviorHook("articleId");
+  const modalDelete = useRoutedModalHook("articleId");
 
   const {
     register,
@@ -56,7 +58,7 @@ function LayoutUserPagePosts() {
     // console.log("param", offset);
     // console.log("articleData", articleData?.offset);
     if (!user) return;
-    const articleByUser = await fbArticleGetByUser({
+    const articleByUser = await serviceArticleGetByUser({
       articleListId: user.list.posts,
       keyword: keyword || "",
       paging: { start: offset, end: offset + 2 },
@@ -87,7 +89,7 @@ function LayoutUserPagePosts() {
     const articleTarget = articleData.articles.find((e) => e.id === articleId);
 
     if (articleTarget) {
-      await fbArticleDelete({
+      await serviceArticleDelete({
         article: articleTarget,
         user: user,
       }).then(async (user) => {
@@ -163,7 +165,7 @@ function LayoutUserPagePosts() {
           },
         ]}
       />
-      <MainContainer>
+      <Container>
         {/* title */}
         <div className="text-4xl font-bold sm:text-5xl hidden sm:block">
           My Posts
@@ -219,8 +221,13 @@ function LayoutUserPagePosts() {
           <div className="flex flex-col gap-2 sm:gap-4 min-h-[24rem]">
             {articles.map((e, idx) => {
               return (
-                <div key={e.id}  className="flex">
-                  <PostItemSearchResult article={e} observe withActions className="w-full" />
+                <div key={e.id} className="flex">
+                  <PostItemSearchResult
+                    article={e}
+                    observe
+                    withActions
+                    className="w-full"
+                  />
                 </div>
               );
             })}
@@ -277,18 +284,18 @@ function LayoutUserPagePosts() {
         ) : (
           articleData &&
           articleData.offset < articleData.totalArticle && (
-            <MainLazyScrollTrigger
+            <IntersectionObserverTrigger
               key={articleData.offset + ""}
               callback={async () => {
                 loadMoreArticles();
               }}
               className="flex w-full "
-            ></MainLazyScrollTrigger>
+            ></IntersectionObserverTrigger>
           )
         )}
 
         {/* pagination */}
-      </MainContainer>
+      </Container>
       <ModalConfirmation
         value={modalDelete.show}
         title="Delete article"

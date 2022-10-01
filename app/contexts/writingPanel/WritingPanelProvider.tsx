@@ -7,10 +7,10 @@ import {
 } from "../../../base/data/contexts/WritingPanelTypes";
 import { KEY_ARTICLE_DRAFT } from "../../helpers/Constants";
 import {
-  storageCheck,
-  storageGet,
-  storageRemove,
-  storageSave,
+  repoLocalCheck,
+  repoLocalGet,
+  repoLocalRemove,
+  repoLocalSave,
 } from "../../../base/repos/LocalStorage";
 import { WritingPanelContext } from "./WritingPanelContext";
 import { writingPanelReducer } from "./WritingPanelReducer";
@@ -40,7 +40,7 @@ export const WritingPanelProvider = ({
       dispatch({ type: "SET_FORM_DATA", payload: { data: processedData } });
       // save to local
       if(saveLocal) 
-      storageSave(
+      repoLocalSave(
         KEY_ARTICLE_DRAFT,
         JSON.stringify({
           ...data,
@@ -50,7 +50,7 @@ export const WritingPanelProvider = ({
     },
     clearFormData: () => {
       dispatch({ type: "CLEAR_FORM_DATA" });
-      storageRemove(KEY_ARTICLE_DRAFT);
+      repoLocalRemove(KEY_ARTICLE_DRAFT);
     },
     setTab: (data) => {
       dispatch({ type: "SET_TAB", payload: { data: data } });
@@ -67,10 +67,10 @@ export const WritingPanelProvider = ({
 
   useEffect(() => {
     if (state.formData) return;
-    if (storageCheck(KEY_ARTICLE_DRAFT)) {
+    if (repoLocalCheck(KEY_ARTICLE_DRAFT)) {
       try {
         const localArticleDraft = JSON.parse(
-          storageGet(KEY_ARTICLE_DRAFT),
+          repoLocalGet(KEY_ARTICLE_DRAFT),
         ) as WritingPanelFormProps;
         action.setFormData(localArticleDraft);
       } catch (error) {

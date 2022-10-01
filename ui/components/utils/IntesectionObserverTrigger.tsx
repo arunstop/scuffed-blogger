@@ -2,7 +2,7 @@ import React from "react";
 import { useIntersectionObserverHook } from "../../../app/hooks/IntersectionObserverHook";
 
 // old
-function MainIntersectionObserverTrigger({
+function IntersectionObserverTrigger({
   callback,
   ...props
 }: {
@@ -40,4 +40,4 @@ function MainIntersectionObserverTrigger({
 //   return <Component ref={ref} {...props} />;
 // }
 
-export default MainIntersectionObserverTrigger;
+export default IntersectionObserverTrigger;

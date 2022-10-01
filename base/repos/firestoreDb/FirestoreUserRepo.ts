@@ -18,20 +18,20 @@ import { UserModel } from "../../data/models/UserModel";
 const userDb = firebaseClient.collections.users;
 
 // Updates user's data
-export async function fsUserAdd(user: UserModel) {
+export async function repoFsUserAdd(user: UserModel) {
   // Updating user in the database
   const newUserRef = doc(userDb, user.email || "");
   return setDoc(newUserRef, toJsonFriendly(user));
 }
 
 // Updates user's data
-export async function fsUserUpdate(user: UserModel) {
+export async function repoFsUserUpdate(user: UserModel) {
   // Updating user in the database
   const editUserRef = doc(userDb, user.email || "");
   return updateDoc(editUserRef, toJsonFriendly(user));
 }
 
-export async function fsUserGetByEmail(
+export async function repoFsUserGetByEmail(
   email: string,
 ): Promise<UserModel | null> {
   // Get user from database

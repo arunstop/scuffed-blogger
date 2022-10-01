@@ -1,35 +1,38 @@
-import LayoutArticleSuggestionSection from "./LayoutArticleSuggestionSection";
-import LayoutArticleCommentSection from "./comment/LayoutArticleCommentSection";
-import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
-import useLazyScrollerHook from "../../../app/hooks/LazyScrollerHook";
+import { useState } from "react";
 import { ArticleModel } from "../../../base/data/models/ArticleModel";
+import IntersectionObserverTrigger from "../../components/utils/IntesectionObserverTrigger";
+import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
+import LayoutArticleCommentSection from "./comment/LayoutArticleCommentSection";
+import LayoutArticleSuggestionSection from "./LayoutArticleSuggestionSection";
 
 // Supposed to serve as container of comment and suggestion section
 function LayoutArticleMoreSection({ article }: { article: ArticleModel }) {
-  const {
-    load: loadCommentSection,
-    setLoad: setLoadCommentSection,
-    ref: commentSectionRef,
-  } = useLazyScrollerHook({delay:1000});
-
-  const {
-    load: loadSuggestionSection,
-    setLoad: setLoadSuggestionSection,
-    ref: suggestionSectionRef,
-  } = useLazyScrollerHook({delay:1000});
-
+  const [commentSection, setCommentSection] = useState(false);
+  const [suggestionSection, setSuggestionSection] = useState(false);
   return (
     <>
-      {loadCommentSection ? (
+      {commentSection ? (
         <LayoutArticleCommentSection articleId={article.id} />
       ) : (
-        <LoadingIndicator ref={commentSectionRef} spinner text="Loading comments..." />
+        <IntersectionObserverTrigger
+          callback={(intersecting) => {
+            if (intersecting) return setCommentSection(intersecting);
+          }}
+        >
+          <LoadingIndicator spinner text="Loading comments..." />
+        </IntersectionObserverTrigger>
       )}
 
-      {loadSuggestionSection ? (
+      {suggestionSection ? (
         <LayoutArticleSuggestionSection article={article} />
       ) : (
-        <LoadingIndicator ref={suggestionSectionRef} spinner text="Loading related articles..." />
+        <IntersectionObserverTrigger
+          callback={(intersecting) => {
+            if (intersecting) return setSuggestionSection(intersecting);
+          }}
+        >
+          <LoadingIndicator spinner text="Loading related articles..." />
+        </IntersectionObserverTrigger>
       )}
     </>
   );

@@ -1,12 +1,12 @@
 import React from "react";
 import AuthPanel from "../../../components/auth/AuthPanel";
-import MainContainer from "../../../components/main/MainContainer";
+import Container from "../../../components/common/Container";
 
 function LayoutAuthPage() {
   return (
-    <MainContainer>
+    <Container>
       <AuthPanel />
-    </MainContainer>
+    </Container>
   );
 }
 

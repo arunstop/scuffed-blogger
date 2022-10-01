@@ -15,7 +15,7 @@ import { UserModel } from "../../../base/data/models/UserModel";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
 import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
-import { fbArticleAdd } from "../../../app/services/ArticleService";
+import { serviceArticleAdd } from "../../../app/services/ArticleService";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
@@ -57,7 +57,7 @@ function WritingPanel() {
       setLoading(true);
       setNetWorkResp(netLoading("Creating your well written article ;)"));
 
-      const newArticle = await fbArticleAdd({
+      const newArticle = await serviceArticleAdd({
         rawArticle: processedData,
         // correct non-null assertion becase we know that isLoggedIn already true
         user: authStt.user,

@@ -17,29 +17,30 @@ import {
 } from "../../base/data/models/ArticleModel";
 import { UserModel } from "../../base/data/models/UserModel";
 import {
-  fsArticleAdd,
-  fsArticleContentAdd,
-  fsArticleContentDelete,
+  repoFsArticleAdd,
+  repoFsArticleContentAdd,
+  repoFsArticleContentDelete,
   fsArticleContentGet,
-  fsArticleContentUpdate,
-  fsArticleDelete,
-  fsArticleGetByUser,
-  fsArticleUpdate
+  repoFsArticleContentUpdate,
+  repoFsArticleDelete,
+  repoFsArticleGetByUser,
+  repoFsArticleUpdate
 } from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
-  rtArticleGetAll,
-  rtArticleMirrorAdd,
-  rtArticleMirrorDelete,
-  rtArticleMirrorUpdate,
-  rtArticleSearch,
-  rtArticleUpdateView
+  repoRtArticleGetAll,
+  repoRtArticleMirrorAdd,
+  repoRtArticleMirrorDelete,
+  repoRtArticleMirrorUpdate,
+  repoRtArticleSearch,
+  repoRtArticleUpdateView
 } from "../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 import Fuse from "fuse.js";
 import { MainApiResponse } from "../../base/data/Main";
 import { ArticleListModel } from "../../base/data/models/ArticleListModel";
-import { uploadFile } from "./FileService";
-import { stDirectoryDelete, stFileDeleteByFullLink } from "../../base/repos/StorageModules";
+import { serviceFileUpload } from "./FileService";
+import { repoStDirectoryDelete, repoStFileDeleteByFullLink } from "../../base/repos/StorageModules";
+import { axiosClient } from "../../base/clients/AxiosClient";
 
 // Adding article, now using direct firebaseClient
 interface PropsAddArticle {
@@ -60,7 +61,7 @@ export type ArticleModelFromDb = {
   articles: ArticleModel[];
 } & ApiPagingResultProps;
 
-export async function fbArticleMirrorGetAll({
+export async function serviceArticleMirrorGetAll({
   data,
   callback,
 }: MainApiResponse<
@@ -69,7 +70,7 @@ export async function fbArticleMirrorGetAll({
 >): Promise<ArticleModelFromDb | null> {
   callback?.(netLoading("Error when fetching articles", null));
   try {
-    const res = await rtArticleGetAll(data);
+    const res = await repoRtArticleGetAll(data);
     if (res) {
       callback?.(netSuccess("Success fetching articles", res));
       return res;
@@ -85,7 +86,7 @@ export async function fbArticleMirrorGetAll({
   }
 }
 
-export async function fbArticleGetByUser({
+export async function serviceArticleGetByUser({
   articleListId,
   keyword,
   paging,
@@ -103,7 +104,7 @@ export async function fbArticleGetByUser({
 }): Promise<ArticleListModelByUser | null> {
   try {
     // console.log("paging = ", `${paging.start} + ${paging.end}`)
-    const data = await fsArticleGetByUser(articleListId, keyword, paging);
+    const data = await repoFsArticleGetByUser(articleListId, keyword, paging);
     callback?.(
       netSuccess<ArticleListModelByUser | null>(
         "Success getting user's posts",
@@ -123,7 +124,7 @@ export async function fbArticleGetByUser({
   }
 }
 
-export async function fbArticleAdd({
+export async function serviceArticleAdd({
   rawArticle,
   user,
   callback,
@@ -154,7 +155,7 @@ export async function fbArticleAdd({
       dateUpdated: Date.now(),
     };
     // add article and check if user already has article or not
-    await fsArticleAdd(articleList);
+    await repoFsArticleAdd(articleList);
   } catch (error) {
     console.log(error);
     errorCb("Error when creating article", error as FirebaseError);
@@ -163,7 +164,7 @@ export async function fbArticleAdd({
 
   // create article content
   try {
-    await fsArticleContentAdd(article.id, article.content);
+    await repoFsArticleContentAdd(article.id, article.content);
   } catch (error) {
     console.log(error);
     errorCb("Error when creating article", error as FirebaseError);
@@ -176,7 +177,7 @@ export async function fbArticleAdd({
     try {
       callback?.(netLoading<ArticleModel>("Uploading the thumbnail", article));
       // uploading thumbnail
-      const thumbnailUrl = await uploadFile({
+      const thumbnailUrl = await serviceFileUpload({
         file: thumbnail[0],
         directory: `/thumbnails/${article.id}/`,
         name: article.id,
@@ -195,7 +196,7 @@ export async function fbArticleAdd({
 
   // uploading mirror to rtdb for efficient searching
   try {
-    await rtArticleMirrorAdd(articleContentless);
+    await repoRtArticleMirrorAdd(articleContentless);
   } catch (error) {
     console.log(error);
     errorCb("Error when creating thumbnail", error as FirebaseError);
@@ -206,7 +207,7 @@ export async function fbArticleAdd({
   return article;
 }
 
-export async function fbArticleDelete({
+export async function serviceArticleDelete({
   article,
   user,
   callback,
@@ -217,7 +218,7 @@ export async function fbArticleDelete({
 }): Promise<UserModel | null> {
   // delete article
   try {
-    await fsArticleDelete({
+    await repoFsArticleDelete({
       article: article,
       userPostsRef: user.list.posts,
     });
@@ -233,7 +234,7 @@ export async function fbArticleDelete({
   }
   // delete article content
   try {
-    await fsArticleContentDelete(article.id);
+    await repoFsArticleContentDelete(article.id);
   } catch (error) {
     console.log(error);
     callback?.(
@@ -245,7 +246,7 @@ export async function fbArticleDelete({
   }
   // delete mirror on rtdb
   try {
-    await rtArticleMirrorDelete(article.id);
+    await repoRtArticleMirrorDelete(article.id);
   } catch (error) {
     console.log(error);
     callback?.(
@@ -260,7 +261,7 @@ export async function fbArticleDelete({
   if (article.thumbnail) {
     try {
       const thumbnailDirectory = `/thumbnails/${article.id}/`;
-      await stDirectoryDelete(thumbnailDirectory);
+      await repoStDirectoryDelete(thumbnailDirectory);
     } catch (error) {
       console.log(error);
       callback?.(
@@ -282,7 +283,7 @@ export async function fbArticleDelete({
   return user;
 }
 
-export async function fbArticleContentGet({
+export async function serviceArticleContentGet({
   id,
   callback,
 }: {
@@ -314,7 +315,7 @@ type PropsEditArticle = {
   ) => void;
 };
 
-export async function fbArticleUpdate({
+export async function serviceArticleUpdate({
   oldArticle,
   rawArticle,
   userPostsRef,
@@ -336,7 +337,7 @@ export async function fbArticleUpdate({
 
   // store updated article without content
   try {
-    await fsArticleUpdate({
+    await repoFsArticleUpdate({
       oldArticle: oldArticleContentless,
       article: articleContentless,
       userPostsRef: userPostsRef,
@@ -350,7 +351,7 @@ export async function fbArticleUpdate({
   // update the content if present different
   if (oldArticle.content !== article.content) {
     try {
-      await fsArticleContentUpdate(article.id, article.content);
+      await repoFsArticleContentUpdate(article.id, article.content);
     } catch (error) {
       console.log(error);
       errorCb("Error when updating article", error as FirebaseError);
@@ -368,7 +369,7 @@ export async function fbArticleUpdate({
     // if it has different extension than the new one
     if (!oldArticle.thumbnail.includes(thumbnailExt)) {
       try {
-        await stFileDeleteByFullLink(oldArticle.thumbnail);
+        await repoStFileDeleteByFullLink(oldArticle.thumbnail);
       } catch (error) {
         console.log(error);
         errorCb("Error when uploading thumbnail", error as FirebaseError);
@@ -378,7 +379,7 @@ export async function fbArticleUpdate({
 
     // upload/replace the new one
     try {
-      const thumbnailUrl = await uploadFile({
+      const thumbnailUrl = await serviceFileUpload({
         file: thumbnail[0],
         directory: `/thumbnails/${article.id}/`,
         name: article.id,
@@ -397,7 +398,7 @@ export async function fbArticleUpdate({
 
   // uploading mirror to rtdb for efficient searching
   try {
-    await rtArticleMirrorUpdate(articleContentless);
+    await repoRtArticleMirrorUpdate(articleContentless);
   } catch (error) {
     console.log(error);
     errorCb("Error when updating thumbnail", error as FirebaseError);
@@ -408,7 +409,7 @@ export async function fbArticleUpdate({
   return article;
 }
 
-export async function fbArticleReact({
+export async function serviceArticleReact({
   data,
   callback,
 }: MainApiResponse<
@@ -420,7 +421,7 @@ export async function fbArticleReact({
   const { article } = data;
   try {
     console.log(article);
-    await rtArticleMirrorUpdate(article);
+    await repoRtArticleMirrorUpdate(article);
     callback?.(netSuccess("Success liking the article", article));
     return article;
   } catch (error) {
@@ -430,7 +431,7 @@ export async function fbArticleReact({
   }
 }
 
-export async function fbArticleSearch({
+export async function serviceArticleSearch({
   data,
   callback,
 }: MainApiResponse<
@@ -440,7 +441,7 @@ export async function fbArticleSearch({
   console.log("searching...", data.keyword);
   const { keyword, count, start, abortSignal } = data;
   try {
-    const res: ArticleModel[] = await rtArticleSearch(data.abortSignal).then(
+    const res: ArticleModel[] = await repoRtArticleSearch(data.abortSignal).then(
       (e) => {
         if (e.status !== 200) return [];
         let articles = values(e.data) as ArticleModel[];
@@ -466,7 +467,7 @@ export async function fbArticleSearch({
   }
 }
 
-export async function fbArticleUpdateView({
+export async function serviceArticleUpdateView({
   data,
   callback,
 }: MainApiResponse<
@@ -475,7 +476,7 @@ export async function fbArticleUpdateView({
 >): Promise<ArticleModel | null> {
   const { id } = data;
   try {
-    const res: ArticleModel | null = await rtArticleUpdateView(id);
+    const res: ArticleModel | null = await repoRtArticleUpdateView(id);
     if (res) {
       callback?.(netSuccess("Success Updating Views", res));
       return res;
@@ -487,4 +488,45 @@ export async function fbArticleUpdateView({
     console.error(error as FirebaseError);
     return null;
   }
+}
+
+export async function serviceArticleGetById({
+  id,
+  callback,
+}: {
+  id: string;
+  callback?: (resp: MainNetworkResponse<ArticleModel | null>) => void;
+}): Promise<ArticleModel | null> {
+  // callback?.({
+  //   data: null,
+  //   message: "Submitting your article...",
+  //   status: "loading",
+  // });
+  console.log(id);
+  let data: MainNetworkResponse<ArticleModel | null> | null = null;
+  // await waitFor(2000);
+  try {
+    //   Call the endpoint
+    const result = await axiosClient
+      .get(`/api/article/${id}`, {
+        // .get(`/api/hello`, {
+        method: "GET",
+      })
+      .then((resp) => {
+        // console.log(resp.data);
+        return resp;
+      });
+    data = result.data as MainNetworkResponse<ArticleModel | null>;
+    callback?.(data);
+  } catch (error) {
+    callback?.({
+      data: null,
+      message: `${error}`,
+      status: "error",
+    });
+    // console.log(error);
+  }
+  // Returns data if it exist
+  // returns null otherwise
+  return data?.data || null;
 }

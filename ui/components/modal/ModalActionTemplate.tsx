@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, ReactNode } from "react";
 import { ModalProps } from "../../../base/data/Main";
 import useOptionModalConfirmationHook from "../../../app/hooks/PostOptionConfirmationModalBehaviorHook";
-import GradientBackground from "../main/GradientBackground";
+import GradientBackground from "../utils/GradientBackground";
 import ModalActionItem from "./ModalActionItem";
 import ModalActionConfirmation from "./ModalActionConfirmation";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";

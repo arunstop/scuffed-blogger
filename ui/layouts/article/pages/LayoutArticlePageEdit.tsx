@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useWritingPanelCtx } from "../../../../app/contexts/writingPanel/WritingPanelHook";
 import { WritingPanelProvider } from "../../../../app/contexts/writingPanel/WritingPanelProvider";
-import { fbArticleContentGet, fbArticleUpdate } from "../../../../app/services/ArticleService";
+import { serviceArticleContentGet, serviceArticleUpdate } from "../../../../app/services/ArticleService";
 import { WritingPanelFormProps } from "../../../../base/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse, netLoading } from "../../../../base/data/Main";
 import { ArticleModel } from "../../../../base/data/models/ArticleModel";
-import MainContainer from "../../../components/main/MainContainer";
+import Container from "../../../components/common/Container";
 import { StatusPlaceholderProps } from "../../../components/placeholder/StatusPlaceholder";
 import LayoutArticleForm from "../LayoutArticleForm";
 
@@ -54,7 +54,7 @@ function LayoutArticlePageEditContent({
           ],
         }),
       );
-      await fbArticleUpdate({
+      await serviceArticleUpdate({
         oldArticle: oldArticleUpdated,
         rawArticle: data,
         userPostsRef: userPostsRef,
@@ -116,7 +116,7 @@ function LayoutArticlePageEditContent({
   );
   async function getContent() {
     if (!wpState.formData) return;
-    const content = await fbArticleContentGet({ id: articleContentless.id });
+    const content = await serviceArticleContentGet({ id: articleContentless.id });
     const contentDecoded = decodeURIComponent(content || "");
     // set the content on the writingPanelCtx
     wpAction.setFormData({
@@ -131,9 +131,9 @@ function LayoutArticlePageEditContent({
     getContent();
   }, []);
   return (
-    <MainContainer className="">
+    <Container className="">
       <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
-    </MainContainer>
+    </Container>
   );
 }
 

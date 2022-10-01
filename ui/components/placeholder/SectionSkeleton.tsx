@@ -1,5 +1,5 @@
 import React from "react";
-import MainSpinner from "./MainSpinner";
+import LoadingIndicator from "./LoadingIndicator";
 
 // Ref on custom component needs to be forwarded
 // reference: https://stackoverflow.com/a/66876771
@@ -7,7 +7,7 @@ interface MainSectionSkeletonProps {
   text: string;
   spinner?: boolean;
 }
-const MainSectionSkeleton = React.forwardRef<
+const SectionSkeleton = React.forwardRef<
   HTMLDivElement,
   React.PropsWithChildren<MainSectionSkeletonProps>
 >(({ spinner = false, ...props }, ref) => {
@@ -17,12 +17,12 @@ const MainSectionSkeleton = React.forwardRef<
       className="wrap mx-auto flex justify-center items-center gap-2 text-center 
       text-lg font-bold sm:gap-4 sm:text-xl my-16 md:my-20 lg:my-24 xl:my-28"
     >
-      {spinner && <MainSpinner />}
+      {spinner && <LoadingIndicator spinner />}
       <span>{props.text}</span>
     </div>
   );
 });
 
-MainSectionSkeleton.displayName = "MainSectionSkeleton";
+SectionSkeleton.displayName = "SectionSkeleton";
 
-export default MainSectionSkeleton;
+export default SectionSkeleton;

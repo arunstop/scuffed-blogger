@@ -5,7 +5,7 @@ import { MdBookmarkAdd, MdMoreHoriz } from "react-icons/md";
 import { ArticleModel } from "../../../base/data/models/ArticleModel";
 import { dateDistanceGet } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
-import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
+import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
 import MainUserPopup from "../main/MainPostUserPopup";
 import MainUserLabel from "../main/MainUserLabel";
 
@@ -18,7 +18,7 @@ function PostItem({ article, observe }: PostItemProps) {
   const elementId = `article-${article.id}`;
   const element = getElById(elementId);
   return observe ? (
-    <MainIntersectionObserverTrigger
+    <IntersectionObserverTrigger
       id={elementId}
       callback={(intersecting) => setVisible(intersecting)}
       className=""
@@ -32,7 +32,7 @@ function PostItem({ article, observe }: PostItemProps) {
       }
     >
       {visible && <PostItemContent article={article} />}
-    </MainIntersectionObserverTrigger>
+    </IntersectionObserverTrigger>
   ) : (
     <PostItemContent article={article} />
   );

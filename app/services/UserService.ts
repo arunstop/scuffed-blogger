@@ -15,25 +15,23 @@ import {
 } from "../../base/data/Main";
 import { UserModel, createUserModel } from "../../base/data/models/UserModel";
 import {
-  fsUserUpdate,
-  fsUserGetByEmail,
-  fsUserAdd,
+  repoFsUserUpdate,
+  repoFsUserGetByEmail,
+  repoFsUserAdd,
 } from "../../base/repos/firestoreDb/FirestoreUserRepo";
 import {
-  rtUserDisplayAdd,
-  rtUserDisplayUpdate,
+  repoRtUserDisplayAdd,
+  repoRtUserDisplayUpdate,
   UserDisplayModel,
-  rtUserDisplayGetById,
+  repoRtUserDisplayGetById,
+  repoRtUserSessionAdd,
+  repoRtUserSessionLatestSet,
 } from "../../base/repos/realtimeDb/RealtimeUserRepo";
-import {
-  rtdbSessionAdd,
-  rtdbSessionLatestSet,
-} from "../../base/repos/RtdbModules";
-import { stFileDeleteByFullLink } from "../../base/repos/StorageModules";
+import { repoStFileDeleteByFullLink } from "../../base/repos/StorageModules";
 import { LoginFields } from "../../ui/components/auth/AuthLoginForm";
 import { AuthRegisterProps } from "../../ui/components/auth/AuthRegisterForm";
 
-import { uploadFile } from "./FileService";
+import { serviceFileUpload } from "./FileService";
 
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;
@@ -110,13 +108,13 @@ export async function fbUserAuthRegister({
   try {
     // remove firebaseUser before updating document
     // because firebaseUser meant to be used for local machine
-    await fsUserUpdate({
+    await repoFsUserUpdate({
       ...data,
       localAuthData: undefined,
       session: undefined,
     });
     // user data with new session intact
-    data = await rtdbSessionAdd(data);
+    data = await repoRtUserSessionAdd(data);
   } catch (error) {
     console.log(error);
     callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
@@ -152,7 +150,7 @@ export async function fbUserAuthLogin({
     }
     try {
       // get the user data
-      const userData = await fsUserGetByEmail(userCred.user.email);
+      const userData = await repoFsUserGetByEmail(userCred.user.email);
       if (userData === null) {
         callback?.(netError("Cannot find the requested user data"));
         return null;
@@ -166,7 +164,7 @@ export async function fbUserAuthLogin({
 
       // add session data to realtime database
       // and return user data with session
-      const userDataWithSession = await rtdbSessionAdd(userDataWithAuth);
+      const userDataWithSession = await repoRtUserSessionAdd(userDataWithAuth);
 
       console.log(userDataWithSession);
       callback?.(
@@ -201,9 +199,9 @@ export async function fbUserAdd({
 }): Promise<AddUserProps> {
   let data: AddUserProps = null;
   try {
-    await fsUserAdd(user);
+    await repoFsUserAdd(user);
     data = user;
-    await rtUserDisplayAdd({
+    await repoRtUserDisplayAdd({
       id: data.id,
       name: data.name,
       avatar: data.avatar,
@@ -246,7 +244,7 @@ export async function fbUserUpdate({
   // Upload image if there is one
   if (file) {
     try {
-      const imageUrl = await uploadFile({
+      const imageUrl = await serviceFileUpload({
         file: file[0],
         directory: "images/avatars",
         name: user.id,
@@ -261,7 +259,7 @@ export async function fbUserUpdate({
       // and if the previous one was NOT the default one
       if (user.avatar && !user.avatar.includes("default_avatar.png")) {
         try {
-          await stFileDeleteByFullLink(user?.avatar);
+          await repoStFileDeleteByFullLink(user?.avatar);
         } catch (error) {
           callback?.(
             netError(
@@ -285,11 +283,11 @@ export async function fbUserUpdate({
 
   // Update overall User Data
   try {
-    await fsUserUpdate(updatedUserData);
+    await repoFsUserUpdate(updatedUserData);
     // change the latest session to match the latest dateUpdated
-    await rtdbSessionLatestSet(updatedUserData);
+    await repoRtUserSessionLatestSet(updatedUserData);
     // update user display
-    await rtUserDisplayUpdate({
+    await repoRtUserDisplayUpdate({
       id: updatedUserData.id,
       name: updatedUserData.name,
       avatar: updatedUserData.avatar,
@@ -317,7 +315,7 @@ export async function fbUserGet({
 }): Promise<UserModel | null> {
   try {
     // Get user from database
-    const user = await fsUserGetByEmail(email);
+    const user = await repoFsUserGetByEmail(email);
 
     // Show success
     callback?.(
@@ -348,7 +346,7 @@ export async function fbUserDisplayGet({
   UserDisplayModel | null | FirebaseError
 >): Promise<UserDisplayModel | null> {
   try {
-    const res = await rtUserDisplayGetById(data.userId);
+    const res = await repoRtUserDisplayGetById(data.userId);
     callback?.(netSuccess("Success getting user display data", res));
     return res;
   } catch (error) {

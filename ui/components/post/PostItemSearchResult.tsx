@@ -4,7 +4,7 @@ import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 import { ArticleModel } from "../../../base/data/models/ArticleModel";
 import { dateDistanceGet } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
-import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
+import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
 
 interface PostItemSearchResultProps {
   article: ArticleModel;
@@ -23,7 +23,7 @@ function PostItemSearchResult({
   const elementId = `article-${article.id}`;
   const element = getElById(elementId);
   return observe ? (
-    <MainIntersectionObserverTrigger
+    <IntersectionObserverTrigger
       id={elementId}
       callback={(intersecting) => setVisible(intersecting)}
       {...props}
@@ -43,7 +43,7 @@ function PostItemSearchResult({
           withActions={withActions}
         />
       )}
-    </MainIntersectionObserverTrigger>
+    </IntersectionObserverTrigger>
   ) : (
     <PostItemSearchResultContent
       article={article}

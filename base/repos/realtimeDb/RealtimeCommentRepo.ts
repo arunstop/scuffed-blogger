@@ -7,7 +7,7 @@ import { CommentModel, CommentModelListPagedSorted, CommentModelsSortType } from
 
 const db = firebaseClient.rtdb;
 
-export async function rtCommentGet({
+export async function repoRtCommentGet({
   articleId,
   start,
   count,
@@ -49,23 +49,23 @@ export async function rtCommentGet({
   return null;
 }
 
-export async function rtCommentAdd({ comment }: { comment: CommentModel }) {
+export async function repoRtCommentAdd({ comment }: { comment: CommentModel }) {
   const path = `commentList/${comment.articleId}/${comment.id}`;
   const rr = ref(db, path);
   await set(rr, comment);
   return comment;
 }
 
-export async function rtCommentUpdate({ comment }: { comment: CommentModel }) {
-  await rtCommentDelete({
+export async function repoRtCommentUpdate({ comment }: { comment: CommentModel }) {
+  await repoRtCommentDelete({
     articleId: comment.articleId,
     commentId: comment.id,
   });
-  await rtCommentAdd({ comment });
+  await repoRtCommentAdd({ comment });
   return comment;
 }
 
-export async function rtCommentReact({
+export async function repoRtCommentReact({
   react,
   commentId,
   articleId,
@@ -126,13 +126,13 @@ export async function rtCommentReact({
       console.log(e);
       return null;
     }
-    await rtCommentUpdate({ comment: updatedData });
+    await repoRtCommentUpdate({ comment: updatedData });
     return updatedData;
   }
   return null;
 }
 
-export async function rtCommentDelete({
+export async function repoRtCommentDelete({
   articleId,
   commentId,
 }: {

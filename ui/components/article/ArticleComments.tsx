@@ -1,6 +1,6 @@
 import React from "react";
 import { CommentModelsWithPaging } from "../../../base/data/models/CommentModel";
-import { useModalRoutedBehaviorHook } from "../../../app/hooks/ModalRoutedBehaviorHook";
+import { useRoutedModalHook } from "../../../app/hooks/RoutedModalHook";
 import ArticleCommentItem from "./ArticleCommentItem";
 import ArticleCommentOptionModal from "./ArticleCommentOptionModal";
 import ArticleCommentReplyModal from "./ArticleCommentReplyModal";
@@ -16,8 +16,8 @@ function ArticleComments({
   observe?: boolean;
   // addComment: (comments:Comment[]) => void;
 }) {
-  const optionModal = useModalRoutedBehaviorHook(optionParam);
-  const replyModal = useModalRoutedBehaviorHook(replyParam);
+  const optionModal = useRoutedModalHook(optionParam);
+  const replyModal = useRoutedModalHook(replyParam);
 
   return (
     <>

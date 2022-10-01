@@ -4,11 +4,11 @@ import { MdSort } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { getElById } from "../../../../app/helpers/UiHelpers";
-import { fbCommentGet } from "../../../../app/services/CommentService";
+import { serviceCommentGet } from "../../../../app/services/CommentService";
 import { CommentModelListPagedSorted, CommentModelsSortType } from "../../../../base/data/models/CommentModel";
 import ArticleComments from "../../../components/article/ArticleComments";
-import Alert from "../../../components/main/Alert";
-import Dropdown,{ DropdownOption } from "../../../components/main/Dropdown";
+import Alert from "../../../components/common/Alert";
+import Dropdown,{ DropdownOption } from "../../../components/common/Dropdown";
 import LayoutArticleCommentForm from "./LayoutArticleCommentForm";
 import LayoutArticleCommentSectionExpandedModal from "./LayoutArticleCommentSectionExpandedModal";
 
@@ -30,7 +30,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
       // console.log('123');
 
       const startFrom = !!newSortingType || !commentList ? 0 : commentList.offset;
-      const commentsFromDb = await fbCommentGet({
+      const commentsFromDb = await serviceCommentGet({
         data: {
           articleId,
           start: startFrom,

@@ -1,10 +1,10 @@
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import SplashScreen from "../../ui/components/placeholder/SplashScreen";
-import { ArticleModel } from "../../base/data/models/ArticleModel";
 import { APP_NAME } from "../../app/helpers/Constants";
-import { mainApi } from "../../app/services/MainApi";
+import { serviceArticleGetById } from "../../app/services/ArticleService";
+import { ArticleModel } from "../../base/data/models/ArticleModel";
+import SplashScreen from "../../ui/components/placeholder/SplashScreen";
 
 export const getServerSideProps: GetServerSideProps<{
   articleContentless: ArticleModel;
@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps<{
   // Getting id from the slug from the last 24 chars
   const slug = (context.query.articleId || "") as string;
   const id = slug.slice(-24);
-  const articleContentless = await mainApi.mainArticleGetById({ id: id });
+  const articleContentless = await serviceArticleGetById({ id: id });
   // Show 404 if article not found or
   // if the slugs don't  match
   if (!articleContentless || articleContentless.slug !== slug)

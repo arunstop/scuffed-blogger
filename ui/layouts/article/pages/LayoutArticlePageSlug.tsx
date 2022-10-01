@@ -8,12 +8,12 @@ import {
   MdStar,
   MdTrendingUp,
 } from "react-icons/md";
-import { fbArticleContentGet, fbArticleUpdateView } from "../../../../app/services/ArticleService";
+import { serviceArticleContentGet, serviceArticleUpdateView } from "../../../../app/services/ArticleService";
 import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import ArticleSectionAction from "../../../components/article/ArticleActions";
 import ArticleProgressBar from "../../../components/article/ArticleProgressBar";
-import MainContainer from "../../../components/main/MainContainer";
-import MainIntersectionObserverTrigger from "../../../components/main/MainIntersectionObserverTrigger";
+import Container from "../../../components/common/Container";
+import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 import MainMarkdownContainer from "../../../components/main/MainMarkdownContainer";
 import MainPostStatusChip from "../../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../../components/main/MainPostUserPopup";
@@ -33,10 +33,10 @@ function LayoutArticlePageSlug({
   const [article, setArticle] = useState(articleContentless);
 
   const getContent = useCallback(async () => {
-    const content = await fbArticleContentGet({ id: article.id });
+    const content = await serviceArticleContentGet({ id: article.id });
     if (content) {
       setArticle((prev) => ({ ...prev, content: content }));
-      await fbArticleUpdateView({
+      await serviceArticleUpdateView({
         data: { id: article.id },
       });
     }
@@ -72,7 +72,7 @@ function LayoutArticlePageSlug({
           },
         ]}
       />
-      <MainContainer>
+      <Container>
         <div className="inline-flex justify-start">
           <div className="dropdown-hover dropdown">
             <UserHeader id={article.author} />
@@ -145,7 +145,7 @@ function LayoutArticlePageSlug({
             <LayoutArticleMoreSection article={article} />
           </>
         ) : (
-          <MainIntersectionObserverTrigger
+          <IntersectionObserverTrigger
             callback={(intersecting) => {
               if (intersecting) {
                 return getContent();
@@ -153,9 +153,9 @@ function LayoutArticlePageSlug({
             }}
           >
             <LoadingIndicator spinner text="Loading content" />
-          </MainIntersectionObserverTrigger>
+          </IntersectionObserverTrigger>
         )}
-      </MainContainer>
+      </Container>
     </>
   );
 }

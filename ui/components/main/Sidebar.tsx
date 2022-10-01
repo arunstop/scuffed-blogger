@@ -15,7 +15,7 @@ import {
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useUiCtx } from "../../../app/contexts/ui/UiHook";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
-import { useModalRoutedBehaviorHook } from "../../../app/hooks/ModalRoutedBehaviorHook";
+import { useRoutedModalHook } from "../../../app/hooks/RoutedModalHook";
 import { useUiSidebarBehaviorHook } from "../../../app/hooks/UiSidebarBehaviorHook";
 import ModalConfirmation from "../modal/ModalConfirmation";
 import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
@@ -121,7 +121,7 @@ function Sidebar() {
   const shownMenus = allMenus.filter((e) => e.show);
 
   const { show: dialogLogout, toggle: setDialogLogout } =
-    useModalRoutedBehaviorHook("logout");
+    useRoutedModalHook("logout");
 
   const { sidebar, openSidebar, closeSidebar } = useUiSidebarBehaviorHook();
 

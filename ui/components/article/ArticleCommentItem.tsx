@@ -11,10 +11,10 @@ import {
   userAvatarLinkGet,
 } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
-import MainIntersectionObserverTrigger from "../main/MainIntersectionObserverTrigger";
+import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
 import UserAvatar from "../user/UserAvatar";
 import ArticleCommentItemActionButton from "./ArticleCommentItemActionButton";
-import { fbCommentReact } from "../../../app/services/CommentService";
+import { serviceCommentReact } from "../../../app/services/CommentService";
 interface ArticleCommentItemProps {
   comment: CommentModel;
   optionParam: string;
@@ -29,7 +29,7 @@ function ArticleCommentItem({
   const elementId = `comment-${{ ...props }.comment.id}`;
   const element = getElById(elementId);
   return observe ? (
-    <MainIntersectionObserverTrigger
+    <IntersectionObserverTrigger
       id={elementId}
       callback={(intersecting) => setVisible(intersecting)}
       className=""
@@ -43,7 +43,7 @@ function ArticleCommentItem({
       }
     >
       {visible && <ArticleCommentItemContent {...props} />}
-    </MainIntersectionObserverTrigger>
+    </IntersectionObserverTrigger>
   ) : (
     <ArticleCommentItemContent {...props} />
   );
@@ -73,7 +73,7 @@ function ArticleCommentItemContent({
       minimize: false,
       action: async () => {
         if (!isLoggedIn) return alert("You must login to do this action.");
-        const newComment = await fbCommentReact({
+        const newComment = await serviceCommentReact({
           data: {
             react: upvoted ? "upCancel" : "up",
             articleId: comment.articleId,
@@ -91,7 +91,7 @@ function ArticleCommentItemContent({
       minimize: false,
       action: async () => {
         if (!isLoggedIn) return alert("You must login to do this action.");
-        const newComment = await fbCommentReact({
+        const newComment = await serviceCommentReact({
           data: {
             react: downvoted ? "downCancel" : "down",
             articleId: comment.articleId,

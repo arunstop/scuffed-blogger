@@ -36,77 +36,7 @@ async function getDummy({
   return data?.data || null;
 }
 
-async function mainArticleGetAll({
-  callback,
-}: {
-  callback?: (resp: MainNetworkResponse<ArticleModel[] | null>) => void;
-} = {}): Promise<ArticleModel[] | null> {
-  let data: MainNetworkResponse<ArticleModel[] | null> | null = null;
 
-  try {
-    //   Call the endpoint
-    const result = await axiosClient
-      .get(`/api/article/all`, {
-        // .get(`/api/hello`, {
-        method: "GET",
-      })
-      .then((resp) => {
-        // console.log(resp.data);
-        return resp;
-      });
-    data = result.data;
-    callback?.(data!);
-  } catch (error) {
-    callback?.({
-      data: null,
-      message: `${error}`,
-      status: "error",
-    });
-    // console.log(error);
-  }
-  return data?.data || null;
-}
-
-async function mainArticleGetById({
-  id,
-  callback,
-}: {
-  id: string;
-  callback?: (resp: MainNetworkResponse<ArticleModel | null>) => void;
-}): Promise<ArticleModel | null> {
-  // callback?.({
-  //   data: null,
-  //   message: "Submitting your article...",
-  //   status: "loading",
-  // });
-  console.log(id);
-  let data: MainNetworkResponse<ArticleModel | null> | null = null;
-  // await waitFor(2000);
-  try {
-    //   Call the endpoint
-    const result = await axiosClient
-      .get(`/api/article/${id}`, {
-        // .get(`/api/hello`, {
-        method: "GET",
-      })
-      .then((resp) => {
-        // console.log(resp.data);
-        return resp;
-      });
-    data = result.data as MainNetworkResponse<ArticleModel | null>;
-    callback?.(data);
-  } catch (error) {
-    callback?.({
-      data: null,
-      message: `${error}`,
-      status: "error",
-    });
-    // console.log(error);
-  }
-  // Returns data if it exist
-  // returns null otherwise
-  return data?.data || null;
-}
 
 async function addArticle({
   article,
@@ -208,8 +138,6 @@ export async function mainUserAuthValidate(token:string) {
 
 export const mainApi = {
   getDummy,
-  mainArticleGetById,
-  mainArticleGetAll,
   addArticle,
   registerUser,
 };

@@ -12,7 +12,7 @@ import { firebaseClient } from "../../clients/FirebaseClient";
 
 const db = firebaseClient.rtdb;
 const rtdbUrl = `https://tuturku-3e16b-default-rtdb.asia-southeast1.firebasedatabase.app/`;
-export async function rtArticleGetById(
+export async function repoRtArticleGetById(
   id: string,
 ): Promise<ArticleModel | null> {
   const path = `articleList/${id}`;
@@ -24,7 +24,7 @@ export async function rtArticleGetById(
   return null;
 }
 
-export async function rtArticleGetAll({
+export async function repoRtArticleGetAll({
   count,
   start,
   keyword,
@@ -76,7 +76,7 @@ export async function rtArticleGetAll({
 }
 
 // Adding lite version of article to rtdb for searching purpose
-export async function rtArticleMirrorAdd(
+export async function repoRtArticleMirrorAdd(
   article: ArticleModel,
 ): Promise<ArticleModel> {
   const path = `articleList/${article.id}`;
@@ -87,15 +87,15 @@ export async function rtArticleMirrorAdd(
 }
 
 // Updating the mirror by deleting the old one and adding the new one
-export async function rtArticleMirrorUpdate(
+export async function repoRtArticleMirrorUpdate(
   article: ArticleModel,
 ): Promise<ArticleModel> {
-  rtArticleMirrorDelete(article.id);
-  rtArticleMirrorAdd(article);
+  repoRtArticleMirrorDelete(article.id);
+  repoRtArticleMirrorAdd(article);
   return article;
 }
 
-export async function rtArticleMirrorDelete(
+export async function repoRtArticleMirrorDelete(
   articleId: string,
 ): Promise<boolean> {
   const path = `articleList/${articleId}`;
@@ -104,7 +104,7 @@ export async function rtArticleMirrorDelete(
   return true;
 }
 
-export function rtArticleSearch(abortSignal: AbortSignal) {
+export function repoRtArticleSearch(abortSignal: AbortSignal) {
   const path = `articleList.json`;
   return (
     axiosClient
@@ -116,11 +116,11 @@ export function rtArticleSearch(abortSignal: AbortSignal) {
   );
 }
 
-export async function rtArticleUpdateView(articleId: string) {
-  const target = await rtArticleGetById(articleId);
+export async function repoRtArticleUpdateView(articleId: string) {
+  const target = await repoRtArticleGetById(articleId);
   if (target) {
     // get the targeted article then add the views props by 1
-    const updatedArticle = await rtArticleMirrorUpdate({ ...target, views: target.views + 1 });
+    const updatedArticle = await repoRtArticleMirrorUpdate({ ...target, views: target.views + 1 });
     if (updatedArticle) return updatedArticle;
     return null;
   }

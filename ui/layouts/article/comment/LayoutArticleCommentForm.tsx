@@ -3,7 +3,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { userAvatarLinkGet } from "../../../../app/helpers/MainHelpers";
-import { fbCommentAdd } from "../../../../app/services/CommentService";
+import { serviceCommentAdd } from "../../../../app/services/CommentService";
 import { CommentModel } from "../../../../base/data/models/CommentModel";
 import InputTextArea from "../../../components/input/InputTextArea";
 import UserAvatar from "../../../components/user/UserAvatar";
@@ -44,7 +44,7 @@ function LayoutArticleCommentForm({
       upvote: [user.id],
       downvote: [],
     };
-    const res = await fbCommentAdd({ data: { comment: commentEntry } });
+    const res = await serviceCommentAdd({ data: { comment: commentEntry } });
     if (res) {
       loadComments();
       reset();

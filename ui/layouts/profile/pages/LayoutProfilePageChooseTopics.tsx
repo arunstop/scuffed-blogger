@@ -1,13 +1,13 @@
 import React from "react";
-import MainContainer from "../../../components/main/MainContainer";
+import Container from "../../../components/common/Container";
 import ProfileChooseTopicsForm from "../../../components/profile/ProfileChooseTopicsForm";
 
 function LayoutProfilePageChooseTopics() {
-  return <MainContainer>
+  return <Container>
   <div className="relative z-0 min-h-screen overflow-hidden rounded-xl">
     <ProfileChooseTopicsForm />
   </div>
-</MainContainer>;
+</Container>;
 }
 
 export default LayoutProfilePageChooseTopics;
