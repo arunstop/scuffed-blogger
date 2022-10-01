@@ -1,23 +1,21 @@
 import { FirebaseError } from "firebase/app";
-import {
-  MainApiResponse,
-  netSuccess,
-  netError,
-  ApiPagingReqProps,
-} from "../../base/data/Main";
+import { ApiPagingReqProps, netError, netSuccess } from "../../base/data/Main";
 import {
   CommentModel,
+  CommentModelListPagedSorted,
   CommentModelsSortType,
   CommentModelsWithPaging,
-  CommentModelListPagedSorted,
 } from "../../base/data/models/CommentModel";
 import {
   repoRtCommentAdd,
-  repoRtCommentGet,
-  repoRtCommentUpdate,
-  repoRtCommentReact,
   repoRtCommentDelete,
+  repoRtCommentGet,
+  repoRtCommentGetById,
+  repoRtCommentReact,
+  repoRtCommentReplyAdd,
+  repoRtCommentUpdate,
 } from "../../base/repos/realtimeDb/RealtimeCommentRepo";
+import { MainApiResponse } from "./../../base/data/Main";
 
 export async function serviceCommentAdd({
   data,
@@ -118,5 +116,60 @@ export async function serviceCommentDelete({
   } catch (error) {
     callback?.(netError("Error when deleting comment", error as FirebaseError));
     return;
+  }
+}
+
+export async function serviceCommentReplyAdd({
+  data,
+  callback,
+}: MainApiResponse<
+  {
+    comment: CommentModel;
+    parentCommentId: string;
+  },
+  CommentModel | null | FirebaseError
+>): Promise<CommentModel | null> {
+  const { comment, parentCommentId } = data;
+  try {
+    // get parent comment
+    const parentComment = await repoRtCommentGetById({
+      commentId: parentCommentId,
+      articleId: comment.articleId,
+    });
+    if (!parentComment) throw new Error("Error getting parent comment");
+    callback?.(netSuccess("Success creating reply", parentComment));
+
+    // update parent comment first
+    // aka adding the replies
+    const newParentComment = {
+      ...parentComment,
+      dateUpdated: Date.now(),
+      replies: [...(parentComment.replies || []), comment.id],
+    } as CommentModel;
+    const updatedParentComment = await repoRtCommentUpdate({
+      comment: newParentComment,
+    });
+    if (!updatedParentComment) throw new Error("Error updating parent comment");
+    callback?.(netSuccess("Success creating reply", updatedParentComment));
+
+    // then add the reply entry
+    const addedReply = await repoRtCommentReplyAdd({
+      comment: comment,
+      parentCommentId: updatedParentComment.id,
+    });
+    if (!addedReply) throw new Error("Error adding reply");
+    callback?.(netSuccess("Success adding reply", addedReply));
+
+    return addedReply;
+  } catch (error) {
+    const message = typeof error === "string" ? error : "Error adding reply";
+    console.error(error);
+    callback?.(
+      netError(
+        message,
+        typeof error === "string" ? null : (error as FirebaseError),
+      ),
+    );
+    return null;
   }
 }

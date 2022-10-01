@@ -1,9 +1,15 @@
 import { get, ref, remove, set } from "firebase/database";
 import _ from "lodash";
+import { toJsonFriendly } from "../../../app/helpers/MainHelpers";
 import { FbCommentReactProps } from "../../../app/services/CommentService";
 import { firebaseClient } from "../../clients/FirebaseClient";
 import { ApiPagingReqProps } from "../../data/Main";
-import { CommentModel, CommentModelListPagedSorted, CommentModelsSortType } from "../../data/models/CommentModel";
+import {
+  CommentModel,
+  CommentModelListPagedSorted,
+  CommentModelsSortType,
+  factoryCommentComplete,
+} from "../../data/models/CommentModel";
 
 const db = firebaseClient.rtdb;
 
@@ -52,11 +58,15 @@ export async function repoRtCommentGet({
 export async function repoRtCommentAdd({ comment }: { comment: CommentModel }) {
   const path = `commentList/${comment.articleId}/${comment.id}`;
   const rr = ref(db, path);
-  await set(rr, comment);
+  await set(rr, toJsonFriendly(comment));
   return comment;
 }
 
-export async function repoRtCommentUpdate({ comment }: { comment: CommentModel }) {
+export async function repoRtCommentUpdate({
+  comment,
+}: {
+  comment: CommentModel;
+}) {
   await repoRtCommentDelete({
     articleId: comment.articleId,
     commentId: comment.id,
@@ -142,4 +152,34 @@ export async function repoRtCommentDelete({
   const path = `commentList/${articleId}/${commentId}`;
   const rr = ref(db, path);
   await remove(rr);
+}
+
+export async function repoRtCommentGetById({
+  commentId,
+  articleId,
+}: {
+  commentId: string;
+  articleId: string;
+}) {
+  console.log(commentId.trim() + "/////" + articleId.trim());
+  if (!commentId.trim() || !articleId.trim()) return;
+  const path = `commentList/${articleId}/${commentId}`;
+  console.log(path);
+  const rr = ref(db, path);
+  const res = await get(rr);
+  if (!res.exists()) return null;
+  return factoryCommentComplete(res.val() as CommentModel);
+}
+
+export async function repoRtCommentReplyAdd({
+  comment,
+  parentCommentId,
+}: {
+  comment: CommentModel;
+  parentCommentId: string;
+}): Promise<CommentModel | null> {
+  const path = `replyList/${comment.articleId}/${parentCommentId}/${comment.id}`;
+  const rr = ref(db, path);
+  await set(rr, toJsonFriendly(comment));
+  return comment;
 }

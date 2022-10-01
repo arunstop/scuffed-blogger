@@ -1,11 +1,23 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
+import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
+import { serviceCommentReplyAdd } from "../../../app/services/CommentService";
 import { ModalProps } from "../../../base/data/Main";
+import {
+  CommentModel,
+  factoryCommentComplete,
+} from "../../../base/data/models/CommentModel";
+import MobileHeader from "../main/MobileHeader";
 import ModalTemplate from "../modal/ModalTemplate";
+import ArticleCommentItem from "./ArticleCommentItem";
 
 const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
   value,
   onClose,
-}: ModalProps) {
+  parentComment,
+}: ModalProps & { parentComment?: CommentModel }) {
+  const {
+    authStt: { user },
+  } = useAuthCtx();
   const [reply, setReply] = useState("");
 
   // const { uiStt, uiAct } = useUiCtx();
@@ -13,12 +25,47 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
     onClose();
     setReply("");
   }
+  const submitReply = useCallback(
+    async (value: string) => {
+      if (!user || !parentComment) return;
+      const content = value.trim();
+      const replyEntry: CommentModel = factoryCommentComplete({
+        content: encodeURIComponent(content),
+        parentCommentId: parentComment.id,
+        userId: user.id,
+        userName: user.name,
+        articleId: parentComment.articleId,
+      });
+      const newReply = await serviceCommentReplyAdd({
+        data: {
+          comment: replyEntry,
+          parentCommentId: parentComment.id,
+        },
+      });
+      if (newReply) closeModal();
+    },
+    [parentComment],
+  );
 
   return (
-    <ModalTemplate value={value} onClose={closeModal} title="Replying...">
-      <div className="form-control flex-1 gap-4 rounded-xl sm:gap-8">
+    <ModalTemplate
+      value={value}
+      onClose={closeModal}
+      title={`Replying to ${parentComment?.userName || "a comment"}`}
+    >
+      <MobileHeader
+        title={`Replying to ${parentComment?.userName || "a comment"}`}
+        back={() => closeModal()}
+        toTop={() => {}}
+      />
+      {parentComment && (
+        <div className="px-2 sm:px-4">
+          <ArticleCommentItem comment={parentComment} noActions />
+        </div>
+      )}
+      <div className="form-control flex-1 gap-4 rounded-xl sm:gap-8 p-2 sm:p-4">
         <textarea
-          className="textarea-bordered textarea max-h-[12rem] min-h-[12rem] sm:max-h-[24rem] sm:min-h-[18rem] rounded-xl text-base"
+          className="textarea-bordered textarea min-h-[9rem] rounded-xl text-base sm:max-h-[24rem] sm:min-h-[18rem]"
           placeholder="Add a reply..."
           value={reply}
           onChange={(ev) => setReply(ev.target.value)}
@@ -26,7 +73,7 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
         <div className="flex w-full justify-end gap-2 sm:gap-4">
           {reply.length !== 0 && (
             <button
-              className="btn-outline btn --btn-resp ml-auto w-24 text-lg 
+              className="--btn-resp btn-outline btn ml-auto w-24 text-lg 
                         font-bold normal-case opacity-80 hover:opacity-100 sm:w-36 sm:text-xl"
               onClick={() => {
                 setReply("");
@@ -40,7 +87,7 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
             className={`flex-1 sm:flex-none font-bold btn btn-primary 
             normal-case text-xl sm:w-48 transition --btn-resp
             ${reply.length !== 0 ? "" : "btn-disabled"}`}
-            onClick={closeModal}
+            onClick={() => submitReply(reply)}
           >
             Reply
           </button>

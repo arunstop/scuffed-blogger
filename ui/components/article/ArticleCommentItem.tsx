@@ -17,8 +17,9 @@ import ArticleCommentItemActionButton from "./ArticleCommentItemActionButton";
 import { serviceCommentReact } from "../../../app/services/CommentService";
 interface ArticleCommentItemProps {
   comment: CommentModel;
-  optionParam: string;
-  replyParam: string;
+  optionParam?: string;
+  replyParam?: string;
+  noActions?: boolean;
 }
 
 function ArticleCommentItem({
@@ -53,6 +54,7 @@ function ArticleCommentItemContent({
   comment: commentProps,
   optionParam,
   replyParam,
+  noActions = false,
 }: ArticleCommentItemProps) {
   const router = useRouter();
   const {
@@ -106,7 +108,8 @@ function ArticleCommentItemContent({
       label: "Reply",
       icon: <BsChatSquareText />,
       action: () => {
-        if (!isLoggedIn) return alert("You must login to do this action.");
+        if (!isLoggedIn || !replyParam)
+          return alert("You must login to do this action.");
         router.push(
           {
             query: {
@@ -141,7 +144,7 @@ function ArticleCommentItemContent({
             </span>
           </div>
           {/* <div className="dropdown dropdown-end ml-auto"> */}
-          {isLoggedIn && (
+          {isLoggedIn && optionParam && (
             <Link
               href={{
                 // pathname: router.asPath,
@@ -221,11 +224,13 @@ function ArticleCommentItemContent({
           {/* </div> */}
         </div>
         <span className="text-sm sm:text-base truncate whitespace-pre-line">{`${comment.content}`}</span>
-        <div className={`flex gap-2 sm:gap-4 items-center justify-end `}>
-          {actions.map((e, idx) => {
-            return <ArticleCommentItemActionButton key={idx} {...e} />;
-          })}
-        </div>
+        {!noActions && (
+          <div className={`flex gap-2 sm:gap-4 items-center justify-end `}>
+            {actions.map((e, idx) => {
+              return <ArticleCommentItemActionButton key={idx} {...e} />;
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

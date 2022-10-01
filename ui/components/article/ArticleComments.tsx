@@ -18,7 +18,9 @@ function ArticleComments({
 }) {
   const optionModal = useRoutedModalHook(optionParam);
   const replyModal = useRoutedModalHook(replyParam);
-
+  const commentToReply = commentList.comments.find(
+    (e) => e.id === replyModal.value,
+  );
   return (
     <>
       <div className="flex flex-col gap-4 sm:gap-8">
@@ -36,9 +38,10 @@ function ArticleComments({
         value={optionModal.show}
         onClose={() => optionModal.toggle(false)}
       />
-      <ArticleCommentReplyModal
+     <ArticleCommentReplyModal
         value={replyModal.show}
         onClose={() => replyModal.toggle(false)}
+        parentComment={commentToReply}
       />
     </>
   );
