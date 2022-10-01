@@ -1,20 +1,17 @@
 import { isEqual } from "lodash";
 import React, { useMemo, useState } from "react";
 import { MdExpandMore, MdRefresh, MdSort } from "react-icons/md";
+import { getElById } from "../../../../app/helpers/UiHelpers";
+import { useModalRoutedBehaviorHook } from "../../../../app/hooks/ModalRoutedBehaviorHook";
+import { CommentModelsSortType, CommentModelsWithPaging } from "../../../../base/data/models/CommentModel";
 import ArticleComments from "../../../components/article/ArticleComments";
 import { DropdownOption } from "../../../components/main/Dropdown";
 import MainIntersectionObserverTrigger from "../../../components/main/MainIntersectionObserverTrigger";
 import MobileHeader, {
-  MobileHeaderActionProps,
+  MobileHeaderActionProps
 } from "../../../components/main/MobileHeader";
 import ModalTemplate from "../../../components/modal/ModalTemplate";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
-import {
-  CommentModelsSortType,
-  CommentModelsWithPaging,
-} from "../../../base/data/models/CommentModel";
-import { getElById } from "../../../app/helpers/UiHelpers";
-import { useModalRoutedBehaviorHook } from "../../../app/hooks/ModalRoutedBehaviorHook";
 
 function LayoutArticleCommentSectionExpandedModal({
   commentList,

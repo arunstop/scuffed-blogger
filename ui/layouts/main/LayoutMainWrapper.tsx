@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
+import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import SearchModal from "../../components/main/SearchModal";
 import Sidebar from "../../components/main/Sidebar";
-import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
 import BottomBar from "./BottomBar";
 
 function LayoutMainWrapper({ children }: { children: ReactNode }) {

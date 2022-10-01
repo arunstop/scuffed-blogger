@@ -4,6 +4,11 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdEdit, MdSearch } from "react-icons/md";
+import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
+import { waitFor } from "../../../../app/helpers/DelayHelpers";
+import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
+import { useModalRoutedBehaviorHook } from "../../../../app/hooks/ModalRoutedBehaviorHook";
+import { ArticleListModelByUser, fbArticleGetByUser, fbArticleDelete } from "../../../../app/services/ArticleService";
 import InputText from "../../../components/input/InputText";
 import MainContainer from "../../../components/main/MainContainer";
 import MainLazyScrollTrigger from "../../../components/main/MainLazyScrollTrigger";
@@ -11,15 +16,6 @@ import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
-import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
-import { waitFor } from "../../../app/helpers/DelayHelpers";
-import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
-import { useModalRoutedBehaviorHook } from "../../../app/hooks/ModalRoutedBehaviorHook";
-import {
-  ArticleListModelByUser,
-  fbArticleDelete,
-  fbArticleGetByUser,
-} from "../../../app/services/ArticleService";
 
 function LayoutUserPagePosts() {
   const {

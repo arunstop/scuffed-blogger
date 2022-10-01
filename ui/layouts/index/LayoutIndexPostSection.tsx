@@ -1,16 +1,13 @@
 import { Transition } from "@headlessui/react";
 import React, { useCallback, useEffect, useState } from "react";
+import { waitFor } from "../../../app/helpers/DelayHelpers";
+import { ArticleModelFromDb, fbArticleMirrorGetAll } from "../../../app/services/ArticleService";
+import { MainNetworkResponse } from "../../../base/data/Main";
 import MainIntersectionObserverTrigger from "../../components/main/MainIntersectionObserverTrigger";
 import ErrorPlaceholder from "../../components/placeholder/ErrorPlaceholder";
 import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
 import PostItem from "../../components/post/PostItem";
 import PostOptionModal from "../../components/post/PostOptionModal";
-import { MainNetworkResponse } from "../../base/data/Main";
-import { waitFor } from "../../app/helpers/DelayHelpers";
-import {
-  ArticleModelFromDb,
-  fbArticleMirrorGetAll,
-} from "../../app/services/ArticleService";
 
 function LayoutIndexPostSection() {
   const [feed, setFeed] = useState<ArticleModelFromDb | null>(null);

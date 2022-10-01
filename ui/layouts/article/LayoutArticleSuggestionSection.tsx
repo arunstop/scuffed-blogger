@@ -1,5 +1,5 @@
 import React from "react";
-import { ArticleModel } from "../../base/data/models/ArticleModel";
+import { ArticleModel } from "../../../base/data/models/ArticleModel";
 import PostItem from "../../components/post/PostItem";
 import PostOptionModal from "../../components/post/PostOptionModal";
 

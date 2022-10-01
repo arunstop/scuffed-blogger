@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<{
 };
 
 const LazyLayoutArticlePageEdit = dynamic(
-  () => import("../../ui/../layouts/article/pages/LayoutArticlePageEdit"),
+  () => import("../../../ui/layouts/article/pages/LayoutArticlePageEdit"),
   {
     ssr: false,
     loading(loadingProps) {

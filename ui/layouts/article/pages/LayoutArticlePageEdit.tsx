@@ -1,17 +1,14 @@
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+import { useWritingPanelCtx } from "../../../../app/contexts/writingPanel/WritingPanelHook";
+import { WritingPanelProvider } from "../../../../app/contexts/writingPanel/WritingPanelProvider";
+import { fbArticleContentGet, fbArticleUpdate } from "../../../../app/services/ArticleService";
+import { WritingPanelFormProps } from "../../../../base/data/contexts/WritingPanelTypes";
+import { MainNetworkResponse, netLoading } from "../../../../base/data/Main";
+import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import MainContainer from "../../../components/main/MainContainer";
 import { StatusPlaceholderProps } from "../../../components/placeholder/StatusPlaceholder";
-import { useWritingPanelCtx } from "../../../app/contexts/writingPanel/WritingPanelHook";
-import { WritingPanelProvider } from "../../../app/contexts/writingPanel/WritingPanelProvider";
-import { WritingPanelFormProps } from "../../../base/data/contexts/WritingPanelTypes";
-import { MainNetworkResponse, netLoading } from "../../../base/data/Main";
-import { ArticleModel } from "../../../base/data/models/ArticleModel";
-import {
-  fbArticleContentGet,
-  fbArticleUpdate,
-} from "../../../app/services/ArticleService";
 import LayoutArticleForm from "../LayoutArticleForm";
 
 export interface ArticleSubmissionProps {

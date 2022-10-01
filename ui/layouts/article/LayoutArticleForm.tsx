@@ -1,21 +1,18 @@
 import { Transition } from "@headlessui/react";
 import { Fragment, ReactNode, useEffect } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
+import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
+import { useWritingPanelCtx } from "../../../app/contexts/writingPanel/WritingPanelHook";
+import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
+import { useNetworkAction } from "../../../app/hooks/NetworkActionHook";
+import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
+import { WritingPanelFormProps, WritingPanelTabTypes } from "../../../base/data/contexts/WritingPanelTypes";
 import MainPageTitle from "../../components/main/MainPageTitle";
 import StatusPlaceholder, {
-  StatusPlaceholderProps,
+  StatusPlaceholderProps
 } from "../../components/placeholder/StatusPlaceholder";
 import WritingPanelForm from "../../components/write/WritingPanelForm";
 import WritingPanelPreview from "../../components/write/WritingPanelPreview";
-import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
-import { useWritingPanelCtx } from "../../app/contexts/writingPanel/WritingPanelHook";
-import {
-  WritingPanelFormProps,
-  WritingPanelTabTypes,
-} from "../../base/data/contexts/WritingPanelTypes";
-import { transitionPullV } from "../../app/helpers/UiTransitionHelpers";
-import { useNetworkAction } from "../../app/hooks/NetworkActionHook";
-import { scrollToTop } from "../../app/hooks/RouteChangeHook";
 import { ArticleSubmissionProps } from "./pages/LayoutArticlePageEdit";
 
 const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [
