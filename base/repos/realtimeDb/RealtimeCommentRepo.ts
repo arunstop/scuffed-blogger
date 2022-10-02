@@ -8,6 +8,7 @@ import {
   CommentModel,
   CommentModelListPagedSorted,
   CommentModelsSortType,
+  CommentModelsWithPaging,
   factoryCommentComplete,
 } from "../../data/models/CommentModel";
 
@@ -182,4 +183,31 @@ export async function repoRtCommentReplyAdd({
   const rr = ref(db, path);
   await set(rr, toJsonFriendly(comment));
   return comment;
+}
+
+export async function repoRtCommentReplyGet({
+  articleId,
+  parentCommentId,
+  start,
+  count,
+}: //   keyword,
+{
+  articleId: string;
+  parentCommentId: string;
+} & ApiPagingReqProps): Promise<CommentModelsWithPaging | null> {
+  const path = `replyList/${articleId}/${parentCommentId}`;
+  const rr = ref(db, path);
+  const res = await get(rr);
+  if (res.exists()) {
+    const dataRaw = res.val();
+    const data = (_.values(dataRaw) as CommentModel[]).map((e) =>
+      factoryCommentComplete(e),
+    );
+    return {
+      comments: data.slice(start, start + count),
+      total: data.length,
+      offset: start + count,
+    };
+  }
+  return null;
 }

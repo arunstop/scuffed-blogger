@@ -13,6 +13,7 @@ import {
   repoRtCommentGetById,
   repoRtCommentReact,
   repoRtCommentReplyAdd,
+  repoRtCommentReplyGet,
   repoRtCommentUpdate,
 } from "../../base/repos/realtimeDb/RealtimeCommentRepo";
 import { MainApiResponse } from "./../../base/data/Main";
@@ -161,6 +162,31 @@ export async function serviceCommentReplyAdd({
     callback?.(netSuccess("Success adding reply", addedReply));
 
     return addedReply;
+  } catch (error) {
+    const message = typeof error === "string" ? error : "Error adding reply";
+    console.error(error);
+    callback?.(
+      netError(
+        message,
+        typeof error === "string" ? null : (error as FirebaseError),
+      ),
+    );
+    return null;
+  }
+}
+
+export async function serviceCommentReplyGetByParent({
+  data,
+  callback,
+}: MainApiResponse<
+  { articleId: string; parentCommentId: string } & ApiPagingReqProps,
+  CommentModelsWithPaging | null | FirebaseError
+>): Promise<CommentModelsWithPaging | null> {
+  try {
+    const res = await repoRtCommentReplyGet(data);
+    if (!res) throw new Error("Error getting replies");
+    callback?.(netSuccess("Success getting replies", res));
+    return res;
   } catch (error) {
     const message = typeof error === "string" ? error : "Error adding reply";
     console.error(error);

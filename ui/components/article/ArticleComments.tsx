@@ -10,10 +10,12 @@ const replyParam = "reply";
 function ArticleComments({
   commentList,
   observe,
+  lined,
 }: // addComment,
 {
   commentList: CommentModelsWithPaging;
   observe?: boolean;
+  lined?:boolean;
   // addComment: (comments:Comment[]) => void;
 }) {
   const optionModal = useRoutedModalHook(optionParam);
@@ -23,7 +25,7 @@ function ArticleComments({
   );
   return (
     <>
-      <div className="flex flex-col gap-4 sm:gap-8">
+      <div className="flex flex-col">
         {commentList.comments.map((e, idx) => (
           <ArticleCommentItem
             key={e.id}
@@ -31,6 +33,7 @@ function ArticleComments({
             optionParam={optionParam}
             replyParam={replyParam}
             observe={observe}
+            lined={lined}
           />
         ))}
       </div>
