@@ -1,6 +1,6 @@
 import { axiosClient } from "../../clients/AxiosClient";
 import { FirebaseError } from "firebase/app";
-import { get, ref, remove, set } from "firebase/database";
+import { get, increment, ref, remove, set } from "firebase/database";
 import _ from "lodash";
 import { ApiPagingReqProps } from "../../data/Main";
 import {
@@ -117,12 +117,7 @@ export function repoRtArticleSearch(abortSignal: AbortSignal) {
 }
 
 export async function repoRtArticleUpdateView(articleId: string) {
-  const target = await repoRtArticleGetById(articleId);
-  if (target) {
-    // get the targeted article then add the views props by 1
-    const updatedArticle = await repoRtArticleMirrorUpdate({ ...target, views: target.views + 1 });
-    if (updatedArticle) return updatedArticle;
-    return null;
-  }
-  return null;
+  const path = `articleList/${articleId}/view`;
+  const rr = ref(db, path);
+  await set(rr, increment(1));
 }
