@@ -141,7 +141,7 @@ function ArticleCommentItemContent({
         `flex flex-col rounded-xl transition-all duration-300 ` +
         `${
           lined
-            ? "px-2 sm:px-4 py-1 sm:py-2  hover:py-2 sm:hover:py-4 hover:bg-base-content/10"
+            ? "py-2"
             : "hover:p-2 m-1 sm:hover:p-4 sm:m-2 ease-in-out hover:bg-primary/10"
         }`
       }
@@ -250,18 +250,18 @@ function ArticleCommentItemContent({
           </div>
           <span className="text-sm sm:text-base truncate whitespace-pre-line">{`${content}`}</span>
           {!noActions && (
-            <div className={`flex items-center justify-end w-full `}>
+            <div className={`flex items-center w-full `}>
               {actions.map((e, idx) => {
                 return <ArticleCommentItemActionButton key={idx} {...e} />;
               })}
             </div>
           )}
-          
-        </div>
-      </div>
-      {!!replies && !noActions && !comment.parentCommentId && (
+          {!!replies && !noActions && !comment.parentCommentId && (
             <ArticleCommentReply comment={comment} />
           )}
+        </div>
+      </div>
+      
     </div>
   );
 }

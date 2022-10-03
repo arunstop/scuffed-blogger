@@ -52,7 +52,7 @@ function ArticleCommentReply({ comment }: { comment: CommentModel }) {
         <div
           className={`flex flex-col ${
             !isAllShown ? "mb-4 sm:mb-8" : ""
-          } mt-2 sm:mt-4 border-2 border-base-content/10 rounded-xl`}
+          } mt-1 sm:mt-2 rounded-xl`}
         >
           <ArticleComments commentList={replies} lined />
         </div>
