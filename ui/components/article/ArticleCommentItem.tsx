@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React, { ReactNode, useState } from "react";
 import { BsChatSquareText } from "react-icons/bs";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
-import { MdMoreHoriz } from "react-icons/md";
+import { MdContentCopy, MdMoreHoriz } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { CommentModel } from "../../../base/data/models/CommentModel";
 import {
@@ -107,6 +107,15 @@ function ArticleCommentItemContent({
           },
         });
         if (newComment) setComment(newComment);
+      },
+    },
+    {
+      label: "",
+      icon: <MdContentCopy />,
+      className: `${downvoted && comment.downvote?.length ? "text-error" : ""}`,
+      action: () => {
+        navigator.clipboard.writeText(comment.content);
+        alert("Content copied");
       },
     },
     {
@@ -261,7 +270,6 @@ function ArticleCommentItemContent({
           )}
         </div>
       </div>
-      
     </div>
   );
 }
