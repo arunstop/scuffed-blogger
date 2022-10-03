@@ -15,7 +15,7 @@ function ArticleComments({
 {
   commentList: CommentModelsWithPaging;
   observe?: boolean;
-  lined?:boolean;
+  lined?: boolean;
   // addComment: (comments:Comment[]) => void;
 }) {
   const optionModal = useRoutedModalHook(optionParam);
@@ -37,15 +37,19 @@ function ArticleComments({
           />
         ))}
       </div>
-      <ArticleCommentOptionModal
-        value={optionModal.show}
-        onClose={() => optionModal.toggle(false)}
-      />
-     <ArticleCommentReplyModal
-        value={replyModal.show}
-        onClose={() => replyModal.toggle(false)}
-        parentComment={commentToReply}
-      />
+      {!lined && (
+        <>
+          <ArticleCommentOptionModal
+            value={optionModal.show}
+            onClose={() => optionModal.toggle(false)}
+          />
+          <ArticleCommentReplyModal
+            value={replyModal.show}
+            onClose={() => replyModal.toggle(false)}
+            parentComment={commentToReply}
+          />
+        </>
+      )}
     </>
   );
 }

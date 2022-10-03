@@ -1,20 +1,21 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useCallback, useState } from "react";
 import { BsChatSquareText } from "react-icons/bs";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { MdContentCopy, MdMoreHoriz } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
-import { CommentModel } from "../../../base/data/models/CommentModel";
+import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
 import {
   dateDistanceGet,
   userAvatarLinkGet,
 } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
-import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
-import UserAvatar from "../user/UserAvatar";
-import ArticleCommentItemActionButton from "./ArticleCommentItemActionButton";
 import { serviceCommentReact } from "../../../app/services/CommentService";
+import { CommentModel } from "../../../base/data/models/CommentModel";
+import UserAvatar from "../user/UserAvatar";
+import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
+import ArticleCommentItemActionButton from "./ArticleCommentItemActionButton";
 import ArticleCommentReply from "./ArticleCommentReply";
 interface ArticleCommentItemProps {
   comment: CommentModel;
@@ -53,7 +54,7 @@ function ArticleCommentItem({
 }
 
 function ArticleCommentItemContent({
-  comment: commentProps,
+  comment,
   optionParam,
   replyParam,
   noActions = false,
@@ -63,13 +64,28 @@ function ArticleCommentItemContent({
   const {
     authStt: { user },
   } = useAuthCtx();
-  const [comment, setComment] = useState(commentProps);
+  const {
+    state,
+    action: { loadReplies: loadRepliesAction, updateComment, updateReply },
+  } = useCommentCtx();
+  // const [comment, setComment] = useState(commentProps);
+  const [showReplies, setShowReplies] = useState(false);
+  // const [replies, setReplies] = useState<CommentModelsWithPaging>();
+
+  const loadReplies = useCallback(async (startFrom?: number) => {
+    loadRepliesAction(comment, startFrom);
+  }, []);
+
+  const toggleShowReplies = useCallback(() => {
+    if (showReplies) return setShowReplies(false);
+    return loadReplies(0);
+  }, [showReplies]);
 
   const postedAt = `${dateDistanceGet(comment.dateAdded, Date.now())} ago`;
   const userAvatar = userAvatarLinkGet(comment.userId);
   const upvoted = comment.upvote?.includes(user?.id || "");
   const downvoted = comment.downvote?.includes(user?.id || "");
-  const replies = comment.replies?.length || 0;
+  const repliesCount = comment.replies?.length || 0;
   const content = decodeURIComponent(comment.content);
 
   const actions: CommentActionProps[] = [
@@ -88,7 +104,10 @@ function ArticleCommentItemContent({
             userId: user.id,
           },
         });
-        if (newComment) setComment(newComment);
+        if (newComment) {
+          if (!lined) return await updateComment(newComment);
+          return await updateReply(newComment);
+        }
       },
     },
     {
@@ -106,13 +125,15 @@ function ArticleCommentItemContent({
             userId: user.id,
           },
         });
-        if (newComment) setComment(newComment);
+        if (newComment) {
+          if (!lined) return await updateComment(newComment);
+          return await updateReply(newComment);
+        }
       },
     },
     {
       label: "",
       icon: <MdContentCopy />,
-      className: `${downvoted && comment.downvote?.length ? "text-error" : ""}`,
       action: () => {
         navigator.clipboard.writeText(comment.content);
         alert("Content copied");
@@ -149,31 +170,35 @@ function ArticleCommentItemContent({
       className={
         `flex flex-col rounded-xl transition-all duration-300 ` +
         `${
-          lined
-            ? "py-2"
-            : "hover:p-2 m-1 sm:hover:p-4 sm:m-2 ease-in-out hover:bg-primary/10"
+          noActions
+            ? ``
+            : `${
+                lined
+                  ? "py-2"
+                  : "hover:p-2 m-1 sm:hover:p-4 sm:m-2 ease-in-out hover:bg-primary/10"
+              }`
         }`
       }
     >
-      <div className="flex flex-row gap-2 sm:gap-4 items-stretch">
+      <div className="flex flex-row items-stretch gap-2 sm:gap-4">
         <div className="flex flex-col">
           <div className="flex">
             <UserAvatar src={userAvatar} />
           </div>
           {/* lines */}
           {!!lined && (
-            <div className="w-[0.3rem] mx-auto h-full bg-base-content/20 mt-1 sm:mt-2 rounded-full"></div>
+            <div className="mx-auto mt-1 h-full w-[0.3rem] rounded-full bg-base-content/20 sm:mt-2"></div>
           )}
           {/* avatar */}
         </div>
-        <div className="flex flex-1 flex-col overflow-hidden gap-1 sm:gap-2">
+        <div className="flex flex-1 flex-col gap-1 overflow-hidden sm:gap-2">
           <div className="inline-flex gap-4">
             <div className="flex items-baseline gap-1">
-              <span className="text-base font-bold  sm:text-lg capitalize">
+              <span className="text-base font-bold  capitalize sm:text-lg">
                 {comment.userName}
               </span>
               <span>&#8212;</span>
-              <span className="text-sm font-semibold  opacity-50 sm:text-md">
+              <span className="sm:text-md text-sm  font-semibold opacity-50">
                 {postedAt}
               </span>
             </div>
@@ -190,7 +215,7 @@ function ArticleCommentItemContent({
                 shallow
               >
                 <a
-                  className="btn btn-ghost ml-auto aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
+                  className="btn-ghost btn ml-auto aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
                   title="Options"
                   tabIndex={0}
                   // href="#options"
@@ -200,64 +225,8 @@ function ArticleCommentItemContent({
                 </a>
               </Link>
             )}
-            <>
-              {/* <ul
-              tabIndex={0}
-              className="dropdown-content menu p-2 shadow-xl ring-2 ring-base-content/20 bg-base-100 rounded-xl max-w-[15rem] w-max"
-            >
-              <li>
-                <a className="">
-                  <MdReport className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Report comment
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <MdDelete className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Delete comment
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <FaVolumeMute className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Mute user
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <FaVolumeUp className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Unmute user
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <MdPersonOff className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Block user
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <MdFlag className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Report user
-                  </span>
-                </a>
-              </li>
-            </ul> */}
-            </>
-            {/* </div> */}
           </div>
-          <span className="text-sm sm:text-base truncate whitespace-pre-line">{`${content}`}</span>
+          <span className="truncate whitespace-pre-line text-sm sm:text-base">{`${content}`}</span>
           {!noActions && (
             <div className={`flex items-center w-full `}>
               {actions.map((e, idx) => {
@@ -265,8 +234,13 @@ function ArticleCommentItemContent({
               })}
             </div>
           )}
-          {!!replies && !noActions && !comment.parentCommentId && (
-            <ArticleCommentReply comment={comment} />
+          {!!repliesCount && !noActions && !comment.parentCommentId && (
+            <ArticleCommentReply
+              comment={comment}
+              toggleShowReplies={toggleShowReplies}
+              showReplies={showReplies}
+              replies={state.replies}
+            />
           )}
         </div>
       </div>
