@@ -74,6 +74,7 @@ function ArticleCommentItemContent({
 
   const loadReplies = useCallback(async (startFrom?: number) => {
     loadRepliesAction(comment, startFrom);
+    setShowReplies(true);
   }, []);
 
   const toggleShowReplies = useCallback(() => {
@@ -87,6 +88,9 @@ function ArticleCommentItemContent({
   const downvoted = comment.downvote?.includes(user?.id || "");
   const repliesCount = comment.replies?.length || 0;
   const content = decodeURIComponent(comment.content);
+  const replies = repliesCount
+    ? state.replies?.find((e) => e.comments[0].parentCommentId === comment.id)
+    : undefined;
 
   const actions: CommentActionProps[] = [
     {
@@ -239,7 +243,7 @@ function ArticleCommentItemContent({
               comment={comment}
               toggleShowReplies={toggleShowReplies}
               showReplies={showReplies}
-              replies={state.replies}
+              replies={replies}
             />
           )}
         </div>

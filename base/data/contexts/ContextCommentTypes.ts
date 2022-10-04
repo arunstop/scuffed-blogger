@@ -15,7 +15,7 @@ export interface ContextCommentStates {
   articleId: string;
   comments?: CommentModelListPagedSorted;
   sort: CommentModelsSortType;
-  replies?: CommentModelsWithPaging;
+  replies?: CommentModelsWithPaging[];
 }
 
 export interface ContextCommentActions {

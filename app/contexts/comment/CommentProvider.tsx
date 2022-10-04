@@ -55,12 +55,15 @@ export const CommentProvider = ({
       const { replies } = state;
       // if this comment is somehow a reply, don't do anything
       if (comment.parentCommentId) return;
+      const replyListTarget = replies?.find(
+        (e) => e.comments[0].parentCommentId === comment.id,
+      );
       const repliesFromDb = await serviceCommentReplyGetByParent({
         data: {
           articleId: comment.articleId,
           parentCommentId: comment.id,
           count: 5,
-          start: startFrom ?? (replies?.offset || 0),
+          start: startFrom ?? (replyListTarget?.offset || 0),
         },
       });
       if (!repliesFromDb) return console.log("no replies for some reason");
