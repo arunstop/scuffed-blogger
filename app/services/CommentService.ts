@@ -78,18 +78,18 @@ export async function serviceCommentUpdate({
   }
 }
 
-export interface FbCommentReactProps {
-  react: "up" | "down" | "upCancel" | "downCancel";
-  commentId: string;
-  articleId: string;
-  userId: string;
+export type CommentReactionTypes = "up" | "down" | "upCancel" | "downCancel";
+
+export interface ServiceCommentReactProps {
+  type: CommentReactionTypes;
+  comment: CommentModel;
 }
 
 export async function serviceCommentReact({
   data,
   callback,
 }: MainApiResponse<
-  FbCommentReactProps,
+  ServiceCommentReactProps,
   CommentModel | null | FirebaseError
 >): Promise<CommentModel | null> {
   try {
@@ -155,7 +155,7 @@ export async function serviceCommentReplyAdd({
 
     // then add the reply entry
     const addedReply = await repoRtCommentReplyAdd({
-      comment: comment,
+      reply: comment,
       parentCommentId: updatedParentComment.id,
     });
     if (!addedReply) throw new Error("Error adding reply");

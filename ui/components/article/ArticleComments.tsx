@@ -33,7 +33,7 @@ function ArticleComments({
             optionParam={optionParam}
             replyParam={replyParam}
             observe={observe}
-            lined={lined}
+            isReply={lined}
           />
         ))}
       </div>

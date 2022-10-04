@@ -39,20 +39,27 @@ export const commentReducer = (
     case "UPDATE_REPLY": {
       const reply = action.payload.reply;
       if (!state.replies) return state;
+      console.log(state.replies);
       // search and change the reply
-      const replyList = state.replies.find((e) => {
+      const replyTarget = state.replies.find((e) => {
         return e.comments[0].parentCommentId === reply.parentCommentId;
       });
-      if (!replyList) return state;
+      if (!replyTarget) return state;
       // change the targeted reply
-      const updatedReplies = replyList.comments.map((e) => {
+      const updatedComments = replyTarget.comments.map((e) => {
         return e.id === reply.id ? reply : e;
       });
       const newReplyList: CommentModelsWithPaging = {
-        ...replyList,
-        comments: updatedReplies,
+        ...replyTarget,
+        comments: updatedComments,
       };
-      return { ...state, replies: [...state.replies, newReplyList] };
+      const newReplies = [
+        ...state.replies.filter(
+          (e) => e.comments[0].parentCommentId !== reply.parentCommentId,
+        ),
+        newReplyList,
+      ];
+      return { ...state, replies: newReplies };
     }
     default:
       return state;

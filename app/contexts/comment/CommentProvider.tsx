@@ -6,6 +6,7 @@ import {
 import { CommentModel } from "../../../base/data/models/CommentModel";
 import {
   serviceCommentGet,
+  serviceCommentReact,
   serviceCommentReplyGetByParent,
 } from "../../services/CommentService";
 import { CommentContext } from "./CommentContext";
@@ -24,6 +25,23 @@ export const CommentProvider = ({
     ...CONTEXT_COMMENT_INIT,
     articleId: articleId,
   });
+
+  async function updateComment(comment: CommentModel) {
+    dispatch({
+      type: "UPDATE_COMMENT",
+      payload: {
+        comment: comment,
+      },
+    });
+  }
+  async function updateReply(reply: CommentModel) {
+    dispatch({
+      type: "UPDATE_REPLY",
+      payload: {
+        reply: reply,
+      },
+    });
+  }
   const action: ContextCommentActions = {
     async loadComments(newSortingType) {
       const { articleId, comments: commentList, sort } = state;
@@ -82,21 +100,16 @@ export const CommentProvider = ({
     comment() {
       throw new Error("Function not implemented.");
     },
-    async updateComment(comment: CommentModel) {
-      dispatch({
-        type: "UPDATE_COMMENT",
-        payload: {
-          comment: comment,
-        },
+    updateComment,
+    updateReply,
+    reactComment: async (props) => {
+      const newComment = await serviceCommentReact({
+        data: props,
       });
-    },
-    async updateReply(reply: CommentModel) {
-      dispatch({
-        type: "UPDATE_REPLY",
-        payload: {
-          reply: reply,
-        },
-      });
+      if (!newComment) return;
+      // if the comment is not a reply
+      if (!props.comment.parentCommentId) return updateComment(newComment);
+      updateReply(newComment);
     },
   };
 

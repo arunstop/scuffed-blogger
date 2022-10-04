@@ -1,7 +1,6 @@
 import { get, ref, remove, set } from "firebase/database";
 import _ from "lodash";
 import { toJsonFriendly } from "../../../app/helpers/MainHelpers";
-import { FbCommentReactProps } from "../../../app/services/CommentService";
 import { firebaseClient } from "../../clients/FirebaseClient";
 import { ApiPagingReqProps } from "../../data/Main";
 import {
@@ -11,6 +10,7 @@ import {
   CommentModelsWithPaging,
   factoryCommentComplete,
 } from "../../data/models/CommentModel";
+import { ServiceCommentReactProps } from "./../../../app/services/CommentService";
 
 const db = firebaseClient.rtdb;
 
@@ -76,71 +76,78 @@ export async function repoRtCommentUpdate({
   return comment;
 }
 
-export async function repoRtCommentReact({
-  react,
-  commentId,
-  articleId,
-  userId,
-}: FbCommentReactProps) {
-  const path = `commentList/${articleId}/${commentId}`;
+export async function repoRtCommentReact(props: ServiceCommentReactProps) {
+  const {
+    type,
+    comment: { articleId, id, userId, parentCommentId },
+  } = props;
+  let path = ``;
+  // check if the comment is a reply
+  if (parentCommentId) path = `replyList/${articleId}/${parentCommentId}/${id}`;
+  else path = `commentList/${articleId}/${id}`;
+
   const rr = ref(db, path);
   const res = await get(rr);
-  if (res.exists()) {
-    // data raw is a CommentModel from rtdb
-    // but probably without upvote/downvote props
-    const dataRaw = res.val() as CommentModel;
-    let updatedData = dataRaw;
-    const cancelledUpvote = (updatedData.upvote || []).filter(
-      (e) => e !== userId,
-    );
-    const cancelledDownvote = (updatedData.downvote || []).filter(
-      (e) => e !== userId,
-    );
-    try {
-      switch (react) {
-        case "up": {
-          // when upvoting, cancel downvote first
-          updatedData = {
-            ...updatedData,
-            downvote: cancelledDownvote,
-            upvote: [...(updatedData.upvote || []), userId],
-          };
-          break;
-        }
-        case "upCancel": {
-          updatedData = {
-            ...updatedData,
-            upvote: (updatedData.upvote || []).filter((e) => e !== userId),
-          };
-          break;
-        }
-        case "down": {
-          // when downvoting, cancel upvote first
-          updatedData = {
-            ...updatedData,
-            upvote: cancelledUpvote,
-            downvote: [...(updatedData.downvote || []), userId],
-          };
-          break;
-        }
-        case "downCancel": {
-          updatedData = {
-            ...updatedData,
-            downvote: (updatedData.downvote || []).filter((e) => e !== userId),
-          };
-          break;
-        }
-        default:
-          break;
+  // do nothing if comment/reply is not found
+  if (!res.exists()) return null;
+
+  // data raw is a CommentModel from rtdb
+  // but probably without upvote/downvote props
+  const dataRaw = res.val() as CommentModel;
+  // that's why we need complete it
+  let updatedData = factoryCommentComplete(dataRaw);
+  const cancelledUpvote = (updatedData.upvote || []).filter(
+    (e) => e !== userId,
+  );
+  const cancelledDownvote = (updatedData.downvote || []).filter(
+    (e) => e !== userId,
+  );
+  try {
+    switch (type) {
+      case "up": {
+        // when upvoting, cancel downvote first
+        updatedData = {
+          ...updatedData,
+          downvote: cancelledDownvote,
+          upvote: [...(updatedData.upvote || []), userId],
+        };
+        break;
       }
-    } catch (e) {
-      console.log(e);
-      return null;
+      case "upCancel": {
+        updatedData = {
+          ...updatedData,
+          upvote: (updatedData.upvote || []).filter((e) => e !== userId),
+        };
+        break;
+      }
+      case "down": {
+        // when downvoting, cancel upvote first
+        updatedData = {
+          ...updatedData,
+          upvote: cancelledUpvote,
+          downvote: [...(updatedData.downvote || []), userId],
+        };
+        break;
+      }
+      case "downCancel": {
+        updatedData = {
+          ...updatedData,
+          downvote: (updatedData.downvote || []).filter((e) => e !== userId),
+        };
+        break;
+      }
+      default:
+        break;
     }
-    await repoRtCommentUpdate({ comment: updatedData });
-    return updatedData;
+  } catch (e) {
+    console.log(e);
+    return null;
   }
-  return null;
+  // once again check if the comment is indeed a reply or not
+  if (parentCommentId) await repoRtCommentReplyUpdate({ reply: updatedData });
+  else await repoRtCommentUpdate({ comment: updatedData });
+
+  return updatedData;
 }
 
 export async function repoRtCommentDelete({
@@ -173,16 +180,32 @@ export async function repoRtCommentGetById({
 }
 
 export async function repoRtCommentReplyAdd({
-  comment,
+  reply,
   parentCommentId,
 }: {
-  comment: CommentModel;
+  reply: CommentModel;
   parentCommentId: string;
 }): Promise<CommentModel | null> {
-  const path = `replyList/${comment.articleId}/${parentCommentId}/${comment.id}`;
+  const path = `replyList/${reply.articleId}/${parentCommentId}/${reply.id}`;
   const rr = ref(db, path);
-  await set(rr, toJsonFriendly(comment));
-  return comment;
+  await set(rr, toJsonFriendly(reply));
+  return reply;
+}
+
+export async function repoRtCommentReplyUpdate({
+  reply,
+}: {
+  reply: CommentModel;
+}) {
+  if (!reply.parentCommentId) return null;
+  console.log("update");
+  await repoRtCommentReplyDelete({ reply: reply });
+  await repoRtCommentReplyAdd({
+    reply: reply,
+    parentCommentId: reply.parentCommentId,
+  });
+
+  return reply;
 }
 
 export async function repoRtCommentReplyGet({
@@ -210,4 +233,14 @@ export async function repoRtCommentReplyGet({
     };
   }
   return null;
+}
+
+export async function repoRtCommentReplyDelete({
+  reply,
+}: {
+  reply: CommentModel;
+}) {
+  const path = `replyList/${reply.articleId}/${reply.parentCommentId}/${reply.id}`;
+  const rr = ref(db, path);
+  await remove(rr);
 }

@@ -15,6 +15,7 @@ function ArticleCommentReply({
   showReplies:boolean;
   toggleShowReplies: () => void;
 }) {
+  console.log(replies);
   const count = comment.replies?.length || 0;
   const isAllShown = replies?.total || 0 <= (replies?.comments.length || 0);
 

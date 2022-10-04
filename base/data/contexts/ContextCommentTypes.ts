@@ -1,9 +1,10 @@
-import { CommentModel } from "./../models/CommentModel";
 import {
   CommentModelListPagedSorted,
   CommentModelsSortType,
-  CommentModelsWithPaging,
+  CommentModelsWithPaging
 } from "../models/CommentModel";
+import { ServiceCommentReactProps } from "./../../../app/services/CommentService";
+import { CommentModel } from "./../models/CommentModel";
 import { ContextTypes } from "./ContextTypes";
 
 export type ContextCommentTypes = ContextTypes<
@@ -25,6 +26,8 @@ export interface ContextCommentActions {
   showOptionModal: (commentId: string) => void;
   reply: () => void;
   comment: () => void;
+  reactComment: (props: ServiceCommentReactProps) => Promise<void>;
+  // reactReply: (props:ServiceCommentReactProps) => Promise<void>;
   updateComment: (comment: CommentModel) => Promise<void>;
   updateReply: (reply: CommentModel) => Promise<void>;
   // delet:()=>void;

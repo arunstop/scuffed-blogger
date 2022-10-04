@@ -8,10 +8,9 @@ import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
 import {
   dateDistanceGet,
-  userAvatarLinkGet,
+  userAvatarLinkGet
 } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
-import { serviceCommentReact } from "../../../app/services/CommentService";
 import { CommentModel } from "../../../base/data/models/CommentModel";
 import UserAvatar from "../user/UserAvatar";
 import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
@@ -22,7 +21,7 @@ interface ArticleCommentItemProps {
   optionParam?: string;
   replyParam?: string;
   noActions?: boolean;
-  lined?: boolean;
+  isReply?: boolean;
 }
 
 function ArticleCommentItem({
@@ -58,7 +57,7 @@ function ArticleCommentItemContent({
   optionParam,
   replyParam,
   noActions = false,
-  lined,
+  isReply,
 }: ArticleCommentItemProps) {
   const router = useRouter();
   const {
@@ -66,7 +65,7 @@ function ArticleCommentItemContent({
   } = useAuthCtx();
   const {
     state,
-    action: { loadReplies: loadRepliesAction, updateComment, updateReply },
+    action: { loadReplies: loadRepliesAction, reactComment },
   } = useCommentCtx();
   // const [comment, setComment] = useState(commentProps);
   const [showReplies, setShowReplies] = useState(false);
@@ -100,18 +99,10 @@ function ArticleCommentItemContent({
       minimize: false,
       action: async () => {
         if (!user) return alert("You must login to do this action.");
-        const newComment = await serviceCommentReact({
-          data: {
-            react: upvoted ? "upCancel" : "up",
-            articleId: comment.articleId,
-            commentId: comment.id,
-            userId: user.id,
-          },
+        reactComment({
+          type: upvoted ? "upCancel" : "up",
+          comment: comment,
         });
-        if (newComment) {
-          if (!lined) return await updateComment(newComment);
-          return await updateReply(newComment);
-        }
       },
     },
     {
@@ -121,18 +112,10 @@ function ArticleCommentItemContent({
       minimize: false,
       action: async () => {
         if (!user) return alert("You must login to do this action.");
-        const newComment = await serviceCommentReact({
-          data: {
-            react: downvoted ? "downCancel" : "down",
-            articleId: comment.articleId,
-            commentId: comment.id,
-            userId: user.id,
-          },
+        reactComment({
+          type: downvoted ? "downCancel" : "down",
+          comment: comment,
         });
-        if (newComment) {
-          if (!lined) return await updateComment(newComment);
-          return await updateReply(newComment);
-        }
       },
     },
     {
@@ -177,7 +160,7 @@ function ArticleCommentItemContent({
           noActions
             ? ``
             : `${
-                lined
+                isReply
                   ? "py-2"
                   : "hover:p-2 m-1 sm:hover:p-4 sm:m-2 ease-in-out hover:bg-primary/10"
               }`
@@ -190,7 +173,7 @@ function ArticleCommentItemContent({
             <UserAvatar src={userAvatar} />
           </div>
           {/* lines */}
-          {!!lined && (
+          {!!isReply && (
             <div className="mx-auto mt-1 h-full w-[0.3rem] rounded-full bg-base-content/20 sm:mt-2"></div>
           )}
           {/* avatar */}
