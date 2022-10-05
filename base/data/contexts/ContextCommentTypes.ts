@@ -1,8 +1,9 @@
 import {
   CommentModelListPagedSorted,
   CommentModelsSortType,
-  CommentModelsWithPaging
+  CommentModelsWithPaging,
 } from "../models/CommentModel";
+import { UserModel } from "../models/UserModel";
 import { ServiceCommentReactProps } from "./../../../app/services/CommentService";
 import { CommentModel } from "./../models/CommentModel";
 import { ContextTypes } from "./ContextTypes";
@@ -24,8 +25,11 @@ export interface ContextCommentActions {
   loadReplies: (comment: CommentModel, startFrom?: number) => Promise<void>;
   showReplyModal: (commentId: string) => void;
   showOptionModal: (commentId: string) => void;
-  reply: () => void;
-  comment: () => void;
+  addReply: () => void;
+  addComment: (
+    content: string,
+    user: UserModel,
+  ) => Promise<CommentModel | null>;
   reactComment: (props: ServiceCommentReactProps) => Promise<void>;
   // reactReply: (props:ServiceCommentReactProps) => Promise<void>;
   updateComment: (comment: CommentModel) => Promise<void>;

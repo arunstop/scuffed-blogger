@@ -198,7 +198,6 @@ export async function repoRtCommentReplyUpdate({
   reply: CommentModel;
 }) {
   if (!reply.parentCommentId) return null;
-  console.log("update");
   await repoRtCommentReplyDelete({ reply: reply });
   await repoRtCommentReplyAdd({
     reply: reply,

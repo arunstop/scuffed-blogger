@@ -39,7 +39,6 @@ export const commentReducer = (
     case "UPDATE_REPLY": {
       const reply = action.payload.reply;
       if (!state.replies) return state;
-      console.log(state.replies);
       // search and change the reply
       const replyTarget = state.replies.find((e) => {
         return e.comments[0].parentCommentId === reply.parentCommentId;

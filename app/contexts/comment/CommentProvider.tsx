@@ -3,8 +3,13 @@ import {
   ContextCommentActions,
   ContextCommentTypes,
 } from "../../../base/data/contexts/ContextCommentTypes";
-import { CommentModel } from "../../../base/data/models/CommentModel";
 import {
+  CommentModel,
+  CommentModelsSortType,
+  factoryCommentComplete,
+} from "../../../base/data/models/CommentModel";
+import {
+  serviceCommentAdd,
   serviceCommentGet,
   serviceCommentReact,
   serviceCommentReplyGetByParent,
@@ -26,6 +31,31 @@ export const CommentProvider = ({
     articleId: articleId,
   });
 
+  async function loadComments(newSortingType?: CommentModelsSortType) {
+    const { articleId, comments: commentList, sort } = state;
+    // define where to start
+    // console.log('123');
+    const startFrom = !!newSortingType || !commentList ? 0 : commentList.offset;
+    const commentsFromDb = await serviceCommentGet({
+      data: {
+        articleId,
+        start: startFrom,
+        count: 5,
+        sortBy: newSortingType || commentList?.sortBy || sort,
+      },
+    });
+    // console.log("commentsFromDb", commentsFromDb);
+    if (!commentsFromDb) return console.log("No comments can be loaded");
+
+    dispatch({
+      type: "SET_COMMENTS",
+      payload: { comments: commentsFromDb },
+    });
+
+    // setSortedBy(sortBy || sortedBy);
+    if (newSortingType)
+      dispatch({ type: "SET_SORT", payload: { sort: newSortingType } });
+  }
   async function updateComment(comment: CommentModel) {
     dispatch({
       type: "UPDATE_COMMENT",
@@ -42,33 +72,9 @@ export const CommentProvider = ({
       },
     });
   }
+
   const action: ContextCommentActions = {
-    async loadComments(newSortingType) {
-      const { articleId, comments: commentList, sort } = state;
-      // define where to start
-      // console.log('123');
-      const startFrom =
-        !!newSortingType || !commentList ? 0 : commentList.offset;
-      const commentsFromDb = await serviceCommentGet({
-        data: {
-          articleId,
-          start: startFrom,
-          count: 5,
-          sortBy: newSortingType || commentList?.sortBy || sort,
-        },
-      });
-      // console.log("commentsFromDb", commentsFromDb);
-      if (!commentsFromDb) return console.log("No comments can be loaded");
-
-      dispatch({
-        type: "SET_COMMENTS",
-        payload: { comments: commentsFromDb },
-      });
-
-      // setSortedBy(sortBy || sortedBy);
-      if (newSortingType)
-        dispatch({ type: "SET_SORT", payload: { sort: newSortingType } });
-    },
+    loadComments,
     async loadReplies(comment, startFrom) {
       const { replies } = state;
       // if this comment is somehow a reply, don't do anything
@@ -94,11 +100,21 @@ export const CommentProvider = ({
     showOptionModal(commentId: string) {
       throw new Error("Function not implemented.");
     },
-    reply() {
+    addReply() {
       throw new Error("Function not implemented.");
     },
-    comment() {
-      throw new Error("Function not implemented.");
+    async addComment(content, user) {
+      const newComment = factoryCommentComplete({
+        content: content,
+        articleId: state.articleId,
+        userId: user.id,
+        userName: user.name,
+        upvote: [user.id],
+      });
+      const res = await serviceCommentAdd({ data: { comment: newComment } });
+      loadComments("new");
+      if (!res) return null;
+      return newComment;
     },
     updateComment,
     updateReply,
