@@ -1,3 +1,4 @@
+import router from "next/router";
 import { ReactNode, useReducer } from "react";
 import {
   ContextCommentActions,
@@ -94,11 +95,29 @@ export const CommentProvider = ({
       dispatch({ type: "SET_REPLIES", payload: { replies: repliesFromDb } });
       console.log(repliesFromDb);
     },
-    showReplyModal(commentId: string) {
-      throw new Error("Function not implemented.");
+    showReplyModal: (param, commentId) => {
+      router.push(
+        {
+          query: {
+            ...router.query,
+            [param]: commentId,
+          },
+        },
+        undefined,
+        { shallow: true },
+      );
     },
-    showOptionModal(commentId: string) {
-      throw new Error("Function not implemented.");
+    showOptionModal(param, commentId) {
+      router.push(
+        {
+          query: {
+            ...router.query,
+            [param]: commentId,
+          },
+        },
+        undefined,
+        { shallow: true },
+      );
     },
     addReply() {
       throw new Error("Function not implemented.");

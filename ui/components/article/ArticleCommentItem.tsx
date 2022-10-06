@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactNode, useCallback, useState } from "react";
 import { BsChatSquareText } from "react-icons/bs";
@@ -65,7 +64,12 @@ function ArticleCommentItemContent({
   } = useAuthCtx();
   const {
     state,
-    action: { loadReplies: loadRepliesAction, reactComment },
+    action: {
+      loadReplies: loadRepliesAction,
+      reactComment,
+      showReplyModal,
+      showOptionModal,
+    },
   } = useCommentCtx();
   // const [comment, setComment] = useState(commentProps);
   const [showReplies, setShowReplies] = useState(false);
@@ -102,7 +106,7 @@ function ArticleCommentItemContent({
         reactComment({
           type: upvoted ? "upCancel" : "up",
           comment: comment,
-          userId:user.id,
+          userId: user.id,
         });
       },
     },
@@ -116,7 +120,7 @@ function ArticleCommentItemContent({
         reactComment({
           type: downvoted ? "downCancel" : "down",
           comment: comment,
-          userId:user.id,
+          userId: user.id,
         });
       },
     },
@@ -134,16 +138,7 @@ function ArticleCommentItemContent({
       action: () => {
         if (!user || !replyParam)
           return alert("You must login to do this action.");
-        router.push(
-          {
-            query: {
-              ...router.query,
-              [replyParam]: comment.id,
-            },
-          },
-          undefined,
-          { shallow: true },
-        );
+        showReplyModal(replyParam, comment.id);
       },
     },
     // {
@@ -191,28 +186,17 @@ function ArticleCommentItemContent({
                 {postedAt}
               </span>
             </div>
-            {/* <div className="dropdown dropdown-end ml-auto"> */}
             {user && optionParam && (
-              <Link
-                href={{
-                  // pathname: router.asPath,
-                  query: {
-                    ...router.query,
-                    [optionParam]: comment.id,
-                  },
-                }}
-                shallow
+              <a
+                className="btn-ghost btn ml-auto aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
+                title="Options"
+                tabIndex={0}
+                // href="#options"
+                role={"button"}
+                onClick={() => showOptionModal(optionParam, comment.id)}
               >
-                <a
-                  className="btn-ghost btn ml-auto aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
-                  title="Options"
-                  tabIndex={0}
-                  // href="#options"
-                  role={"button"}
-                >
-                  <MdMoreHoriz className="text-2xl sm:text-3xl" />
-                </a>
-              </Link>
+                <MdMoreHoriz className="text-2xl sm:text-3xl" />
+              </a>
             )}
           </div>
           <span className="truncate whitespace-pre-line text-sm sm:text-base">{`${content}`}</span>

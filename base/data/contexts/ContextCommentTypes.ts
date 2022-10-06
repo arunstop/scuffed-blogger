@@ -23,8 +23,8 @@ export interface ContextCommentStates {
 export interface ContextCommentActions {
   loadComments: (newSortingType?: CommentModelsSortType) => Promise<void>;
   loadReplies: (comment: CommentModel, startFrom?: number) => Promise<void>;
-  showReplyModal: (commentId: string) => void;
-  showOptionModal: (commentId: string) => void;
+  showReplyModal: (param : string , commentId: string) => void;
+  showOptionModal: (param : string , commentId: string) => void;
   addReply: () => void;
   addComment: (
     content: string,
