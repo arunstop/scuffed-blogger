@@ -1,11 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
-import { serviceCommentReplyAdd } from "../../../app/services/CommentService";
+import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
 import { ModalProps } from "../../../base/data/Main";
-import {
-  CommentModel,
-  factoryCommentComplete,
-} from "../../../base/data/models/CommentModel";
+import { CommentModel } from "../../../base/data/models/CommentModel";
 import MobileHeader from "../main/MobileHeader";
 import ModalTemplate from "../modal/ModalTemplate";
 import ArticleCommentItem from "./ArticleCommentItem";
@@ -18,6 +15,8 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
   const {
     authStt: { user },
   } = useAuthCtx();
+
+  const { action } = useCommentCtx();
   const [reply, setReply] = useState("");
 
   // const { uiStt, uiAct } = useUiCtx();
@@ -26,21 +25,12 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
     setReply("");
   }
   const submitReply = useCallback(
-    async (value: string) => {
+    async (content: string) => {
       if (!user || !parentComment) return;
-      const content = value.trim();
-      const replyEntry: CommentModel = factoryCommentComplete({
-        content: encodeURIComponent(content),
+      const newReply = await action.addReply({
+        content: content,
+        user: user,
         parentCommentId: parentComment.id,
-        userId: user.id,
-        userName: user.name,
-        articleId: parentComment.articleId,
-      });
-      const newReply = await serviceCommentReplyAdd({
-        data: {
-          comment: replyEntry,
-          parentCommentId: parentComment.id,
-        },
       });
       if (newReply) closeModal();
     },

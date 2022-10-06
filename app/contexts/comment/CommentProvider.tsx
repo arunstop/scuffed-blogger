@@ -13,6 +13,7 @@ import {
   serviceCommentAdd,
   serviceCommentGet,
   serviceCommentReact,
+  serviceCommentReplyAdd,
   serviceCommentReplyGetByParent,
 } from "../../services/CommentService";
 import { CommentContext } from "./CommentContext";
@@ -119,12 +120,9 @@ export const CommentProvider = ({
         { shallow: true },
       );
     },
-    addReply() {
-      throw new Error("Function not implemented.");
-    },
     async addComment(content, user) {
       const newComment = factoryCommentComplete({
-        content: content,
+        content: encodeURIComponent(content.trim()),
         articleId: state.articleId,
         userId: user.id,
         userName: user.name,
@@ -134,6 +132,26 @@ export const CommentProvider = ({
       loadComments("new");
       if (!res) return null;
       return newComment;
+    },
+    async addReply(props) {
+      const { content, user, parentCommentId } = props;
+      const newReply = factoryCommentComplete({
+        content: encodeURIComponent(content.trim()),
+        articleId: state.articleId,
+        parentCommentId: parentCommentId,
+        userId: user.id,
+        userName: user.name,
+        upvote: [user.id],
+      });
+      const res = await serviceCommentReplyAdd({
+        data: {
+          comment: newReply,
+          parentCommentId,
+        },
+      });
+      loadComments("new");
+      if (!res) return null;
+      return newReply;
     },
     updateComment,
     updateReply,

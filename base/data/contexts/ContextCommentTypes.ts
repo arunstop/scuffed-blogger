@@ -23,13 +23,17 @@ export interface ContextCommentStates {
 export interface ContextCommentActions {
   loadComments: (newSortingType?: CommentModelsSortType) => Promise<void>;
   loadReplies: (comment: CommentModel, startFrom?: number) => Promise<void>;
-  showReplyModal: (param : string , commentId: string) => void;
-  showOptionModal: (param : string , commentId: string) => void;
-  addReply: () => void;
+  showReplyModal: (param: string, commentId: string) => void;
+  showOptionModal: (param: string, commentId: string) => void;
   addComment: (
     content: string,
     user: UserModel,
   ) => Promise<CommentModel | null>;
+  addReply: (props: {
+    content: string;
+    user: UserModel;
+    parentCommentId: string;
+  }) => Promise<CommentModel | null>;
   reactComment: (props: ServiceCommentReactProps) => Promise<void>;
   // reactReply: (props:ServiceCommentReactProps) => Promise<void>;
   updateComment: (comment: CommentModel) => Promise<void>;
