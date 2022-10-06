@@ -83,6 +83,7 @@ export type CommentReactionTypes = "up" | "down" | "upCancel" | "downCancel";
 export interface ServiceCommentReactProps {
   type: CommentReactionTypes;
   comment: CommentModel;
+  userId:string;
 }
 
 export async function serviceCommentReact({

@@ -102,6 +102,7 @@ function ArticleCommentItemContent({
         reactComment({
           type: upvoted ? "upCancel" : "up",
           comment: comment,
+          userId:user.id,
         });
       },
     },
@@ -115,6 +116,7 @@ function ArticleCommentItemContent({
         reactComment({
           type: downvoted ? "downCancel" : "down",
           comment: comment,
+          userId:user.id,
         });
       },
     },

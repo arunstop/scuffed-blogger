@@ -79,7 +79,8 @@ export async function repoRtCommentUpdate({
 export async function repoRtCommentReact(props: ServiceCommentReactProps) {
   const {
     type,
-    comment: { articleId, id, userId, parentCommentId },
+    comment: { articleId, id, parentCommentId },
+    userId,
   } = props;
   let path = ``;
   // check if the comment is a reply
