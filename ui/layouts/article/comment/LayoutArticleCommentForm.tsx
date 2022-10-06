@@ -29,7 +29,9 @@ function LayoutArticleCommentForm({
 
   const onComment: SubmitHandler<{ comment: string }> = async ({ comment }) => {
     if (!user) return;
-    action.addComment(comment,user);
+    const res = action.addComment(comment, user);
+    if (!res) return;
+    reset();
   };
   const userAvatar = userAvatarLinkGet(user?.id || "");
 
