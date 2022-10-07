@@ -74,27 +74,47 @@ export const CommentProvider = ({
       },
     });
   }
+  function toggleReplies(value: boolean, parentCommentId: string): void {
+    dispatch({
+      type: "TOGGLE_REPLIES",
+      payload: {
+        value,
+        parentCommentId,
+      },
+    });
+  }
 
   const action: ContextCommentActions = {
     loadComments,
     async loadReplies(comment, startFrom) {
       const { replies } = state;
+      const commentId = comment.id;
       // if this comment is somehow a reply, don't do anything
       if (comment.parentCommentId) return;
       const replyListTarget = replies?.find(
-        (e) => e.comments[0].parentCommentId === comment.id,
+        (e) => e.parentCommentId === commentId,
       );
       const repliesFromDb = await serviceCommentReplyGetByParent({
         data: {
           articleId: comment.articleId,
-          parentCommentId: comment.id,
+          parentCommentId: commentId,
           count: 5,
           start: startFrom ?? (replyListTarget?.offset || 0),
         },
       });
       if (!repliesFromDb) return console.log("no replies for some reason");
-      dispatch({ type: "SET_REPLIES", payload: { replies: repliesFromDb } });
-      console.log(repliesFromDb);
+      // setting replies
+      dispatch({
+        type: "SET_REPLIES",
+        payload: {
+          replies: {
+            ...repliesFromDb,
+            parentCommentId: commentId,
+          },
+        },
+      });
+      // showing the replies
+      toggleReplies(true,comment.id);
     },
     showReplyModal: (param, commentId) => {
       router.push(
@@ -164,6 +184,7 @@ export const CommentProvider = ({
       if (!props.comment.parentCommentId) return updateComment(newComment);
       updateReply(newComment);
     },
+    toggleReplies,
   };
 
   const value: ContextCommentTypes = {

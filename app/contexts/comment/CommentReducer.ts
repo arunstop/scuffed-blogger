@@ -1,6 +1,8 @@
-import { CommentModelsWithPaging } from "./../../../base/data/models/CommentModel";
-import { ContextCommentActionTypes } from "./../../../base/data/contexts/ContextCommentTypes";
 import { ContextCommentStates } from "../../../base/data/contexts/ContextCommentTypes";
+import {
+  CommentContextReplyState,
+  ContextCommentActionTypes,
+} from "./../../../base/data/contexts/ContextCommentTypes";
 
 export const commentReducer = (
   state: ContextCommentStates,
@@ -15,9 +17,7 @@ export const commentReducer = (
       const { replies } = action.payload;
       if (!state.replies) return { ...state, replies: [replies] };
       const filteredReplies = state.replies.filter((e) => {
-        return (
-          e.comments[0].parentCommentId !== replies.comments[0].parentCommentId
-        );
+        return e.parentCommentId !== replies.parentCommentId;
       });
       return {
         ...state,
@@ -41,24 +41,34 @@ export const commentReducer = (
       if (!state.replies) return state;
       // search and change the reply
       const replyTarget = state.replies.find((e) => {
-        return e.comments[0].parentCommentId === reply.parentCommentId;
+        return e.parentCommentId === reply.parentCommentId;
       });
       if (!replyTarget) return state;
       // change the targeted reply
       const updatedComments = replyTarget.comments.map((e) => {
         return e.id === reply.id ? reply : e;
       });
-      const newReplyList: CommentModelsWithPaging = {
+      const newReplyList: CommentContextReplyState = {
         ...replyTarget,
         comments: updatedComments,
       };
       const newReplies = [
         ...state.replies.filter(
-          (e) => e.comments[0].parentCommentId !== reply.parentCommentId,
+          (e) => e.parentCommentId !== reply.parentCommentId,
         ),
         newReplyList,
       ];
       return { ...state, replies: newReplies };
+    }
+    case "TOGGLE_REPLIES": {
+      const { value, parentCommentId } = action.payload;
+      let newShownReplies;
+      if (!value)
+        newShownReplies = state.shownReplies.filter(
+          (e) => e !== parentCommentId,
+        );
+      else newShownReplies = [...state.shownReplies, parentCommentId];
+      return { ...state, shownReplies: newShownReplies};
     }
     default:
       return state;

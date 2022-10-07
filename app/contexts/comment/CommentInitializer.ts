@@ -4,4 +4,5 @@ export const CONTEXT_COMMENT_INIT: ContextCommentStates = {
   comments: undefined,
   replies: undefined,
   sort: "new",
+  shownReplies:[],
 };

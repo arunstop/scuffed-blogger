@@ -13,11 +13,16 @@ export type ContextCommentTypes = ContextTypes<
   ContextCommentActions
 >;
 
+export type CommentContextReplyState = CommentModelsWithPaging & {
+  // isShowing: boolean;
+  parentCommentId: string;
+};
 export interface ContextCommentStates {
   articleId: string;
   comments?: CommentModelListPagedSorted;
   sort: CommentModelsSortType;
-  replies?: CommentModelsWithPaging[];
+  replies?: CommentContextReplyState[];
+  shownReplies : string[];
 }
 
 export interface ContextCommentActions {
@@ -34,6 +39,7 @@ export interface ContextCommentActions {
     user: UserModel;
     parentCommentId: string;
   }) => Promise<CommentModel | null>;
+  toggleReplies: (value: boolean, parentCommentId: string) => void;
   reactComment: (props: ServiceCommentReactProps) => Promise<void>;
   // reactReply: (props:ServiceCommentReactProps) => Promise<void>;
   updateComment: (comment: CommentModel) => Promise<void>;
@@ -49,7 +55,7 @@ export type ContextCommentActionTypes =
     }
   | {
       type: "SET_REPLIES";
-      payload: { replies: CommentModelsWithPaging };
+      payload: { replies: CommentContextReplyState };
     }
   | {
       type: "SET_SORT";
@@ -62,7 +68,8 @@ export type ContextCommentActionTypes =
   | {
       type: "UPDATE_REPLY";
       payload: { reply: CommentModel };
-    };
+    }
+  | { type: "TOGGLE_REPLIES"; payload: { value: boolean,parentCommentId:string } };
 // | { type: "SHOW_REPLY_MODAL"; payload: { commentId: string } }
 // | { type: "SHOW_OPTION_MODAL"; payload: { commentId: string } };
 // | {

@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import React, { ReactNode, useCallback, useState } from "react";
 import { BsChatSquareText } from "react-icons/bs";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
@@ -58,7 +57,6 @@ function ArticleCommentItemContent({
   noActions = false,
   isReply,
 }: ArticleCommentItemProps) {
-  const router = useRouter();
   const {
     authStt: { user },
   } = useAuthCtx();
@@ -69,21 +67,22 @@ function ArticleCommentItemContent({
       reactComment,
       showReplyModal,
       showOptionModal,
+      toggleReplies,
     },
   } = useCommentCtx();
-  // const [comment, setComment] = useState(commentProps);
-  const [showReplies, setShowReplies] = useState(false);
-  // const [replies, setReplies] = useState<CommentModelsWithPaging>();
+  const isShowingReplies = state.shownReplies.includes(comment.id);
+  const isRepliesLoaded = !!state.replies?.find(
+    (e) => e.parentCommentId === comment.id,
+  );
 
   const loadReplies = useCallback(async (startFrom?: number) => {
     loadRepliesAction(comment, startFrom);
-    setShowReplies(true);
   }, []);
 
   const toggleShowReplies = useCallback(() => {
-    if (showReplies) return setShowReplies(false);
-    return loadReplies(0);
-  }, [showReplies]);
+    toggleReplies(!isShowingReplies, comment.id);
+    if (!isRepliesLoaded) return loadReplies(0);
+  }, [isShowingReplies,isRepliesLoaded]);
 
   const postedAt = `${dateDistanceGet(comment.dateAdded, Date.now())} ago`;
   const userAvatar = userAvatarLinkGet(comment.userId);
@@ -92,7 +91,7 @@ function ArticleCommentItemContent({
   const repliesCount = comment.replies?.length || 0;
   const content = decodeURIComponent(comment.content);
   const replies = repliesCount
-    ? state.replies?.find((e) => e.comments[0].parentCommentId === comment.id)
+    ? state.replies?.find((e) => e.parentCommentId === comment.id)
     : undefined;
 
   const actions: CommentActionProps[] = [
@@ -211,7 +210,7 @@ function ArticleCommentItemContent({
             <ArticleCommentReply
               comment={comment}
               toggleShowReplies={toggleShowReplies}
-              showReplies={showReplies}
+              showReplies={isShowingReplies}
               replies={replies}
             />
           )}
