@@ -58,6 +58,36 @@ export const CommentProvider = ({
     if (newSortingType)
       dispatch({ type: "SET_SORT", payload: { sort: newSortingType } });
   }
+  async function loadReplies(comment: CommentModel, startFrom?: number) {
+    const { replies } = state;
+    const commentId = comment.id;
+    // if this comment is somehow a reply, don't do anything
+    if (comment.parentCommentId) return;
+    const replyListTarget = replies?.find(
+      (e) => e.parentCommentId === commentId,
+    );
+    const repliesFromDb = await serviceCommentReplyGetByParent({
+      data: {
+        articleId: comment.articleId,
+        parentCommentId: commentId,
+        count: 5,
+        start: startFrom ?? (replyListTarget?.offset || 0),
+      },
+    });
+    if (!repliesFromDb) return console.log("no replies for some reason");
+    // setting replies
+    dispatch({
+      type: "SET_REPLIES",
+      payload: {
+        replies: {
+          ...repliesFromDb,
+          parentCommentId: commentId,
+        },
+      },
+    });
+    // showing the replies
+    toggleReplies(true, comment.id);
+  }
   async function updateComment(comment: CommentModel) {
     dispatch({
       type: "UPDATE_COMMENT",
@@ -85,37 +115,8 @@ export const CommentProvider = ({
   }
 
   const action: ContextCommentActions = {
-    loadComments,
-    async loadReplies(comment, startFrom) {
-      const { replies } = state;
-      const commentId = comment.id;
-      // if this comment is somehow a reply, don't do anything
-      if (comment.parentCommentId) return;
-      const replyListTarget = replies?.find(
-        (e) => e.parentCommentId === commentId,
-      );
-      const repliesFromDb = await serviceCommentReplyGetByParent({
-        data: {
-          articleId: comment.articleId,
-          parentCommentId: commentId,
-          count: 5,
-          start: startFrom ?? (replyListTarget?.offset || 0),
-        },
-      });
-      if (!repliesFromDb) return console.log("no replies for some reason");
-      // setting replies
-      dispatch({
-        type: "SET_REPLIES",
-        payload: {
-          replies: {
-            ...repliesFromDb,
-            parentCommentId: commentId,
-          },
-        },
-      });
-      // showing the replies
-      toggleReplies(true,comment.id);
-    },
+    loadComments: loadComments,
+    loadReplies: loadReplies,
     showReplyModal: (param, commentId) => {
       router.push(
         {
@@ -169,12 +170,17 @@ export const CommentProvider = ({
           parentCommentId,
         },
       });
-      loadComments("new");
+      // loadComments("new");
       if (!res) return null;
+      const parentComment = state.comments?.comments.find(
+        (e) => e.id === parentCommentId,
+      );
+      if (!parentComment) return null;
+      loadReplies(parentComment, 0);
       return newReply;
     },
-    updateComment,
-    updateReply,
+    updateComment: updateComment,
+    updateReply: updateReply,
     reactComment: async (props) => {
       const newComment = await serviceCommentReact({
         data: props,
@@ -184,7 +190,7 @@ export const CommentProvider = ({
       if (!props.comment.parentCommentId) return updateComment(newComment);
       updateReply(newComment);
     },
-    toggleReplies,
+    toggleReplies: toggleReplies,
   };
 
   const value: ContextCommentTypes = {
