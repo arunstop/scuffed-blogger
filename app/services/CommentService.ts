@@ -83,7 +83,7 @@ export type CommentReactionTypes = "up" | "down" | "upCancel" | "downCancel";
 export interface ServiceCommentReactProps {
   type: CommentReactionTypes;
   comment: CommentModel;
-  userId:string;
+  userId: string;
 }
 
 export async function serviceCommentReact({
@@ -121,6 +121,7 @@ export async function serviceCommentDelete({
   }
 }
 
+interface ServiceCommentReplyAddReturnProps{ parentComment: CommentModel; reply: CommentModel }
 export async function serviceCommentReplyAdd({
   data,
   callback,
@@ -129,17 +130,18 @@ export async function serviceCommentReplyAdd({
     comment: CommentModel;
     parentCommentId: string;
   },
-  CommentModel | null | FirebaseError
->): Promise<CommentModel | null> {
+  ServiceCommentReplyAddReturnProps | null | FirebaseError
+>): Promise<ServiceCommentReplyAddReturnProps | null> {
   const { comment, parentCommentId } = data;
   try {
     // get parent comment
+    // let res:ServiceCommentReplyAddReturnProps|undefined; 
     const parentComment = await repoRtCommentGetById({
       commentId: parentCommentId,
       articleId: comment.articleId,
     });
     if (!parentComment) throw new Error("Error getting parent comment");
-    callback?.(netSuccess("Success creating reply", parentComment));
+    // callback?.(netSuccess("Success creating reply", parentComment));
 
     // update parent comment first
     // aka adding the replies
@@ -152,7 +154,7 @@ export async function serviceCommentReplyAdd({
       comment: newParentComment,
     });
     if (!updatedParentComment) throw new Error("Error updating parent comment");
-    callback?.(netSuccess("Success creating reply", updatedParentComment));
+    // callback?.(netSuccess("Success creating reply", updatedParentComment));
 
     // then add the reply entry
     const addedReply = await repoRtCommentReplyAdd({
@@ -160,9 +162,9 @@ export async function serviceCommentReplyAdd({
       parentCommentId: updatedParentComment.id,
     });
     if (!addedReply) throw new Error("Error adding reply");
-    callback?.(netSuccess("Success adding reply", addedReply));
+    // callback?.(netSuccess("Success adding reply", addedReply));
 
-    return addedReply;
+    return { parentComment: newParentComment, reply: addedReply };
   } catch (error) {
     const message = typeof error === "string" ? error : "Error adding reply";
     console.error(error);

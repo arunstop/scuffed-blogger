@@ -170,14 +170,14 @@ export const CommentProvider = ({
           parentCommentId,
         },
       });
-      // loadComments("new");
+      
       if (!res) return null;
-      const parentComment = state.comments?.comments.find(
-        (e) => e.id === parentCommentId,
-      );
-      if (!parentComment) return null;
-      loadReplies(parentComment, 0);
-      return newReply;
+      console.log(res.parentComment.replies?.length);
+      updateComment(res.parentComment);
+      console.log(res.parentComment.replies?.length);
+      loadReplies(res.parentComment, 0);
+
+      return res.reply;
     },
     updateComment: updateComment,
     updateReply: updateReply,
