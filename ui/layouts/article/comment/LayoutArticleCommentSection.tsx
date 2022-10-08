@@ -44,13 +44,13 @@ function LayoutArticleCommentSectionContent() {
       {
         label: "Newest first",
         action: () => {
-          // setSortedBy("new");
+          action.loadComments("new");
         },
       },
       {
         label: "Top comments",
         action: () => {
-          // setSortedBy("top");
+          action.loadComments("top");
         },
       },
     ],
@@ -58,9 +58,9 @@ function LayoutArticleCommentSectionContent() {
   );
 
   function getSortedByLabel() {
-    // if (sortedBy === "new") return "newest first";
-    // if (sortedBy === "top") return "top comments";
-    // else return "";
+    if (sort === "new") return "newest first";
+    if (sort === "top") return "top comments";
+    else return "";
     return "";
   }
 
