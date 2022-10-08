@@ -175,8 +175,8 @@ function ArticleCommentItemContent({
           {/* avatar */}
         </div>
         <div className="flex flex-1 flex-col gap-1 overflow-hidden sm:gap-2">
-          <div className="inline-flex gap-4">
-            <div className="flex items-baseline gap-1">
+          <div className="inline-flex gap-1 sm:gap-2 items-center justify-between">
+            <div className="flex items-baseline gap-1 truncate">
               <span className="text-base font-bold  capitalize sm:text-lg">
                 {comment.userName}
               </span>
@@ -187,7 +187,7 @@ function ArticleCommentItemContent({
             </div>
             {user && optionParam && (
               <a
-                className="btn-ghost btn ml-auto aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
+                className="btn-ghost btn aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
                 title="Options"
                 tabIndex={0}
                 // href="#options"
