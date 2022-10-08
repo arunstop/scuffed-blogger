@@ -35,6 +35,7 @@ export const CommentProvider = ({
 
   async function loadComments(newSortingType?: CommentModelsSortType) {
     const { articleId, comments: commentList, sort } = state;
+
     // define where to start
     // console.log('123');
     const startFrom = !!newSortingType || !commentList ? 0 : commentList.offset;
@@ -58,6 +59,7 @@ export const CommentProvider = ({
     if (newSortingType)
       dispatch({ type: "SET_SORT", payload: { sort: newSortingType } });
   }
+
   async function loadReplies(comment: CommentModel, startFrom?: number) {
     const { replies } = state;
     const commentId = comment.id;
@@ -88,6 +90,7 @@ export const CommentProvider = ({
     // showing the replies
     toggleReplies(true, comment.id);
   }
+
   async function updateComment(comment: CommentModel) {
     dispatch({
       type: "UPDATE_COMMENT",
@@ -96,6 +99,7 @@ export const CommentProvider = ({
       },
     });
   }
+
   async function updateReply(reply: CommentModel) {
     dispatch({
       type: "UPDATE_REPLY",
@@ -104,6 +108,7 @@ export const CommentProvider = ({
       },
     });
   }
+  
   function toggleReplies(value: boolean, parentCommentId: string): void {
     dispatch({
       type: "TOGGLE_REPLIES",

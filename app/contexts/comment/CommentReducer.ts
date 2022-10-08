@@ -1,3 +1,7 @@
+import {
+  CommentModel,
+  CommentModelListPagedSorted,
+} from "./../../../base/data/models/CommentModel";
 import { ContextCommentStates } from "../../../base/data/contexts/ContextCommentTypes";
 import {
   CommentContextReplyState,
@@ -11,7 +15,25 @@ export const commentReducer = (
   const type = action.type;
   switch (type) {
     case "SET_COMMENTS": {
-      return { ...state, comments: action.payload.comments };
+      const { comments } = action.payload;
+      // just add the comments from payload if comments state is empty
+      if (!state.comments)
+        return { ...state, comments: action.payload.comments };
+      const stateComments = state.comments;
+      // re-set comments state if sorting methods are different
+      if (stateComments.sortBy !== comments.sortBy)
+        return { ...state, comments: action.payload.comments };
+      // append comments in the comments state if they are the same
+      const newCommentList: CommentModel[] = [
+        ...stateComments.comments,
+        ...comments.comments,
+      ];
+      const newCommentsState: CommentModelListPagedSorted = {
+        ...stateComments,
+        comments: newCommentList,
+        offset: comments.offset,
+      };
+      return { ...state, comments: newCommentsState };
     }
     case "SET_REPLIES": {
       const { replies } = action.payload;
@@ -68,7 +90,7 @@ export const commentReducer = (
           (e) => e !== parentCommentId,
         );
       else newShownReplies = [...state.shownReplies, parentCommentId];
-      return { ...state, shownReplies: newShownReplies};
+      return { ...state, shownReplies: newShownReplies };
     }
     default:
       return state;

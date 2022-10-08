@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { MdSort } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../../app/contexts/comment/CommentHook";
@@ -30,7 +30,7 @@ function LayoutArticleCommentSectionContent() {
 
   const {
     state: { comments: commentList, replies, articleId, sort },
-    action: { loadComments },
+    action,
   } = useCommentCtx();
 
   // const [commentList, setCommentList] = useState<CommentModelListPagedSorted>();
@@ -63,6 +63,13 @@ function LayoutArticleCommentSectionContent() {
     if (sortedBy === "top") return "top comments";
     else return "";
   }
+
+  const loadComments = useCallback(
+    async (sortedBy?: CommentModelsSortType) => {
+      await action.loadComments(sortedBy);
+    },
+    [commentList],
+  );
 
   useEffect(() => {
     loadComments();
