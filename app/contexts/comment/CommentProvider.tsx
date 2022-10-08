@@ -52,7 +52,7 @@ export const CommentProvider = ({
 
     dispatch({
       type: "SET_COMMENTS",
-      payload: { comments: commentsFromDb },
+      payload: { comments: commentsFromDb,reload:!!newSortingType },
     });
 
     // setSortedBy(sortBy || sortedBy);
@@ -108,7 +108,7 @@ export const CommentProvider = ({
       },
     });
   }
-  
+
   function toggleReplies(value: boolean, parentCommentId: string): void {
     dispatch({
       type: "TOGGLE_REPLIES",
@@ -175,7 +175,7 @@ export const CommentProvider = ({
           parentCommentId,
         },
       });
-      
+
       if (!res) return null;
       console.log(res.parentComment.replies?.length);
       updateComment(res.parentComment);

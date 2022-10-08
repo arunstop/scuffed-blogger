@@ -22,7 +22,7 @@ export interface ContextCommentStates {
   comments?: CommentModelListPagedSorted;
   sort: CommentModelsSortType;
   replies?: CommentContextReplyState[];
-  shownReplies : string[];
+  shownReplies: string[];
 }
 
 export interface ContextCommentActions {
@@ -51,7 +51,10 @@ export interface ContextCommentActions {
 export type ContextCommentActionTypes =
   | {
       type: "SET_COMMENTS";
-      payload: { comments: CommentModelListPagedSorted };
+      payload: {
+        comments: CommentModelListPagedSorted;
+        reload?:boolean;
+      };
     }
   | {
       type: "SET_REPLIES";
@@ -69,7 +72,10 @@ export type ContextCommentActionTypes =
       type: "UPDATE_REPLY";
       payload: { reply: CommentModel };
     }
-  | { type: "TOGGLE_REPLIES"; payload: { value: boolean,parentCommentId:string } };
+  | {
+      type: "TOGGLE_REPLIES";
+      payload: { value: boolean; parentCommentId: string };
+    };
 // | { type: "SHOW_REPLY_MODAL"; payload: { commentId: string } }
 // | { type: "SHOW_OPTION_MODAL"; payload: { commentId: string } };
 // | {

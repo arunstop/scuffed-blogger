@@ -15,9 +15,9 @@ export const commentReducer = (
   const type = action.type;
   switch (type) {
     case "SET_COMMENTS": {
-      const { comments } = action.payload;
+      const { comments, reload } = action.payload;
       // just add the comments from payload if comments state is empty
-      if (!state.comments)
+      if (!state.comments || reload)
         return { ...state, comments: action.payload.comments };
       const stateComments = state.comments;
       // re-set comments state if sorting methods are different
