@@ -2,6 +2,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../../app/contexts/comment/CommentHook";
+import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { userAvatarLinkGet } from "../../../../app/helpers/MainHelpers";
 import InputTextArea from "../../../components/input/InputTextArea";
 import UserAvatar from "../../../components/user/UserAvatar";
@@ -29,9 +30,17 @@ function LayoutArticleCommentForm({
 
   const onComment: SubmitHandler<{ comment: string }> = async ({ comment }) => {
     if (!user) return;
-    const res = action.addComment(comment, user);
+    const res = await action.addComment(comment, user);
     if (!res) return;
     reset();
+    await waitFor(500);
+    // scroll into view
+    const el = document.getElementById(`comment-${res.id}`);
+    el?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "center",
+    });
   };
   const userAvatar = userAvatarLinkGet(user?.id || "");
 

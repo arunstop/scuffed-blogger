@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
+import { waitFor } from "../../../app/helpers/DelayHelpers";
 import { ModalProps } from "../../../base/data/Main";
 import { CommentModel } from "../../../base/data/models/CommentModel";
 import MobileHeader from "../main/MobileHeader";
@@ -32,7 +33,16 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
         user: user,
         parentCommentId: parentComment.id,
       });
-      if (newReply) closeModal();
+      if (!newReply) return;
+      closeModal();
+      await waitFor(500);
+      // scroll into view
+      const el = document.getElementById(`comment-${newReply.id}`);
+      el?.scrollIntoView({
+        behavior:'smooth',
+        inline:'center',
+        block:'center',
+      });
     },
     [parentComment],
   );

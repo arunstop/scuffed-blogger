@@ -6,7 +6,7 @@ import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
 import {
   dateDistanceGet,
-  userAvatarLinkGet
+  userAvatarLinkGet,
 } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
 import { CommentModel } from "../../../base/data/models/CommentModel";
@@ -82,7 +82,7 @@ function ArticleCommentItemContent({
   const toggleShowReplies = useCallback(() => {
     toggleReplies(!isShowingReplies, comment.id);
     if (!isRepliesLoaded) return loadReplies(0);
-  }, [isShowingReplies,isRepliesLoaded]);
+  }, [isShowingReplies, isRepliesLoaded]);
 
   const postedAt = `${dateDistanceGet(comment.dateAdded, Date.now())} ago`;
   const userAvatar = userAvatarLinkGet(comment.userId);
@@ -150,6 +150,7 @@ function ArticleCommentItemContent({
   ];
   return (
     <div
+      id={`comment-${comment.id}`}
       className={
         `flex flex-col rounded-xl transition-all duration-300 ` +
         `${
