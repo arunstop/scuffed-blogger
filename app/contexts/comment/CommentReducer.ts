@@ -33,6 +33,7 @@ export const commentReducer = (
         comments: newCommentList,
         offset: comments.offset,
       };
+      // console.log('newCommentState',newCommentsState.comments.map((e)=>e.id));
       return { ...state, comments: newCommentsState };
     }
     case "SET_REPLIES": {

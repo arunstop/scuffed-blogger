@@ -1,14 +1,13 @@
 import Link from "next/link";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { MdSort } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../../app/contexts/comment/CommentHook";
 import { CommentProvider } from "../../../../app/contexts/comment/CommentProvider";
-import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { getElById } from "../../../../app/helpers/UiHelpers";
 import {
   CommentModelListPagedSorted,
-  CommentModelsSortType,
+  CommentModelsSortType
 } from "../../../../base/data/models/CommentModel";
 import ArticleComments from "../../../components/article/ArticleComments";
 import Alert from "../../../components/common/Alert";
@@ -34,7 +33,7 @@ function LayoutArticleCommentSectionContent() {
   } = useCommentCtx();
 
   // const [commentList, setCommentList] = useState<CommentModelListPagedSorted>();
-  const [sortedBy, setSortedBy] = useState<CommentModelsSortType>("new");
+  
   const commentListPreview: CommentModelListPagedSorted = {
     ...commentList,
     comments: commentList?.comments.slice(0, 5) || [],
@@ -45,13 +44,13 @@ function LayoutArticleCommentSectionContent() {
       {
         label: "Newest first",
         action: () => {
-          setSortedBy("new");
+          // setSortedBy("new");
         },
       },
       {
         label: "Top comments",
         action: () => {
-          setSortedBy("top");
+          // setSortedBy("top");
         },
       },
     ],
@@ -59,9 +58,10 @@ function LayoutArticleCommentSectionContent() {
   );
 
   function getSortedByLabel() {
-    if (sortedBy === "new") return "newest first";
-    if (sortedBy === "top") return "top comments";
-    else return "";
+    // if (sortedBy === "new") return "newest first";
+    // if (sortedBy === "top") return "top comments";
+    // else return "";
+    return "";
   }
 
   const loadComments = useCallback(
@@ -76,10 +76,10 @@ function LayoutArticleCommentSectionContent() {
     return () => {};
   }, []);
 
-  useEffect(() => {
-    loadComments(sortedBy);
-    return () => {};
-  }, [sortedBy]);
+  // useEffect(() => {
+  //   loadComments(sortedBy);
+  //   return () => {};
+  // }, [sortedBy]);
 
   // console.log(user);
   // console.log("commentList", commentList);
@@ -170,7 +170,6 @@ function LayoutArticleCommentSectionContent() {
           commentList={commentList}
           articleId={articleId}
           loadComments={async () => {
-            await waitFor(300);
             loadComments();
           }}
           sortOptions={sortOptions}

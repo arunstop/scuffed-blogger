@@ -13,6 +13,7 @@ import MobileHeader, {
 import ModalTemplate from "../../../components/modal/ModalTemplate";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import { useCommentCtx } from "../../../../app/contexts/comment/CommentHook";
+import { waitFor } from "../../../../app/helpers/DelayHelpers";
 
 function LayoutArticleCommentSectionExpandedModal({
   commentList,
@@ -98,6 +99,7 @@ function LayoutArticleCommentSectionExpandedModal({
                 if (intersecting) {
                   setLoading(intersecting);
                   await loadComments();
+                  await waitFor(500);
                   setLoading(false);
                 }
               }}
