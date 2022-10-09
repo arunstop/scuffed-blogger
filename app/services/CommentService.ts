@@ -13,6 +13,8 @@ import {
   repoRtCommentGetById,
   repoRtCommentReact,
   repoRtCommentReplyAdd,
+  repoRtCommentReplyDelete,
+  repoRtCommentReplyDeleteByParent,
   repoRtCommentReplyGet,
   repoRtCommentUpdate,
 } from "../../base/repos/realtimeDb/RealtimeCommentRepo";
@@ -113,15 +115,22 @@ export async function serviceCommentDelete({
 >) {
   try {
     await repoRtCommentDelete(data);
+    await repoRtCommentReplyDeleteByParent({
+      articleId: data.articleId,
+      parentCommentId: data.commentId,
+    });
     callback?.(netSuccess("Success deleting comment", null));
-    return;
+    return true;
   } catch (error) {
     callback?.(netError("Error when deleting comment", error as FirebaseError));
-    return;
+    return false;
   }
 }
 
-interface ServiceCommentReplyAddReturnProps{ parentComment: CommentModel; reply: CommentModel }
+interface ServiceCommentReplyAddReturnProps {
+  parentComment: CommentModel;
+  reply: CommentModel;
+}
 export async function serviceCommentReplyAdd({
   data,
   callback,
@@ -135,7 +144,7 @@ export async function serviceCommentReplyAdd({
   const { comment, parentCommentId } = data;
   try {
     // get parent comment
-    // let res:ServiceCommentReplyAddReturnProps|undefined; 
+    // let res:ServiceCommentReplyAddReturnProps|undefined;
     const parentComment = await repoRtCommentGetById({
       commentId: parentCommentId,
       articleId: comment.articleId,
@@ -200,5 +209,35 @@ export async function serviceCommentReplyGetByParent({
       ),
     );
     return null;
+  }
+}
+
+export async function serviceCommentReplyDelete({
+  data,
+  callback,
+}: MainApiResponse<
+  { reply: CommentModel; parentComment?: CommentModel },
+  CommentModel | null | FirebaseError
+>) {
+  const { reply, parentComment } = data;
+  try {
+    if (!reply.parentCommentId)
+      throw new Error(
+        `This reply has no parentCommentId for some reason, ID : ${reply.id}`,
+      );
+    await repoRtCommentReplyDelete({
+      articleId: reply.articleId,
+      id: reply.id,
+      parentCommentId: reply.parentCommentId,
+    });
+    if (parentComment)
+      await repoRtCommentUpdate({
+        comment: parentComment,
+      });
+    callback?.(netSuccess("Success deleting reply", null));
+    return true;
+  } catch (error) {
+    callback?.(netError("Error when deleting reply", error as FirebaseError));
+    return false;
   }
 }

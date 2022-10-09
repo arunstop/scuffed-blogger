@@ -193,7 +193,7 @@ function ArticleCommentItemContent({
                 tabIndex={0}
                 // href="#options"
                 role={"button"}
-                onClick={() => showOptionModal(optionParam, comment.id)}
+                onClick={() => showOptionModal(optionParam, comment)}
               >
                 <MdMoreHoriz className="text-2xl sm:text-3xl" />
               </a>

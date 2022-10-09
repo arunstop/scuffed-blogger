@@ -93,6 +93,49 @@ export const commentReducer = (
       else newShownReplies = [...state.shownReplies, parentCommentId];
       return { ...state, shownReplies: newShownReplies };
     }
+    case "DELETE_COMMENT": {
+      const { comment } = action.payload;
+      if (!state.comments) return state;
+      const newComments = state.comments.comments.filter(
+        (e) => e.id !== comment.id,
+      );
+      const newReplies = state.replies?.filter(
+        (e) => e.parentCommentId !== comment.id,
+      );
+      const newShownReplies = state.shownReplies.filter(
+        (e) => e !== comment.id,
+      );
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          comments: newComments,
+          total: state.comments.total - 1,
+        },
+        replies: newReplies,
+        shownReplies: newShownReplies,
+      };
+    }
+    case "DELETE_REPLY": {
+      const { idx, reply } = action.payload;
+      if (!state.replies || idx >= state.replies.length) return state;
+      const repliesTarget = state.replies[idx];
+      // removing the reply from the state
+      repliesTarget.comments = repliesTarget.comments.filter(
+        (e) => e.id !== reply.id,
+      );
+      repliesTarget.total = repliesTarget.total - 1;
+
+      const newReplies: CommentContextReplyState[] = [
+        ...state.replies.splice(idx, 1), // removing the old obsolete target
+        repliesTarget, // added the updated value
+      ];
+
+      return {
+        ...state,
+        replies: newReplies,
+      };
+    }
     default:
       return state;
   }

@@ -19,6 +19,7 @@ export interface ModalActionAction {
   icon?: ReactNode;
   label: string;
   confirmation?: ModalActionConfirmation;
+  hidden?: boolean;
   action?: () => void;
 }
 
@@ -142,13 +143,16 @@ const ModalActionTemplate = ({
                   <>
                     {/* Action section */}
                     <>
-                      {actions.map((e, idx) => (
-                        <ModalActionItem
-                          key={idx}
-                          openConfirmation={confirmation.open}
-                          {...e}
-                        />
-                      ))}
+                      {actions.map((e, idx) => {
+                        if (e.hidden) return;
+                        return (
+                          <ModalActionItem
+                            key={idx}
+                            openConfirmation={confirmation.open}
+                            {...e}
+                          />
+                        );
+                      })}
                     </>
                     {/* Confirmation dialog */}
                     <ModalActionConfirmation

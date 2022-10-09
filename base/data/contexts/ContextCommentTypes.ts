@@ -29,7 +29,7 @@ export interface ContextCommentActions {
   loadComments: (newSortingType?: CommentModelsSortType) => Promise<void>;
   loadReplies: (comment: CommentModel, startFrom?: number) => Promise<void>;
   showReplyModal: (param: string, commentId: string) => void;
-  showOptionModal: (param: string, commentId: string) => void;
+  showOptionModal: (param: string, comment: CommentModel) => void;
   addComment: (
     content: string,
     user: UserModel,
@@ -44,6 +44,8 @@ export interface ContextCommentActions {
   // reactReply: (props:ServiceCommentReactProps) => Promise<void>;
   updateComment: (comment: CommentModel) => Promise<void>;
   updateReply: (reply: CommentModel) => Promise<void>;
+  deleteComment: (id: string) => Promise<void>;
+  deleteReply: (parentCommentId: string,id: string) => Promise<void>;
   // delet:()=>void;
   // setReplyingCommentId: (id: string | number|null) => void;
 }
@@ -53,7 +55,7 @@ export type ContextCommentActionTypes =
       type: "SET_COMMENTS";
       payload: {
         comments: CommentModelListPagedSorted;
-        reload?:boolean;
+        reload?: boolean;
       };
     }
   | {
@@ -75,6 +77,14 @@ export type ContextCommentActionTypes =
   | {
       type: "TOGGLE_REPLIES";
       payload: { value: boolean; parentCommentId: string };
+    }
+  | {
+      type: "DELETE_COMMENT";
+      payload: {comment: CommentModel };
+    }
+  | {
+      type: "DELETE_REPLY";
+      payload: { idx: number; reply: CommentModel };
     };
 // | { type: "SHOW_REPLY_MODAL"; payload: { commentId: string } }
 // | { type: "SHOW_OPTION_MODAL"; payload: { commentId: string } };

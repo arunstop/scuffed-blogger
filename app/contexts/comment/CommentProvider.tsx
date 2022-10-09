@@ -11,9 +11,11 @@ import {
 } from "../../../base/data/models/CommentModel";
 import {
   serviceCommentAdd,
+  serviceCommentDelete,
   serviceCommentGet,
   serviceCommentReact,
   serviceCommentReplyAdd,
+  serviceCommentReplyDelete,
   serviceCommentReplyGetByParent,
 } from "../../services/CommentService";
 import { CommentContext } from "./CommentContext";
@@ -52,7 +54,7 @@ export const CommentProvider = ({
 
     dispatch({
       type: "SET_COMMENTS",
-      payload: { comments: commentsFromDb,reload:!!newSortingType },
+      payload: { comments: commentsFromDb, reload: !!newSortingType },
     });
 
     // setSortedBy(sortBy || sortedBy);
@@ -134,12 +136,19 @@ export const CommentProvider = ({
         { shallow: true },
       );
     },
-    showOptionModal(param, commentId) {
+    showOptionModal(paramName, comment) {
+      let value = ``;
+      // determine if the comment is a parent comment or a reply
+      if (!comment.parentCommentId) value = `${comment.id}`;
+      else value = `${comment.parentCommentId}.${comment.id}`;
+
+      // example :
+      // p.rEXeVao4YDieDb8uQYusVpv8.1665267524169-mm1Ih4TfC4HuVMjR6Ky5ESt9
       router.push(
         {
           query: {
             ...router.query,
-            [param]: commentId,
+            [paramName]: value,
           },
         },
         undefined,
@@ -196,6 +205,61 @@ export const CommentProvider = ({
       updateReply(newComment);
     },
     toggleReplies: toggleReplies,
+    deleteComment: async function (id): Promise<void> {
+      if (!state.comments) return;
+      const comment = state.comments.comments.find((e) => e.id === id);
+      if (!comment) return;
+      console.log(comment);
+      const res = await serviceCommentDelete({
+        data: {
+          articleId: comment.articleId,
+          commentId: comment.id,
+        },
+      });
+      if (!res) return;
+      dispatch({
+        type: "DELETE_COMMENT",
+        payload: {
+          comment,
+        },
+      });
+    },
+    deleteReply: async function (parentCommentId, id): Promise<void> {
+      if (!id || !parentCommentId || !state.replies || !state.comments) return;
+      const replyTargetIdx = state.replies.findIndex(
+        (e) => e.parentCommentId === parentCommentId,
+      );
+      // console.log(replyTargetIdx);
+      if (replyTargetIdx < 0) return;
+      const reply = state.replies[replyTargetIdx].comments.find(
+        (e) => e.id === id,
+      );
+      if (!reply) return;
+      let parentComment = state.comments.comments.find(
+        (e) => e.id === parentCommentId,
+      );
+      if (!parentComment) return;
+      parentComment = {
+        ...parentComment,
+        replies: (parentComment.replies || []).filter((e) => e !== reply.id),
+        dateUpdated: Date.now(),
+      };
+      const res = await serviceCommentReplyDelete({
+        data: {
+          reply: reply,
+          parentComment: parentComment,
+        },
+      });
+      if (!res) return;
+      updateComment(parentComment);
+      dispatch({
+        type: "DELETE_REPLY",
+        payload: {
+          idx: replyTargetIdx,
+          reply: reply,
+        },
+      });
+    },
   };
 
   const value: ContextCommentTypes = {

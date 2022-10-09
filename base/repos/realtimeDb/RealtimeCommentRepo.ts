@@ -199,7 +199,11 @@ export async function repoRtCommentReplyUpdate({
   reply: CommentModel;
 }) {
   if (!reply.parentCommentId) return null;
-  await repoRtCommentReplyDelete({ reply: reply });
+  await repoRtCommentReplyDelete({
+    articleId: reply.articleId,
+    id: reply.id,
+    parentCommentId: reply.parentCommentId,
+  });
   await repoRtCommentReplyAdd({
     reply: reply,
     parentCommentId: reply.parentCommentId,
@@ -236,11 +240,27 @@ export async function repoRtCommentReplyGet({
 }
 
 export async function repoRtCommentReplyDelete({
-  reply,
+  articleId,
+  parentCommentId,
+  id,
 }: {
-  reply: CommentModel;
+  articleId: string;
+  parentCommentId: string;
+  id: string;
 }) {
-  const path = `replyList/${reply.articleId}/${reply.parentCommentId}/${reply.id}`;
+  const path = `replyList/${articleId}/${parentCommentId}/${id}`;
+  const rr = ref(db, path);
+  await remove(rr);
+}
+
+export async function repoRtCommentReplyDeleteByParent({
+  articleId,
+  parentCommentId,
+}: {
+  articleId: string;
+  parentCommentId: string;
+}) {
+  const path = `replyList/${articleId}/${parentCommentId}`;
   const rr = ref(db, path);
   await remove(rr);
 }
