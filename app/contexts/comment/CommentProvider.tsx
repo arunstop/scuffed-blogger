@@ -223,6 +223,8 @@ export const CommentProvider = ({
           comment,
         },
       });
+      // reload comments, if only the first page of the comments is loaded 
+      if(state.comments.comments.length<=5 && state.comments.total>5) loadComments();
     },
     deleteReply: async function (parentCommentId, id): Promise<void> {
       if (!id || !parentCommentId || !state.replies || !state.comments) return;
