@@ -42,7 +42,7 @@ function ArticleComments({
           <ArticleCommentOptionModal
             value={optionModal.show}
             onClose={() => optionModal.toggle(false)}
-            paramValue={optionModal.value}
+            paramValue={optionModal.value||""}
           />
           <ArticleCommentReplyModal
             value={replyModal.show}
