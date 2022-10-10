@@ -49,7 +49,7 @@ export const CommentProvider = ({
         sortBy: newSortingType || commentList?.sortBy || sort,
       },
     });
-    // console.log("commentsFromDb", commentsFromDb);
+    console.log("commentsFromDb", commentsFromDb);
     if (!commentsFromDb) return console.log("No comments can be loaded");
 
     dispatch({
@@ -209,7 +209,7 @@ export const CommentProvider = ({
       if (!state.comments) return;
       const comment = state.comments.comments.find((e) => e.id === id);
       if (!comment) return;
-      console.log(comment);
+      // console.log(comment);
       const res = await serviceCommentDelete({
         data: {
           articleId: comment.articleId,
@@ -224,7 +224,9 @@ export const CommentProvider = ({
         },
       });
       // reload comments, if only the first page of the comments is loaded 
-      if(state.comments.comments.length<=5 && state.comments.total>5) loadComments();
+      // console.log(state.comments.comments.length);
+      // console.log(state.comments.total);
+      if(state.comments.comments.length<=5 && state.comments.total>5) loadComments(state.comments.sortBy);
     },
     deleteReply: async function (parentCommentId, id): Promise<void> {
       if (!id || !parentCommentId || !state.replies || !state.comments) return;

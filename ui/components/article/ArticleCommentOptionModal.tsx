@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import { MdDelete, MdFlag, MdPersonOff, MdReport } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
 import { ModalProps } from "../../../base/data/Main";
 import ModalActionTemplate, {
-  ModalActionAction,
+  ModalActionAction
 } from "../modal/ModalActionTemplate";
 
 function ArticleCommentOptionModal({
@@ -39,8 +39,7 @@ function ArticleCommentOptionModal({
     return target.userId === user.id;
   };
 
-  const options: ModalActionAction[] = useMemo(() => {
-    return [
+  const options: ModalActionAction[] =  [
       {
         icon: <MdReport />,
         label: "Report comment",
@@ -99,8 +98,7 @@ function ArticleCommentOptionModal({
         hidden: !isCommenter(),
         action: () => {},
       },
-    ] as ModalActionAction[];
-  }, [paramValue]);
+    ];
   
   return (
     <ModalActionTemplate
