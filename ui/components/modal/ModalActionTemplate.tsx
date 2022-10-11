@@ -1,12 +1,11 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, ReactNode } from "react";
-import { ModalProps } from "../../../base/data/Main";
-import useOptionModalConfirmationHook from "../../../app/hooks/PostOptionConfirmationModalBehaviorHook";
-import GradientBackground from "../utils/GradientBackground";
-import ModalActionItem from "./ModalActionItem";
-import ModalActionConfirmation from "./ModalActionConfirmation";
+import React, { Fragment, ReactNode } from "react";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
-import React from "react";
+import useOptionModalConfirmationHook from "../../../app/hooks/PostOptionConfirmationModalBehaviorHook";
+import { ModalProps } from "../../../base/data/Main";
+import GradientBackground from "../utils/GradientBackground";
+import ModalActionConfirmation from "./ModalActionConfirmation";
+import ModalActionItemsContainer from "./ModalActionItemsContainer";
 
 export interface ModalActionConfirmation {
   title: string;
@@ -59,6 +58,7 @@ const ModalActionTemplate = ({
 
   const isConfirmation = !!confirmations?.length;
   const isAction = !!actions?.length;
+  const shownActions = actions?.filter((e) => !e.hidden) ||[];
 
   return (
     <Transition appear show={value} as={Fragment}>
@@ -142,18 +142,10 @@ const ModalActionTemplate = ({
                 {isAction && (
                   <>
                     {/* Action section */}
-                    <>
-                      {actions.map((e, idx) => {
-                        if (e.hidden) return;
-                        return (
-                          <ModalActionItem
-                            key={idx}
-                            openConfirmation={confirmation.open}
-                            {...e}
-                          />
-                        );
-                      })}
-                    </>
+                    <ModalActionItemsContainer
+                      actions={shownActions}
+                      openConfirmation={confirmation.open}
+                    />
                     {/* Confirmation dialog */}
                     <ModalActionConfirmation
                       value={confirmation.show}
