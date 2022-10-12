@@ -11,11 +11,13 @@ function ArticleComments({
   commentList,
   observe,
   lined,
+  noModals,
 }: // addComment,
 {
   commentList: CommentModelsWithPaging;
   observe?: boolean;
   lined?: boolean;
+  noModals?:boolean;
   // addComment: (comments:Comment[]) => void;
 }) {
   const optionModal = useRoutedModalHook(optionParam);
@@ -37,7 +39,7 @@ function ArticleComments({
           />
         ))}
       </div>
-      {!lined && (
+      {!noModals && (
         <>
           <ArticleCommentOptionModal
             value={optionModal.show}

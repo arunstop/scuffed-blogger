@@ -89,7 +89,7 @@ function LayoutArticleCommentSectionExpandedModal({
           toTop={toTop}
         />
         <div className="flex flex-col gap-2 p-2 sm:gap-4 sm:p-4 animate-slideInUp animate-duration-300 animate-delay-[1]">
-          <ArticleComments commentList={commentList} observe />
+          <ArticleComments commentList={commentList} observe noModals />
           {!loading && (commentList.comments.length < commentList.total) && (
             <IntersectionObserverTrigger
               key={commentList.offset}

@@ -34,7 +34,7 @@ function ArticleCommentReply({
             !isAllShown ? "mb-4 sm:mb-8" : ""
           } mt-1 sm:mt-2 rounded-xl`}
         >
-          <ArticleComments commentList={replies} lined />
+          <ArticleComments commentList={replies} lined noModals/>
         </div>
       )}
     </>
