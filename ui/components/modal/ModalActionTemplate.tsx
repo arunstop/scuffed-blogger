@@ -42,7 +42,7 @@ const ModalActionTemplate = ({
   desc,
   children,
   fullscreen = false,
-  actions,
+  actions=[],
   confirmations,
 }: ModalProps &
   MainActionModalTemplateProps & {
@@ -58,7 +58,7 @@ const ModalActionTemplate = ({
 
   const isConfirmation = !!confirmations?.length;
   const isAction = !!actions?.length;
-  const shownActions = actions?.filter((e) => !e.hidden) ||[];
+  // const shownActions = actions?.filter((e) => !e.hidden) || [];
 
   return (
     <Transition appear show={value} as={Fragment}>
@@ -138,14 +138,14 @@ const ModalActionTemplate = ({
                     )}
                   </div>
                 </Dialog.Title>
-
+                {/* Action section */}
+                <ModalActionItemsContainer
+                  show={value}
+                  actions={actions}
+                  openConfirmation={confirmation.open}
+                />
                 {isAction && (
                   <>
-                    {/* Action section */}
-                    <ModalActionItemsContainer
-                      actions={shownActions}
-                      openConfirmation={confirmation.open}
-                    />
                     {/* Confirmation dialog */}
                     <ModalActionConfirmation
                       value={confirmation.show}
@@ -180,7 +180,7 @@ const ModalActionTemplate = ({
                 {!isConfirmation && (
                   <div className="animate-fadeInUp animate-duration-500 animate-delay-100 flex-1 flex">
                     <button
-                      className="--btn-resp --btn-base  btn rounded-xl border-0 shadow-xl 
+                      className="--btn-resp --btn-base btn rounded-xl border-0 shadow-xl 
                       ring-1 ring-gray-600/20 w-full"
                       onClick={closeModal}
                       role={"button"}

@@ -5,7 +5,7 @@ import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
 import { ModalProps } from "../../../base/data/Main";
 import ModalActionTemplate, {
-  ModalActionAction
+  ModalActionAction,
 } from "../modal/ModalActionTemplate";
 
 function ArticleCommentOptionModal({
@@ -39,74 +39,76 @@ function ArticleCommentOptionModal({
     return target.userId === user.id;
   };
 
-  const options: ModalActionAction[] =  [
-      {
-        icon: <MdReport />,
-        label: "Report comment",
-        hidden: !isCommenter(),
-        action: () => {},
-      },
-      {
-        icon: <MdDelete />,
-        label: "Delete comment",
-        hidden: !isCommenter(),
-        action: () => {
-          // if no user
-          if (!user) return;
-          // if param has wrong format
+  const options: ModalActionAction[] = [
+    {
+      icon: <MdReport />,
+      label: "Report comment",
+      hidden: isCommenter(),
+      action: () => {},
+    },
+    {
+      icon: <MdDelete />,
+      label: "Delete comment",
+      hidden: !isCommenter(),
+      action: () => {
+        // if no user
+        if (!user) return;
+        // if param has wrong format
 
-          if (!isParentComment && !isReply) return;
-          // parent comment
-          if (paramArr.length === 1) {
-            const invalidLength = paramValue.length !== 38;
-            if (invalidLength) return;
-            // commit an action based on the type of the comment
-            action.deleteComment(paramArr[0]);
-            return onClose();
-          }
-          // reply comment
-          const invalidLength = paramValue.length !== 77;
+        if (!isParentComment && !isReply) return;
+        // parent comment
+        if (paramArr.length === 1) {
+          const invalidLength = paramValue.length !== 38;
           if (invalidLength) return;
-          const parentId = paramArr[0];
-          const id = paramArr[1];
           // commit an action based on the type of the comment
-          action.deleteReply(parentId, id); //reply
+          action.deleteComment(paramArr[0]);
           return onClose();
-        },
+        }
+        // reply comment
+        const invalidLength = paramValue.length !== 77;
+        if (invalidLength) return;
+        const parentId = paramArr[0];
+        const id = paramArr[1];
+        // commit an action based on the type of the comment
+        action.deleteReply(parentId, id); //reply
+        return onClose();
       },
-      {
-        icon: <FaVolumeMute />,
-        label: "Mute user",
-        hidden: !isCommenter(),
-        action: () => {},
-      },
-      {
-        icon: <FaVolumeUp />,
-        label: "Unmute user",
-        hidden: !isCommenter(),
-        action: () => {},
-      },
-      {
-        icon: <MdPersonOff />,
-        label: "Block user",
-        hidden: !isCommenter(),
-        action: () => {},
-      },
-      {
-        icon: <MdFlag />,
-        label: "Report user",
-        hidden: !isCommenter(),
-        action: () => {},
-      },
-    ];
-  
+    },
+    {
+      icon: <FaVolumeMute />,
+      label: "Mute user",
+      hidden: isCommenter(),
+      action: () => {},
+    },
+    {
+      icon: <FaVolumeUp />,
+      label: "Unmute user",
+      hidden: isCommenter(),
+      action: () => {},
+    },
+    {
+      icon: <MdPersonOff />,
+      label: "Block user",
+      hidden: isCommenter(),
+      action: () => {},
+    },
+    {
+      icon: <MdFlag />,
+      label: "Report user",
+      hidden: isCommenter(),
+      action: () => {},
+    },
+  ];
+
+  const shownOptions = value ? options.filter((e) => !e.hidden) : [];
+
   return (
     <ModalActionTemplate
       value={value}
       onClose={onClose}
       title="Options"
       desc="Action cannot be undone, choose wisely"
-      actions={options}
+      actions={shownOptions}
     >
       x
     </ModalActionTemplate>

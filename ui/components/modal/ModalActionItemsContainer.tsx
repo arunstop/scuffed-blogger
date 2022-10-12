@@ -6,9 +6,11 @@ import {
 } from "./ModalActionTemplate";
 
 function ModalActionItemsContainer({
+  show,
   actions,
   openConfirmation,
 }: {
+  show: boolean;
   actions: ModalActionAction[];
   openConfirmation: (value: ModalActionConfirmation | undefined) => void;
 }) {
@@ -28,7 +30,7 @@ function ModalActionItemsContainer({
 }
 
 export default React.memo(ModalActionItemsContainer, (prev, next) => {
-  // don't change anything if the next's props has no actions
-  if (next.actions.length) return false;
+  // re-render when the prev has the same length as the next
+  if (prev.show === false && next.show === true) return false;
   return true;
 });
