@@ -13,6 +13,26 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
   onClose,
   parentComment,
 }: ModalProps & { parentComment?: CommentModel }) {
+  return (
+    <ModalTemplate
+      value={value}
+      onClose={onClose}
+      title={`Replying to ${parentComment?.userName || "a comment"}`}
+    >
+      <MzContent show={value} onClose={onClose} parentComment={parentComment} />
+    </ModalTemplate>
+  );
+});
+
+function Content({
+  show,
+  parentComment,
+  onClose,
+}: {
+  show: boolean;
+  parentComment?: CommentModel;
+  onClose: () => void;
+}) {
   const {
     authStt: { user },
   } = useAuthCtx();
@@ -39,20 +59,15 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
       // scroll into view
       const el = document.getElementById(`comment-${newReply.id}`);
       el?.scrollIntoView({
-        behavior:'smooth',
-        inline:'center',
-        block:'center',
+        behavior: "smooth",
+        inline: "center",
+        block: "center",
       });
     },
     [parentComment],
   );
-
   return (
-    <ModalTemplate
-      value={value}
-      onClose={closeModal}
-      title={`Replying to ${parentComment?.userName || "a comment"}`}
-    >
+    <>
       <MobileHeader
         title={`Replying to ${parentComment?.userName || "a comment"}`}
         back={() => closeModal()}
@@ -73,8 +88,8 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
         <div className="flex w-full justify-end gap-2 sm:gap-4">
           {reply.length !== 0 && (
             <button
-              className="--btn-resp btn-outline btn ml-auto w-24 text-lg 
-                        font-bold normal-case opacity-80 hover:opacity-100 sm:w-36 sm:text-xl"
+              className="--btn-resp btn-outline btn ml-auto w-24 text-lg font-bold normal-case opacity-80 
+              hover:opacity-100 sm:w-36 sm:text-xl"
               onClick={() => {
                 setReply("");
               }}
@@ -93,8 +108,13 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
           </button>
         </div>
       </div>
-    </ModalTemplate>
+    </>
   );
+}
+
+const MzContent = React.memo(Content, (prev, next) => {
+  if (prev.show === false && next.show === true) return false;
+  return true;
 });
 
 export default ArticleCommentReplyModal;

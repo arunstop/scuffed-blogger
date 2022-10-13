@@ -1,4 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
+import React from "react";
 import { Fragment, ReactNode } from "react";
 import { FaTimes } from "react-icons/fa";
 import { ModalProps } from "../../../base/data/Main";
@@ -81,29 +82,12 @@ ModalProps & ModalTemplateProps) => {
               >
                 {/* gradient background */}
                 {/* <GradientBackground height="100%" /> */}
-                {noHeader || (
-                  <Dialog.Title
-                    as="div"
-                    className="hidden sm:block p-2 sm:p-4 z-[1] bg-base-100/70 backdrop-blur-md animate-fadeInDown
-                  sticky top-0 duration-500"
-                  >
-                    <div className="flex flex-row items-center justify-between">
-                      <span className="text-xl font-bold sm:text-2xl">
-                        {title}
-                      </span>
-                      {noCloseButton || (
-                        <span
-                          className="btn btn-ghost btn-sm aspect-square !h-9 !w-9 rounded-xl 
-                        !p-0 opacity-80 hover:opacity-100 sm:btn-md sm:!h-12 sm:!w-12"
-                          title="Back"
-                          onClick={onClose}
-                        >
-                          <FaTimes className="text-2xl sm:text-3xl" />
-                        </span>
-                      )}
-                    </div>
-                  </Dialog.Title>
-                )}
+                <MzHeader
+                  show={value}
+                  noCloseButton={noCloseButton}
+                  onClose={onClose}
+                  title={title}
+                />
                 {children}
               </div>
             </div>
@@ -113,5 +97,46 @@ ModalProps & ModalTemplateProps) => {
     </Transition>
   );
 };
+
+const header = ({
+  show,
+  title,
+  noCloseButton,
+  onClose,
+}: {
+  show: boolean;
+  title: string;
+  noCloseButton: boolean;
+  onClose: () => void;
+}) => {
+  return (
+    <>
+      <Dialog.Title
+        as="div"
+        className="hidden sm:block p-2 sm:p-4 z-[1] bg-base-100/70 backdrop-blur-md animate-fadeInDown
+                  sticky top-0 duration-500"
+      >
+        <div className="flex flex-row items-center justify-between">
+          <span className="text-xl font-bold sm:text-2xl">{title}</span>
+          {noCloseButton || (
+            <span
+              className="btn btn-ghost btn-sm aspect-square !h-9 !w-9 rounded-xl 
+                        !p-0 opacity-80 hover:opacity-100 sm:btn-md sm:!h-12 sm:!w-12"
+              title="Back"
+              onClick={onClose}
+            >
+              <FaTimes className="text-2xl sm:text-3xl" />
+            </span>
+          )}
+        </div>
+      </Dialog.Title>
+    </>
+  );
+};
+
+const MzHeader = React.memo(header, (prev, next) => {
+  if (prev.show === false && next.show === true) return false;
+  return true;
+});
 
 export default ModalTemplate;
