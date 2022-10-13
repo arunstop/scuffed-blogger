@@ -48,10 +48,11 @@ function Content({
   const submitReply = useCallback(
     async (content: string) => {
       if (!user || !parentComment) return;
+      // console.log(parentComment);
       const newReply = await action.addReply({
         content: content,
         user: user,
-        parentCommentId: parentComment.id,
+        parentCommentId: parentComment.parentCommentId ?? parentComment.id,
       });
       if (!newReply) return;
       closeModal();

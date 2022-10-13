@@ -137,7 +137,12 @@ function ArticleCommentItemContent({
       action: () => {
         if (!user || !replyParam)
           return alert("You must login to do this action.");
-        showReplyModal(replyParam, comment.id);
+        // param depends on if the comment is a reply or not
+        // console.log(comment);
+        const val = !comment.parentCommentId
+          ? comment.id // if parent
+          : `${comment.parentCommentId}.${comment.id}`; // if reply
+        showReplyModal(replyParam, val);
       },
     },
     // {
