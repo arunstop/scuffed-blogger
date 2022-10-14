@@ -27,3 +27,16 @@ export function dateDistanceGet(from: number, to: number) {
 export function userAvatarLinkGet(userId: string) {
   return `https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/images%2Favatars%2F${userId}.png?alt=media`;
 }
+
+export async function autoRetry<T>(
+  call: (attempt: number, max: boolean) => T,
+  tries: number,
+): Promise<T | null> {
+  for (let attempt = 1; attempt <= tries; attempt++) {
+    console.log("tries no : ", attempt);
+    const res = await call(attempt, attempt === tries);
+    console.log("called done...", res);
+    if (res) return res;
+  }
+  return null;
+}

@@ -1,13 +1,17 @@
 import { Transition } from "@headlessui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
-import { ArticleModelFromDb, serviceArticleMirrorGetAll } from "../../../app/services/ArticleService";
+import {
+  ArticleModelFromDb,
+  serviceArticleMirrorGetAll,
+} from "../../../app/services/ArticleService";
 import { MainNetworkResponse } from "../../../base/data/Main";
 import IntersectionObserverTrigger from "../../components/utils/IntesectionObserverTrigger";
 import ErrorPlaceholder from "../../components/placeholder/ErrorPlaceholder";
 import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
 import PostItem from "../../components/post/PostItem";
 import PostOptionModal from "../../components/post/PostOptionModal";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 
 function LayoutIndexPostSection() {
   const [feed, setFeed] = useState<ArticleModelFromDb | null>(null);
@@ -17,16 +21,21 @@ function LayoutIndexPostSection() {
   const loadPosts = useCallback(async () => {
     // show loading indicator
     // setLoading(true);
-    const articlesFromDb = await serviceArticleMirrorGetAll({
-      data: {
-        count: 5,
-        start: feed?.offset || 0,
-      },
-      callback: (resp) => {
-        // extracting the data so it won't duplicate
-        setResp({ ...resp, data: null });
-      },
-    });
+    const articlesFromDb = await autoRetry(async (attempt) => {
+      console.log("calling");
+      const res = await serviceArticleMirrorGetAll({
+        data: {
+          count: 5,
+          start: feed?.offset || 0,
+        },
+        callback: (resp) => {
+          // extracting the data so it won't duplicate
+          setResp({ ...resp, data: null });
+        },
+      });
+      return res;
+    }, 3);
+
     // removing delay at initial load
     if (feed) await waitFor(200);
     if (!articlesFromDb) return;
@@ -82,7 +91,7 @@ function LayoutIndexPostSection() {
             {/* when loading */}
             {resp?.status !== "error" && feed.articles.length < feed.total && (
               <IntersectionObserverTrigger
-              key={feed.offset}
+                key={feed.offset}
                 callback={(intersecting) => {
                   if (intersecting) return loadPosts();
                 }}
