@@ -9,16 +9,16 @@ const ArticleCommentItemActionButton = ({
 }: CommentActionProps) => {
   return (
     <span
-      className={`btn btn-ghost rounded-xl p-1 sm:p-2 opacity-75 hover:opacity-100
+      className={`btn btn-ghost rounded-xl p-px sm:p-1 opacity-75 hover:opacity-100
         !flex !flex-nowrap max-w-none gap-1 sm:gap-2 !h-auto aspect-square sm:aspect-auto
-        !font-black
+        !font-black btn-sm sm:btn-md
         group ${className || ""}`}
       title="Upvote"
       onClick={() => action()}
     >
-      {icon && <span className="text-xl sm:text-2xl">{icon}</span>}
+      {icon && <span className="text-lg sm:text-xl">{icon}</span>}
       {label && (
-        <span className={minimize ? "hidden sm:block" : "!text-sm sm:!text-md"}>
+        <span className={minimize ? "hidden sm:block" : "!text-xs sm:!text-sm"}>
           {label}
         </span>
       )}

@@ -1,12 +1,11 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, ReactNode } from "react";
-import { ModalProps } from "../../../base/data/Main";
-import useOptionModalConfirmationHook from "../../../app/hooks/PostOptionConfirmationModalBehaviorHook";
-import GradientBackground from "../utils/GradientBackground";
-import ModalActionItem from "./ModalActionItem";
-import ModalActionConfirmation from "./ModalActionConfirmation";
+import React, { Fragment, ReactNode } from "react";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
-import React from "react";
+import useOptionModalConfirmationHook from "../../../app/hooks/PostOptionConfirmationModalBehaviorHook";
+import { ModalProps } from "../../../base/data/Main";
+import GradientBackground from "../utils/GradientBackground";
+import ModalActionConfirmation from "./ModalActionConfirmation";
+import ModalActionItemsContainer from "./ModalActionItemsContainer";
 
 export interface ModalActionConfirmation {
   title: string;
@@ -19,6 +18,7 @@ export interface ModalActionAction {
   icon?: ReactNode;
   label: string;
   confirmation?: ModalActionConfirmation;
+  hidden?: boolean;
   action?: () => void;
 }
 
@@ -42,7 +42,7 @@ const ModalActionTemplate = ({
   desc,
   children,
   fullscreen = false,
-  actions,
+  actions=[],
   confirmations,
 }: ModalProps &
   MainActionModalTemplateProps & {
@@ -58,6 +58,7 @@ const ModalActionTemplate = ({
 
   const isConfirmation = !!confirmations?.length;
   const isAction = !!actions?.length;
+  // const shownActions = actions?.filter((e) => !e.hidden) || [];
 
   return (
     <Transition appear show={value} as={Fragment}>
@@ -137,19 +138,14 @@ const ModalActionTemplate = ({
                     )}
                   </div>
                 </Dialog.Title>
-
+                {/* Action section */}
+                <ModalActionItemsContainer
+                  show={value}
+                  actions={actions}
+                  openConfirmation={confirmation.open}
+                />
                 {isAction && (
                   <>
-                    {/* Action section */}
-                    <>
-                      {actions.map((e, idx) => (
-                        <ModalActionItem
-                          key={idx}
-                          openConfirmation={confirmation.open}
-                          {...e}
-                        />
-                      ))}
-                    </>
                     {/* Confirmation dialog */}
                     <ModalActionConfirmation
                       value={confirmation.show}
@@ -184,7 +180,7 @@ const ModalActionTemplate = ({
                 {!isConfirmation && (
                   <div className="animate-fadeInUp animate-duration-500 animate-delay-100 flex-1 flex">
                     <button
-                      className="--btn-resp --btn-base  btn rounded-xl border-0 shadow-xl 
+                      className="--btn-resp --btn-base btn rounded-xl border-0 shadow-xl 
                       ring-1 ring-gray-600/20 w-full"
                       onClick={closeModal}
                       role={"button"}

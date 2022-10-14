@@ -12,6 +12,8 @@ import MobileHeader, {
 } from "../../../components/main/MobileHeader";
 import ModalTemplate from "../../../components/modal/ModalTemplate";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
+import { useCommentCtx } from "../../../../app/contexts/comment/CommentHook";
+import { waitFor } from "../../../../app/helpers/DelayHelpers";
 
 function LayoutArticleCommentSectionExpandedModal({
   commentList,
@@ -24,6 +26,7 @@ function LayoutArticleCommentSectionExpandedModal({
   loadComments: (sortBy?: CommentModelsSortType) => Promise<void>;
   sortOptions: DropdownOption[];
 }) {
+  const {state}= useCommentCtx();
   const { show: modalComments, toggle: setModalComments } =
     useRoutedModalHook("comments");
   function toTop() {
@@ -85,9 +88,9 @@ function LayoutArticleCommentSectionExpandedModal({
           actions={headerActions}
           toTop={toTop}
         />
-        <div className="flex flex-col gap-2 p-2 sm:gap-4 sm:p-4 animate-slideInUp animate-duration-300 animate-delay-[1]">
-          <ArticleComments commentList={commentList} observe />
-          {!loading && commentList.comments.length < commentList.total && (
+        <div className="flex flex-col gap-2 p-2 sm:gap-4 sm:p-4 animate-fadeInDown animate-duration-300 animate-delay-[1]">
+          <ArticleComments commentList={commentList} observe noModals />
+          {!loading && (commentList.comments.length < commentList.total) && (
             <IntersectionObserverTrigger
               key={commentList.offset}
               className="h-24 w-full "
@@ -96,6 +99,7 @@ function LayoutArticleCommentSectionExpandedModal({
                 if (intersecting) {
                   setLoading(intersecting);
                   await loadComments();
+                  await waitFor(500);
                   setLoading(false);
                 }
               }}

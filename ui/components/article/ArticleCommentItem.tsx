@@ -1,24 +1,25 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { ReactNode, useState } from "react";
-import { BsChatSquareText, BsShare } from "react-icons/bs";
+import React, { ReactNode, useCallback, useState } from "react";
+import { BsChatSquareText } from "react-icons/bs";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
-import { MdMoreHoriz } from "react-icons/md";
+import { MdContentCopy, MdMoreHoriz } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
-import { CommentModel } from "../../../base/data/models/CommentModel";
+import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
 import {
   dateDistanceGet,
   userAvatarLinkGet,
 } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
-import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
+import { CommentModel } from "../../../base/data/models/CommentModel";
 import UserAvatar from "../user/UserAvatar";
+import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
 import ArticleCommentItemActionButton from "./ArticleCommentItemActionButton";
-import { serviceCommentReact } from "../../../app/services/CommentService";
+import ArticleCommentReply from "./ArticleCommentReply";
 interface ArticleCommentItemProps {
   comment: CommentModel;
-  optionParam: string;
-  replyParam: string;
+  optionParam?: string;
+  replyParam?: string;
+  noActions?: boolean;
+  isReply?: boolean;
 }
 
 function ArticleCommentItem({
@@ -50,20 +51,48 @@ function ArticleCommentItem({
 }
 
 function ArticleCommentItemContent({
-  comment: commentProps,
+  comment,
   optionParam,
   replyParam,
+  noActions = false,
+  isReply,
 }: ArticleCommentItemProps) {
-  const router = useRouter();
   const {
     authStt: { user },
   } = useAuthCtx();
-  const [comment, setComment] = useState(commentProps);
+  const {
+    state,
+    action: {
+      loadReplies: loadRepliesAction,
+      reactComment,
+      showReplyModal,
+      showOptionModal,
+      toggleReplies,
+    },
+  } = useCommentCtx();
+  const isShowingReplies = state.shownReplies.includes(comment.id);
+  const isRepliesLoaded = !!state.replies?.find(
+    (e) => e.parentCommentId === comment.id,
+  );
+
+  const loadReplies = useCallback(async (startFrom?: number) => {
+    loadRepliesAction(comment, startFrom);
+  }, []);
+
+  const toggleShowReplies = useCallback(() => {
+    toggleReplies(!isShowingReplies, comment.id);
+    if (!isRepliesLoaded) return loadReplies(0);
+  }, [isShowingReplies, isRepliesLoaded]);
+
   const postedAt = `${dateDistanceGet(comment.dateAdded, Date.now())} ago`;
   const userAvatar = userAvatarLinkGet(comment.userId);
   const upvoted = comment.upvote?.includes(user?.id || "");
   const downvoted = comment.downvote?.includes(user?.id || "");
-  const isLoggedIn = user;
+  const repliesCount = comment.replies?.length || 0;
+  const content = decodeURIComponent(comment.content);
+  const replies = repliesCount
+    ? state.replies?.find((e) => e.parentCommentId === comment.id)
+    : undefined;
 
   const actions: CommentActionProps[] = [
     {
@@ -72,16 +101,12 @@ function ArticleCommentItemContent({
       className: `${upvoted && comment.upvote?.length ? "text-success" : ""}`,
       minimize: false,
       action: async () => {
-        if (!isLoggedIn) return alert("You must login to do this action.");
-        const newComment = await serviceCommentReact({
-          data: {
-            react: upvoted ? "upCancel" : "up",
-            articleId: comment.articleId,
-            commentId: comment.id,
-            userId: user.id,
-          },
+        if (!user) return alert("You must login to do this action.");
+        reactComment({
+          type: upvoted ? "upCancel" : "up",
+          comment: comment,
+          userId: user.id,
         });
-        if (newComment) setComment(newComment);
       },
     },
     {
@@ -90,141 +115,111 @@ function ArticleCommentItemContent({
       className: `${downvoted && comment.downvote?.length ? "text-error" : ""}`,
       minimize: false,
       action: async () => {
-        if (!isLoggedIn) return alert("You must login to do this action.");
-        const newComment = await serviceCommentReact({
-          data: {
-            react: downvoted ? "downCancel" : "down",
-            articleId: comment.articleId,
-            commentId: comment.id,
-            userId: user.id,
-          },
+        if (!user) return alert("You must login to do this action.");
+        reactComment({
+          type: downvoted ? "downCancel" : "down",
+          comment: comment,
+          userId: user.id,
         });
-        if (newComment) setComment(newComment);
+      },
+    },
+    {
+      label: "",
+      icon: <MdContentCopy />,
+      action: () => {
+        navigator.clipboard.writeText(comment.content);
+        alert("Content copied");
       },
     },
     {
       label: "Reply",
       icon: <BsChatSquareText />,
       action: () => {
-        if (!isLoggedIn) return alert("You must login to do this action.");
-        router.push(
-          {
-            query: {
-              ...router.query,
-              [replyParam]: comment.id,
-            },
-          },
-          undefined,
-          { shallow: true },
-        );
+        if (!user || !replyParam)
+          return alert("You must login to do this action.");
+        // param depends on if the comment is a reply or not
+        // console.log(comment);
+        const val = !comment.parentCommentId
+          ? comment.id // if parent
+          : `${comment.parentCommentId}.${comment.id}`; // if reply
+        showReplyModal(replyParam, val);
       },
     },
-    {
-      label: "Share",
-      icon: <BsShare />,
-      action: () => {
-        alert("Link copied");
-      },
-    },
+    // {
+    //   label: "Share",
+    //   icon: <BsShare />,
+    //   action: () => {
+    //     alert("Link copied");
+    //   },
+    // },
   ];
   return (
-    <div className="flex flex-row items-start gap-2 sm:gap-4">
-      <UserAvatar src={userAvatar} />
-      <div className="flex flex-1 flex-col gap-2 overflow-hidden">
-        <div className="inline-flex gap-4">
-          <div className="flex flex-col">
-            <span className="text-base font-bold !leading-[1.2] sm:text-lg capitalize">
-              {comment.userName}
-            </span>
-            <span className="text-sm font-semibold !leading-[1.2] opacity-50 sm:text-md">
-              {postedAt}
-            </span>
+    <div
+      id={`comment-${comment.id}`}
+      className={
+        `flex flex-col rounded-xl transition-all duration-300 ` +
+        `${
+          noActions
+            ? ``
+            : `${
+                isReply
+                  ? "py-2"
+                  : "hover:p-2 m-1 sm:hover:p-4 sm:m-2 ease-in-out hover:bg-primary/10"
+              }`
+        }`
+      }
+    >
+      <div className="flex flex-row items-stretch gap-2 sm:gap-4">
+        <div className="flex flex-col">
+          <div className="flex">
+            <UserAvatar src={userAvatar} />
           </div>
-          {/* <div className="dropdown dropdown-end ml-auto"> */}
-          {isLoggedIn && (
-            <Link
-              href={{
-                // pathname: router.asPath,
-                query: {
-                  ...router.query,
-                  [optionParam]: comment.id,
-                },
-              }}
-              shallow
-            >
+          {/* lines */}
+          {!!isReply && (
+            <div className="mx-auto mt-1 h-full w-[0.3rem] rounded-full bg-base-content/20 sm:mt-2"></div>
+          )}
+          {/* avatar */}
+        </div>
+        <div className="flex flex-1 flex-col gap-1 overflow-hidden sm:gap-2">
+          <div className="inline-flex gap-1 sm:gap-2 items-center justify-between">
+            <div className="flex items-baseline gap-1 truncate">
+              <span className="text-base font-bold  capitalize sm:text-lg">
+                {comment.userName}
+              </span>
+              <span>&#8212;</span>
+              <span className="sm:text-md text-sm  font-semibold opacity-50">
+                {postedAt}
+              </span>
+            </div>
+            {user && optionParam && (
               <a
-                className="btn btn-ghost ml-auto aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
+                className="btn-ghost btn aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
                 title="Options"
                 tabIndex={0}
                 // href="#options"
                 role={"button"}
+                onClick={() => showOptionModal(optionParam, comment)}
               >
                 <MdMoreHoriz className="text-2xl sm:text-3xl" />
               </a>
-            </Link>
+            )}
+          </div>
+          <span className="truncate whitespace-pre-line text-sm sm:text-base">{`${content}`}</span>
+          {!noActions && (
+            <div className={`flex items-center w-full `}>
+              {actions.map((e, idx) => {
+                return <ArticleCommentItemActionButton key={idx} {...e} />;
+              })}
+            </div>
           )}
-          <>
-            {/* <ul
-              tabIndex={0}
-              className="dropdown-content menu p-2 shadow-xl ring-2 ring-base-content/20 bg-base-100 rounded-xl max-w-[15rem] w-max"
-            >
-              <li>
-                <a className="">
-                  <MdReport className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Report comment
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <MdDelete className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Delete comment
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <FaVolumeMute className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Mute user
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <FaVolumeUp className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Unmute user
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <MdPersonOff className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Block user
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a className="">
-                  <MdFlag className="text-xl sm:text-2xl" />{" "}
-                  <span className="text-base sm:text-lg font-bold">
-                    Report user
-                  </span>
-                </a>
-              </li>
-            </ul> */}
-          </>
-          {/* </div> */}
-        </div>
-        <span className="text-sm sm:text-base truncate whitespace-pre-line">{`${comment.content}`}</span>
-        <div className={`flex gap-2 sm:gap-4 items-center justify-end `}>
-          {actions.map((e, idx) => {
-            return <ArticleCommentItemActionButton key={idx} {...e} />;
-          })}
+          {!!repliesCount && !noActions && !comment.parentCommentId && (
+            <ArticleCommentReply
+              comment={comment}
+              toggleShowReplies={toggleShowReplies}
+              showReplies={isShowingReplies}
+              replies={replies}
+            />
+          )}
         </div>
       </div>
     </div>

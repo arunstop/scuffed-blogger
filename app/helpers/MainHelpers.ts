@@ -21,9 +21,9 @@ export function toJsonFriendly(data: any): any {
 }
 
 export function dateDistanceGet(from: number, to: number) {
-  return formatDistance(from, to);
+  return formatDistance(from, to).replace("about", "");
 }
 
-export function userAvatarLinkGet(userId:string){
+export function userAvatarLinkGet(userId: string) {
   return `https://firebasestorage.googleapis.com/v0/b/tuturku-3e16b.appspot.com/o/images%2Favatars%2F${userId}.png?alt=media`;
 }

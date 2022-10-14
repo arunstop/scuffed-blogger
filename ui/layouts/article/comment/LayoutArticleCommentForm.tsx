@@ -1,10 +1,9 @@
-import { nanoid } from "nanoid";
 import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
+import { useCommentCtx } from "../../../../app/contexts/comment/CommentHook";
+import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { userAvatarLinkGet } from "../../../../app/helpers/MainHelpers";
-import { serviceCommentAdd } from "../../../../app/services/CommentService";
-import { CommentModel } from "../../../../base/data/models/CommentModel";
 import InputTextArea from "../../../components/input/InputTextArea";
 import UserAvatar from "../../../components/user/UserAvatar";
 
@@ -19,6 +18,7 @@ function LayoutArticleCommentForm({
     authStt: { user },
   } = useAuthCtx();
 
+  const { state, action } = useCommentCtx();
   const {
     watch,
     register,
@@ -29,28 +29,20 @@ function LayoutArticleCommentForm({
   const comment = watch("comment") || "";
 
   const onComment: SubmitHandler<{ comment: string }> = async ({ comment }) => {
-    console.log(comment);
     if (!user) return;
-    const dateNow = Date.now();
-    const commentEntry: CommentModel = {
-      id: `${dateNow}-${nanoid(24)}`,
-      content: comment,
-      dateAdded: dateNow,
-      dateUpdated: dateNow,
-      updated: false,
-      articleId: articleId,
-      userId: user.id,
-      userName: user.name,
-      upvote: [user.id],
-      downvote: [],
-    };
-    const res = await serviceCommentAdd({ data: { comment: commentEntry } });
-    if (res) {
-      loadComments();
-      reset();
-    }
+    const res = await action.addComment(comment, user);
+    if (!res) return;
+    reset();
+    await waitFor(500);
+    // scroll into view
+    const el = document.getElementById(`comment-${res.id}`);
+    el?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "center",
+    });
   };
-  const userAvatar = userAvatarLinkGet(user?.id||"");
+  const userAvatar = userAvatarLinkGet(user?.id || "");
 
   return (
     <div className="flex flex-row gap-4 items-start animate-fadeIn">

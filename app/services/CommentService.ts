@@ -1,23 +1,24 @@
 import { FirebaseError } from "firebase/app";
-import {
-  MainApiResponse,
-  netSuccess,
-  netError,
-  ApiPagingReqProps,
-} from "../../base/data/Main";
+import { ApiPagingReqProps, netError, netSuccess } from "../../base/data/Main";
 import {
   CommentModel,
+  CommentModelListPagedSorted,
   CommentModelsSortType,
   CommentModelsWithPaging,
-  CommentModelListPagedSorted,
 } from "../../base/data/models/CommentModel";
 import {
   repoRtCommentAdd,
-  repoRtCommentGet,
-  repoRtCommentUpdate,
-  repoRtCommentReact,
   repoRtCommentDelete,
+  repoRtCommentGet,
+  repoRtCommentGetById,
+  repoRtCommentReact,
+  repoRtCommentReplyAdd,
+  repoRtCommentReplyDelete,
+  repoRtCommentReplyDeleteByParent,
+  repoRtCommentReplyGet,
+  repoRtCommentUpdate,
 } from "../../base/repos/realtimeDb/RealtimeCommentRepo";
+import { MainApiResponse } from "./../../base/data/Main";
 
 export async function serviceCommentAdd({
   data,
@@ -79,10 +80,11 @@ export async function serviceCommentUpdate({
   }
 }
 
-export interface FbCommentReactProps {
-  react: "up" | "down" | "upCancel" | "downCancel";
-  commentId: string;
-  articleId: string;
+export type CommentReactionTypes = "up" | "down" | "upCancel" | "downCancel";
+
+export interface ServiceCommentReactProps {
+  type: CommentReactionTypes;
+  comment: CommentModel;
   userId: string;
 }
 
@@ -90,7 +92,7 @@ export async function serviceCommentReact({
   data,
   callback,
 }: MainApiResponse<
-  FbCommentReactProps,
+  ServiceCommentReactProps,
   CommentModel | null | FirebaseError
 >): Promise<CommentModel | null> {
   try {
@@ -113,10 +115,129 @@ export async function serviceCommentDelete({
 >) {
   try {
     await repoRtCommentDelete(data);
+    await repoRtCommentReplyDeleteByParent({
+      articleId: data.articleId,
+      parentCommentId: data.commentId,
+    });
     callback?.(netSuccess("Success deleting comment", null));
-    return;
+    return true;
   } catch (error) {
     callback?.(netError("Error when deleting comment", error as FirebaseError));
-    return;
+    return false;
+  }
+}
+
+interface ServiceCommentReplyAddReturnProps {
+  parentComment: CommentModel;
+  reply: CommentModel;
+}
+export async function serviceCommentReplyAdd({
+  data,
+  callback,
+}: MainApiResponse<
+  {
+    comment: CommentModel;
+    parentCommentId: string;
+  },
+  ServiceCommentReplyAddReturnProps | null | FirebaseError
+>): Promise<ServiceCommentReplyAddReturnProps | null> {
+  const { comment, parentCommentId } = data;
+  try {
+    // get parent comment
+    // let res:ServiceCommentReplyAddReturnProps|undefined;
+    const parentComment = await repoRtCommentGetById({
+      commentId: parentCommentId,
+      articleId: comment.articleId,
+    });
+    if (!parentComment) throw new Error("Error getting parent comment");
+    // callback?.(netSuccess("Success creating reply", parentComment));
+
+    // update parent comment first
+    // aka adding the replies
+    const newParentComment = {
+      ...parentComment,
+      dateUpdated: Date.now(),
+      replies: [...(parentComment.replies || []), comment.id],
+    } as CommentModel;
+    const updatedParentComment = await repoRtCommentUpdate({
+      comment: newParentComment,
+    });
+    if (!updatedParentComment) throw new Error("Error updating parent comment");
+    // callback?.(netSuccess("Success creating reply", updatedParentComment));
+
+    // then add the reply entry
+    const addedReply = await repoRtCommentReplyAdd({
+      reply: comment,
+      parentCommentId: updatedParentComment.id,
+    });
+    if (!addedReply) throw new Error("Error adding reply");
+    // callback?.(netSuccess("Success adding reply", addedReply));
+
+    return { parentComment: newParentComment, reply: addedReply };
+  } catch (error) {
+    const message = typeof error === "string" ? error : "Error adding reply";
+    console.error(error);
+    callback?.(
+      netError(
+        message,
+        typeof error === "string" ? null : (error as FirebaseError),
+      ),
+    );
+    return null;
+  }
+}
+
+export async function serviceCommentReplyGetByParent({
+  data,
+  callback,
+}: MainApiResponse<
+  { articleId: string; parentCommentId: string } & ApiPagingReqProps,
+  CommentModelsWithPaging | null | FirebaseError
+>): Promise<CommentModelsWithPaging | null> {
+  try {
+    const res = await repoRtCommentReplyGet(data);
+    if (!res) throw new Error("Error getting replies");
+    callback?.(netSuccess("Success getting replies", res));
+    return res;
+  } catch (error) {
+    const message = typeof error === "string" ? error : "Error adding reply";
+    console.error(error);
+    callback?.(
+      netError(
+        message,
+        typeof error === "string" ? null : (error as FirebaseError),
+      ),
+    );
+    return null;
+  }
+}
+
+export async function serviceCommentReplyDelete({
+  data,
+  callback,
+}: MainApiResponse<
+  { reply: CommentModel; parentComment?: CommentModel },
+  CommentModel | null | FirebaseError
+>) {
+  const { reply, parentComment } = data;
+  try {
+    if (!reply.parentCommentId)
+      throw new Error(
+        `This reply has no parentCommentId for some reason, ID : ${reply.id}`,
+      );
+    await repoRtCommentReplyDelete({
+      articleId: reply.articleId,
+      id: reply.id,
+      parentCommentId: reply.parentCommentId,
+    });
+    if (parentComment)
+      await repoRtCommentUpdate({
+        comment: parentComment,
+      });
+    callback?.(netSuccess("Success deleting reply", null));
+    return true;
+  } catch (error) {
+    callback?.(netError("Error when deleting reply", error as FirebaseError));
+    return false;
   }
 }

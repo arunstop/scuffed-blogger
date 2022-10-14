@@ -8,12 +8,12 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../base/data/Main";
 import {
   ArticleModel,
   toArticleModel,
-  toArticleModelUpdated
+  toArticleModelUpdated,
 } from "../../base/data/models/ArticleModel";
 import { UserModel } from "../../base/data/models/UserModel";
 import {
@@ -24,7 +24,7 @@ import {
   repoFsArticleContentUpdate,
   repoFsArticleDelete,
   repoFsArticleGetByUser,
-  repoFsArticleUpdate
+  repoFsArticleUpdate,
 } from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
   repoRtArticleGetAll,
@@ -32,14 +32,17 @@ import {
   repoRtArticleMirrorDelete,
   repoRtArticleMirrorUpdate,
   repoRtArticleSearch,
-  repoRtArticleUpdateView
+  repoRtArticleUpdateView,
 } from "../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 import Fuse from "fuse.js";
 import { MainApiResponse } from "../../base/data/Main";
 import { ArticleListModel } from "../../base/data/models/ArticleListModel";
 import { serviceFileUpload } from "./FileService";
-import { repoStDirectoryDelete, repoStFileDeleteByFullLink } from "../../base/repos/StorageModules";
+import {
+  repoStDirectoryDelete,
+  repoStFileDeleteByFullLink,
+} from "../../base/repos/StorageModules";
 import { axiosClient } from "../../base/clients/AxiosClient";
 
 // Adding article, now using direct firebaseClient
@@ -441,26 +444,26 @@ export async function serviceArticleSearch({
   console.log("searching...", data.keyword);
   const { keyword, count, start, abortSignal } = data;
   try {
-    const res: ArticleModel[] = await repoRtArticleSearch(data.abortSignal).then(
-      (e) => {
-        if (e.status !== 200) return [];
-        let articles = values(e.data) as ArticleModel[];
-        const kw = (keyword || "").toLowerCase().trim();
-        // show all articles if no keyword
-        if (!kw) {
-          articles = articles.slice(0, count);
-          return articles;
-        }
-        const fuzz = new Fuse(articles, {
-          keys: ["title", "desc", "tags", "community", "slug"],
-        });
-        // show filtered articles if there is a keyword
-        const searchResult = fuzz.search(kw).map((e) => e.item);
-        articles = searchResult.slice(0, count);
-        // articles = (fuzz.search(kw) as unknown as ArticleModel[]).slice(0, count);
+    const res: ArticleModel[] = await repoRtArticleSearch(
+      data.abortSignal,
+    ).then((e) => {
+      if (e.status !== 200) return [];
+      let articles = values(e.data) as ArticleModel[];
+      const kw = (keyword || "").toLowerCase().trim();
+      // show all articles if no keyword
+      if (!kw) {
+        articles = articles.slice(0, count);
         return articles;
-      },
-    );
+      }
+      const fuzz = new Fuse(articles, {
+        keys: ["title", "desc", "tags", "community", "slug"],
+      });
+      // show filtered articles if there is a keyword
+      const searchResult = fuzz.search(kw).map((e) => e.item);
+      articles = searchResult.slice(0, count);
+      // articles = (fuzz.search(kw) as unknown as ArticleModel[]).slice(0, count);
+      return articles;
+    });
     return res;
   } catch (error) {
     return null;
@@ -470,19 +473,14 @@ export async function serviceArticleSearch({
 export async function serviceArticleUpdateView({
   data,
   callback,
-}: MainApiResponse<
-  { id: string },
-  ArticleModel | null | FirebaseError
->): Promise<ArticleModel | null> {
+}: MainApiResponse<{ id: string }, string | null | FirebaseError>): Promise<
+  string | null
+> {
   const { id } = data;
   try {
-    const res: ArticleModel | null = await repoRtArticleUpdateView(id);
-    if (res) {
-      callback?.(netSuccess("Success Updating Views", res));
-      return res;
-    }
-    callback?.(netError("Error Updating Views", res));
-    return res;
+    await repoRtArticleUpdateView(id);
+    callback?.(netSuccess("Success Updating Views", "Success Updating Views"));
+    return "Success Updating Views";
   } catch (error) {
     callback?.(netError("Error Updating Views", error as FirebaseError));
     console.error(error as FirebaseError);

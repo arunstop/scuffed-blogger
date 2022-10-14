@@ -1,75 +1,56 @@
 import Link from "next/link";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { MdSort } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
-import { waitFor } from "../../../../app/helpers/DelayHelpers";
+import { useCommentCtx } from "../../../../app/contexts/comment/CommentHook";
+import { CommentProvider } from "../../../../app/contexts/comment/CommentProvider";
 import { getElById } from "../../../../app/helpers/UiHelpers";
-import { serviceCommentGet } from "../../../../app/services/CommentService";
-import { CommentModelListPagedSorted, CommentModelsSortType } from "../../../../base/data/models/CommentModel";
+import {
+  CommentModelListPagedSorted,
+  CommentModelsSortType
+} from "../../../../base/data/models/CommentModel";
 import ArticleComments from "../../../components/article/ArticleComments";
 import Alert from "../../../components/common/Alert";
-import Dropdown,{ DropdownOption } from "../../../components/common/Dropdown";
+import Dropdown, { DropdownOption } from "../../../components/common/Dropdown";
 import LayoutArticleCommentForm from "./LayoutArticleCommentForm";
 import LayoutArticleCommentSectionExpandedModal from "./LayoutArticleCommentSectionExpandedModal";
 
 function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
+  return (
+    <CommentProvider articleId={articleId}>
+      <LayoutArticleCommentSectionContent />
+    </CommentProvider>
+  );
+}
+function LayoutArticleCommentSectionContent() {
   const {
     authStt: { user },
   } = useAuthCtx();
 
-  const [commentList, setCommentList] = useState<CommentModelListPagedSorted>();
-  const [sortedBy, setSortedBy] = useState<CommentModelsSortType>("new");
+  const {
+    state: { comments: commentList, replies, articleId, sort },
+    action,
+  } = useCommentCtx();
+
+  // const [commentList, setCommentList] = useState<CommentModelListPagedSorted>();
+  
   const commentListPreview: CommentModelListPagedSorted = {
     ...commentList,
     comments: commentList?.comments.slice(0, 5) || [],
   } as CommentModelListPagedSorted;
-
-  const loadComments = useCallback(
-    async (newSortingType?: CommentModelsSortType) => {
-      // define where to start
-      // console.log('123');
-
-      const startFrom = !!newSortingType || !commentList ? 0 : commentList.offset;
-      const commentsFromDb = await serviceCommentGet({
-        data: {
-          articleId,
-          start: startFrom,
-          count: 5,
-          sortBy: newSortingType || commentList?.sortBy || sortedBy,
-        },
-      });
-      // console.log("commentsFromDb", commentsFromDb);
-      if (commentsFromDb) {
-        setCommentList((prev) => {
-          // if previous value is not empty
-          // and using the same sort method
-          if (prev && !newSortingType) {
-            return {
-              ...commentsFromDb,
-              comments: [...prev.comments, ...commentsFromDb.comments],
-            } as CommentModelListPagedSorted;
-          }
-          // else
-          return commentsFromDb;
-        });
-        // setSortedBy(sortBy || sortedBy);
-      }
-    },
-    [commentList],
-  );
 
   const sortOptions: DropdownOption[] = useMemo(
     () => [
       {
         label: "Newest first",
         action: () => {
-          setSortedBy("new");
+          action.loadComments("new");
         },
       },
       {
         label: "Top comments",
         action: () => {
-          setSortedBy("top");
+          action.loadComments("top");
         },
       },
     ],
@@ -77,22 +58,28 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
   );
 
   function getSortedByLabel() {
-    if (sortedBy === "new") return "newest first";
-    if (sortedBy === "top") return "top comments";
+    if (sort === "new") return "newest first";
+    if (sort === "top") return "top comments";
     else return "";
+    return "";
   }
 
-  // console.log(sortOptions);
-  // console.log("sortedBy", sortedBy);
+  const loadComments = useCallback(
+    async (sortedBy?: CommentModelsSortType) => {
+      await action.loadComments(sortedBy);
+    },
+    [commentList],
+  );
+
   useEffect(() => {
     loadComments();
     return () => {};
   }, []);
 
-  useEffect(() => {
-    loadComments(sortedBy);
-    return () => {};
-  }, [sortedBy]);
+  // useEffect(() => {
+  //   loadComments(sortedBy);
+  //   return () => {};
+  // }, [sortedBy]);
 
   // console.log(user);
   // console.log("commentList", commentList);
@@ -125,7 +112,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
           <LayoutArticleCommentForm
             articleId={articleId}
             loadComments={async () => {
-              await loadComments("new");
+              loadComments("new");
             }}
           />
         )}
@@ -183,8 +170,7 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
           commentList={commentList}
           articleId={articleId}
           loadComments={async () => {
-            await waitFor(300);
-            await loadComments();
+            loadComments();
           }}
           sortOptions={sortOptions}
         />
@@ -192,5 +178,4 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
     </>
   );
 }
-
 export default React.memo(LayoutArticleCommentSection);
