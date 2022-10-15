@@ -74,11 +74,7 @@ function LayoutArticlePageSlug({
             label: "Options",
             icon: <MdMoreVert />,
             action() {
-              router.push({
-                query: {
-                  options: true,
-                },
-              });
+              alert("should show more options");
             },
           },
         ]}
