@@ -29,13 +29,13 @@ export function userAvatarLinkGet(userId: string) {
 }
 
 export async function autoRetry<T>(
-  call: (attempt: number, max: boolean) => T,
-  tries: number,
+  action: (attempt: number, max: boolean) => T,
+  tries = 3,
 ): Promise<T | null> {
   for (let attempt = 1; attempt <= tries; attempt++) {
-    console.log("tries no : ", attempt);
-    const res = await call(attempt, attempt === tries);
-    console.log("called done...", res);
+    // console.log("tries no : ", attempt);
+    const res = await action(attempt, attempt === tries);
+    // console.log("called done...", res);
     if (res) return res;
   }
   return null;

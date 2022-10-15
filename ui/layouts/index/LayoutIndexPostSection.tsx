@@ -21,7 +21,7 @@ function LayoutIndexPostSection() {
   const loadPosts = useCallback(async () => {
     // show loading indicator
     // setLoading(true);
-    const articlesFromDb = await autoRetry(async (attempt) => {
+    const articlesFromDb = await autoRetry(async (attempt, max) => {
       console.log("calling");
       const res = await serviceArticleMirrorGetAll({
         data: {
@@ -34,7 +34,7 @@ function LayoutIndexPostSection() {
         },
       });
       return res;
-    }, 3);
+    });
 
     // removing delay at initial load
     if (feed) await waitFor(200);
