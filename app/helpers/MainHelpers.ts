@@ -33,9 +33,9 @@ export async function autoRetry<T>(
   tries = 3,
 ): Promise<T | null> {
   for (let attempt = 1; attempt <= tries; attempt++) {
-    // console.log("tries no : ", attempt);
+    console.log("tries no : ", attempt);
     const res = await action(attempt, attempt === tries);
-    // console.log("called done...", res);
+    console.log("called done...");
     if (res) return res;
   }
   return null;

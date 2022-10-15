@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
-import { MdEdit, MdRemoveRedEye } from "react-icons/md";    
+import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../../app/contexts/writingPanel/WritingPanelHook";
 import {
@@ -19,6 +19,7 @@ import { serviceArticleAdd } from "../../../app/services/ArticleService";
 import StatusPlaceholder from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 
 const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [
   {
@@ -44,9 +45,6 @@ function WritingPanel() {
 
   const submitArticle = useCallback(
     async (data?: WritingPanelFormProps) => {
-      // Auth required
-      if (!authStt.user) return;
-
       // if param data exist (data from form), use it
       // if not use the current formData state from WritingPanel context
       const processedData = data || formData;
@@ -57,24 +55,28 @@ function WritingPanel() {
       setLoading(true);
       setNetWorkResp(netLoading("Creating your well written article ;)"));
 
-      const newArticle = await serviceArticleAdd({
-        rawArticle: processedData,
-        // correct non-null assertion becase we know that isLoggedIn already true
-        user: authStt.user,
-        callback: async (resp) => {
-          // change loading state, if it's loading, no need to wait
-          if (resp.status !== "loading") await waitFor(2000);
-          // if it success, clear the formData state
-          if (resp.status === "success") action.clearFormData();
-          setNetWorkResp(resp);
-          // if (resp.status !== "loading") {
-          // await waitFor(4000);
-          if (resp.status !== "loading") setLoading(false);
-          // }
-          // if (resp.status === "success") {
-          //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
-          // }
-        },
+      const newArticle = await autoRetry(async (attempt,max) => {
+        // Auth required
+        if (!authStt.user) return null;
+        return await serviceArticleAdd({
+          rawArticle: processedData,
+          // correct non-null assertion becase we know that isLoggedIn already true
+          user: authStt.user,
+          callback: async (resp) => {
+            // change loading state, if it's loading, no need to wait
+            if (resp.status !== "loading") await waitFor(2000);
+            // if it success, clear the formData state
+            if (resp.status === "success") action.clearFormData();
+            setNetWorkResp(resp);
+            // if (resp.status !== "loading") {
+            // await waitFor(4000);
+            if (resp.status !== "loading") setLoading(false);
+            // }
+            // if (resp.status === "success") {
+            //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
+            // }
+          },
+        });
       });
 
       if (!newArticle) return;
@@ -103,7 +105,9 @@ function WritingPanel() {
       className={`flex flex-col justify-start gap-4 sm:gap-8 w-full`}
       {...transitionPullV()}
     >
-      <div className="text-4xl font-bold sm:text-5xl hidden sm:block">Write Article</div>
+      <div className="text-4xl font-bold sm:text-5xl hidden sm:block">
+        Write Article
+      </div>
 
       <div className="relative min-w-full">
         <Transition

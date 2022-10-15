@@ -8,7 +8,10 @@ import {
   MdStar,
   MdTrendingUp,
 } from "react-icons/md";
-import { serviceArticleContentGet, serviceArticleUpdateView } from "../../../../app/services/ArticleService";
+import {
+  serviceArticleContentGet,
+  serviceArticleUpdateView,
+} from "../../../../app/services/ArticleService";
 import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import ArticleSectionAction from "../../../components/article/ArticleActions";
 import ArticleProgressBar from "../../../components/article/ArticleProgressBar";
@@ -21,6 +24,7 @@ import MobileHeader from "../../../components/main/MobileHeader";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import UserHeader from "../../../components/user/UserHeader";
 import LayoutArticleMoreSection from "../LayoutArticleMoreSection";
+import { autoRetry } from "../../../../app/helpers/MainHelpers";
 
 function LayoutArticlePageSlug({
   articleContentless,
@@ -33,7 +37,10 @@ function LayoutArticlePageSlug({
   const [article, setArticle] = useState(articleContentless);
 
   const getContent = useCallback(async () => {
-    const content = await serviceArticleContentGet({ id: article.id });
+    const content = await autoRetry(
+      async (attempt, max) =>
+        await serviceArticleContentGet({ id: article.id }),
+    );
     if (content) {
       setArticle((prev) => ({ ...prev, content: content }));
       await serviceArticleUpdateView({

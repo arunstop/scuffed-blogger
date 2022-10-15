@@ -9,6 +9,7 @@ import {
   CommentModelsSortType,
   factoryCommentComplete,
 } from "../../../base/data/models/CommentModel";
+import { autoRetry } from "../../helpers/MainHelpers";
 import {
   serviceCommentAdd,
   serviceCommentDelete,
@@ -70,14 +71,17 @@ export const CommentProvider = ({
     const replyListTarget = replies?.find(
       (e) => e.parentCommentId === commentId,
     );
-    const repliesFromDb = await serviceCommentReplyGetByParent({
-      data: {
-        articleId: comment.articleId,
-        parentCommentId: commentId,
-        count: 5,
-        start: startFrom ?? (replyListTarget?.offset || 0),
-      },
-    });
+    const repliesFromDb = await autoRetry(
+      async () =>
+        await serviceCommentReplyGetByParent({
+          data: {
+            articleId: comment.articleId,
+            parentCommentId: commentId,
+            count: 5,
+            start: startFrom ?? (replyListTarget?.offset || 0),
+          },
+        }),
+    );
     if (!repliesFromDb) return console.log("no replies for some reason");
     // setting replies
     dispatch({
@@ -163,7 +167,9 @@ export const CommentProvider = ({
         userName: user.name,
         upvote: [user.id],
       });
-      const res = await serviceCommentAdd({ data: { comment: newComment } });
+      const res = await autoRetry(
+        async () => await serviceCommentAdd({ data: { comment: newComment } }),
+      );
       loadComments("new");
       if (!res) return null;
       return newComment;
@@ -178,12 +184,15 @@ export const CommentProvider = ({
         userName: user.name,
         upvote: [user.id],
       });
-      const res = await serviceCommentReplyAdd({
-        data: {
-          comment: newReply,
-          parentCommentId,
-        },
-      });
+      const res = await autoRetry(
+        async () =>
+          await serviceCommentReplyAdd({
+            data: {
+              comment: newReply,
+              parentCommentId,
+            },
+          }),
+      );
 
       if (!res) return null;
       console.log(res.parentComment.replies?.length);
@@ -196,9 +205,12 @@ export const CommentProvider = ({
     updateComment: updateComment,
     updateReply: updateReply,
     reactComment: async (props) => {
-      const newComment = await serviceCommentReact({
-        data: props,
-      });
+      const newComment = await autoRetry(
+        async () =>
+          await serviceCommentReact({
+            data: props,
+          }),
+      );
       if (!newComment) return;
       // if the comment is not a reply
       if (!props.comment.parentCommentId) return updateComment(newComment);
@@ -210,12 +222,15 @@ export const CommentProvider = ({
       const comment = state.comments.comments.find((e) => e.id === id);
       if (!comment) return;
       // console.log(comment);
-      const res = await serviceCommentDelete({
-        data: {
-          articleId: comment.articleId,
-          commentId: comment.id,
-        },
-      });
+      const res = await autoRetry(
+        async () =>
+          await serviceCommentDelete({
+            data: {
+              articleId: comment.articleId,
+              commentId: comment.id,
+            },
+          }),
+      );
       if (!res) return;
       dispatch({
         type: "DELETE_COMMENT",
@@ -223,10 +238,11 @@ export const CommentProvider = ({
           comment,
         },
       });
-      // reload comments, if only the first page of the comments is loaded 
+      // reload comments, if only the first page of the comments is loaded
       // console.log(state.comments.comments.length);
       // console.log(state.comments.total);
-      if(state.comments.comments.length<=5 && state.comments.total>5) loadComments(state.comments.sortBy);
+      if (state.comments.comments.length <= 5 && state.comments.total > 5)
+        loadComments(state.comments.sortBy);
     },
     deleteReply: async function (parentCommentId, id): Promise<void> {
       if (!id || !parentCommentId || !state.replies || !state.comments) return;
@@ -248,12 +264,15 @@ export const CommentProvider = ({
         replies: (parentComment.replies || []).filter((e) => e !== reply.id),
         dateUpdated: Date.now(),
       };
-      const res = await serviceCommentReplyDelete({
-        data: {
-          reply: reply,
-          parentComment: parentComment,
-        },
-      });
+      const res = await autoRetry(
+        async () =>
+          await serviceCommentReplyDelete({
+            data: {
+              reply: reply,
+              parentComment: parentComment,
+            },
+          }),
+      );
       if (!res) return;
       updateComment(parentComment);
       dispatch({

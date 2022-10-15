@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 import { fbUserDisplayGet } from "../../../app/services/UserService";
 import { UserDisplayModel } from "../../../base/repos/realtimeDb/RealtimeUserRepo";
 import UserAvatar from "./UserAvatar";
@@ -13,7 +14,9 @@ function UserHeader({
 }) {
   const [display, setDisplay] = useState<UserDisplayModel | null>(userDisplay);
   async function loadUserDisplay(id: string) {
-    const displayFromDb = await fbUserDisplayGet({ data: { userId: id } });
+    const displayFromDb = await autoRetry(
+      async () => await fbUserDisplayGet({ data: { userId: id } }),
+    );
     if (displayFromDb) setDisplay(displayFromDb);
   }
   //   load from db is

@@ -9,7 +9,9 @@ import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
 import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import {
-  ArticleListModelByUser, serviceArticleDelete, serviceArticleGetByUser
+  ArticleListModelByUser,
+  serviceArticleDelete,
+  serviceArticleGetByUser,
 } from "../../../../app/services/ArticleService";
 import InputText from "../../../components/input/InputText";
 import Container from "../../../components/common/Container";
@@ -18,6 +20,7 @@ import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
+import { autoRetry } from "../../../../app/helpers/MainHelpers";
 
 function LayoutUserPagePosts() {
   const {
@@ -58,11 +61,14 @@ function LayoutUserPagePosts() {
     // console.log("param", offset);
     // console.log("articleData", articleData?.offset);
     if (!user) return;
-    const articleByUser = await serviceArticleGetByUser({
-      articleListId: user.list.posts,
-      keyword: keyword || "",
-      paging: { start: offset, end: offset + 2 },
-    });
+    const articleByUser = await autoRetry(
+      async () =>
+        await serviceArticleGetByUser({
+          articleListId: user.list.posts,
+          keyword: keyword || "",
+          paging: { start: offset, end: offset + 2 },
+        }),
+    );
     if (!articleByUser) return setLoadingArticles(false);
     console.log("new", articleByUser.offset);
     setArticleData((prevArticleData) => {
@@ -88,14 +94,16 @@ function LayoutUserPagePosts() {
     const articleId = modalDelete.value;
     const articleTarget = articleData.articles.find((e) => e.id === articleId);
 
-    if (articleTarget) {
-      await serviceArticleDelete({
-        article: articleTarget,
-        user: user,
-      }).then(async (user) => {
-        await getArticles({ init: true });
-      });
-    }
+    if (!articleTarget) return;
+    const deleteArticle = await autoRetry(
+      async () =>
+        await serviceArticleDelete({
+          article: articleTarget,
+          user: user,
+        }),
+    );
+    if (!deleteArticle) return;
+    await getArticles({ init: true });
     modalDelete.close();
   }, [modalDelete.value]);
 

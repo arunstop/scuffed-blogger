@@ -11,6 +11,7 @@ import PostItemSearchResult from "../post/PostItemSearchResult";
 import Alert from "../common/Alert";
 import SectionSkeleton from "../placeholder/SectionSkeleton";
 import MobileHeader, { MobileHeaderActionProps } from "./MobileHeader";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 
 const SearchModal = React.memo(function SearchModal() {
   const { searchModal, closeSearchModal } = useUiModalSearchBehaviorHook();
@@ -24,14 +25,17 @@ const SearchModal = React.memo(function SearchModal() {
 
   const debounceSearch = debounce(
     async (str: string, abortSignal: AbortSignal) => {
-      const res = await serviceArticleSearch({
-        data: {
-          abortSignal: abortSignal,
-          count: 5,
-          start: 0,
-          keyword: str,
-        },
-      });
+      const res = await autoRetry(
+        async () =>
+          await serviceArticleSearch({
+            data: {
+              abortSignal: abortSignal,
+              count: 5,
+              start: 0,
+              keyword: str,
+            },
+          }),
+      );
       if (!res) return;
       // console.log(res);
       setArticles(res);
