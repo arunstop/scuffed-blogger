@@ -19,6 +19,7 @@ import StatusPlaceholder, {
 } from "../placeholder/StatusPlaceholder";
 import { serviceTopicGetAll } from "../../../app/services/TopicService";
 import { fbUserUpdate } from "../../../app/services/UserService";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 
 export interface SetupProfileFormFields {
   topics: string[];
@@ -78,7 +79,10 @@ function ProfileChooseTopicsForm() {
 
   const getTopics = async () => {
     // get topics from rtdb
-    const topicsFromDb = await serviceTopicGetAll({ keyword: "" });
+    const topicsFromDb = await autoRetry(
+      async () => await serviceTopicGetAll({ keyword: "" }),
+    );
+    if (!topicsFromDb) return;
     // set states
     setLoadingTopics(false);
     setTopics(topicsFromDb);

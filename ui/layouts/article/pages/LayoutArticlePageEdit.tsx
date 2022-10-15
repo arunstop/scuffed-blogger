@@ -3,7 +3,11 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useWritingPanelCtx } from "../../../../app/contexts/writingPanel/WritingPanelHook";
 import { WritingPanelProvider } from "../../../../app/contexts/writingPanel/WritingPanelProvider";
-import { serviceArticleContentGet, serviceArticleUpdate } from "../../../../app/services/ArticleService";
+import { autoRetry } from "../../../../app/helpers/MainHelpers";
+import {
+  serviceArticleContentGet,
+  serviceArticleUpdate,
+} from "../../../../app/services/ArticleService";
 import { WritingPanelFormProps } from "../../../../base/data/contexts/WritingPanelTypes";
 import { MainNetworkResponse, netLoading } from "../../../../base/data/Main";
 import { ArticleModel } from "../../../../base/data/models/ArticleModel";
@@ -54,69 +58,74 @@ function LayoutArticlePageEditContent({
           ],
         }),
       );
-      await serviceArticleUpdate({
-        oldArticle: oldArticleUpdated,
-        rawArticle: data,
-        userPostsRef: userPostsRef,
-        callback: (resp) => {
-          if (resp.status === "error") {
-            setResp(
-              netLoading<StatusPlaceholderProps>("", {
-                status: resp.status,
-                title: resp.message,
-                desc: (resp.data as FirebaseError).message,
-                actions: [
-                  {
-                    label: "Cancel",
-                    callback: () => {
-                      clearResp();
-                    },
-                  },
-                ],
-              }),
-            );
-            return;
-          }
-          if (resp.status === "success") {
-            setResp(
-              netLoading<StatusPlaceholderProps>("", {
-                status: resp.status,
-                title: resp.message,
-                desc: "Congratulations! Your article is updated! It will be even better right? Or is it?",
-                actions: [
-                  {
-                    label: "Edit again",
-                    callback: () => {
-                      // update the current `oldArticle`
-                      setOldArticleUpdated(resp.data as ArticleModel);
-                      clearResp();
-                    },
-                  },
-                  {
-                    label: "Go to My Posts",
-                    callback: () => {
-                      router.push(`/user/posts/`);
-                    },
-                  },
-                  {
-                    label: "Go to the article",
-                    callback: () => {
-                      router.push(`/article/${articleContentless.slug}/`);
-                    },
-                  },
-                ],
-              }),
-            );
-            return;
-          }
-        },
-      });
+      const updateArticle = await autoRetry(
+        async () =>
+          await serviceArticleUpdate({
+            oldArticle: oldArticleUpdated,
+            rawArticle: data,
+            userPostsRef: userPostsRef,
+            callback: (resp) => {
+              if (resp.status === "error") {
+                setResp(
+                  netLoading<StatusPlaceholderProps>("", {
+                    status: resp.status,
+                    title: resp.message,
+                    desc: (resp.data as FirebaseError).message,
+                    actions: [
+                      {
+                        label: "Cancel",
+                        callback: () => {
+                          clearResp();
+                        },
+                      },
+                    ],
+                  }),
+                );
+                return;
+              }
+              if (resp.status === "success") {
+                setResp(
+                  netLoading<StatusPlaceholderProps>("", {
+                    status: resp.status,
+                    title: resp.message,
+                    desc: "Congratulations! Your article is updated! It will be even better right? Or is it?",
+                    actions: [
+                      {
+                        label: "Edit again",
+                        callback: () => {
+                          // update the current `oldArticle`
+                          setOldArticleUpdated(resp.data as ArticleModel);
+                          clearResp();
+                        },
+                      },
+                      {
+                        label: "Go to My Posts",
+                        callback: () => {
+                          router.push(`/user/posts/`);
+                        },
+                      },
+                      {
+                        label: "Go to the article",
+                        callback: () => {
+                          router.push(`/article/${articleContentless.slug}/`);
+                        },
+                      },
+                    ],
+                  }),
+                );
+                return;
+              }
+            },
+          }),
+      );
     },
     [oldArticleUpdated],
   );
   async function getContent() {
     if (!wpState.formData) return;
-    const content = await serviceArticleContentGet({ id: articleContentless.id });
+    const content = await autoRetry(
+      async () => await serviceArticleContentGet({ id: articleContentless.id }),
+    );
     const contentDecoded = decodeURIComponent(content || "");
     // set the content on the writingPanelCtx
     wpAction.setFormData({

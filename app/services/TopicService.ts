@@ -7,13 +7,13 @@ export async function serviceTopicGetAll({
 }: {
   keyword: string;
   callback?: (resp: MainNetworkResponse<string[]>) => void;
-}): Promise<string[]> {
+}): Promise<string[] | null> {
   try {
     const topics = await repoRtTopicGet();
     // console.log(topics);
     return topics;
   } catch (error) {
     console.log(error);
-    return [];
+    return null;
   }
 }

@@ -7,7 +7,7 @@ import { serviceArticleSearch } from "../../../app/services/ArticleService";
 import InputText from "../input/InputText";
 import PostItemSearchResult from "../post/PostItemSearchResult";
 import SectionSkeleton from "../placeholder/SectionSkeleton";
-
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 
 // function debounce(callback: () => void, delay = 500) {
 //   let timeout;
@@ -45,14 +45,17 @@ function MainHeaderBigSearchBar() {
 
   const debounceSearch = useCallback(
     debounce(async (str: string, abortSignal: AbortSignal) => {
-      const res = await serviceArticleSearch({
-        data: {
-          abortSignal: abortSignal,
-          count: 5,
-          start: 0,
-          keyword: str,
-        },
-      });
+      const res = await autoRetry(
+        async () =>
+          await serviceArticleSearch({
+            data: {
+              abortSignal: abortSignal,
+              count: 5,
+              start: 0,
+              keyword: str,
+            },
+          }),
+      );
       if (!res) return;
       // console.log(res);
       setResult(res);
@@ -191,23 +194,23 @@ function MainHeaderBigSearchBar() {
                   <SectionSkeleton text="No result found." />
                 )}
                 <div className=" gap-1 flex flex-col list-none max-h-60 w-full overflow-auto p-1">
-                {!!result.length &&
-                  result.map((e, idx) => {
-                    return (
-                      <Combobox.Option
-                        key={e.id + idx}
-                        value={e}
-                        className={({ active }) =>
-                          ` rounded-xl
+                  {!!result.length &&
+                    result.map((e, idx) => {
+                      return (
+                        <Combobox.Option
+                          key={e.id + idx}
+                          value={e}
+                          className={({ active }) =>
+                            ` rounded-xl
                           ${active ? ` bg-primary/50` : ``}`
-                        }
-                      >
-                        {({ selected, active }) => (
-                          <PostItemSearchResult article={e} active={active} />
-                        )}
-                      </Combobox.Option>
-                    );
-                  })}
+                          }
+                        >
+                          {({ selected, active }) => (
+                            <PostItemSearchResult article={e} active={active} />
+                          )}
+                        </Combobox.Option>
+                      );
+                    })}
                 </div>
               </Combobox.Options>
             </div>
