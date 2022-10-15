@@ -22,7 +22,7 @@ function LayoutIndexPostSection() {
     // show loading indicator
     // setLoading(true);
     const articlesFromDb = await autoRetry(async (attempt, max) => {
-      console.log("calling");
+      // console.log("calling");
       const res = await serviceArticleMirrorGetAll({
         data: {
           count: 5,
@@ -36,7 +36,7 @@ function LayoutIndexPostSection() {
       return res;
     });
 
-    // removing delay at initial load
+    // add delay if feed already loaded for ui purposes
     if (feed) await waitFor(200);
     if (!articlesFromDb) return;
     setFeed((prev) => {
@@ -57,18 +57,6 @@ function LayoutIndexPostSection() {
 
   return (
     <>
-      {/* <LoadingPlaceholder
-        title="Submitting article..."
-        desc={"Adding your beautifully written article into our database. Please wait for a moment, this will be very quick"}
-        action={loadPosts}
-        actionLabel="Cancel"
-      />
-      <SuccessPlaceholder
-        title="Article has been submitted!"
-        desc={"Congratulation! We did it! Your beautifully written article has been added into our database for the world to read it!"}
-        action={loadPosts}
-        actionLabel="Go to the article"
-      /> */}
       <div className="flex flex-col w-full gap-2 sm:gap-4 items-center min-h-screen">
         {/* when success */}
         {resp?.status === "loading" && !feed && (
