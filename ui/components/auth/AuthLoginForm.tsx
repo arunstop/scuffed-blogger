@@ -129,7 +129,10 @@ function AuthRegisterForm({
           //   label: "Explore",
           // },
           {
-            callback: () => router.push("/"),
+            callback: () =>
+              router.push(
+                decodeURIComponent((router.query.redirect as string) || "/"),
+              ),
             label: "Continue",
           },
         ],

@@ -8,23 +8,21 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess,
+  netSuccess
 } from "../../base/data/Main";
 import {
   ArticleModel,
   toArticleModel,
-  toArticleModelUpdated,
+  toArticleModelUpdated
 } from "../../base/data/models/ArticleModel";
 import { UserModel } from "../../base/data/models/UserModel";
 import {
-  repoFsArticleAdd,
+  fsArticleContentGet, repoFsArticleAdd,
   repoFsArticleContentAdd,
-  repoFsArticleContentDelete,
-  fsArticleContentGet,
-  repoFsArticleContentUpdate,
+  repoFsArticleContentDelete, repoFsArticleContentUpdate,
   repoFsArticleDelete,
   repoFsArticleGetByUser,
-  repoFsArticleUpdate,
+  repoFsArticleUpdate
 } from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
   repoRtArticleGetAll,
@@ -32,18 +30,18 @@ import {
   repoRtArticleMirrorDelete,
   repoRtArticleMirrorUpdate,
   repoRtArticleSearch,
-  repoRtArticleUpdateView,
+  repoRtArticleUpdateView
 } from "../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 import Fuse from "fuse.js";
+import { axiosClient } from "../../base/clients/AxiosClient";
 import { MainApiResponse } from "../../base/data/Main";
 import { ArticleListModel } from "../../base/data/models/ArticleListModel";
-import { serviceFileUpload } from "./FileService";
 import {
   repoStDirectoryDelete,
-  repoStFileDeleteByFullLink,
+  repoStFileDeleteByFullLink
 } from "../../base/repos/StorageModules";
-import { axiosClient } from "../../base/clients/AxiosClient";
+import { serviceFileUpload } from "./FileService";
 
 // Adding article, now using direct firebaseClient
 interface PropsAddArticle {
@@ -495,13 +493,7 @@ export async function serviceArticleGetById({
   id: string;
   callback?: (resp: MainNetworkResponse<ArticleModel | null>) => void;
 }): Promise<ArticleModel | null> {
-  // callback?.({
-  //   data: null,
-  //   message: "Submitting your article...",
-  //   status: "loading",
-  // });
   console.log(id);
-  let data: MainNetworkResponse<ArticleModel | null> | null = null;
   // await waitFor(2000);
   try {
     //   Call the endpoint
@@ -514,17 +506,12 @@ export async function serviceArticleGetById({
         // console.log(resp.data);
         return resp;
       });
-    data = result.data as MainNetworkResponse<ArticleModel | null>;
+    const data = result.data as MainNetworkResponse<ArticleModel | null>;
     callback?.(data);
+    return data.data;
   } catch (error) {
-    callback?.({
-      data: null,
-      message: `${error}`,
-      status: "error",
-    });
+    callback?.(netError("Error getting this thing", null));
     // console.log(error);
+    return null;
   }
-  // Returns data if it exist
-  // returns null otherwise
-  return data?.data || null;
 }

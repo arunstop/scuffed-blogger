@@ -105,7 +105,15 @@ function Header() {
               </div>
 
               {!isLoggedIn && (
-                <Link href="/auth" passHref>
+                <Link
+                  href={{
+                    pathname: "/auth",
+                    query: {
+                      redirect: `${router.asPath}`,
+                    },
+                  }}
+                  passHref
+                >
                   <a>
                     <button
                       className={`btn --btn-resp font-bold transition-all duration-[600ms] truncate

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import {
   MdArticle,
@@ -22,6 +23,7 @@ import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 import MobileHeader from "./MobileHeader";
 
 function Sidebar() {
+  const router =useRouter();
   const {
     authStt: { user },
     authAct,
@@ -188,6 +190,9 @@ function Sidebar() {
                 <Link
                   href={{
                     pathname: "/auth",
+                    query: {
+                      redirect: `${router.asPath}`,
+                    },
                   }}
                   passHref
                 >
@@ -196,6 +201,9 @@ function Sidebar() {
                 <Link
                   href={{
                     pathname: "/auth",
+                    query: {
+                      redirect: `${router.asPath}`,
+                    },
                   }}
                   passHref
                 >
