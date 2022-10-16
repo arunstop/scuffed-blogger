@@ -20,11 +20,15 @@ import IntersectionObserverTrigger from "../../../components/utils/IntesectionOb
 import MainMarkdownContainer from "../../../components/main/MainMarkdownContainer";
 import MainPostStatusChip from "../../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../../components/main/MainPostUserPopup";
-import MobileHeader from "../../../components/main/MobileHeader";
+import MobileHeader, {
+  MobileHeaderActionProps,
+} from "../../../components/main/MobileHeader";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import UserHeader from "../../../components/user/UserHeader";
 import LayoutArticleMoreSection from "../LayoutArticleMoreSection";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
+import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
+import Dropdown, { DropdownOption } from "../../../components/common/Dropdown";
 
 function LayoutArticlePageSlug({
   articleContentless,
@@ -33,6 +37,9 @@ function LayoutArticlePageSlug({
 }) {
   const router = useRouter();
   const articleId = articleContentless.id;
+  const {
+    authStt: { user },
+  } = useAuthCtx();
 
   const [article, setArticle] = useState(articleContentless);
 
@@ -49,6 +56,71 @@ function LayoutArticlePageSlug({
     }
   }, []);
 
+  const getUserOptions = (isAuthor: boolean): DropdownOption[] => {
+    if (isAuthor)
+      return [
+        {
+          label: "Edit",
+          action() {
+            router.push(`/article/edit/${articleId}`);
+          },
+        },
+        // {
+        //   label: "Delete",
+        //   action() {
+        //     alert("should delete");
+        //   },
+        // },
+      ];
+    return [
+      {
+        label: "Report Article",
+        action() {
+          alert("should report article");
+        },
+      },
+      {
+        label: "Report Author",
+        action() {
+          alert("should report author");
+        },
+      },
+    ];
+  };
+
+  const getHeaderAction = (): MobileHeaderActionProps[] | undefined => {
+    if (!user) return;
+
+    const actions: MobileHeaderActionProps[] = [
+      {
+        label: "Reload",
+        icon: <MdRefresh />,
+        action() {
+          router.reload();
+        },
+      },
+      {
+        label: "Options",
+        icon: <MdMoreVert />,
+      },
+    ];
+
+    if (articleContentless.author === user.id) {
+      const options = actions.pop();
+      if (!options) return;
+
+      options.options = getUserOptions(true);
+      actions.push(options);
+      return actions;
+    }
+    const options = actions.pop();
+    if (!options) return;
+
+    options.options = getUserOptions(false);
+    actions.push(options);
+    return actions;
+  };
+
   // reload article content on slug change
   useEffect(() => {
     // removing article content
@@ -62,35 +134,27 @@ function LayoutArticlePageSlug({
       <MobileHeader
         back={() => router.back()}
         title="Read Article"
-        actions={[
-          {
-            label: "Reload",
-            icon: <MdRefresh />,
-            action() {
-              router.reload();
-            },
-          },
-          {
-            label: "Options",
-            icon: <MdMoreVert />,
-            action() {
-              router.push({
-                query: {
-                  options: true,
-                },
-              });
-            },
-          },
-        ]}
+        actions={getHeaderAction()}
       />
       <Container>
-        <div className="inline-flex justify-start">
+        <div className="inline-flex justify-between">
           <div className="dropdown-hover dropdown">
             <UserHeader id={article.author} />
 
             <div tabIndex={0} className="dropdown-content pt-2">
               <MainUserPopup id={articleId + ""} />
             </div>
+          </div>
+          <div className="hidden sm:flex">
+           
+              <Dropdown
+                options={getUserOptions(user?.id === articleContentless.author)}
+                className="dropdown-end"
+              >
+               <button tabIndex={0}  className="btn-ghost btn aspect-square rounded-xl p-0 opacity-80 hover:opacity-100">
+               <MdMoreVert className="text-2xl sm:text-3xl"></MdMoreVert>
+               </button>
+              </Dropdown>
           </div>
         </div>
 
