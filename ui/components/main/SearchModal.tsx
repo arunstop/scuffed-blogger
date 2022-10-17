@@ -65,21 +65,6 @@ const SearchModal = React.memo(function SearchModal() {
     [],
   );
 
-  const headerActions: MobileHeaderActionProps[] = useMemo(() => {
-    return [
-      {
-        label: "Clear history",
-        action() {
-          setArticles(null);
-          setSearch("");
-          // alert('creating articles');
-        },
-        icon: <MdClearAll />,
-        disabled: !articles?.length,
-      },
-    ] as MobileHeaderActionProps[];
-  }, [articles]);
-
   const scrollContentToTop = useCallback(() => {
     const ElModalContent = document.getElementById("modal-content");
     if (ElModalContent)
@@ -88,6 +73,24 @@ const SearchModal = React.memo(function SearchModal() {
         behavior: "smooth",
       });
   }, []);
+
+  const headerActions: MobileHeaderActionProps[] = useMemo(() => {
+    return [
+      {
+        label: "Clear history",
+        action() {
+          scrollContentToTop();
+          setArticles(null);
+          setSearch("");
+          // alert('creating articles');
+        },
+        icon: <MdClearAll />,
+        disabled: !articles?.length && search.length,
+      },
+    ] as MobileHeaderActionProps[];
+  }, [articles]);
+
+ 
 
   return (
     <ModalTemplate
@@ -136,7 +139,7 @@ const SearchModal = React.memo(function SearchModal() {
         </div>
         <div className="flex flex-col gap-2 rounded-xl min-h-screen">
           {/* initial skeleton */}
-          {!articles?.length && !loading && (
+          {!articles?.length && !loading && search.length < 2 && (
             <Alert className="text-center mt-12">
               <span>
                 Start searching by typing the keyword.
@@ -147,7 +150,7 @@ const SearchModal = React.memo(function SearchModal() {
           )}
           {/* no result */}
           {!articles?.length && !loading && search.length >= 2 && (
-            <SectionSkeleton text="No result found." />
+            <SectionSkeleton text="No results found." />
           )}
           {articles &&
             articles.map((e, idx) => {
