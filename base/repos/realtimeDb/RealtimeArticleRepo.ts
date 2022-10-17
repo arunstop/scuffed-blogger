@@ -117,7 +117,7 @@ export function repoRtArticleSearch(abortSignal: AbortSignal) {
 }
 
 export async function repoRtArticleUpdateView(articleId: string) {
-  const path = `articleList/${articleId}/view`;
+  const path = `articleList/${articleId}/views`;
   const rr = ref(db, path);
   await set(rr, increment(1));
 }
