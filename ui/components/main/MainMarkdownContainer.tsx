@@ -1,3 +1,4 @@
+import { kebabCase } from "lodash";
 import React, { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
@@ -7,6 +8,30 @@ interface MainMarkdownContainerProps {
   className?: string;
 }
 
+function blankifyLinks(container: HTMLElement) {
+  // making every link to be open in a new tab
+  const links = Array.from(container.getElementsByTagName("a"));
+  links.forEach((linkEl) => {
+    // using `getAttribute` instead of `.href`
+    // becase `.href` returns a full link
+    // instead of the raw text inside of that attribute
+    const rawHref = linkEl.getAttribute("href") || "";
+    // console.log(rawHref);
+    // check if the href points to an `id`
+    // or check if `target` attribute is not null already
+    if (rawHref[0] === "#" || linkEl.getAttribute("target") !== null) return;
+    linkEl.setAttribute("target", "_blank");
+  });
+}
+
+function linkifyHeaders(container: HTMLElement) {
+  const headers = Array.from(container.querySelectorAll("h1,h2"));
+  headers.forEach((el) => {
+    const id = kebabCase(el.innerHTML);
+    el.setAttribute("id", id);
+  });
+}
+
 function MainMarkdownContainer({
   content,
   className = "",
@@ -14,27 +39,17 @@ function MainMarkdownContainer({
   useEffect(() => {
     const container = document.getElementById("main-markdown-container");
     if (container) {
-      // making every link to be open in a new tab
-      const links = Array.from(container.getElementsByTagName("a"));
-      links.forEach((linkEl) => {
-        // using `getAttribute` instead of `.href`
-        // becase `.href` returns a full link
-        // instead of the raw text inside of that attribute
-        const rawHref = linkEl.getAttribute("href") || "";
-        // console.log(rawHref);
-        // check if the href points to an `id`
-        // or check if `target` attribute is not null already
-        if (rawHref[0] === "#" || linkEl.getAttribute("target") !== null)
-          return;
-        linkEl.setAttribute("target", "_blank");
-      });
+      // make all links open in new tab
+      blankifyLinks(container);
+      // give ids to each h1 and h2
+      linkifyHeaders(container);
     }
     return () => {};
   }, [content]);
 
   return (
     <article
-    key={Math.random()+1}
+      key={Math.random() + 1}
       id="main-markdown-container"
       className={`prose grow rounded-sm prose-sm md:prose lg:prose-lg !max-w-none prose-img:rounded-lg
       prose-th:!border-x-2 prose-td:border-2 prose-td:!p-2
