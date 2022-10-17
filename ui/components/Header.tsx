@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
-import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
 import { useUiCtx } from "../../app/contexts/ui/UiHook";
 import { APP_NAME } from "../../app/helpers/Constants";
-import { routeTrimQuery } from "../../app/helpers/MainHelpers";
 import { useHeaderBehavior } from "../../app/hooks/HeaderBehaviorHook";
 import MainHeaderBigSearchBar from "./main/MainHeaderBigSearchBar";
 
@@ -78,32 +76,6 @@ function Header() {
         <div className="inline-flex items-center gap-1 sm:gap-2 ">
           {router.pathname !== "/auth" && (
             <>
-              <div className="block md:hidden">
-                {/* <div className="block"> */}
-                <Link
-                  href={{
-                    pathname: routeTrimQuery(router.asPath),
-                    query: {
-                      search: true,
-                    },
-                  }}
-                  shallow
-                >
-                  <a
-                    className="--btn-resp btn btn-ghost btn-circle text-base-content"
-                    role={"button"}
-                  >
-                    <span
-                      className={`text-2xl transition-colors ${
-                        scrolledToTop ? "text-primary" : ""
-                      } `}
-                    >
-                      <MdSearch />
-                    </span>
-                  </a>
-                </Link>
-              </div>
-
               {!isLoggedIn && (
                 <Link
                   href={{

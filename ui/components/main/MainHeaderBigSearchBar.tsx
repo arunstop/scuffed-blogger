@@ -99,7 +99,7 @@ function MainHeaderBigSearchBar() {
   );
 
   function toggleSmBreakpoint() {
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 640) {
       setSmBreakpoint(true);
     } else {
       setSmBreakpoint(false);
@@ -170,7 +170,7 @@ function MainHeaderBigSearchBar() {
                 // clearable={search.trim().length >= 2}
                 // clearAction={clear}
                 minLength={2}
-                className="bg-opacity-50 md:w-96 lg:w-[30rem]"
+                className="bg-opacity-50  sm:w-80 md:w-96 lg:w-[30rem]"
                 // displayValue={(e) => search}
                 value={search}
                 // displayValue={(person) => person.name}
