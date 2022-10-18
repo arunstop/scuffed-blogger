@@ -8,21 +8,23 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../base/data/Main";
 import {
   ArticleModel,
   toArticleModel,
-  toArticleModelUpdated
+  toArticleModelUpdated,
 } from "../../base/data/models/ArticleModel";
 import { UserModel } from "../../base/data/models/UserModel";
 import {
-  fsArticleContentGet, repoFsArticleAdd,
+  fsArticleContentGet,
+  repoFsArticleAdd,
   repoFsArticleContentAdd,
-  repoFsArticleContentDelete, repoFsArticleContentUpdate,
+  repoFsArticleContentDelete,
+  repoFsArticleContentUpdate,
   repoFsArticleDelete,
   repoFsArticleGetByUser,
-  repoFsArticleUpdate
+  repoFsArticleUpdate,
 } from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
   repoRtArticleGetAll,
@@ -30,7 +32,7 @@ import {
   repoRtArticleMirrorDelete,
   repoRtArticleMirrorUpdate,
   repoRtArticleSearch,
-  repoRtArticleUpdateView
+  repoRtArticleUpdateView,
 } from "../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 import Fuse from "fuse.js";
@@ -39,9 +41,10 @@ import { MainApiResponse } from "../../base/data/Main";
 import { ArticleListModel } from "../../base/data/models/ArticleListModel";
 import {
   repoStDirectoryDelete,
-  repoStFileDeleteByFullLink
+  repoStFileDeleteByFullLink,
 } from "../../base/repos/StorageModules";
 import { serviceFileUpload } from "./FileService";
+import { imageToPng } from "../helpers/MainHelpers";
 
 // Adding article, now using direct firebaseClient
 interface PropsAddArticle {
@@ -136,6 +139,7 @@ export async function serviceArticleAdd({
     id: id,
     user: user,
     formData: rawArticle,
+    withPngThumbnail: true,
   });
 
   const errorCb = (msg: string, error: null | FirebaseError) => {
@@ -178,8 +182,12 @@ export async function serviceArticleAdd({
     try {
       callback?.(netLoading<ArticleModel>("Uploading the thumbnail", article));
       // uploading thumbnail
+
+      const convertedImg = await imageToPng(thumbnail[0]);
+      if (!convertedImg) throw new Error("Error when converting image");
+
       const thumbnailUrl = await serviceFileUpload({
-        file: thumbnail[0],
+        file: convertedImg,
         directory: `/thumbnails/${article.id}/`,
         name: article.id,
       });
@@ -190,7 +198,11 @@ export async function serviceArticleAdd({
       }
     } catch (error) {
       console.log(error);
-      errorCb("Error when creating thumbnail", error as FirebaseError);
+      const isFbError = typeof error !== "string";
+      errorCb(
+        isFbError ? "Error when creating thumbnail" : (error as string),
+        isFbError ? (error as FirebaseError) : null,
+      );
       return null;
     }
   }

@@ -84,18 +84,21 @@ export function toArticleModel({
   id,
   user,
   formData,
+  withPngThumbnail,
 }: {
   id: string;
   user: UserModel;
   formData: WritingPanelFormProps;
+  withPngThumbnail?: boolean;
 }): ArticleModel {
   const date = Date.now();
   let thumbnail = "";
-  if (formData.thumbnail) {
+  if (formData.thumbnail && withPngThumbnail) {
     const file = formData.thumbnail[0];
     // Splitting the name by with .  then get the last item
     // which results the extension of the file
-    const extension = file.name.split(".").pop();
+    // if `withPngThumbnail` is false
+    const extension = withPngThumbnail ? "png" : file.name.split(".").pop();
     // Getting new name with id
     const newName = encodeURIComponent(`thumbnails/${id}/${id}.${extension}`);
 
