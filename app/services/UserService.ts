@@ -30,6 +30,7 @@ import {
 import { repoStFileDeleteByFullLink } from "../../base/repos/StorageModules";
 import { LoginFields } from "../../ui/components/auth/AuthLoginForm";
 import { AuthRegisterProps } from "../../ui/components/auth/AuthRegisterForm";
+import { imageToPng } from "../helpers/MainHelpers";
 
 import { serviceFileUpload } from "./FileService";
 
@@ -242,10 +243,11 @@ export async function fbUserUpdate({
     dateUpdated: Date.now(),
   };
   // Upload image if there is one
-  if (file) {
+  const convertedImg = file ? await imageToPng(file[0]) : null;
+  if (convertedImg) {
     try {
       const imageUrl = await serviceFileUpload({
-        file: file[0],
+        file: convertedImg,
         directory: "images/avatars",
         name: user.id,
       });
