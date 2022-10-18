@@ -40,3 +40,34 @@ export async function autoRetry<T>(
   }
   return null;
 }
+
+export async function imageToPng(file: File,name="pngimage"): Promise<File | undefined> {
+  const base64: string | null = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = () => {
+      console.error("error processing image");
+      reject(null);
+    };
+    reader.readAsDataURL(file);
+  });
+  if (!base64) return;
+
+  // const res = reader.onload = () => {
+  //   // console.log(reader.result);
+  //   return reader.result;
+  // };
+  // reader.
+  const pngFile = await fetch(base64)
+    .then((res) => res.blob())
+    .then((blob) => new File([blob], `${name}.png`,{ type: "image/png" }))
+    .catch((e) => {
+      console.error("Error when converting file type to png");
+      return null;
+    });
+  if (!pngFile) return;
+
+  return pngFile;
+}
