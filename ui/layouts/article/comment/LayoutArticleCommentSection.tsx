@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { MdSort } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../../app/contexts/comment/CommentHook";
 import { CommentProvider } from "../../../../app/contexts/comment/CommentProvider";
+import { routeTrimQuery } from "../../../../app/helpers/MainHelpers";
 import { getElById } from "../../../../app/helpers/UiHelpers";
 import {
   CommentModelListPagedSorted,
@@ -23,6 +25,8 @@ function LayoutArticleCommentSection({ articleId }: { articleId: string }) {
   );
 }
 function LayoutArticleCommentSectionContent() {
+
+  const router = useRouter();
   const {
     authStt: { user },
   } = useAuthCtx();
@@ -125,8 +129,11 @@ function LayoutArticleCommentSectionContent() {
               </span>
               <Link
                 href={{
-                  pathname: "/auth",
-                }}
+                    pathname: "/auth",
+                    query: {
+                      redirect: `${routeTrimQuery(router.asPath)}`,
+                    },
+                  }}
                 passHref
               >
                 <a className="--btn-resp flex-2 btn-primary btn w-full gap-2 font-bold normal-case sm:flex-[2_2_0%]">
@@ -135,8 +142,11 @@ function LayoutArticleCommentSectionContent() {
               </Link>
               <Link
                 href={{
-                  pathname: "/auth",
-                }}
+                    pathname: "/auth",
+                    query: {
+                      redirect: `${routeTrimQuery(router.asPath)}`,
+                    },
+                  }}
                 passHref
               >
                 <a className="--btn-resp flex-2 btn-primary btn w-full gap-2 font-bold normal-case sm:flex-[2_2_0%]">

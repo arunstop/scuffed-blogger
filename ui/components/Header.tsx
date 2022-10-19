@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useAuthCtx } from "../../app/contexts/auth/AuthHook";
 import { useUiCtx } from "../../app/contexts/ui/UiHook";
 import { APP_NAME } from "../../app/helpers/Constants";
+import { routeTrimQuery } from "../../app/helpers/MainHelpers";
 import { useHeaderBehavior } from "../../app/hooks/HeaderBehaviorHook";
 import MainHeaderBigSearchBar from "./main/MainHeaderBigSearchBar";
 
@@ -81,7 +82,7 @@ function Header() {
                   href={{
                     pathname: "/auth",
                     query: {
-                      redirect: `${router.asPath}`,
+                      redirect: `${routeTrimQuery(router.asPath)}`,
                     },
                   }}
                   passHref

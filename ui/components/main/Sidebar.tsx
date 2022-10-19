@@ -16,6 +16,7 @@ import {
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useUiCtx } from "../../../app/contexts/ui/UiHook";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
+import { routeTrimQuery } from "../../../app/helpers/MainHelpers";
 import { useRoutedModalHook } from "../../../app/hooks/RoutedModalHook";
 import { useUiSidebarBehaviorHook } from "../../../app/hooks/UiSidebarBehaviorHook";
 import ModalConfirmation from "../modal/ModalConfirmation";
@@ -191,7 +192,7 @@ function Sidebar() {
                   href={{
                     pathname: "/auth",
                     query: {
-                      redirect: `${router.asPath}`,
+                      redirect: `${routeTrimQuery(router.asPath)}`,
                     },
                   }}
                   passHref
@@ -202,7 +203,7 @@ function Sidebar() {
                   href={{
                     pathname: "/auth",
                     query: {
-                      redirect: `${router.asPath}`,
+                      redirect: `${routeTrimQuery(router.asPath)}`,
                     },
                   }}
                   passHref
