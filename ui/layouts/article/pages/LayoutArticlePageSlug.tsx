@@ -78,6 +78,10 @@ function LayoutArticlePageSlug({
         action() {
           alert("should report article");
         },
+        confirmation:{
+          title:"Report article",
+          desc:"Are you sure you want to report this article, because of some reason?",
+        },
       },
       {
         label: "Report Author",
@@ -89,7 +93,7 @@ function LayoutArticlePageSlug({
   };
 
   const getHeaderAction = (): MobileHeaderActionProps[] | undefined => {
-    if (!user) return;
+    
 
     const actions: MobileHeaderActionProps[] = [
       {
@@ -105,7 +109,7 @@ function LayoutArticlePageSlug({
       },
     ];
 
-    if (articleContentless.author === user.id) {
+    if (articleContentless.author === user?.id) {
       const options = actions.pop();
       if (!options) return;
 
@@ -113,11 +117,12 @@ function LayoutArticlePageSlug({
       actions.push(options);
       return actions;
     }
-    const options = actions.pop();
-    if (!options) return;
+    const actionOptions = actions.pop();
+    console.log(actionOptions);
+    if (!actionOptions) return;
 
-    options.options = getUserOptions(false);
-    actions.push(options);
+    actionOptions.options = getUserOptions(false);
+    actions.push(actionOptions);
     return actions;
   };
 
