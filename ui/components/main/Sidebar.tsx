@@ -176,7 +176,7 @@ function Sidebar() {
         />
         {/* USELESS CONTENT */}
         {/* <div className="drawer-content"></div> */}
-        <div className="drawer-side overflow-hidden">
+        <div tabIndex={-1} className="drawer-side overflow-hidden">
           {/* OVERLAY */}
           <label
             htmlFor="main-drawer"
@@ -197,7 +197,9 @@ function Sidebar() {
                   }}
                   passHref
                 >
-                  <a className="btn-primary btn text-xl">Login</a>
+                  <a 
+                  tabIndex={-1}
+                  className="btn-primary btn text-xl">Login</a>
                 </Link>
                 <Link
                   href={{
@@ -208,14 +210,18 @@ function Sidebar() {
                   }}
                   passHref
                 >
-                  <a className="btn-primary btn text-xl">Register</a>
+                  <a 
+                  tabIndex={-1}
+                  className="btn-primary btn text-xl">Register</a>
                 </Link>
-                <button
+                <a
+                  
+                  tabIndex={-1}
                   className="btn-outline btn-primary btn text-xl"
                   onClick={() => closeSidebar()}
                 >
                   Not now
-                </button>
+                </a>
               </div>
             </div>
           )}
