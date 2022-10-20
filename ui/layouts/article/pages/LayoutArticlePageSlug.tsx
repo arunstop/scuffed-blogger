@@ -2,6 +2,7 @@ import { formatDistance } from "date-fns";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
+  MdClose,
   MdForum,
   MdMoreVert,
   MdRefresh,
@@ -78,9 +79,9 @@ function LayoutArticlePageSlug({
         action() {
           alert("should report article");
         },
-        confirmation:{
-          title:"Report article",
-          desc:"Are you sure you want to report this article, because of some reason?",
+        confirmation: {
+          title: "Report article",
+          desc: "Are you sure you want to report this article, because of some reason?",
         },
       },
       {
@@ -93,8 +94,6 @@ function LayoutArticlePageSlug({
   };
 
   const getHeaderAction = (): MobileHeaderActionProps[] | undefined => {
-    
-
     const actions: MobileHeaderActionProps[] = [
       {
         label: "Reload",
@@ -151,15 +150,17 @@ function LayoutArticlePageSlug({
             </div>
           </div>
           <div className="hidden sm:flex">
-           
-              <Dropdown
-                options={getUserOptions(user?.id === articleContentless.author)}
-                className="dropdown-end"
+            <Dropdown
+              options={getUserOptions(user?.id === articleContentless.author)}
+              className="dropdown-end"
+            >
+              <button
+                tabIndex={0}
+                className="btn-ghost btn aspect-square rounded-xl p-0 opacity-80 hover:opacity-100"
               >
-               <button tabIndex={0}  className="btn-ghost btn aspect-square rounded-xl p-0 opacity-80 hover:opacity-100">
-               <MdMoreVert className="text-2xl sm:text-3xl"></MdMoreVert>
-               </button>
-              </Dropdown>
+                <MdMoreVert className="text-2xl sm:text-3xl"></MdMoreVert>
+              </button>
+            </Dropdown>
           </div>
         </div>
 
@@ -200,9 +201,28 @@ function LayoutArticlePageSlug({
           {article?.desc || `Article's Description`}
         </h2>
         <div className="flex flex-col gap-2 sm:gap-4">
-          <figure className="relative aspect-video w-full overflow-hidden rounded-xl">
+          <a
+            className="group relative isolate  flex
+            aspect-video w-full cursor-pointer overflow-hidden rounded-xl transition-all
+            duration-300 focus-within:fixed focus-within:inset-0 focus-within:z-[100]  focus-within:aspect-auto 
+            focus-within:cursor-default focus-within:rounded-none focus-within:bg-black/60 
+            focus-within:p-2 focus-within:backdrop-blur-sm sm:focus-within:p-4"
+            tabIndex={0}
+          >
+            <button
+              className="btn-outline btn-circle btn absolute right-0 top-0 z-[20] m-2 hidden border-white 
+              group-focus-within:inline-flex sm:m-4"
+              onClick={() => {
+                (document.activeElement as HTMLElement).blur();
+              }}
+            >
+              <MdClose className="text-2xl text-white sm:text-3xl"></MdClose>
+            </button>
             <img
-              className="h-full w-full max-w-none object-cover transition-transform group-hover:scale-[1.2] bg-primary"
+              className="z-10 h-full w-full max-w-none bg-primary object-cover transition-transform duration-500
+              hover:scale-[1.2] group-focus-within:my-auto group-focus-within:h-auto group-focus-within:max-h-[90vh]
+              group-focus-within:rounded-xl
+              group-focus-within:object-fill group-focus-within:duration-[0] group-focus-within:hover:scale-100"
               src={
                 article?.thumbnail ||
                 `https://picsum.photos/id/${article.dateAdded
@@ -213,7 +233,7 @@ function LayoutArticlePageSlug({
               width={240}
               height={240}
             />
-          </figure>
+          </a>
         </div>
 
         {article.content ? (
