@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, ReactNode, useState } from "react";
+import React, { Fragment, ReactNode, useEffect, useState } from "react";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
 import { ModalProps } from "../../../base/data/Main";
 import GradientBackground from "../utils/GradientBackground";
@@ -51,12 +51,17 @@ const ModalActionTemplate = ({
   const [confirmingAction, setConfirmingAction] = useState<ModalActionAction>();
   function closeModal() {
     onClose();
-    setConfirmingAction(undefined);
   }
 
   const isConfirmation = !!confirmations?.length;
   const hasActions = !!actions?.length;
   // const shownActions = actions?.filter((e) => !e.hidden) || [];
+  useEffect(() => {
+    console.log(value);
+    if (value) return setConfirmingAction(undefined);
+
+    return () => {};
+  }, [value]);
 
   return (
     <Transition appear show={value} as={Fragment}>
@@ -144,7 +149,7 @@ const ModalActionTemplate = ({
                     openConfirmation={(data) => setConfirmingAction(data)}
                   />
                 )}
-                {hasActions && !!confirmingAction && (
+                {!!confirmingAction && (
                   <>
                     {/* Confirmation dialog */}
                     <ModalActionConfirmation
