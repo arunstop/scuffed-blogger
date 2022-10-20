@@ -46,7 +46,7 @@ const Content = ({
         </span>
         <span
           className="text-center text-base text-base-content 
-            text-opacity-75 sm:text-lg"
+            brightness-75 sm:text-lg"
         >
           {action?.confirmation?.desc || "-"}
         </span>

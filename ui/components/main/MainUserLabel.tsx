@@ -11,7 +11,7 @@ function MainUserLabel({ id }: { id: string }) {
           <span className="text-base font-bold sm:text-lg !leading-[1.2]">
             Firstname Lastn
           </span>
-          <span className="text-base font-semibold sm:text-lg opacity-50 !leading-[1.2]">
+          <span className="text-base font-semibold sm:text-lg brightness-50 !leading-[1.2]">
             @FirstnameLastname
           </span>
         </div>

@@ -250,7 +250,7 @@ function Sidebar() {
                     <span className="text-md font-bold line-clamp-2 sm:text-lg md:text-xl">
                       {user?.name}
                     </span>
-                    <span className="sm:text-md text-sm font-bold text-base-content text-opacity-50 md:text-lg">
+                    <span className="sm:text-md text-sm font-bold text-base-content brightness-50 md:text-lg">
                       {`@${user?.username}`}
                     </span>
                   </p>
