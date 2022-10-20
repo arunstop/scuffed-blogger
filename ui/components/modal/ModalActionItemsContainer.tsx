@@ -1,8 +1,7 @@
 import React from "react";
 import ModalActionItem from "./ModalActionItem";
 import {
-  ModalActionAction,
-  ModalActionConfirmation,
+  ModalActionAction
 } from "./ModalActionTemplate";
 
 function ModalActionItemsContainer({
@@ -12,7 +11,7 @@ function ModalActionItemsContainer({
 }: {
   show: boolean;
   actions: ModalActionAction[];
-  openConfirmation: (value: ModalActionConfirmation | undefined) => void;
+  openConfirmation: (value: ModalActionAction) => void;
 }) {
   return (
     <>

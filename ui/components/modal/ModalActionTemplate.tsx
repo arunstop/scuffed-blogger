@@ -1,7 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, ReactNode } from "react";
+import React, { Fragment, ReactNode, useEffect, useState } from "react";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
-import useOptionModalConfirmationHook from "../../../app/hooks/PostOptionConfirmationModalBehaviorHook";
 import { ModalProps } from "../../../base/data/Main";
 import GradientBackground from "../utils/GradientBackground";
 import ModalActionConfirmation from "./ModalActionConfirmation";
@@ -42,23 +41,27 @@ const ModalActionTemplate = ({
   desc,
   children,
   fullscreen = false,
-  actions=[],
+  actions = [],
   confirmations,
 }: ModalProps &
   MainActionModalTemplateProps & {
     actions?: ModalActionAction[];
     confirmations?: ModalConfirmation[];
   }) => {
-  const confirmation = useOptionModalConfirmationHook();
-
+  const [confirmingAction, setConfirmingAction] = useState<ModalActionAction>();
   function closeModal() {
-    confirmation.close();
     onClose();
   }
 
   const isConfirmation = !!confirmations?.length;
-  const isAction = !!actions?.length;
+  const hasActions = !!actions?.length;
   // const shownActions = actions?.filter((e) => !e.hidden) || [];
+  useEffect(() => {
+    console.log(value);
+    if (value) return setConfirmingAction(undefined);
+
+    return () => {};
+  }, [value]);
 
   return (
     <Transition appear show={value} as={Fragment}>
@@ -139,18 +142,20 @@ const ModalActionTemplate = ({
                   </div>
                 </Dialog.Title>
                 {/* Action section */}
-                <ModalActionItemsContainer
-                  show={value}
-                  actions={actions}
-                  openConfirmation={confirmation.open}
-                />
-                {isAction && (
+                {!confirmingAction && (
+                  <ModalActionItemsContainer
+                    show={value}
+                    actions={actions}
+                    openConfirmation={(data) => setConfirmingAction(data)}
+                  />
+                )}
+                {!!confirmingAction && (
                   <>
                     {/* Confirmation dialog */}
                     <ModalActionConfirmation
-                      value={confirmation.show}
-                      onClose={() => confirmation.close()}
-                      confirmation={confirmation.data}
+                      value={!!confirmingAction}
+                      onClose={() => setConfirmingAction(undefined)}
+                      action={confirmingAction}
                     />
                   </>
                 )}
