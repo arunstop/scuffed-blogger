@@ -50,6 +50,10 @@ function ArticleCommentOptionModal({
       icon: <MdDelete />,
       label: "Delete comment",
       hidden: !isCommenter(),
+      confirmation: {
+        title: "Delete comment",
+        desc: "Comment will be deleted and will not be undone, are you sure?",
+      },
       action: () => {
         // if no user
         if (!user) return;
