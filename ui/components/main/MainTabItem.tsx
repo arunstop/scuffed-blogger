@@ -11,7 +11,7 @@ function MainTabItem({ icon, title, active, onClick }: MainTabItemProps) {
   return (
     <a
       className={`tab tab-sm sm:tab-lg --btn-resp !min-h-0 btn font-bold
-      gap-2 sm:gap-4 text-ellipsis overflow-hidden text-opacity-100 border-1 !rounded-xl
+      gap-2 sm:gap-4 text-ellipsis overflow-hidden border-1 !rounded-xl
       ${
         active
           ? `tab-active !border-primary`
