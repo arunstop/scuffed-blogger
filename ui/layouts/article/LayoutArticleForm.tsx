@@ -6,10 +6,13 @@ import { useWritingPanelCtx } from "../../../app/contexts/writingPanel/WritingPa
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../../app/hooks/NetworkActionHook";
 import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
-import { WritingPanelFormProps, WritingPanelTabTypes } from "../../../base/data/contexts/WritingPanelTypes";
+import {
+  WritingPanelFormProps,
+  WritingPanelTabTypes,
+} from "../../../base/data/contexts/WritingPanelTypes";
 import MainPageTitle from "../../components/main/MainPageTitle";
 import StatusPlaceholder, {
-  StatusPlaceholderProps
+  StatusPlaceholderProps,
 } from "../../components/placeholder/StatusPlaceholder";
 import WritingPanelForm from "../../components/write/WritingPanelForm";
 import WritingPanelPreview from "../../components/write/WritingPanelPreview";
@@ -68,10 +71,8 @@ function LayoutArticleForm({ title, submitArticle }: LayoutArticleFormProps) {
       <MainPageTitle title={title} backButton />
 
       <div className="relative min-w-full">
-        {netAct.netResp ? (
-          <StatusPlaceholder {...netAct.netResp.data!} />
-        ) : (
-          <></>
+        {!!netAct.netResp?.data && (
+          <StatusPlaceholder {...netAct.netResp.data} />
         )}
 
         <Transition

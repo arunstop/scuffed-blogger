@@ -55,7 +55,7 @@ function WritingPanel() {
       setLoading(true);
       setNetWorkResp(netLoading("Creating your well written article ;)"));
 
-      const newArticle = await autoRetry(async (attempt,max) => {
+      const newArticle = await autoRetry(async (attempt, max) => {
         // Auth required
         if (!authStt.user) return null;
         return await serviceArticleAdd({
@@ -110,18 +110,7 @@ function WritingPanel() {
       </div>
 
       <div className="relative min-w-full">
-        <Transition
-          show={loading}
-          appear
-          as={"div"}
-          className="absolute inset-x-0 w-full"
-          enter="ease-out transform transition duration-500"
-          enterFrom="opacity-0 translate-y-[20%] scale-x-0"
-          enterTo="opacity-100 translate-y-0 scale-x-100"
-          leave="ease-in transform transition duration-300"
-          leaveFrom="opacity-100 translate-y-0 scale-x-100"
-          leaveTo="opacity-0 translate-y-[20%] scale-x-0"
-        >
+        {loading && (
           <StatusPlaceholder
             status="loading"
             title={`${networkResp?.message}`}
@@ -138,90 +127,68 @@ function WritingPanel() {
               },
             ]}
           />
-        </Transition>
-        <>
-          <Transition
-            show={!loading && networkResp?.status === "error"}
-            appear
-            as={"div"}
-            className="absolute inset-x-0 w-full"
-            enter="ease-out transform transition duration-500"
-            enterFrom="opacity-0 translate-y-[20%] scale-x-0"
-            enterTo="opacity-100 translate-y-0 scale-x-100"
-            leave="ease-in transform transition duration-300"
-            leaveFrom="opacity-100 translate-y-0 scale-x-100"
-            leaveTo="opacity-0 translate-y-[20%] scale-x-0"
-          >
-            <StatusPlaceholder
-              status="error"
-              title="Oops something wrong just happened..."
-              desc={`${networkResp?.message} \n- - - -\n${
-                networkResp?.data
-                  ? "Not authenticated, in order to add article you need to be logged in first"
-                  : ""
-              }`}
-              actions={[
-                {
-                  label: "Go back",
-                  callback: () => {
-                    setNetWorkResp(undefined);
-                  },
-                },
-                {
-                  label: "Try again",
-                  callback: () => {
-                    submitArticle();
-                  },
-                },
-              ]}
-            />
-          </Transition>
+        )}
 
-          <Transition
-            show={!loading && networkResp?.status === "success"}
-            appear
-            as={"div"}
-            className="absolute inset-x-0 w-full"
-            enter="ease-out transform transition duration-500"
-            enterFrom="opacity-0 translate-y-[20%] scale-x-0"
-            enterTo="opacity-100 translate-y-0 scale-x-100"
-            leave="ease-in transform transition duration-300"
-            leaveFrom="opacity-100 translate-y-0 scale-x-100"
-            leaveTo="opacity-0 translate-y-[20%] scale-x-0"
-          >
-            <StatusPlaceholder
-              status="success"
-              title="Article has been submitted!"
-              desc={
-                "Congratulations! We did it!\nYour beautifully written article has been added into our database for the world to read it!"
-              }
-              actions={[
-                {
-                  label: "Write again",
-                  callback: () => {
-                    action.setTab("Write");
-                    setNetWorkResp(undefined);
-                  },
+        {!loading && networkResp?.status === "error" && (
+          <StatusPlaceholder
+            status="error"
+            title="Oops something wrong just happened..."
+            desc={`${networkResp?.message} \n- - - -\n${
+              networkResp?.data
+                ? "Not authenticated, in order to add article you need to be logged in first"
+                : ""
+            }`}
+            actions={[
+              {
+                label: "Go back",
+                callback: () => {
+                  setNetWorkResp(undefined);
                 },
-                {
-                  label: "Go to the article",
-                  callback: () => {
-                    if (!networkResp?.data) return;
-                    router.push(
-                      `/article/${(networkResp.data as ArticleModel).slug}`,
-                    );
-                  },
+              },
+              {
+                label: "Try again",
+                callback: () => {
+                  submitArticle();
                 },
-                {
-                  label: "Go to My Posts",
-                  callback: () => {
-                    router.push("/user/posts");
-                  },
+              },
+            ]}
+          />
+        )}
+
+        {!loading && networkResp?.status === "success" && (
+          <StatusPlaceholder
+            status="success"
+            title="Article has been submitted!"
+            desc={
+              "Congratulations! We did it!\nYour beautifully written article has been added into our database for the world to read it!"
+            }
+            actions={[
+              {
+                label: "Write again",
+                callback: () => {
+                  action.setTab("Write");
+                  setNetWorkResp(undefined);
                 },
-              ]}
-            />
-          </Transition>
-        </>
+              },
+              {
+                label: "Go to the article",
+                callback: () => {
+                  if (!networkResp?.data) return;
+                  router.push(
+                    `/article/${(networkResp.data as ArticleModel).slug}`,
+                  );
+                },
+              },
+              {
+                label: "Go to My Posts",
+                callback: () => {
+                  router.push("/user/posts");
+                },
+              },
+            ]}
+          />
+        )}
+
         <Transition
           show={!loading && !networkResp}
           enter="ease-out transform transition duration-500"
