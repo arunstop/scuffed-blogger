@@ -20,6 +20,7 @@ import StatusPlaceholder, {
 import { serviceTopicGetAll } from "../../../app/services/TopicService";
 import { fbUserUpdate } from "../../../app/services/UserService";
 import { autoRetry } from "../../../app/helpers/MainHelpers";
+import Memoized from "../utils/Memoized";
 
 export interface SetupProfileFormFields {
   topics: string[];
@@ -101,8 +102,9 @@ function ProfileChooseTopicsForm() {
   const onSubmit: SubmitHandler<SetupProfileFormFields> = async (data) => {
     if (!hasLoaded) {
       clearResp();
-      setLoading({
-        value: true,
+      setNetResp({
+        message: "",
+        status: "loading",
         data: {
           status: "loading",
           title: "Updating your choosen topics",
@@ -169,7 +171,7 @@ function ProfileChooseTopicsForm() {
                 {
                   label: "Choose again",
                   callback: () => {
-                    setLoading({ value: false, data: null });
+                    clearResp();
                   },
                 },
                 {
@@ -192,7 +194,7 @@ function ProfileChooseTopicsForm() {
   return (
     <>
       <Transition
-        show={!isLoading && !loading.data}
+        show={!netResp?.data}
         enter="transition-opacity duration-500"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -208,63 +210,29 @@ function ProfileChooseTopicsForm() {
         </span>
         <div className="flex flex-col w-full relative">
           {/* Status States*/}
-          <div className="absolute flex flex-col w-full z-10">
-            <Transition
+          <Transition
               appear
-              show={isLoading && !hasLoaded}
+              show={!!netResp}
               as={"div"}
-              className={"absolute inset-x-0"}
+              className={"absolute inset-0 "}
               {...transitionPullV({
                 enter: " w-full",
                 entered: "",
                 leave: " w-full",
               })}
             >
-              <StatusPlaceholder
-                {...(loading.data as StatusPlaceholderProps)}
-              />
+              <Memoized show={!!netResp}>
+                {netResp && (
+                  <StatusPlaceholder
+                    {...(netResp?.data as StatusPlaceholderProps)}
+                  />
+                )}
+              </Memoized>
             </Transition>
-
-            <Transition
-              appear
-              show={isError}
-              as={"div"}
-              className={"absolute inset-x-0"}
-              {...transitionPullV({
-                enter: " w-full",
-                entered: "",
-                leave: " w-full",
-              })}
-            >
-              {netResp && (
-                <StatusPlaceholder
-                  {...(netResp?.data as StatusPlaceholderProps)}
-                />
-              )}
-            </Transition>
-
-            <Transition
-              appear
-              show={isSuccess}
-              as={"div"}
-              className={"absolute inset-x-0"}
-              {...transitionPullV({
-                enter: " w-full",
-                entered: "",
-                leave: " w-full",
-              })}
-            >
-              {netResp && (
-                <StatusPlaceholder
-                  {...(netResp?.data as StatusPlaceholderProps)}
-                />
-              )}
-            </Transition>
-          </div>
 
           <Transition
             appear
-            show={!isLoading && !loading.data}
+            show={!netResp?.data}
             as={Fragment}
             {...transitionPullV({
               enter: "w-full",
