@@ -8,7 +8,7 @@ interface PropsMainPageTitle {
 const MainPageTitle = ({ title, backButton }: PropsMainPageTitle) => {
   const router = useRouter();
   return (
-    <div className="flex gap-2 sm:gap-4 items-center">
+    <div className="gap-2 sm:gap-4 items-center hidden sm:flex">
       {backButton && (
         <button
           className="btn btn-circle btn-ghost self-start min-h-0 !h-9 !w-9 sm:!h-12 sm:!w-12"

@@ -12,6 +12,7 @@ import { WritingPanelFormProps } from "../../../../base/data/contexts/WritingPan
 import { MainNetworkResponse, netLoading } from "../../../../base/data/Main";
 import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import Container from "../../../components/common/Container";
+import MobileHeader from "../../../components/main/MobileHeader";
 import { StatusPlaceholderProps } from "../../../components/placeholder/StatusPlaceholder";
 import LayoutArticleForm from "../LayoutArticleForm";
 
@@ -139,10 +140,19 @@ function LayoutArticlePageEditContent({
   useEffect(() => {
     getContent();
   }, []);
+  
   return (
-    <Container className="">
-      <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
-    </Container>
+    <>
+      <MobileHeader
+        back={() => {
+          router.back();
+        }}
+        title={`Edit Article`}
+      />
+      <Container className="">
+        <LayoutArticleForm title="Edit Article" submitArticle={submitArticle} />
+      </Container>
+    </>
   );
 }
 
