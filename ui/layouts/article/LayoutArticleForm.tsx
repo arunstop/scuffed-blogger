@@ -14,6 +14,7 @@ import MainPageTitle from "../../components/main/MainPageTitle";
 import StatusPlaceholder, {
   StatusPlaceholderProps,
 } from "../../components/placeholder/StatusPlaceholder";
+import Memoized from "../../components/utils/Memoized";
 import WritingPanelForm from "../../components/write/WritingPanelForm";
 import WritingPanelPreview from "../../components/write/WritingPanelPreview";
 import { ArticleSubmissionProps } from "./pages/LayoutArticlePageEdit";
@@ -71,9 +72,23 @@ function LayoutArticleForm({ title, submitArticle }: LayoutArticleFormProps) {
       <MainPageTitle title={title} backButton />
 
       <div className="relative min-w-full">
-        {!!netAct.netResp?.data && (
-          <StatusPlaceholder {...netAct.netResp.data} />
-        )}
+        <Transition
+          appear
+          show={!!netAct.netResp?.data}
+          as={"div"}
+          className={"absolute inset-0"}
+          {...transitionPullV({
+            enter: " w-full",
+            entered: "",
+            leave: " w-full",
+          })}
+        >
+          <Memoized show={!!netAct.netResp?.data}>
+            {!!netAct.netResp?.data && (
+              <StatusPlaceholder {...netAct.netResp.data} />
+            )}
+          </Memoized>
+        </Transition>
 
         <Transition
           show={!netAct.netResp}
