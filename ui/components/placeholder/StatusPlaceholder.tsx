@@ -136,34 +136,36 @@ const StatusPlaceholder = React.forwardRef<
           `}
         >
           <span className="text-2xl font-black sm:text-3xl">{title}</span>
-          <span className="text-sm font-semibold sm:text-base whitespace-pre-line">
+          <span className="whitespace-pre-line text-sm font-semibold sm:text-base">
             {desc}
           </span>
         </p>
         {/* Actions */}
-        {actions && actions.length && (
-          <div
-            key={`actions-${newKey}`}
-            className={`flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 ${transition.actions}`}
-          >
-            {actions.map((e, idx) => (
-              <Transition.Child
-                key={idx}
-                enter={`transform transition duration-500`}
-                enterFrom="opacity-50 scale-0"
-                enterTo="opacity-100 scale-100"
-                style={{ transitionDelay: `${idx * 300 + 200}ms` }}
-              >
-                <button
-                  className=" --btn-resp btn !min-w-[6rem]"
-                  onClick={e.callback}
+        <div
+          key={`actions-${newKey}`}
+          className={`flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 ${transition.actions} min-h-[0.125rem] sm:min-h-[0.25rem]`}
+        >
+          {actions && actions.length && (
+            <>
+              {actions.map((e, idx) => (
+                <Transition.Child
+                  key={idx}
+                  enter={`transform transition duration-500`}
+                  enterFrom="opacity-50 scale-0"
+                  enterTo="opacity-100 scale-100"
+                  style={{ transitionDelay: `${idx * 300 + 200}ms` }}
                 >
-                  {e.label}
-                </button>
-              </Transition.Child>
-            ))}
-          </div>
-        )}
+                  <button
+                    className=" --btn-resp btn !min-w-[6rem]"
+                    onClick={e.callback}
+                  >
+                    {e.label}
+                  </button>
+                </Transition.Child>
+              ))}
+            </>
+          )}
+        </div>
       </div>
     </Transition>
   );
