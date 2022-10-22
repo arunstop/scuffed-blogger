@@ -24,6 +24,11 @@ interface StatusPlaceholderStylingProps {
   gradientViaDark: string;
   textColor: string;
 }
+interface StatusPlaceholderTransitionTypes {
+  icon: string;
+  labels: string;
+  actions: string;
+}
 
 // getting the required styling for each status
 function getStyle(
@@ -50,11 +55,37 @@ function getStyle(
     };
 }
 
+function getTransition(
+  status: NetworkResponseStatus,
+): StatusPlaceholderTransitionTypes {
+  switch (status) {
+    case "loading":
+      return {
+        icon: "animate-bounceInUp animate-duration-[1000ms]",
+        labels: "animate-flipInX animate-duration-[1500ms]",
+        actions: "animate-slideInLeft animate-duration-[1000ms]",
+      };
+    case "error":
+      return {
+        icon: "animate-shakeX animate-duration-[1500ms]",
+        labels: "animate-bounceIn animate-duration-[1000ms]",
+        actions: "animate-slideInLeft animate-duration-[1000ms]",
+      };
+    case "success":
+      return {
+        icon: "animate-rotateInUpRight animate-duration-[1500ms]",
+        labels: "animate-fadeInUp animate-duration-[1000ms]",
+        actions: "animate-slideInLeft animate-duration-[1000ms]",
+      };
+  }
+}
+
 const StatusPlaceholder = React.forwardRef<
   HTMLDivElement,
   React.PropsWithChildren<StatusPlaceholderProps>
 >(({ title, desc, status, actions }, ref) => {
   const style = getStyle(status);
+  const transition = getTransition(status);
   const newKey = title;
   return (
     <Transition
@@ -62,7 +93,6 @@ const StatusPlaceholder = React.forwardRef<
       show
       as={"div"}
       className={"transition-all duration-500"}
-      key={newKey}
       {...transitionPullV({
         enter: "absolute inset-x-0 w-full",
         entered: "absolute inset-x-0",
@@ -70,17 +100,17 @@ const StatusPlaceholder = React.forwardRef<
       })}
     >
       <div
-        ref={ref}
         className={`mx-auto my-4 flex min-w-[50%] flex-col w-full 
-      items-center justify-center gap-2 rounded-[10%] bg-gradient-to-r
-      from-transparent ${style.gradientVia} ${style.gradientViaDark} 
-      to-transparent py-2 px-4 pb-4 text-center  sm:my-8 sm:max-w-2xl
-      sm:gap-4 sm:py-4 sm:px-8 `}
+        items-center justify-center gap-2 rounded-[10%] bg-gradient-to-r
+        from-transparent ${style.gradientVia} ${style.gradientViaDark} 
+        to-transparent py-2 px-4 pb-4 text-center  sm:my-8 sm:max-w-2xl
+        sm:gap-4 sm:py-4 sm:px-8 `}
       >
+        {/* Icon */}
         <Transition.Child
-          enter="transform transition duration-1000"
-          enterFrom="opacity-0 rotate-[-120deg] scale-50"
-          enterTo="opacity-100 rotate-0 scale-100"
+          as={"div"}
+          key={`icons-${newKey}`}
+          className={`${transition.icon}`}
         >
           {status === "error" && (
             <IoMdCloseCircle
@@ -98,33 +128,44 @@ const StatusPlaceholder = React.forwardRef<
             />
           )}
         </Transition.Child>
-
-        <p className="flex flex-col gap-1 text-center sm:gap-2">
+        {/* Labels */}
+        <p
+          key={`labels-${newKey}`}
+          className={`flex flex-col gap-1 text-center sm:gap-2 animate-duration-1000
+          ${transition.labels}
+          `}
+        >
           <span className="text-2xl font-black sm:text-3xl">{title}</span>
-          <span className="text-sm font-semibold sm:text-base whitespace-pre-line">
+          <span className="whitespace-pre-line text-sm font-semibold sm:text-base">
             {desc}
           </span>
         </p>
-        {actions && actions.length && (
-          <div
-            key={newKey}
-            className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4"
-          >
-            {actions.map((e, idx) => (
-              <Transition.Child
-                key={idx}
-                enter={`transform transition duration-500`}
-                enterFrom="opacity-50 scale-0"
-                enterTo="opacity-100 scale-100"
-                style={{ transitionDelay: `${idx * 200 + 500}ms` }}
-              >
-                <button className=" --btn-resp btn !min-w-[6rem]" onClick={e.callback}>
-                  {e.label}
-                </button>
-              </Transition.Child>
-            ))}
-          </div>
-        )}
+        {/* Actions */}
+        <div
+          key={`actions-${newKey}`}
+          className={`flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 ${transition.actions} min-h-[0.125rem] sm:min-h-[0.25rem]`}
+        >
+          {actions && actions.length && (
+            <>
+              {actions.map((e, idx) => (
+                <Transition.Child
+                  key={idx}
+                  enter={`transform transition duration-500`}
+                  enterFrom="opacity-50 scale-0"
+                  enterTo="opacity-100 scale-100"
+                  style={{ transitionDelay: `${idx * 300 + 200}ms` }}
+                >
+                  <button
+                    className=" --btn-resp btn !min-w-[6rem]"
+                    onClick={e.callback}
+                  >
+                    {e.label}
+                  </button>
+                </Transition.Child>
+              ))}
+            </>
+          )}
+        </div>
       </div>
     </Transition>
   );

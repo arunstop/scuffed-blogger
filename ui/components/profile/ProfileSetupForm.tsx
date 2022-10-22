@@ -9,7 +9,7 @@ import {
   MdAlternateEmail,
   MdEdit,
   MdNotes,
-  MdPerson
+  MdPerson,
 } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { UserModel } from "../../../base/data/models/UserModel";
@@ -22,8 +22,9 @@ import InputTextArea from "../input/InputTextArea";
 import InputText from "../input/InputText";
 import GradientBackground from "../utils/GradientBackground";
 import StatusPlaceholder, {
-  StatusPlaceholderProps
+  StatusPlaceholderProps,
 } from "../placeholder/StatusPlaceholder";
+import Memoized from "../utils/Memoized";
 
 export interface SetupProfileFormFields {
   username: string;
@@ -71,8 +72,9 @@ function ProfileSetupForm() {
 
   const onSubmit: SubmitHandler<SetupProfileFormFields> = async (data) => {
     clearResp();
-    setLoading({
-      value: true,
+    setNetResp({
+      status: "loading",
+      message: "Loading...",
       data: {
         status: "loading",
         title: "Processing your data",
@@ -94,75 +96,80 @@ function ProfileSetupForm() {
     scrollToTop(true);
     if (!user) return alert("Not Logged in");
     await fbUserUpdate({
-        file: data.avatar,
-        user: {
-          ...user,
-          profileCompletion: "REQ_CHOOSE_TOPIC",
-          ..._.omit(data, ["avatar"]),
-        },
-        callback: async (resp) => {
-          console.log(resp);
-          scrollToTop(true);
-          await waitFor(1000);
+      file: data.avatar,
+      user: {
+        ...user,
+        profileCompletion: "REQ_CHOOSE_TOPIC",
+        ..._.omit(data, ["avatar"]),
+      },
+      callback: async (resp) => {
+        console.log(resp);
+        scrollToTop(true);
+        await waitFor(1000);
 
-          if (resp.status === "error") {
-            const progress = resp.data as FirebaseError;
-            // console.log(progress);
-            stopLoading();
-            setNetResp({
-              ...resp,
-              data: {
-                title: "Oops something happened.",
-                desc: progress.message,
-                status: "error",
-                actions: [
-                  {
-                    label: "Cancel",
-                    callback: () => {
-                      setLoading({ value: false, data: null });
-                    },
+        if (resp.status === "error") {
+          const progress = resp.data as FirebaseError;
+          // console.log(progress);
+          stopLoading();
+          setNetResp({
+            ...resp,
+            data: {
+              title: "Oops something happened.",
+              desc: progress.message,
+              status: "error",
+              actions: [
+                {
+                  label: "Cancel",
+                  callback: () => {
+                    clearResp();
                   },
-                ],
-              },
-            });
-            // setError1(true);
-          }
-          if (resp.status === "success") {
-            // const progress = resp.data as UserModel;
-            // console.log(`Upload file successful : ${progress}`);
-            // setSuccess(true);
-            stopLoading();
-            setNetResp({
-              ...resp,
-              data: {
-                title: "Setup Complete!",
-                desc: "Choose youre desired topic! Let us know what kind of articles you want us to show you.",
-                status: "success",
-                actions: [
-                  {
-                    label: "Cancel",
-                    callback: () => {
-                      setLoading({ value: false, data: null });
-                    },
+                },
+              ],
+            },
+          });
+          // setError1(true);
+        }
+        if (resp.status === "success") {
+          // const progress = resp.data as UserModel;
+          // console.log(`Upload file successful : ${progress}`);
+          // setSuccess(true);
+          stopLoading();
+          setNetResp({
+            ...resp,
+            data: {
+              title: "Setup Complete!",
+              desc: "Choose youre desired topic! Let us know what kind of articles you want us to show you.",
+              status: "success",
+              actions: [
+                {
+                  label: "Continue",
+                  callback: () => {
+                    router.push("/profile/choosetopics");
                   },
-                ],
-              },
-            });
-          }
-        },
-      })
-      .then((e) => {
-        if (!e) return;
-        resetForm();
-        authAct.setUser(e as UserModel);
-        router.push("/profile/choosetopics");
-      });
+                },
+                {
+                  label: "Change",
+                  callback: () => {
+                    clearResp();
+                  },
+                },
+              ],
+            },
+          });
+        }
+      },
+    }).then((e) => {
+      if (!e) return;
+      resetForm();
+      authAct.setUser(e as UserModel);
+      // router.push("/profile/choosetopics");
+    });
   };
 
   return (
     <>
       <Transition
-        show={!isLoading && !loading.data}
+        show={!netResp}
         enter="transition-opacity duration-500"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -180,63 +187,29 @@ function ProfileSetupForm() {
           Please setup your profile
         </span>
         <div className="flex flex-col w-full relative">
-          <div className="absolute flex flex-col w-full z-10">
-            <Transition
+        <Transition
               appear
-              show={isLoading && !hasLoaded}
+              show={!!netResp?.data}
               as={"div"}
-              className={"absolute inset-x-0"}
+              className={"absolute inset-0"}
               {...transitionPullV({
                 enter: " w-full",
                 entered: "",
                 leave: " w-full",
               })}
             >
-              <StatusPlaceholder
-                {...(loading.data as StatusPlaceholderProps)}
-              />
+              <Memoized show={!!netResp?.data}>
+                {netResp?.data && (
+                  <StatusPlaceholder
+                    {...(netResp.data as StatusPlaceholderProps)}
+                  />
+                )}
+              </Memoized>
             </Transition>
-
-            <Transition
-              appear
-              show={isError}
-              as={"div"}
-              className={"absolute inset-x-0"}
-              {...transitionPullV({
-                enter: " w-full",
-                entered: "",
-                leave: " w-full",
-              })}
-            >
-              {netResp && (
-                <StatusPlaceholder
-                  {...(netResp?.data as StatusPlaceholderProps)}
-                />
-              )}
-            </Transition>
-
-            <Transition
-              appear
-              show={isSuccess}
-              as={"div"}
-              className={"absolute inset-x-0"}
-              {...transitionPullV({
-                enter: " w-full",
-                entered: "",
-                leave: " w-full",
-              })}
-            >
-              {netResp && (
-                <StatusPlaceholder
-                  {...(netResp?.data as StatusPlaceholderProps)}
-                />
-              )}
-            </Transition>
-          </div>
 
           <Transition
             appear
-            show={!isLoading && !loading.data}
+            show={!netResp}
             as={Fragment}
             {...transitionPullV({
               enter: "w-full",

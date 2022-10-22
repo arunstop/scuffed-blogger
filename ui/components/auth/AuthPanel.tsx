@@ -119,37 +119,8 @@ function AuthPanel() {
         </span>
         
           <div className={"flex w-full"}>
-          {netResp ? <StatusPlaceholder {...netResp.data!} /> : <></>}
+          {netResp?.data ? <StatusPlaceholder {...netResp.data} /> : <></>}
           </div>
-        
-
-        {/* <Transition
-          appear
-          show={!loading.value && netResp?.status === "error" && !!loading.data}
-          as={Fragment}
-          {...transitionPullV({
-            enter: "absolute inset-x-0 w-full",
-            entered: "absolute inset-x-0",
-            leave: "absolute inset-x-0 w-full",
-          })}
-        >
-          {netResp && <StatusPlaceholder {...netResp.data!} />}
-        </Transition>
-
-        <Transition
-          appear
-          show={
-            !loading.value && netResp?.status === "success" && !!loading.data
-          }
-          as={Fragment}
-          {...transitionPullV({
-            enter: "absolute inset-x-0 w-full",
-            entered: "absolute inset-x-0",
-            leave: "absolute inset-x-0 w-full",
-          })}
-        >
-          {netResp && <StatusPlaceholder {...netResp.data!} />}
-        </Transition> */}
 
         <Transition
           appear
