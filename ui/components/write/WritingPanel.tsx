@@ -1,25 +1,28 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
-import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
+import { Fragment, ReactNode, useCallback, useEffect } from "react";
 import { MdEdit, MdRemoveRedEye } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useWritingPanelCtx } from "../../../app/contexts/writingPanel/WritingPanelHook";
-import {
-  WritingPanelFormProps,
-  WritingPanelTabTypes,
-} from "../../../base/data/contexts/WritingPanelTypes";
-import { MainNetworkResponse, netLoading } from "../../../base/data/Main";
-import { ArticleModel } from "../../../base/data/models/ArticleModel";
-import { UserModel } from "../../../base/data/models/UserModel";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
+import { useNetworkAction } from "../../../app/hooks/NetworkActionHook";
 import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
 import { serviceArticleAdd } from "../../../app/services/ArticleService";
-import StatusPlaceholder from "../placeholder/StatusPlaceholder";
+import {
+  WritingPanelFormProps,
+  WritingPanelTabTypes
+} from "../../../base/data/contexts/WritingPanelTypes";
+import { MainNetworkResponse } from "../../../base/data/Main";
+import { ArticleModel } from "../../../base/data/models/ArticleModel";
+import { UserModel } from "../../../base/data/models/UserModel";
+import StatusPlaceholder, {
+  StatusPlaceholderProps
+} from "../placeholder/StatusPlaceholder";
 import WritingPanelForm from "./WritingPanelForm";
 import WritingPanelPreview from "./WritingPanelPreview";
-import { autoRetry } from "../../../app/helpers/MainHelpers";
 
 const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [
   {
@@ -33,15 +36,100 @@ const tabs: { icon: ReactNode; title: WritingPanelTabTypes }[] = [
 ];
 
 function WritingPanel() {
-  const [loading, setLoading] = useState(false);
-  const [networkResp, setNetWorkResp] =
-    useState<MainNetworkResponse<ArticleModel | FirebaseError | null>>();
+  // const [loading, setLoading] = useState(false);
+  // const [networkResp, setNetWorkResp] =
+  //   useState<MainNetworkResponse<ArticleModel | FirebaseError | null>>();
   const router = useRouter();
   const {
     state: { formData, tab },
     action,
   } = useWritingPanelCtx();
   const { authStt, authAct, isLoggedIn } = useAuthCtx();
+  const { loading, setLoading, netResp, setNetResp, stopLoading, clearResp } =
+    useNetworkAction<
+      StatusPlaceholderProps | null,
+      StatusPlaceholderProps | null
+    >({ value: false, data: null });
+
+  function respLoading(title: string, desc: string) {
+    return setNetResp({
+      status: "loading",
+      message: "Processing your request",
+      data: {
+        status: "loading",
+        title: title,
+        desc: desc,
+      },
+    });
+  }
+  function respError(
+    resp: MainNetworkResponse<ArticleModel | FirebaseError | null>,
+  ) {
+    return setNetResp({
+      status: resp.status,
+      message: resp.message,
+      data: {
+        status: "error",
+        title: "Oops something wrong just happened...",
+        desc: `${resp.message} \n- - - -\n${
+          resp.data
+            ? "Not authenticated, in order to add article you need to be logged in first"
+            : ""
+        }`,
+        actions: [
+          {
+            label: "Go back",
+            callback: () => {
+              clearResp();
+            },
+          },
+          {
+            label: "Try again",
+            callback: () => {
+              submitArticle();
+            },
+          },
+        ],
+      },
+    });
+  }
+  function respSuccess(
+    resp: MainNetworkResponse<ArticleModel | FirebaseError | null>,
+  ) {
+    action.clearFormData();
+
+    return setNetResp({
+      status: resp.status,
+      message: resp.message,
+      data: {
+        status: "success",
+        title: "Article has been submitted!",
+        desc: "Congratulations! We did it!\nYour beautifully written article has been added into our database for the world to read it!",
+        actions: [
+          {
+            label: "Write again",
+            callback: () => {
+              action.setTab("Write");
+              clearResp();
+            },
+          },
+          {
+            label: "Go to the article",
+            callback: () => {
+              if (!resp.data) return;
+              router.push(`/article/${(resp.data as ArticleModel).slug}`);
+            },
+          },
+          {
+            label: "Go to My Posts",
+            callback: () => {
+              router.push("/user/posts");
+            },
+          },
+        ],
+      },
+    });
+  }
 
   const submitArticle = useCallback(
     async (data?: WritingPanelFormProps) => {
@@ -52,8 +140,10 @@ function WritingPanel() {
       // terminate the processedData is empty
       if (!processedData) return;
 
-      setLoading(true);
-      setNetWorkResp(netLoading("Creating your well written article ;)"));
+      respLoading(
+        "Creating your well written article",
+        "Adding your beautifully written article into our database. Please wait for a moment, this will be very quick",
+      );
 
       const newArticle = await autoRetry(async (attempt, max) => {
         // Auth required
@@ -65,16 +155,15 @@ function WritingPanel() {
           callback: async (resp) => {
             // change loading state, if it's loading, no need to wait
             if (resp.status !== "loading") await waitFor(2000);
+
             // if it success, clear the formData state
-            if (resp.status === "success") action.clearFormData();
-            setNetWorkResp(resp);
-            // if (resp.status !== "loading") {
-            // await waitFor(4000);
-            if (resp.status !== "loading") setLoading(false);
-            // }
-            // if (resp.status === "success") {
-            //   storageSave(KEY_ARTICLE_CONTENT, JSON.stringify(newArticle));
-            // }
+            if (resp.status === "loading")
+              respLoading(
+                resp.message,
+                netResp?.data?.desc || "Processing your request...",
+              );
+            if (resp.status === "success") respSuccess(resp);
+            if (resp.status === "error") respError(resp);
           },
         });
       });
@@ -96,7 +185,7 @@ function WritingPanel() {
   useEffect(() => {
     scrollToTop();
     return () => {};
-  }, [loading, networkResp]);
+  }, [netResp]);
 
   return (
     <Transition
@@ -106,91 +195,14 @@ function WritingPanel() {
       {...transitionPullV()}
     >
       <div className="text-4xl font-bold sm:text-5xl hidden sm:block">
+        {!loading && !netResp + ""}
         Write Article
       </div>
 
       <div className="relative min-w-full">
-        {loading && (
-          <StatusPlaceholder
-            status="loading"
-            title={`${networkResp?.message}`}
-            desc={
-              "Adding your beautifully written article into our database. Please wait for a moment, this will be very quick"
-            }
-            actions={[
-              {
-                label: "Cancel",
-                callback: () => {
-                  setNetWorkResp(undefined);
-                  setLoading(false);
-                },
-              },
-            ]}
-          />
-        )}
-
-        {!loading && networkResp?.status === "error" && (
-          <StatusPlaceholder
-            status="error"
-            title="Oops something wrong just happened..."
-            desc={`${networkResp?.message} \n- - - -\n${
-              networkResp?.data
-                ? "Not authenticated, in order to add article you need to be logged in first"
-                : ""
-            }`}
-            actions={[
-              {
-                label: "Go back",
-                callback: () => {
-                  setNetWorkResp(undefined);
-                },
-              },
-              {
-                label: "Try again",
-                callback: () => {
-                  submitArticle();
-                },
-              },
-            ]}
-          />
-        )}
-
-        {!loading && networkResp?.status === "success" && (
-          <StatusPlaceholder
-            status="success"
-            title="Article has been submitted!"
-            desc={
-              "Congratulations! We did it!\nYour beautifully written article has been added into our database for the world to read it!"
-            }
-            actions={[
-              {
-                label: "Write again",
-                callback: () => {
-                  action.setTab("Write");
-                  setNetWorkResp(undefined);
-                },
-              },
-              {
-                label: "Go to the article",
-                callback: () => {
-                  if (!networkResp?.data) return;
-                  router.push(
-                    `/article/${(networkResp.data as ArticleModel).slug}`,
-                  );
-                },
-              },
-              {
-                label: "Go to My Posts",
-                callback: () => {
-                  router.push("/user/posts");
-                },
-              },
-            ]}
-          />
-        )}
-
+        {netResp?.data && <StatusPlaceholder {...netResp.data} />}
         <Transition
-          show={!loading && !networkResp}
+          show={!netResp}
           enter="ease-out transform transition duration-500"
           enterFrom="opacity-0 translate-y-[20%] scale-x-0"
           enterTo="opacity-100 translate-y-0 scale-x-100"
