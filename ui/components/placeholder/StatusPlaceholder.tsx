@@ -143,7 +143,9 @@ const StatusPlaceholder = React.forwardRef<
         {/* Actions */}
         <div
           key={`actions-${newKey}`}
-          className={`flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 ${transition.actions} min-h-[0.125rem] sm:min-h-[0.25rem]`}
+          className={`flex flex-wrap gap-2 sm:gap-4 items-center justify-center
+          min-h-[0.125rem] sm:min-h-[0.25rem] ${transition.actions} 
+          `}
         >
           {actions && actions.length && (
             <>
