@@ -21,6 +21,7 @@ import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
+import { scrollToTop } from "../../../../app/hooks/RouteChangeHook";
 
 function LayoutUserPagePosts() {
   const {
@@ -66,7 +67,7 @@ function LayoutUserPagePosts() {
         await serviceArticleGetByUser({
           articleListId: user.list.posts,
           keyword: keyword || "",
-          paging: { start: offset, end: offset + 2 },
+          paging: { start: offset, end: offset + 5 },
         }),
     );
     if (!articleByUser) return setLoadingArticles(false);
@@ -103,6 +104,7 @@ function LayoutUserPagePosts() {
         }),
     );
     if (!deleteArticle) return;
+    scrollToTop();
     await getArticles({ init: true });
     modalDelete.close();
   }, [modalDelete.value]);
@@ -226,7 +228,7 @@ function LayoutUserPagePosts() {
         )}
         {/* articles */}
         {articles.length ? (
-          <div className="flex flex-col gap-2 sm:gap-4 min-h-[24rem]">
+          <div className="flex flex-col gap-2 sm:gap-4">
             {articles.map((e, idx) => {
               return (
                 <div key={e.id} className="flex">
@@ -294,8 +296,8 @@ function LayoutUserPagePosts() {
           articleData.offset < articleData.totalArticle && (
             <IntersectionObserverTrigger
               key={articleData.offset + ""}
-              callback={async () => {
-                loadMoreArticles();
+              callback={async (intersecting) => {
+                if (intersecting) return loadMoreArticles();
               }}
               className="flex w-full "
             ></IntersectionObserverTrigger>
