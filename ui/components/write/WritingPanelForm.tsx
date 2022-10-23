@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { MdAdd, MdEdit } from "react-icons/md";
 import { useWritingPanelCtx } from "../../../app/contexts/writingPanel/WritingPanelHook";
+import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
 import { WritingPanelFormProps } from "../../../base/data/contexts/WritingPanelTypes";
 // import { RegisterFormFields } from "../auth/AuthRegisterForm";
-import InputTextArea from "../input/InputTextArea";
 import InputText from "../input/InputText";
+import InputTextArea from "../input/InputTextArea";
 
 function WritingPanelForm({
   previewing,
@@ -49,14 +50,17 @@ function WritingPanelForm({
   // set the values of form formData (state) set with article draft
   useEffect(() => {
     // console.log("current form",getValues("thumbnail"));
-    if (formData) {
-      // console.log("ctx",formData.thumbnail);
-
-      reset({
+    console.log(formData);
+    if (formData)
+      return reset({
         ...formData,
         content: formData.content,
       });
-    }
+    // or if no more formData
+    // and detected if form was filled,
+    // reset the whole form
+    console.log(getValues("title"));
+    if (getValues("title")) return reset();
   }, [formData]);
 
   // set contexts formData before previewing
@@ -99,8 +103,8 @@ function WritingPanelForm({
               flex-col relative
               ${
                 thumbnail || formData?.defaultThumbnailPreview
-                ? "border-solid border-base-content"
-                : "border-dashed border-base-content/20"
+                  ? "border-solid border-base-content"
+                  : "border-dashed border-base-content/20"
               }
               `}
             >
@@ -297,6 +301,7 @@ function WritingPanelForm({
         <button
           className="--btn-resp btn btn-primary"
           onClick={() => {
+            scrollToTop(true);
             onSubmit();
           }}
           type="button"
