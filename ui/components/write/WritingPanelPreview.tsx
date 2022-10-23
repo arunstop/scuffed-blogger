@@ -1,6 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { useWritingPanelCtx } from "../../../app/contexts/writingPanel/WritingPanelHook";
+import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
 import {
   ArticleModel,
   toArticleModelDraft,
@@ -30,9 +31,12 @@ function WritingPanelPreview({
       clearTimeout(loadTimer);
     };
   }, []);
+
+  if (!formData) return <></>;
+
   // check if content is not empty
   const article = {
-    ...toArticleModelDraft(formData!),
+    ...toArticleModelDraft(formData),
     thumbnail: formData?.thumbnail?.[0]
       ? URL.createObjectURL(formData?.thumbnail[0])
       : formData?.defaultThumbnailPreview || "",
@@ -64,6 +68,7 @@ function WritingPanelPreview({
               <button
                 className="--btn-resp btn btn-primary"
                 onClick={() => {
+                  scrollToTop(true);
                   submit();
                 }}
                 type="button"
