@@ -8,10 +8,12 @@ function ModalActionItemsContainer({
   show,
   actions,
   openConfirmation,
+  closeModal,
 }: {
   show: boolean;
   actions: ModalActionAction[];
   openConfirmation: (value: ModalActionAction) => void;
+  closeModal:()=>void;
 }) {
   return (
     <>
@@ -20,6 +22,7 @@ function ModalActionItemsContainer({
           <ModalActionItem
             key={idx}
             openConfirmation={openConfirmation}
+            closeModal={closeModal}
             {...e}
           />
         );

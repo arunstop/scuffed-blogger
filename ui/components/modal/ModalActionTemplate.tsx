@@ -147,6 +147,7 @@ const ModalActionTemplate = ({
                     show={value}
                     actions={actions}
                     openConfirmation={(data) => setConfirmingAction(data)}
+                    closeModal={closeModal}
                   />
                 )}
                 {!!confirmingAction && (
