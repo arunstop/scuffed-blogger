@@ -15,8 +15,11 @@ function ToastContainer() {
             uiAct.addToast({
               id: Math.random() + "",
               label: "something",
-              action: () => {
-                console.log("toast clicked");
+              action: {
+                label: "Do something",
+                action: () => {
+                  console.log("toast clicked");
+                },
               },
               onClose: () => {},
             })
@@ -30,14 +33,7 @@ function ToastContainer() {
         <div className="flex flex-col-reverse gap-2 sm:gap-2">
           {uiStt.toasts.map((e) => {
             return (
-              <Toast
-                key={e.id}
-                toast={e}
-                dispose={() => {
-                  console.log("closing ", e.id);
-                  disposeToast(e.id);
-                }}
-              />
+              <Toast key={e.id} toast={e} dispose={() => disposeToast(e.id)} />
             );
           })}
         </div>
