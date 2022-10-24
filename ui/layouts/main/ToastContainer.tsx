@@ -7,7 +7,7 @@ function ToastContainer() {
   const disposeToast = useCallback((id: string) => uiAct.removeToast(id), []);
   console.log("rendering toast container");
   return (
-    <div className="fixed inset-x-0 bottom-0 flex justify-center mb-[3rem] sm:mb-0 pointer-events-none">
+    <div className="fixed inset-x-0 bottom-0 flex justify-center mb-[3rem] sm:mb-0 pointer-events-none z-[101]">
       <div className="flex flex-col p-2 sm:p-4 rounded-xl pointer-events-none [&>*]:pointer-events-auto">
         {/* <button
           className="btn"

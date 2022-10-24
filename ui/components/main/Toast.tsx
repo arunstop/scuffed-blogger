@@ -118,17 +118,19 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
     return (
       <div
         ref={setRef}
-        className={`flex flex-wrap  animate-fadeInUp items-center gap-1 rounded-xl animate-duration-500 sm:gap-2 p-2
+        className={`flex flex-wrap  animate-fadeInUp items-center gap-1 rounded-xl animate-duration-500 p-2
         max-w-[90vw] sm:max-w-[36rem]  overflow-hidden bg-base-content/50 backdrop-blur-sm
         ${colors.border}
         `}
       >
         <div className={`absolute ${colors.bg} inset-0 z-[-1] `}></div>
-        <div className={`self-start text-2xl ${colors.text}`}>{icon}</div>
-        <div
-          className={`text-sm sm:text-base line-clamp-3 max-w-[90%] ${colors.text} font-semibold`}
-        >
-          {label}
+        <div className="flex gap-1 sm:gap-2 max-w-[90%] items-center">
+          <div className={`self-start text-2xl ${colors.text}`}>{icon}</div>
+          <div
+            className={`text-sm sm:text-base line-clamp-3 ${colors.text} font-semibold`}
+          >
+            {capitalize(label)}
+          </div>
         </div>
 
         <div className="ml-auto flex items-center gap-1 sm:gap-2">
