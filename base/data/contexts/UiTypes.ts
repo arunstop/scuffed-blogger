@@ -1,13 +1,17 @@
 export interface UiToast {
-  id:string;
+  id: string;
   label: string;
-  action?:{
-    label:string;
-    action:()=>void;
+  action?: {
+    label: string;
+    action: () => void;
   };
-  duration?:number;
+  type?: UiToastType;
+  duration?: number;
   onClose?: () => void;
 }
+
+export type  UiToastType = "error" | "success" | "info"  | "normal";
+
 export interface UiContextProps {
   state: UiState;
   action: UiAction;
@@ -21,9 +25,9 @@ export interface UiState {
 
 export interface UiAction {
   toggleDarkMode: (newVal: boolean) => void;
-  addToast: (toast:UiToast) => void;
-  removeToast: (id:string) => void;
-  clearToasts:()=>void;
+  addToast: (toast: UiToast) => void;
+  removeToast: (id: string) => void;
+  clearToasts: () => void;
   // setReplyingCommentId: (id: string | number|null) => void;
 }
 
@@ -39,7 +43,8 @@ export type UiActionTypes =
   | {
       type: "REMOVE_TOAST";
       payload: { id: string };
-    }|{
+    }
+  | {
       type: "CLEAR_TOASTS";
     };
 // | {
