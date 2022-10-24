@@ -154,7 +154,10 @@ const ModalActionTemplate = ({
                     {/* Confirmation dialog */}
                     <ModalActionConfirmation
                       value={!!confirmingAction}
-                      onClose={() => setConfirmingAction(undefined)}
+                      onClose={() => {
+                        setConfirmingAction(undefined);
+                      }}
+                      closeModal={closeModal}
                       action={confirmingAction}
                     />
                   </>

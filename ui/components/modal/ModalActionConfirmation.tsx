@@ -7,7 +7,8 @@ function ModalActionConfirmation({
   value: show,
   onClose,
   action,
-}: ModalProps & { action: ModalActionAction | undefined }) {
+  closeModal,
+}: ModalProps & { action: ModalActionAction | undefined,closeModal:()=>void }) {
   return (
     <Transition
       show={show}
@@ -24,19 +25,21 @@ function ModalActionConfirmation({
       // leaveTo="opacity-0 scale-0"
       appear
     >
-      <MzContent show={show} action={action} close={() => onClose()} />
+      <MzContent show={show} action={action} closeConfirmation={() => onClose()} closeModal={closeModal}/>
     </Transition>
   );
 }
 
 const Content = ({
   show,
-  close,
   action,
+   closeConfirmation,
+   closeModal,
 }: {
   show: boolean;
   action?: ModalActionAction;
-  close: () => void;
+  closeConfirmation: () => void;
+  closeModal: () => void;
 }) => {
   return (
     <>
@@ -56,14 +59,14 @@ const Content = ({
           className="--btn-resp btn btn-primary flex-1 rounded-xl"
           onClick={() => {
             action?.action?.();
-            close();
+            closeModal();
           }}
         >
           OK
         </button>
         <button
           className="--btn-resp btn-outline btn flex-1 rounded-xl"
-          onClick={() => close()}
+          onClick={() => closeConfirmation()}
         >
           Cancel
         </button>
