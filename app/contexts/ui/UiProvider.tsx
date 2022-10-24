@@ -1,5 +1,9 @@
 import { ReactNode, useEffect, useReducer } from "react";
-import { UiAction, UiContextProps } from "../../../base/data/contexts/UiTypes";
+import {
+  UiAction,
+  UiContextProps,
+  UiToast,
+} from "../../../base/data/contexts/UiTypes";
 import {
   initClientDarkMode,
   toggleClientDarkMode,
@@ -16,9 +20,15 @@ export const UiProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: "TOGGLE_DARK_MODE", payload: { newVal } });
       toggleClientDarkMode(newVal);
     },
-    // setReplyingCommentId: (id) => {
-    //   dispatch({ type: "SET_REPLYING_COMMENT_ID", payload: { id } });
-    // },
+    addToast: function (toast: UiToast): void {
+      dispatch({ type: "ADD_TOAST", payload: { toast: toast } });
+    },
+    removeToast: function (id: string): void {
+      dispatch({ type: "REMOVE_TOAST", payload: { id: id } });
+    },
+    clearToasts: function (): void {
+      dispatch({ type: "CLEAR_TOASTS" });
+    },
   };
 
   const value: UiContextProps = {
