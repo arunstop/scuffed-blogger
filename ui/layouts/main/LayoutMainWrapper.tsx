@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import ScrollTopButton from "../../components/main/ScrollTopButton";
 import SearchModal from "../../components/main/SearchModal";
 import Sidebar from "../../components/main/Sidebar";
+import ToastContainer from "./ToastContainer";
 import BottomBar from "./BottomBar";
 
 function LayoutMainWrapper({ children }: { children: ReactNode }) {
@@ -27,7 +28,8 @@ function LayoutMainWrapper({ children }: { children: ReactNode }) {
       </>
       {/* Footer */}
       <Footer />
-      <ScrollTopButton/>
+      <ScrollTopButton />
+      <ToastContainer />
     </>
   );
 }

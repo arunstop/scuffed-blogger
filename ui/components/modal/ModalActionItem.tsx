@@ -1,14 +1,13 @@
-import {
-  ModalActionAction
-} from "./ModalActionTemplate";
+import { ModalActionAction } from "./ModalActionTemplate";
 
 function ModalActionItem(
   props: ModalActionAction & {
     action?: () => void;
-    openConfirmation: (action:ModalActionAction) => void;
+    openConfirmation: (action: ModalActionAction) => void;
+    closeModal: () => void;
   },
 ) {
-  const { label, confirmation, icon, action, openConfirmation } = props;
+  const { label, confirmation, icon, action, openConfirmation ,closeModal} = props;
   return (
     <li
       className="odd:animate-fadeInUp even:animate-fadeInDown
@@ -21,7 +20,11 @@ function ModalActionItem(
         w-full
       "
         title={label}
-        onClick={confirmation ? () => openConfirmation(props) : action}
+        onClick={() => {
+          if (confirmation) return openConfirmation(props);
+          action?.();
+          closeModal();
+        }}
       >
         <span className="truncate">
           {label} {!!confirmation && <>&middot;</>}

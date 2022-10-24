@@ -3,6 +3,7 @@ import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import { MdDelete, MdFlag, MdPersonOff, MdReport } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
+import { useUiCtx } from "../../../app/contexts/ui/UiHook";
 import { ModalProps } from "../../../base/data/Main";
 import ModalActionTemplate, {
   ModalActionAction,
@@ -20,6 +21,7 @@ function ArticleCommentOptionModal({
     state: { comments, replies },
     action,
   } = useCommentCtx();
+  const { uiAct } = useUiCtx();
 
   const paramArr = paramValue.split(".");
   const isParentComment = paramArr.length === 1;
@@ -60,22 +62,29 @@ function ArticleCommentOptionModal({
         // if param has wrong format
 
         if (!isParentComment && !isReply) return;
-        // parent comment
+        // if parent comment is a  parent comment
         if (paramArr.length === 1) {
           const invalidLength = paramValue.length !== 38;
           if (invalidLength) return;
           // commit an action based on the type of the comment
           action.deleteComment(paramArr[0]);
-          return onClose();
+          uiAct.addToast({
+            label: "Comment successfully deleted",
+            type: "success",
+          });
         }
-        // reply comment
+        // if reply comment
         const invalidLength = paramValue.length !== 77;
         if (invalidLength) return;
         const parentId = paramArr[0];
         const id = paramArr[1];
         // commit an action based on the type of the comment
         action.deleteReply(parentId, id); //reply
-        return onClose();
+        uiAct.addToast({
+          label: "Reply successfully deleted",
+          type: "success",
+        });
+        console.log("hello");
       },
     },
     {

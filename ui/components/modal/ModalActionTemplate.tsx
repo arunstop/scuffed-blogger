@@ -67,7 +67,7 @@ const ModalActionTemplate = ({
     <Transition appear show={value} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed inset-0 z-[999] flex items-end justify-center sm:items-center"
+        className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center"
         onClose={closeModal}
       >
         {/* OVERLAY */}
@@ -147,6 +147,7 @@ const ModalActionTemplate = ({
                     show={value}
                     actions={actions}
                     openConfirmation={(data) => setConfirmingAction(data)}
+                    closeModal={closeModal}
                   />
                 )}
                 {!!confirmingAction && (
@@ -154,7 +155,10 @@ const ModalActionTemplate = ({
                     {/* Confirmation dialog */}
                     <ModalActionConfirmation
                       value={!!confirmingAction}
-                      onClose={() => setConfirmingAction(undefined)}
+                      onClose={() => {
+                        setConfirmingAction(undefined);
+                      }}
+                      closeModal={closeModal}
                       action={confirmingAction}
                     />
                   </>
