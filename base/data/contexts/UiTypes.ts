@@ -1,7 +1,11 @@
 export interface UiToast {
   id:string;
   label: string;
-  action?: () => void;
+  action?:{
+    label:string;
+    action:()=>void;
+  };
+  duration?:number;
   onClose?: () => void;
 }
 export interface UiContextProps {
