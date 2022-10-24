@@ -1,4 +1,3 @@
-import { nanoid } from "nanoid";
 import React, { useMemo } from "react";
 import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import {
@@ -6,12 +5,12 @@ import {
   MdHideSource,
   MdPersonOff,
   MdReport,
-  MdShare,
+  MdShare
 } from "react-icons/md";
 import { useUiCtx } from "../../../app/contexts/ui/UiHook";
 import { usePostOptionModalBehaviorHook } from "../../../app/hooks/PostOptionModalBehaviorHook";
 import ModalActionTemplate, {
-  ModalActionAction,
+  ModalActionAction
 } from "../modal/ModalActionTemplate";
 
 function ArticleCommentOptionModal() {
@@ -24,7 +23,6 @@ function ArticleCommentOptionModal() {
         // confirmation: { title: "Show less like this", desc: "Show less like this" },
         action: () => {
           uiAct.addToast({
-            id: nanoid(),
             label: `success doing Show less like this`,
             // action:()=>{},
             type: "success",
@@ -37,7 +35,6 @@ function ArticleCommentOptionModal() {
         confirmation: { title: "Share article", desc: "Share article" },
         action: () => {
           uiAct.addToast({
-            id: nanoid(),
             label: `success doing Share article`,
             // action:()=>{},
             type: "success",
@@ -50,7 +47,6 @@ function ArticleCommentOptionModal() {
         confirmation: { title: "Report article", desc: "Report article" },
         action: () => {
           uiAct.addToast({
-            id: nanoid(),
             label: `success doing Report article`,
             // action:()=>{},
             type: "success",
@@ -66,7 +62,6 @@ function ArticleCommentOptionModal() {
         },
         action: () => {
           uiAct.addToast({
-            id: nanoid(),
             label: `You will not see any of their posts until you un-mute them back, are you sure?`,
             // action:()=>{},
             type: "success",
@@ -88,7 +83,6 @@ function ArticleCommentOptionModal() {
         // confirmation: { title: "Unmute author", desc: "Unmute author" },
         action: () => {
           uiAct.addToast({
-            id: nanoid(),
             label: `success doing Unmute author`,
             // action:()=>{},
             type: "success",
@@ -101,7 +95,6 @@ function ArticleCommentOptionModal() {
         // confirmation: { title: "Report author", desc: "Report author" },
         action: () => {
           uiAct.addToast({
-            id: nanoid(),
             label: `success doing Report author`,
             // action:()=>{},
             type: "success",
@@ -117,7 +110,6 @@ function ArticleCommentOptionModal() {
         },
         action: () => {
           uiAct.addToast({
-            id: nanoid(),
             label: `success doing Block author`,
             // action:()=>{},
             type: "success",

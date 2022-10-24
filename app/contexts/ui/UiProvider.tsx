@@ -1,9 +1,6 @@
+import { nanoid } from "nanoid";
 import { ReactNode, useEffect, useReducer } from "react";
-import {
-  UiAction,
-  UiContextProps,
-  UiToast,
-} from "../../../base/data/contexts/UiTypes";
+import { UiAction, UiContextProps } from "../../../base/data/contexts/UiTypes";
 import {
   initClientDarkMode,
   toggleClientDarkMode,
@@ -20,8 +17,11 @@ export const UiProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: "TOGGLE_DARK_MODE", payload: { newVal } });
       toggleClientDarkMode(newVal);
     },
-    addToast: function (toast: UiToast): void {
-      dispatch({ type: "ADD_TOAST", payload: { toast: toast } });
+    addToast: function (newToast): void {
+      dispatch({
+        type: "ADD_TOAST",
+        payload: { toast: { ...newToast, id: nanoid() } },
+      });
     },
     removeToast: function (id: string): void {
       dispatch({ type: "REMOVE_TOAST", payload: { id: id } });

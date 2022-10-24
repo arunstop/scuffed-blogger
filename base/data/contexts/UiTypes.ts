@@ -10,7 +10,7 @@ export interface UiToast {
   onClose?: () => void;
 }
 
-export type  UiToastType = "error" | "success" | "info"  | "normal";
+export type UiToastType = "error" | "success" | "info" | "normal";
 
 export interface UiContextProps {
   state: UiState;
@@ -23,9 +23,11 @@ export interface UiState {
   toasts: UiToast[];
 }
 
+export type UiToastRaw = Omit<UiToast, "id">;
+
 export interface UiAction {
   toggleDarkMode: (newVal: boolean) => void;
-  addToast: (toast: UiToast) => void;
+  addToast: (newToast: UiToastRaw) => void;
   removeToast: (id: string) => void;
   clearToasts: () => void;
   // setReplyingCommentId: (id: string | number|null) => void;
