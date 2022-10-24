@@ -1,11 +1,20 @@
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import React from "react";
-import AuthPanel from "../components/auth/AuthPanel";
-import MainContainer from "../components/main/MainContainer";
-import { APP_NAME } from "../utils/helpers/Constants";
+import SplashScreen from "../ui/components/placeholder/SplashScreen";
+import { APP_NAME } from "../app/helpers/Constants";
+
+const LazyLayoutAuthPage = dynamic(
+  () => import("../ui/layouts/auth/pages/LayoutAuthPage"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <SplashScreen />;
+    },
+  },
+);
 
 function Auth() {
-  const title = "Login to " + APP_NAME + " | " + APP_NAME;
+  const title = "Login to " + APP_NAME + " - " + APP_NAME;
 
   return (
     <>
@@ -15,9 +24,7 @@ function Auth() {
         <meta name="description" content={"Login to write articles!"} />
       </Head>
       {/* <Header /> */}
-      <MainContainer>
-        <AuthPanel />
-      </MainContainer>
+      <LazyLayoutAuthPage />
       {/* <Footer/> */}
     </>
   );

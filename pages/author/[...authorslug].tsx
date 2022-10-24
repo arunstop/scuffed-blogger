@@ -2,9 +2,9 @@ import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import React, { useState } from "react";
-import MainContainer from "../../components/main/MainContainer";
-import MainSectionSkeleton from "../../components/main/MainSectionSkeleton";
-import { APP_NAME } from "../../utils/helpers/Constants";
+import Container from "../../ui/components/common/Container";
+import SectionSkeleton from "../../ui/components/placeholder/SectionSkeleton";
+import { APP_NAME } from "../../app/helpers/Constants";
 
 interface AuthorPageProps {
   author: string;
@@ -32,9 +32,9 @@ const getServerSideProps: GetServerSideProps<AuthorPageProps> = async (
 };
 
 const LazyUserContent = dynamic(
-  () => import("../../components/user/UserContent"),
+  () => import("../../ui/components/user/UserContent"),
   {
-    loading: () => <MainSectionSkeleton text="Loading User's information..." />,
+    loading: () => <SectionSkeleton text="Loading User's information..." />,
     ssr: false,
   },
 );
@@ -55,7 +55,7 @@ function Author({author,tab}:AuthorPageProps) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={content} />
       </Head>
-      <MainContainer>
+      <Container>
         <div className="relative flex h-auto w-full flex-col">
           <img
             className="absolute h-[10rem] w-full max-w-none rounded-xl bg-primary-focus object-cover sm:h-[15rem]"
@@ -99,7 +99,7 @@ function Author({author,tab}:AuthorPageProps) {
           </div>
         </div>
          <LazyUserContent initTab={tab} />
-      </MainContainer>
+      </Container>
     </>
   );
 }

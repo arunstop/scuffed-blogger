@@ -1,20 +1,42 @@
 import type { AppContext, AppProps } from "next/app";
 import App from "next/app";
 import Script from "next/script";
-import NextNProgress from "nextjs-progressbar";
 import "../styles/globals.css";
-import { AuthProvider } from "../utils/contexts/auth/AuthProvider";
-import { UiProvider } from "../utils/contexts/ui/UiProvider";
 // import { ArticleModel } from "../utils/data/models/ArticleModel";
+import dynamic from "next/dynamic";
+import  Head  from "next/head";
 import { parseCookies } from "nookies";
-import { isUserModel, UserModel } from "../utils/data/models/UserModel";
-import { COOKIE_USER_AUTH } from "../utils/helpers/Constants";
-import { useRouteChange } from "../utils/hooks/RouteChangeHook";
-import LayoutMainWrapper from "../layouts/main/LayoutMainWrapper";
+import SplashScreen from "../ui/components/placeholder/SplashScreen";
+import { isUserModel, UserModel } from "../base/data/models/UserModel";
+import { APP_DESC, APP_NAME, COOKIE_USER_AUTH } from "../app/helpers/Constants";
+import { useRouteChange } from "../app/hooks/RouteChangeHook";
 
 interface AdditionalAppProps {
   user?: UserModel;
 }
+const LazyNextProgressBar = dynamic(() => import("nextjs-progressbar"), {
+  ssr: false,
+});
+
+const LazyLayoutMainWrapper = dynamic(
+  () => import("../ui/layouts/main/LayoutMainWrapper"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <SplashScreen />;
+    },
+  },
+);
+
+const LazyLayoutAppWrapper = dynamic(
+  () => import("../ui/layouts/main/LayoutAppWrapper"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <SplashScreen />;
+    },
+  },
+);
 
 // Not using `NextPage` type because of it is custom
 const MainApp = ({
@@ -27,21 +49,18 @@ const MainApp = ({
   return (
     <>
       <Script src="/ThemeInitializer.js" strategy="beforeInteractive" />
+      <Head>
+        <title>{`${APP_NAME} - Let your voice be heard`}</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta name="description" content={APP_DESC} />
+      </Head>
+      <LazyLayoutAppWrapper user={user}>
+        <Component {...pageProps} />
+      </LazyLayoutAppWrapper>
 
-      <AuthProvider initUser={user}>
-        <UiProvider>
-          <NextNProgress
-            color="hsl(var(--pc))"
-            startPosition={0.4}
-            stopDelayMs={200}
-            height={6}
-            showOnShallow={false}
-          />
-          <LayoutMainWrapper>
-          <Component {...pageProps} />
-          </LayoutMainWrapper>
-        </UiProvider>
-      </AuthProvider>
+      {/* <LazyLayoutAppWrapper user={user}>
+        <Component {...pageProps} />
+      </LazyLayoutAppWrapper> */}
     </>
   );
 };

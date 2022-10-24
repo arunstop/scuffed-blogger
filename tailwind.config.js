@@ -1,10 +1,11 @@
-module.exports = {
+const withAnimations = require("animated-tailwindcss");
+
+module.exports = withAnimations({
   content: [
     "./pages/**/*.tsx",
-    "./components/**/*.tsx",
-    "./layouts/**/*.tsx",
-    "./utils/**/*.tsx",
-    "./utils/helpers/*.ts",
+    "./ui/**/*.tsx",
+    "./app/**/*.tsx",
+    "./app/helpers/*.ts",
   ],
   theme: {
     extend: {
@@ -14,13 +15,17 @@ module.exports = {
       rotate: {
         360: "360deg",
       },
-      // animation:{
-      //   'bounce-fast' : "bounce 900ms infinite",
-      //   'bounce-slow' : "bounce 1100ms infinite",
-      // }
+      animation:{
+        'pop' : "button-pop 300ms ease-out",
+        // 'bounce-slow' : "bounce 1100ms infinite",
+      }
     },
   },
-  plugins: [require("@tailwindcss/typography"),require("@tailwindcss/line-clamp"), require("daisyui")],
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/line-clamp"),
+    require("daisyui"),
+  ],
   darkMode: "class",
   // DAISY UI CONFIG
   daisyui: {
@@ -50,4 +55,4 @@ module.exports = {
     prefix: "",
     // darkTheme: "luxury",
   },
-};
+});

@@ -1,43 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isUserModel } from "./utils/data/models/UserModel";
-import { COOKIE_USER_AUTH } from "./utils/helpers/Constants";
+import { isUserModel } from "./base/data/models/UserModel";
+import { COOKIE_USER_AUTH } from "./app/helpers/Constants";
 
-
-const protectedRoutes = ["/write", "/profile"];
+const protectedRoutes = ["/write", "/user/posts", "/auth", "/profile"];
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  const reqRoute = request.nextUrl.pathname;
+  const pathname = request.nextUrl.pathname.toLowerCase();
 
   // check if user requested to access to protected routes without authenticating
   // a.k.a tresspassing
   //  by checking their cookies
-  const auth = request.cookies.get(COOKIE_USER_AUTH)||"";
-  let isValid;
+  const auth = request.cookies.get(COOKIE_USER_AUTH) || "";
+  let isCookieValid;
   try {
-    isValid = isUserModel(JSON.parse(auth) as unknown);
+    isCookieValid = isUserModel(JSON.parse(auth) as unknown);
   } catch {
-    isValid = false;
+    isCookieValid = false;
   }
-  
+
   //   matching requested route to the protected routes array
   const isTresspassing =
     protectedRoutes.filter((e) => {
-      return reqRoute.toLowerCase().includes(e.toLowerCase());
+      return pathname.includes(e.toLowerCase());
     }).length > 0;
+  const onAuthPage = pathname.includes("/auth");
   // if invalid
-  if (!isValid) {
-    //   if tresspassing, then redirect to auth
-    if (isTresspassing)
+  if (!isCookieValid) {
+    //   if tresspassing and not on auth page, then redirect to auth
+    if (isTresspassing && !onAuthPage)
       return NextResponse.redirect(new URL("/auth", request.url));
     //   if not trespassing, then don't redirect
     return NextResponse.next();
   }
   // if valid
-  const onAuthPage = reqRoute.toLowerCase().includes("/auth");
   // if valid and accessing /auth, then redirect to profile
-  if (onAuthPage)
-    return NextResponse.redirect(new URL("/profile/choosetopics", request.url));
+  if (onAuthPage) return NextResponse.redirect(new URL("/", request.url));
   // if not accessing auth, then don't redirect
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: protectedRoutes,
+};
