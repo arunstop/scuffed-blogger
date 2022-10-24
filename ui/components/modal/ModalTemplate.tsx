@@ -31,7 +31,7 @@ ModalProps & ModalTemplateProps) => {
     <Transition appear show={value} as={Fragment}>
       <Dialog
         as="div"
-        className={`fixed inset-0 z-[999] flex justify-center items-end sm:items-center ${className}`}
+        className={`fixed inset-0 z-[100] flex justify-center items-end sm:items-center ${className}`}
         onClose={onClose}
         initialFocus={initialFocus}
       >
