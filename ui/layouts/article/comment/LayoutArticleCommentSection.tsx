@@ -92,7 +92,7 @@ function LayoutArticleCommentSectionContent() {
   return (
     <>
       <div className="flex flex-col gap-4 sm:gap-8">
-        {commentList?.comments.length && (
+        {!!commentList?.comments.length && (
           <div className="flex animate-fadeIn items-center justify-between gap-2 sm:justify-start sm:gap-4 z-[1]">
             <span className="truncate text-sm font-bold sm:text-base">{`${commentList.total} Comments`}</span>
             <Dropdown options={sortOptions}>
