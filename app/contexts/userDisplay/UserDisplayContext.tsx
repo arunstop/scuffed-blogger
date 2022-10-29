@@ -3,7 +3,7 @@ import {
   useCallback,
   useContext,
   useRef,
-  useSyncExternalStore
+  useSyncExternalStore,
 } from "react";
 import { UserDisplay } from "../../../base/data/contexts/ContextUserDisplay";
 import { autoRetry } from "../../helpers/MainHelpers";
@@ -22,7 +22,7 @@ export function createUDContext() {
     const subscribers = useRef(new Set<() => void>());
 
     const set = useCallback(
-      (callback: (state: UserDisplay) => Partial<UserDisplay>) => {
+      async (callback: (state: UserDisplay) => Partial<UserDisplay>) => {
         const value = callback(store.current);
         store.current = { ...store.current, ...value };
         subscribers.current.forEach((callback) => callback());
@@ -83,16 +83,21 @@ export function createUDContext() {
     }
     return {
       async addUserDisplay(userId: string) {
-        console.log(store.get().displays);
+        // returns nothing duplicated
         if (store.get().displays.find((e) => e.id === userId)) return;
-        const displayFromDb = await autoRetry(
+        const fromDb = await autoRetry(
           async () => await fbUserDisplayGet({ data: { userId: userId } }),
         );
-        if (!displayFromDb) return;
+        if (!fromDb) return;
+        // console.log(`${fromDb.username}`);
+        // console.log({
+        //   ...state,
+        //   displays: [...state.displays, fromDb],
+        // });
         store.set((state) => {
           return {
             ...state,
-            displays: [...state.displays, displayFromDb],
+            displays: [...state.displays, fromDb],
           };
         });
       },

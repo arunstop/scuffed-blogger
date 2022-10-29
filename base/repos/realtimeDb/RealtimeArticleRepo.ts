@@ -58,8 +58,6 @@ export async function repoRtArticleGetAll({
       data = dataRaw;
     }
 
-    console.log(data);
-
     // if count is zero  meaning it will return all the data.
     const limit = !count ? undefined : start + count;
 

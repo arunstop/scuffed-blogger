@@ -21,7 +21,6 @@ export async function repoRtUserDisplayGetById(userId: string) {
   if (!res.exists()) return null;
   const dataRaw = res.val();
   const data = dataRaw as UserDisplayModel;
-  console.log("data", data);
   return data;
 }
 
