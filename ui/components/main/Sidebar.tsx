@@ -275,6 +275,10 @@ function Sidebar() {
           closeDrawer();
           await waitFor(1000);
           authAct.unsetUser();
+          uiAct.addToast({
+              label: "We hope to see you again!",
+              type:"success",
+            });
         }}
         labelOk={"Logout"}
       />
