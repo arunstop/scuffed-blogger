@@ -5,6 +5,7 @@ import {
   useUserDisplayActions,
   useUserDisplayStates,
 } from "../../../app/contexts/userDisplay/UserDisplayContext";
+
 import { waitFor } from "../../../app/helpers/DelayHelpers";
 import { autoRetry } from "../../../app/helpers/MainHelpers";
 import {
@@ -20,8 +21,7 @@ import IntersectionObserverTrigger from "../../components/utils/IntesectionObser
 
 function LayoutIndexPostSection() {
   return (
-    <UserDisplayProvider
-    >
+    <UserDisplayProvider>
       <Child />
     </UserDisplayProvider>
   );
@@ -92,7 +92,14 @@ function Child() {
                 id="main-content"
               >
                 {feed.articles.map((e) => {
-                  return <PostItem key={e.id} article={e} userDisplay={displays.find((dd)=>dd.id===e.author)} observe />;
+                  return (
+                    <PostItem
+                      key={e.id}
+                      article={e}
+                      userDisplay={displays.find((dd) => dd.id === e.author)}
+                      observe
+                    />
+                  );
                 })}
               </div>
               <PostOptionModal />
