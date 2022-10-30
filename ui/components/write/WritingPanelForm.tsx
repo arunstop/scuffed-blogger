@@ -50,8 +50,6 @@ function WritingPanelForm({
 
   // set the values of form formData (state) set with article draft
   useEffect(() => {
-    // console.log("current form",getValues("thumbnail"));
-    console.log(formData);
     if (formData)
       return reset({
         ...formData,
@@ -60,7 +58,6 @@ function WritingPanelForm({
     // or if no more formData
     // and detected if form was filled,
     // reset the whole form
-    console.log(getValues("title"));
     if (getValues("title")) return reset();
   }, [formData]);
 
@@ -117,7 +114,7 @@ function WritingPanelForm({
               {/* thumbnail */}
               <div
                   key={thumbnail?.name || "placeholder-img"}
-                className={`h-full w-full cursor-pointer  animate-zoomIn animate-duration-500`}
+                className={`h-full w-full cursor-pointer  animate-zoomIn`}
               >
                 <img
                   className={`w-full h-full object-cover transition-transform duration-500 
@@ -187,7 +184,6 @@ function WritingPanelForm({
                       ];
                       if (!validImgTypes.includes(file.type)) {
                         // resetField("avatar");
-                        console.log("Invalid image file type");
                         return setError("thumbnail", {
                           type: "forbiddenFileType",
                           message: "Invalid image file type",
@@ -196,7 +192,6 @@ function WritingPanelForm({
 
                       if (file.size > 2e6) {
                         // resetField("thumbnail");
-                        console.log("File cannot be more than 2MB");
                         return setError("thumbnail", {
                           type: "exceededFileSize",
                           message: "File cannot be more than 2MB",
@@ -219,9 +214,9 @@ function WritingPanelForm({
                     // using normal reset instead of resetField
                     // because after switching back from preview
                     // reset doesn't work for some reason.
-                    reset({ thumbnail: undefined }, { keepValues: false });
+                    // reset({ thumbnail: undefined }, { keepValues: false });
 
-                    // resetField("thumbnail",{defaultValue:undefined});
+                    resetField("thumbnail",{defaultValue:undefined});
                   }}
                   type="button"
                   tabIndex={-1}
