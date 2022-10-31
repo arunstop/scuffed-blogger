@@ -96,7 +96,7 @@ function WritingPanelForm({
           </span>
           <div className="flex w-full flex-col sm:w-max">
             <label
-            key={errors.thumbnail?.message || "thumbnail-container"}
+              key={errors.thumbnail?.message || "thumbnail-container"}
               id="thumbnail-upload-trigger"
               className={`flex w-full sm:w-[30rem] h-auto aspect-video
               rounded-lg border-2  group overflow-hidden
@@ -108,12 +108,12 @@ function WritingPanelForm({
                   ? "border-solid border-content"
                   : "border-dashed border-base-content/20"
               }
-              ${errors.thumbnail ? 'animate-headShake duration-500' : ''}
+              ${errors.thumbnail ? "animate-headShake duration-500" : ""}
               `}
             >
               {/* thumbnail */}
               <div
-                  key={thumbnail?.name || "placeholder-img"}
+                key={thumbnail?.name || "placeholder-img"}
                 className={`h-full w-full cursor-pointer  animate-zoomIn`}
               >
                 <img
@@ -216,7 +216,7 @@ function WritingPanelForm({
                     // reset doesn't work for some reason.
                     // reset({ thumbnail: undefined }, { keepValues: false });
 
-                    resetField("thumbnail",{defaultValue:undefined});
+                    resetField("thumbnail", { defaultValue: undefined });
                   }}
                   type="button"
                   tabIndex={-1}
@@ -228,7 +228,7 @@ function WritingPanelForm({
                 <button
                   className="--btn-resp btn-link btn text-base-content"
                   onClick={() => {
-                    return clearErrors("thumbnail");
+                    clearErrors("thumbnail");
                   }}
                   type="button"
                   tabIndex={-1}
@@ -237,18 +237,32 @@ function WritingPanelForm({
                 </button>
               )}
               {!thumbnail && errors.thumbnail && (
-                <button
-                  className="--btn-resp btn-link btn text-base-content"
-                  onClick={() => {
-                    document
-                      .getElementById("thumbnail-upload-trigger")
-                      ?.click();
-                  }}
-                  type="button"
-                  tabIndex={-1}
-                >
-                  Upload again
-                </button>
+                <div className="flex justify-around w-full ">
+                  <button
+                    className="--btn-resp btn-link btn text-base-content"
+                    onClick={() => {
+                      document
+                        .getElementById("thumbnail-upload-trigger")
+                        ?.click();
+                    }}
+                    type="button"
+                    tabIndex={-1}
+                  >
+                    Try again
+                  </button>
+                  {!!formData?.defaultThumbnailPreview && (
+                    <button
+                      className="--btn-resp btn-link btn text-base-content"
+                      onClick={() => {
+                        clearErrors("thumbnail");
+                      }}
+                      type="button"
+                      tabIndex={-1}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>
