@@ -21,7 +21,10 @@ import {
   ArticleModel,
   factoryArticleComplete,
 } from "../../data/models/ArticleModel";
-import { ArticleListModelByUser } from "../../../app/services/ArticleService";
+import {
+  ArticleIdsByUser,
+  ArticleListModelByUser,
+} from "../../../app/services/ArticleService";
 import { firebaseClient } from "../../clients/FirebaseClient";
 
 const articleDb = firebaseClient.collections.articles;
@@ -35,6 +38,62 @@ export async function repoFsArticleGetAll(): Promise<ArticleModel[] | null> {
     factoryArticleComplete(doc.data() as ArticleModel),
   );
   return list;
+}
+
+// @return article ids
+export async function repoFsArticleGetIds({
+  articleListRefId,
+  keyword,
+  paging,
+}: {
+  articleListRefId: string;
+  keyword: string;
+  paging: {
+    start: number;
+    end: number;
+  };
+}): Promise<ArticleIdsByUser | null> {
+  const ref = doc(articleDb, articleListRefId);
+  const snapshot = await getDoc(ref);
+  if (!snapshot.exists()) return null;
+
+  const dataRaw = snapshot.data() as ArticleListModel;
+  if (!dataRaw.articles.length) return null;
+
+  const data = {
+    ids: dataRaw.articles.map((e) => e.id),
+    keyword: keyword,
+    offset: paging.end,
+    totalArticle: dataRaw.articles.length,
+  } as ArticleIdsByUser;
+
+  // no keyword
+  if (!keyword) return data;
+  // with keyword
+  const kw = keyword.trim().toLowerCase();
+  const filteredArticles = dataRaw.articles
+    .filter((e) => {
+      const title = e.title.toLowerCase().trim();
+      const desc = e.desc.toLowerCase().trim();
+      const topics = e.topics?.join(" ").toLowerCase().trim() || "";
+      const tags = e.tags.join(" ").toLowerCase().trim();
+      // const date = format(e.dateAdded, "EEEE, DDDD MMMM yyyy")
+      //   .toLowerCase()
+      //   .trim();
+      return (
+        title.includes(kw) ||
+        desc.includes(kw) ||
+        topics.includes(kw) ||
+        tags.includes(kw)
+      );
+    })
+    .map((e) => e.id);
+
+  return {
+    ...data,
+    ids: filteredArticles.slice(paging.start, paging.end),
+    totalArticle: filteredArticles.length,
+  };
 }
 
 // @return all articles

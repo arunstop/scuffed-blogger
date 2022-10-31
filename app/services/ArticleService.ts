@@ -1,5 +1,5 @@
 import { FirebaseError } from "firebase/app";
-import { values } from "lodash";
+import { omit, values } from "lodash";
 import { nanoid } from "nanoid";
 import { WritingPanelFormProps } from "../../base/data/contexts/WritingPanelTypes";
 import {
@@ -8,12 +8,12 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess,
+  netSuccess
 } from "../../base/data/Main";
 import {
   ArticleModel,
   toArticleModel,
-  toArticleModelUpdated,
+  toArticleModelUpdated
 } from "../../base/data/models/ArticleModel";
 import { UserModel } from "../../base/data/models/UserModel";
 import {
@@ -22,17 +22,17 @@ import {
   repoFsArticleContentAdd,
   repoFsArticleContentDelete,
   repoFsArticleContentUpdate,
-  repoFsArticleDelete,
-  repoFsArticleGetByUser,
-  repoFsArticleUpdate,
+  repoFsArticleDelete, repoFsArticleGetIds,
+  repoFsArticleUpdate
 } from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
   repoRtArticleGetAll,
+  repoRtArticleGetById,
   repoRtArticleMirrorAdd,
   repoRtArticleMirrorDelete,
   repoRtArticleMirrorUpdate,
   repoRtArticleSearch,
-  repoRtArticleUpdateView,
+  repoRtArticleUpdateView
 } from "../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 import Fuse from "fuse.js";
@@ -41,10 +41,10 @@ import { MainApiResponse } from "../../base/data/Main";
 import { ArticleListModel } from "../../base/data/models/ArticleListModel";
 import {
   repoStDirectoryDelete,
-  repoStFileDeleteByFullLink,
+  repoStFileDeleteByFullLink
 } from "../../base/repos/StorageModules";
-import { serviceFileUpload } from "./FileService";
 import { imageToPng } from "../helpers/MainHelpers";
+import { serviceFileUpload } from "./FileService";
 
 // Adding article, now using direct firebaseClient
 interface PropsAddArticle {
@@ -56,6 +56,14 @@ interface PropsAddArticle {
 }
 
 export type ArticleListModelByUser = ArticleListModel & {
+  totalArticle: number;
+  keyword: string;
+  offset: number;
+};
+
+export type ArticleIdsByUser = Omit<ArticleListModel, "articles"> & {
+  ids: string[];
+} & {
   totalArticle: number;
   keyword: string;
   offset: number;
@@ -90,6 +98,44 @@ export async function serviceArticleMirrorGetAll({
   }
 }
 
+// export async function serviceArticleGetByUser({
+//   articleListId,
+//   keyword,
+//   paging,
+//   callback,
+// }: {
+//   articleListId: string;
+//   keyword: string;
+//   paging: {
+//     start: number;
+//     end: number;
+//   };
+//   callback?: (
+//     resp: MainNetworkResponse<ArticleListModelByUser | null | FirebaseError>,
+//   ) => void;
+// }): Promise<ArticleListModelByUser | null> {
+//   try {
+//     // console.log("paging = ", `${paging.start} + ${paging.end}`)
+//     const data = await repoFsArticleGetByUser(articleListId, keyword, paging);
+//     callback?.(
+//       netSuccess<ArticleListModelByUser | null>(
+//         "Success getting user's posts",
+//         data,
+//       ),
+//     );
+//     return data;
+//   } catch (error) {
+//     console.log(error);
+//     callback?.(
+//       netError<FirebaseError>(
+//         "Error when getting users's posts",
+//         error as FirebaseError,
+//       ),
+//     );
+//     return null;
+//   }
+// }
+
 export async function serviceArticleGetByUser({
   articleListId,
   keyword,
@@ -108,14 +154,31 @@ export async function serviceArticleGetByUser({
 }): Promise<ArticleListModelByUser | null> {
   try {
     // console.log("paging = ", `${paging.start} + ${paging.end}`)
-    const data = await repoFsArticleGetByUser(articleListId, keyword, paging);
+    const idList = await repoFsArticleGetIds({
+      articleListRefId: articleListId,
+      keyword: keyword,
+      paging: paging,
+    });
+    if (!idList) return null;
+    const articles: ArticleModel[] = [];
+    idList.ids.forEach(async (e) => {
+      const article = await repoRtArticleGetById(e);
+      if (!article) return;
+      articles.push(article);
+    });
+    const res: ArticleListModelByUser = {
+      ...omit(idList, ["ids"]),
+      keyword: idList.keyword,
+      offset: idList.offset,
+      articles: articles,
+    };
     callback?.(
       netSuccess<ArticleListModelByUser | null>(
         "Success getting user's posts",
-        data,
+        res,
       ),
     );
-    return data;
+    return res;
   } catch (error) {
     console.log(error);
     callback?.(
