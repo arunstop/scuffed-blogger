@@ -251,8 +251,8 @@ function Sidebar() {
                       />
                     </div>
                     <span
-                      className="sm:flex-0 flex flex-1 flex-col gap-1 rounded-lg bg-primary/30 p-2 
-                      text-start backdrop-blur-sm sm:gap-2 sm:text-center max-w-[80%]"
+                      className="sm:flex-0 flex flex-1 flex-col gap-1 rounded-lg bg-primary/30 py-2 
+                      text-start backdrop-blur-sm sm:gap-2 sm:text-center sm:min-w-[50%] max-w-[80%] px-2 sm:px-4"
                     >
                       <span className="text-md font-bold leading-none line-clamp-2 sm:text-lg md:text-xl ">
                         {user?.name}
