@@ -92,7 +92,7 @@ const StatusPlaceholder = React.forwardRef<
       appear
       show
       as={"div"}
-      className={"transition-all duration-500"}
+      className={"transition-all duration-500 sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto"}
       {...transitionPullV({
         enter: "absolute inset-x-0 w-full",
         entered: "absolute inset-x-0",
