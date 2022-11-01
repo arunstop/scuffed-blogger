@@ -161,11 +161,11 @@ export async function serviceArticleGetByUser({
     });
     if (!idList) return null;
     const articles: ArticleModel[] = [];
-    idList.ids.forEach(async (e) => {
-      const article = await repoRtArticleGetById(e);
-      if (!article) return;
+    for(const id of idList.ids){
+      const article = await repoRtArticleGetById(id);
+      if(!article) break;
       articles.push(article);
-    });
+    }
     const res: ArticleListModelByUser = {
       ...omit(idList, ["ids"]),
       keyword: idList.keyword,

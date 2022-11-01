@@ -61,7 +61,7 @@ export async function repoFsArticleGetIds({
   if (!dataRaw.articles.length) return null;
 
   const data = {
-    ids: dataRaw.articles.map((e) => e.id),
+    ids: dataRaw.articles.map((e) => e.id).slice(paging.start,paging.end),
     keyword: keyword,
     offset: paging.end,
     totalArticle: dataRaw.articles.length,
