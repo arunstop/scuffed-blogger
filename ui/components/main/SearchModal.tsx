@@ -128,6 +128,7 @@ const SearchModal = React.memo(function SearchModal() {
               clearIcon
               clearable={search.trim().length >= 2}
               clearAction={() => setSearch("")}
+              type={`search`}
             />
             {/* <button
             className="btn btn-primary --btn-resp"
