@@ -1,7 +1,5 @@
-import { useUiCtx } from "../../../app/contexts/ui/UiHook";
 import { ModalProps } from "../../../base/data/Main";
 import ModalActionTemplate from "./ModalActionTemplate";
-
 interface ModalConfirmationProps {
   title: string;
   desc: string;
@@ -19,7 +17,6 @@ function ModalConfirmation({
   labelOk = "Ok",
   labelCancel = "Cancel",
 }: ModalProps & ModalConfirmationProps) {
-  const { uiAct } = useUiCtx();
   return (
     <ModalActionTemplate
       value={value}
@@ -31,10 +28,6 @@ function ModalConfirmation({
           label: labelOk,
           action: () => {
             onConfirm();
-            uiAct.addToast({
-              label: "Article successfully deleted",
-              type:"success",
-            });
           },
           className: "!btn-primary",
         },

@@ -24,7 +24,7 @@ import MainMenuItem, { MainMenuItemProps } from "./MainMenuItem";
 import MobileHeader from "./MobileHeader";
 
 function Sidebar() {
-  const router =useRouter();
+  const router = useRouter();
   const {
     authStt: { user },
     authAct,
@@ -197,9 +197,9 @@ function Sidebar() {
                   }}
                   passHref
                 >
-                  <a 
-                  tabIndex={-1}
-                  className="btn-primary btn text-xl">Login</a>
+                  <a tabIndex={-1} className="btn-primary btn text-xl">
+                    Login
+                  </a>
                 </Link>
                 <Link
                   href={{
@@ -210,12 +210,11 @@ function Sidebar() {
                   }}
                   passHref
                 >
-                  <a 
-                  tabIndex={-1}
-                  className="btn-primary btn text-xl">Register</a>
+                  <a tabIndex={-1} className="btn-primary btn text-xl">
+                    Register
+                  </a>
                 </Link>
                 <a
-                  
                   tabIndex={-1}
                   className="btn-outline btn-primary btn text-xl"
                   onClick={() => closeSidebar()}
@@ -236,24 +235,33 @@ function Sidebar() {
                 id={`sidebar-content`}
                 className="flex w-full flex-col gap-4 overflow-y-auto p-4"
               >
-                <div className="flex flex-col items-center gap-2 sm:gap-4">
-                  <div
-                    className="border-offset-2 h-12 w-12 overflow-hidden rounded-full border-[1px] 
-              border-base-content bg-base-content/30 sm:h-20 sm:w-20 sm:border-2"
-                  >
-                    <img
-                      src={user?.avatar}
-                      className="h-full w-full object-cover"
-                    />
+                <div className="relative flex p-4">
+                  <img
+                    src={user?.avatar}
+                    className="absolute inset-0 h-full w-full rounded-xl object-cover p-2 opacity-70 blur-md"
+                  />
+                  <div className="z-[1] flex w-full items-center gap-2 sm:mx-auto sm:flex-col sm:gap-4 sm:px-0">
+                    <div
+                      className="border-offset-2 h-12 w-12 overflow-hidden rounded-full border-[1px] 
+                    border-base-content bg-base-content/30 sm:h-20 sm:w-20 sm:border-2"
+                    >
+                      <img
+                        src={user?.avatar}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <span
+                      className="sm:flex-0 flex flex-1 flex-col gap-1 rounded-lg bg-primary/30 py-2 
+                      text-start backdrop-blur-sm sm:gap-2 sm:text-center sm:min-w-[50%] max-w-[80%] px-2 sm:px-4"
+                    >
+                      <span className="text-md font-bold leading-none line-clamp-2 sm:text-lg md:text-xl ">
+                        {user?.name}
+                      </span>
+                      <span className="sm:text-md text-sm font-bold text-base-content text-opacity-50 md:text-lg">
+                        {`@${user?.username}`}
+                      </span>
+                    </span>
                   </div>
-                  <p className="text-center">
-                    <span className="text-md font-bold line-clamp-2 sm:text-lg md:text-xl">
-                      {user?.name}
-                    </span>
-                    <span className="sm:text-md text-sm font-bold text-base-content brightness-50 md:text-lg">
-                      {`@${user?.username}`}
-                    </span>
-                  </p>
                 </div>
                 <ul className="menu">
                   {shownMenus.map((e, idx) => (
@@ -275,6 +283,10 @@ function Sidebar() {
           closeDrawer();
           await waitFor(1000);
           authAct.unsetUser();
+          uiAct.addToast({
+            label: "We hope to see you again!",
+            type: "success",
+          });
         }}
         labelOk={"Logout"}
       />

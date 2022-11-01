@@ -112,7 +112,7 @@ function AuthPanel() {
         <GradientBackground />
       </Transition>
 
-      <div className=" min-h-full mx-auto flex w-full flex-col p-4 sm:max-w-md sm:p-8 md:max-w-lg lg:max-w-xl">
+      <div className=" mx-auto flex min-h-full w-full flex-col p-4 sm:p-8 items-center">
         <span className="my-1 text-center text-2xl font-black text-primary-content sm:my-3 sm:text-3xl">
           {renderTitle(form)}
           {/* {(placeholder?.status||"")} */}
@@ -126,6 +126,7 @@ function AuthPanel() {
           appear
           show={!netResp}
           as={"div"}
+          className="sm:max-w-md md:max-w-lg lg:max-w-xl w-full"
           {...transitionPullV({
             // enter: " w-full",
             // entered: "",
@@ -133,7 +134,7 @@ function AuthPanel() {
           })}
           unmount={false}
         >
-          <div className="form-control mt-4 sm:mt-8 gap-4 sm:gap-8">
+          <div className="form-control mt-4 gap-4 sm:mt-8 sm:gap-8">
             {form === "LOGIN" && (
               <AuthLoginForm
                 setAction={setAction}

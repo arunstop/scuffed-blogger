@@ -118,7 +118,7 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
     return (
       <div
         ref={setRef}
-        className={`flex flex-wrap  animate-fadeInUp items-center gap-1 rounded-xl animate-duration-500 p-2
+        className={`flex flex-wrap  animate-fadeInUp items-center gap-1 sm:gap-2 rounded-xl animate-duration-500 p-2
         max-w-[90vw] sm:max-w-[36rem]  overflow-hidden bg-base-content/50 backdrop-blur-sm
         ${colors.border}
         `}

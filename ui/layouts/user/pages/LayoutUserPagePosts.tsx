@@ -22,12 +22,15 @@ import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
 import { scrollToTop } from "../../../../app/hooks/RouteChangeHook";
+import { useUiCtx } from "../../../../app/contexts/ui/UiHook";
 
 function LayoutUserPagePosts() {
   const {
     authStt: { user },
     authAct,
   } = useAuthCtx();
+
+  const { uiAct } = useUiCtx();
   const router = useRouter();
   const [articleData, setArticleData] = useState<ArticleListModelByUser>();
   const [articleDataInit, setArticleDataInit] =
@@ -107,6 +110,10 @@ function LayoutUserPagePosts() {
     scrollToTop();
     await getArticles({ init: true });
     modalDelete.close();
+    uiAct.addToast({
+      label: "Article successfully deleted",
+      type: "success",
+    });
   }, [modalDelete.value]);
 
   const onSearch: SubmitHandler<{ keyword: string }> = ({ keyword }) => {
