@@ -6,7 +6,7 @@ const protectedRoutes = ["/write", "/user/posts", "/auth", "/profile"];
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname.toLowerCase();
+  const pathname = request.nextUrl.pathname.toLowerCase()+'/';
 
   // check if user requested to access to protected routes without authenticating
   // a.k.a tresspassing
@@ -24,12 +24,12 @@ export function middleware(request: NextRequest) {
     protectedRoutes.filter((e) => {
       return pathname.includes(e.toLowerCase());
     }).length > 0;
-  const onAuthPage = pathname.includes("/auth");
+  const onAuthPage = pathname.includes("/auth/");
   // if invalid
   if (!isCookieValid) {
     //   if tresspassing and not on auth page, then redirect to auth
     if (isTresspassing && !onAuthPage)
-      return NextResponse.redirect(new URL("/auth", request.url));
+      return NextResponse.redirect(new URL("/auth/", request.url));
     //   if not trespassing, then don't redirect
     return NextResponse.next();
   }
