@@ -22,7 +22,7 @@ function LayoutAuthorPageSlug({
           height={300}
         />
         <div className="relative mt-[6.5rem] inline-flex h-auto items-center justify-between gap-4 sm:mt-[9rem] sm:gap-8">
-          <div className="akvatar">
+          <div className="avatar">
             <div
               className="z-0 w-24 rounded-[50%] border-2 border-base-100 
               transition-all hover:rounded-xl sm:w-48 sm:border-4 bg-white"
@@ -44,11 +44,11 @@ function LayoutAuthorPageSlug({
             @{username}
           </span>
         </div>
-        <div>
-          <p className="text-base sm:text-lg">
-            {desc ?? "This user has no description"}
-          </p>
-        </div>
+        {!!desc && (
+          <div>
+            <p className="text-base sm:text-lg">{desc}</p>
+          </div>
+        )}
       </div>
       <UserContent initTab={tab} />
     </Container>
