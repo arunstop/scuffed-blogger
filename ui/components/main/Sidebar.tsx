@@ -67,7 +67,7 @@ function Sidebar() {
     {
       title: "Go to your page",
       icon: <MdPerson />,
-      link: `/author/${user?.email}`,
+      link: `/author/${user?.id}`,
       action: () => {
         closeDrawer();
       },
