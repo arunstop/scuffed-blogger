@@ -1,4 +1,6 @@
+import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
+import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
 import { autoRetry } from "../../../app/helpers/MainHelpers";
 import {
@@ -22,6 +24,8 @@ export const UserPostTab = React.memo(function UserPost({
   const offset = feed?.offset || 0;
   const [resp, setResp] = useState<MainNetworkResponse>();
 
+  const { authStt } = useAuthCtx();
+
   const loadPosts = useCallback(async () => {
     // show loading indicator
     // setLoading(true);
@@ -29,7 +33,7 @@ export const UserPostTab = React.memo(function UserPost({
     const articleByUser = await autoRetry(
       async () =>
         await serviceArticleGetByUser({
-          articleListId: userProfile?.list.posts||"",
+          articleListId: userProfile?.list.posts || "",
           keyword: "",
           paging: { start: offset, end: offset + 2 },
           callback: (resp) => {
@@ -49,11 +53,11 @@ export const UserPostTab = React.memo(function UserPost({
         };
       return articleByUser;
     });
-  }, [offset,userProfile]);
+  }, [offset, userProfile]);
 
   useEffect(() => {
-    console.log("userProfile",userProfile);
-    if(!userProfile) return;
+    console.log("userProfile", userProfile);
+    if (!userProfile) return;
     loadPosts();
     return () => {};
   }, [userProfile]);
@@ -61,7 +65,31 @@ export const UserPostTab = React.memo(function UserPost({
   if (!userProfile) return <div>loading</div>;
   return (
     <>
-      {!!feed && (
+      {!feed ? (
+        <>
+          {authStt.user?.id === userProfile.id ? (
+            <div className={`w-full`}>
+              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                <span className="sm:text-xl">
+                  No articles found, write your first article and let the world
+                  know!
+                </span>
+                <Link href={"/write"} passHref>
+                  <a className="btn --btn-resp btn-outline">Write Article</a>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className={`w-full`}>
+              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                <span className="sm:text-xl">
+                  This user has no public articles.
+                </span>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
         <>
           <div className="flex flex-col gap-4 sm:gap-8">
             {feed.articles.map((e) => {
@@ -73,17 +101,18 @@ export const UserPostTab = React.memo(function UserPost({
                 />
               );
             })}
-            {resp?.status !== "error" && feed.articles.length < feed.totalArticle && (
-              <IntersectionObserverTrigger
-                key={feed.offset}
-                callback={(intersecting) => {
-                  if (intersecting) return loadPosts();
-                }}
-                className="animate-fadeIn"
-              >
-                <LoadingIndicator spinner />
-              </IntersectionObserverTrigger>
-            )}
+            {resp?.status !== "error" &&
+              feed.articles.length < feed.totalArticle && (
+                <IntersectionObserverTrigger
+                  key={feed.offset}
+                  callback={(intersecting) => {
+                    if (intersecting) return loadPosts();
+                  }}
+                  className="animate-fadeIn"
+                >
+                  <LoadingIndicator spinner />
+                </IntersectionObserverTrigger>
+              )}
           </div>
         </>
       )}
