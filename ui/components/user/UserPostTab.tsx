@@ -1,42 +1,92 @@
-import React from "react";
-import { factoryArticleComplete } from "../../../base/data/models/ArticleModel";
-import { LOREM } from "../../../app/helpers/Constants";
+import React, { useCallback, useEffect, useState } from "react";
+import { waitFor } from "../../../app/helpers/DelayHelpers";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
+import {
+  ArticleListModelByUser,
+  serviceArticleGetByUser,
+} from "../../../app/services/ArticleService";
+import { MainNetworkResponse } from "../../../base/data/Main";
+import { toUserDisplay } from "../../../base/data/models/UserDisplayModel";
+import { UserModel } from "../../../base/data/models/UserModel";
+import LoadingIndicator from "../placeholder/LoadingIndicator";
 import PostItem from "../post/PostItem";
 import PostOptionModal from "../post/PostOptionModal";
-import { UserModel } from "../../../base/data/models/UserModel";
+import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
 
 export const UserPostTab = React.memo(function UserPost({
   userProfile,
 }: {
   userProfile?: UserModel;
 }) {
-  if(!userProfile) return <div>loading</div>;
-  const { id } = userProfile;
+  const [feed, setFeed] = useState<ArticleListModelByUser>();
+  const offset = feed?.offset || 0;
+  const [resp, setResp] = useState<MainNetworkResponse>();
+
+  const loadPosts = useCallback(async () => {
+    // show loading indicator
+    // setLoading(true);
+
+    const articleByUser = await autoRetry(
+      async () =>
+        await serviceArticleGetByUser({
+          articleListId: userProfile?.list.posts||"",
+          keyword: "",
+          paging: { start: offset, end: offset + 2 },
+          callback: (resp) => {
+            setResp(resp);
+          },
+        }),
+    );
+
+    // add delay if feed already loaded for ui purposes
+    if (feed) await waitFor(200);
+    if (!articleByUser) return;
+    setFeed((prev) => {
+      if (prev)
+        return {
+          ...articleByUser,
+          articles: [...prev.articles, ...articleByUser.articles],
+        };
+      return articleByUser;
+    });
+  }, [offset,userProfile]);
+
+  useEffect(() => {
+    console.log("userProfile",userProfile);
+    if(!userProfile) return;
+    loadPosts();
+    return () => {};
+  }, [userProfile]);
+
+  if (!userProfile) return <div>loading</div>;
   return (
     <>
-      <div className="flex flex-col gap-4 sm:gap-8">
-        {[...Array(10)].map((_e, idx) => (
-          <PostItem
-            key={Math.random()}
-            article={factoryArticleComplete({
-              id: idx + "",
-              slug: idx + "",
-              title: LOREM.slice(0, 120),
-              desc: LOREM.slice(121, LOREM.length),
-              content: encodeURIComponent(LOREM),
-              thumbnail: `https://picsum.photos/id/${Math.floor(
-                Math.random() * 10,
-              )}/500/300`,
-              author: "Munkrey Alf",
-              dateAdded: Date.now(),
-              dateUpdated: Date.now(),
-              deleted: 0,
-              duration: (LOREM.length || 0) / 200,
-              tags: ["Technology", "Photography"],
+      {!!feed && (
+        <>
+          <div className="flex flex-col gap-4 sm:gap-8">
+            {feed.articles.map((e) => {
+              return (
+                <PostItem
+                  key={e.id}
+                  userDisplay={toUserDisplay(userProfile)}
+                  article={e}
+                />
+              );
             })}
-          />
-        ))}
-      </div>
+            {resp?.status !== "error" && feed.articles.length < feed.totalArticle && (
+              <IntersectionObserverTrigger
+                key={feed.offset}
+                callback={(intersecting) => {
+                  if (intersecting) return loadPosts();
+                }}
+                className="animate-fadeIn"
+              >
+                <LoadingIndicator spinner />
+              </IntersectionObserverTrigger>
+            )}
+          </div>
+        </>
+      )}
       <PostOptionModal />
     </>
   );
