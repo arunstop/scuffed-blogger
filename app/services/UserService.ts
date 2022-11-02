@@ -13,6 +13,7 @@ import {
   netLoading,
   MainApiResponse,
 } from "../../base/data/Main";
+import { UserDisplayModel } from "../../base/data/models/UserDisplayModel";
 import { UserModel, createUserModel } from "../../base/data/models/UserModel";
 import {
   repoFsUserUpdate,
@@ -22,7 +23,6 @@ import {
 import {
   repoRtUserDisplayAdd,
   repoRtUserDisplayUpdate,
-  UserDisplayModel,
   repoRtUserDisplayGetById,
   repoRtUserSessionAdd,
   repoRtUserSessionLatestSet,
@@ -207,6 +207,7 @@ export async function fbUserAdd({
       name: data.name,
       avatar: data.avatar,
       username: data.username,
+      desc: data.desc,
     });
     // Show success
     callback?.(
@@ -294,6 +295,7 @@ export async function fbUserUpdate({
       name: updatedUserData.name,
       avatar: updatedUserData.avatar,
       username: updatedUserData.username,
+      desc: updatedUserData.desc,
     });
     callback?.(
       netSuccess<UserModel>("Success updating profile", updatedUserData),

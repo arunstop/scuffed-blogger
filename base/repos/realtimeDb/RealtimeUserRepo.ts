@@ -2,16 +2,10 @@ import { get, ref, set, update } from "firebase/database";
 import { firebaseClient } from "../../clients/FirebaseClient";
 import { UserModel, UserSession } from "../../data/models/UserModel";
 import uaParser from "ua-parser-js";
+import { UserDisplayModel } from "../../data/models/UserDisplayModel";
 
 function getRtdb() {
   return firebaseClient.rtdb;
-}
-
-export interface UserDisplayModel {
-  id: string;
-  name: string;
-  avatar: string;
-  username: string;
 }
 
 export async function repoRtUserDisplayGetById(userId: string) {
