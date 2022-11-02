@@ -3,13 +3,15 @@ import { factoryArticleComplete } from "../../../base/data/models/ArticleModel";
 import { LOREM } from "../../../app/helpers/Constants";
 import PostItem from "../post/PostItem";
 import PostOptionModal from "../post/PostOptionModal";
+import { UserModel } from "../../../base/data/models/UserModel";
 
 export const UserPostTab = React.memo(function UserPost({
-  id,
+  userProfile,
 }: {
-  id: string;
+  userProfile?: UserModel;
 }) {
-  console.log("Render : UserPosts");
+  if(!userProfile) return <div>loading</div>;
+  const { id } = userProfile;
   return (
     <>
       <div className="flex flex-col gap-4 sm:gap-8">

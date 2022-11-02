@@ -50,7 +50,7 @@ function LayoutAuthorPageSlug({
           </div>
         )}
       </div>
-      <UserContent initTab={tab} />
+      <UserContent userDisplay={userDisplay} tab={tab} />
     </Container>
   );
 }

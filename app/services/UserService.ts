@@ -20,6 +20,7 @@ import {
   repoFsUserUpdate,
   repoFsUserGetByEmail,
   repoFsUserAdd,
+  repoFsUserGetById,
 } from "../../base/repos/firestoreDb/FirestoreUserRepo";
 import {
   repoRtUserDisplayAdd,
@@ -376,10 +377,25 @@ export async function serviceUserDisplayGetById({
     callback?.(result);
     return result.data;
   } catch (e) {
-    callback?.(
-      netError(`Error : failed fetching UserDisplay saying:\\n${e}`),
-    );
+    callback?.(netError(`Error : failed fetching UserDisplay saying:\\n${e}`));
     console.log(`Error : failed fetching UserDisplay saying:\\n${e}`);
+    return null;
+  }
+}
+
+export async function serviceUserGetById({
+  data,
+  callback,
+}: MainApiResponse<
+  { userId: string },
+  UserModel | FirebaseError | null
+>): Promise<UserModel | null> {
+  try {
+    const res = await repoFsUserGetById(data.userId);
+    callback?.(netSuccess("Success getting user data", res));
+    return res;
+  } catch (e) {
+    callback?.(netError("Error getting user", e as FirebaseError));
     return null;
   }
 }
