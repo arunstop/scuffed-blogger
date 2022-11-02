@@ -5,6 +5,7 @@ import {
   User,
 } from "firebase/auth";
 import { nanoid } from "nanoid";
+import { axiosClient } from "../../base/clients/AxiosClient";
 import { firebaseAuth } from "../../base/clients/FirebaseClient";
 import {
   MainNetworkResponse,
@@ -357,6 +358,28 @@ export async function fbUserDisplayGet({
     callback?.(
       netError("Error when getting user display data.", error as FirebaseError),
     );
+    return null;
+  }
+}
+
+export async function serviceUserDisplayGetById({
+  data,
+  callback,
+}: MainApiResponse<
+  { userId: string },
+  UserDisplayModel | null
+>): Promise<UserDisplayModel | null> {
+  try {
+    const response = await axiosClient.get(`/api/user/${data.userId}`);
+    const result =
+      response.data as MainNetworkResponse<UserDisplayModel | null>;
+    callback?.(result);
+    return result.data;
+  } catch (e) {
+    callback?.(
+      netError(`Error : failed fetching UserDisplay saying:\\n${e}`),
+    );
+    console.log(`Error : failed fetching UserDisplay saying:\\n${e}`);
     return null;
   }
 }

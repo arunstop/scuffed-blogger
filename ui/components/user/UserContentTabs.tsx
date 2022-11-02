@@ -40,7 +40,7 @@ export const UserContentTabs = React.memo(function UserContentTabs({
     expectedActiveTab = activeTab;
   }
   const currentPrettyPath = `/${router.pathname.split("/")[1]}/${
-    router.query.authorslug?.[0]
+    router.query.authorSlug?.[0]
   }`;
   // console.log(router);
   return (
