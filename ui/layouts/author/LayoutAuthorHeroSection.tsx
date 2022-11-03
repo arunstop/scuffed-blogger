@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MdEdit } from "react-icons/md";
@@ -47,15 +48,17 @@ function LayoutAuthorHeroSection({
          rounded-full
        `}
             >
-              <button
-                className={`
+              <Link href={`profile/edit`} passHref>
+                <a
+                  className={`
               btn sm:btn-lg font-bold !border-2 sm:!border-4 !outline-none group
               transition-all w-32 sm:w-40 btn-primary gap-2 sm:gap-4
             `}
-              >
-                <MdEdit className="text-2xl sm:text-3xl" />
-                <span className="text-xl sm:text-2xl">Edit</span>
-              </button>
+                >
+                  <MdEdit className="text-2xl sm:text-3xl" />
+                  <span className="text-xl sm:text-2xl">Edit</span>
+                </a>
+              </Link>
             </div>
           ) : (
             <FollowButton />
