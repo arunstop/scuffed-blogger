@@ -35,7 +35,7 @@ export const UserPostTab = React.memo(function UserPost({
         await serviceArticleGetByUser({
           articleListId: userProfile?.list.posts || "",
           keyword: "",
-          paging: { start: offset, end: offset + 2 },
+          paging: { start: offset, end: offset + 10 },
           callback: (resp) => {
             setResp(resp);
           },
@@ -56,7 +56,6 @@ export const UserPostTab = React.memo(function UserPost({
   }, [offset, userProfile]);
 
   useEffect(() => {
-    console.log("userProfile", userProfile);
     if (!userProfile) return;
     loadPosts();
     return () => {};
