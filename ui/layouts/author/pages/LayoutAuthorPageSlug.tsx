@@ -81,8 +81,9 @@ function LayoutAuthorPageSlug({
             <div>
               <ModalImagePreview>
                 <a
-                  className="avatar group-focus-within:w-[60vw] w-24 sm:w-48 group-focus-within:sm:w-[60vw] 
-                  justify-center group  duration-300 group-focus-within:m-auto m-0"
+                  className="avatar group-focus-within:max-w-[60vw] w-24 sm:w-48 group-focus-within:sm:max-w-[60vw] 
+                  justify-center group  duration-300 group-focus-within:m-auto m-0 max-h-[90vh] group-focus-within:w-full
+                  aspect-square"
                 >
                   <div
                     className="z-0  rounded-[50%] border-2 border-primary/50 
