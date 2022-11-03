@@ -55,7 +55,7 @@ const LazyLayoutAuthorPageSlug = dynamic(
 );
 
 function Author({ userDisplay, tab }: AuthorPageProps) {
-  const title = userDisplay.name + " | " + APP_NAME;
+  const title = userDisplay.name + " - " + APP_NAME;
 
   return (
     <>
