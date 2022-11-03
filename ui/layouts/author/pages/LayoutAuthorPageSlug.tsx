@@ -1,12 +1,13 @@
 import { useRouter } from "next/dist/client/router";
 import React, { useState } from "react";
-import { MdMoreVert } from "react-icons/md";
+import { MdEdit, MdMoreVert } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { UserDisplayModel } from "../../../../base/data/models/UserDisplayModel";
 import Container from "../../../components/common/Container";
 import MobileHeader, {
   MobileHeaderActionProps,
 } from "../../../components/main/MobileHeader";
+import ModalImagePreview from "../../../components/modal/ModalImagePreview";
 import UserContent from "../../../components/user/UserContent";
 
 function LayoutAuthorPageSlug({
@@ -77,13 +78,20 @@ function LayoutAuthorPageSlug({
             height={300}
           />
           <div className="relative mt-[6.5rem] inline-flex h-auto items-center justify-between gap-4 sm:mt-[9rem] sm:gap-8">
-            <div className="avatar">
-              <div
-                className="z-0 w-24 rounded-[50%] border-2 border-base-100 
-              transition-all hover:rounded-xl sm:w-48 sm:border-4 bg-white"
-              >
-                <img src={`${avatar}`} alt={`Avatar of ${name}`} />
-              </div>
+            <div>
+              <ModalImagePreview>
+                <a
+                  className="avatar group-focus-within:w-[60vw] w-24 sm:w-48 group-focus-within:sm:w-[60vw] 
+                  justify-center group  duration-300 group-focus-within:m-auto m-0"
+                >
+                  <div
+                    className="z-0  rounded-[50%] border-2 border-primary/50 
+                transition-all hover:rounded-xl group-focus-within:rounded-xl  sm:border-4 bg-white"
+                  >
+                    <img src={`${avatar}`} alt={`Avatar of ${name}`} />
+                  </div>
+                </a>
+              </ModalImagePreview>
             </div>
             <div className="flex flex-col items-end gap-2 sm:gap-4">
               {authStt.user?.id === userDisplay.id ? (
@@ -94,13 +102,12 @@ function LayoutAuthorPageSlug({
                 >
                   <button
                     className={`
-                   btn sm:btn-lg text-xl sm:text-2xl font-bold 
-                   !border-2 sm:!border-4 !outline-none group
-                   transition-all w-32 sm:w-40
-                  btn-primary
-                 `}
+                      btn sm:btn-lg font-bold !border-2 sm:!border-4 !outline-none group
+                      transition-all w-32 sm:w-40 btn-primary gap-2 sm:gap-4
+                    `}
                   >
-                    <span className="block">Edit</span>
+                    <MdEdit className="text-2xl sm:text-3xl" />
+                    <span className="text-xl sm:text-2xl">Edit</span>
                   </button>
                 </div>
               ) : (
