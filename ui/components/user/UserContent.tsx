@@ -1,26 +1,42 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { serviceUserGetById } from "../../../app/services/UserService";
+import { UserDisplayModel } from "../../../base/data/models/UserDisplayModel";
+import { UserModel } from "../../../base/data/models/UserModel";
 import { UserAboutTab } from "./UserAboutTab";
 import { UserContentTabs } from "./UserContentTabs";
 import { UserListTab } from "./UserListTab";
 import { UserPostTab } from "./UserPostTab";
 
-const RENDER_SECTIONS = (tab: string) => {
-  console.log("active tab : " + tab);
-  if (tab === "about") {  
-    return <UserAboutTab id={"1"} />;
+const RENDER_SECTIONS = ({ user, tab }: { user?: UserModel; tab: string }) => {
+  if (tab === "about") {
+    return <UserAboutTab userProfile={user} />;
   } else if (tab === "lists") {
-    return <UserListTab />;
+    return <UserListTab userProfile={user}/>;
   } else {
-    return <UserPostTab id={"2"} />;
+    return <UserPostTab userProfile={user}/>;
   }
 };
 
-const UserContent = ({initTab}:{initTab:string}) => {
-  const [activeTab, setActiveTab] = useState<string>(initTab);
+const UserContent = (props: { userDisplay: UserDisplayModel; tab: string }) => {
+  const { userDisplay, tab } = props;
+  const [activeTab, setActiveTab] = useState<string>(tab);
   const changeActiveTab = useCallback((title: string) => {
     setActiveTab(title);
   }, []);
-  console.log("Render : UserContent");  
+
+  const [userProfile, setUserProfile] = useState<UserModel>();
+
+  const getUserProfile = useCallback(async (userId: string) => {
+    const res = await serviceUserGetById({ data: { userId: userId } });
+    if (!res) return;
+    setUserProfile(res);
+  }, []);
+
+  useEffect(() => {
+    getUserProfile(userDisplay.id);
+    return () => {};
+  }, []);
+
   // console.log(tab);
 
   // const currentPrettyPath = "/author/" + router.query.slug?.[0];
@@ -35,7 +51,7 @@ const UserContent = ({initTab}:{initTab:string}) => {
         onClick={changeActiveTab}
         currentPath={""}
       />
-      {RENDER_SECTIONS(activeTab)}
+      {RENDER_SECTIONS({user:userProfile,tab:activeTab})}
     </div>
   );
 };

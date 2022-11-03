@@ -5,6 +5,7 @@ import {
   User,
 } from "firebase/auth";
 import { nanoid } from "nanoid";
+import { axiosClient } from "../../base/clients/AxiosClient";
 import { firebaseAuth } from "../../base/clients/FirebaseClient";
 import {
   MainNetworkResponse,
@@ -13,16 +14,17 @@ import {
   netLoading,
   MainApiResponse,
 } from "../../base/data/Main";
+import { UserDisplayModel } from "../../base/data/models/UserDisplayModel";
 import { UserModel, createUserModel } from "../../base/data/models/UserModel";
 import {
   repoFsUserUpdate,
   repoFsUserGetByEmail,
   repoFsUserAdd,
+  repoFsUserGetById,
 } from "../../base/repos/firestoreDb/FirestoreUserRepo";
 import {
   repoRtUserDisplayAdd,
   repoRtUserDisplayUpdate,
-  UserDisplayModel,
   repoRtUserDisplayGetById,
   repoRtUserSessionAdd,
   repoRtUserSessionLatestSet,
@@ -207,6 +209,7 @@ export async function fbUserAdd({
       name: data.name,
       avatar: data.avatar,
       username: data.username,
+      desc: data.desc,
     });
     // Show success
     callback?.(
@@ -294,6 +297,7 @@ export async function fbUserUpdate({
       name: updatedUserData.name,
       avatar: updatedUserData.avatar,
       username: updatedUserData.username,
+      desc: updatedUserData.desc,
     });
     callback?.(
       netSuccess<UserModel>("Success updating profile", updatedUserData),
@@ -355,6 +359,43 @@ export async function fbUserDisplayGet({
     callback?.(
       netError("Error when getting user display data.", error as FirebaseError),
     );
+    return null;
+  }
+}
+
+export async function serviceUserDisplayGetById({
+  data,
+  callback,
+}: MainApiResponse<
+  { userId: string },
+  UserDisplayModel | null
+>): Promise<UserDisplayModel | null> {
+  try {
+    const response = await axiosClient.get(`/api/user/${data.userId}`);
+    const result =
+      response.data as MainNetworkResponse<UserDisplayModel | null>;
+    callback?.(result);
+    return result.data;
+  } catch (e) {
+    callback?.(netError(`Error : failed fetching UserDisplay saying:\\n${e}`));
+    console.log(`Error : failed fetching UserDisplay saying:\\n${e}`);
+    return null;
+  }
+}
+
+export async function serviceUserGetById({
+  data,
+  callback,
+}: MainApiResponse<
+  { userId: string },
+  UserModel | FirebaseError | null
+>): Promise<UserModel | null> {
+  try {
+    const res = await repoFsUserGetById(data.userId);
+    callback?.(netSuccess("Success getting user data", res));
+    return res;
+  } catch (e) {
+    callback?.(netError("Error getting user", e as FirebaseError));
     return null;
   }
 }

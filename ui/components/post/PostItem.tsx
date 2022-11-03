@@ -5,7 +5,7 @@ import { MdBookmarkAdd, MdMoreHoriz } from "react-icons/md";
 import { dateDistanceGet } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
 import { ArticleModel } from "../../../base/data/models/ArticleModel";
-import { UserDisplayModel } from "../../../base/repos/realtimeDb/RealtimeUserRepo";
+import { UserDisplayModel } from "../../../base/data/models/UserDisplayModel";
 import MainUserPopup from "../main/MainPostUserPopup";
 import UserHeader from "../user/UserHeader";
 import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";

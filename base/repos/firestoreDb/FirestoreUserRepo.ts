@@ -1,7 +1,11 @@
 import {
   doc,
-  getDoc, setDoc,
-  updateDoc
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore/lite";
 import { toJsonFriendly } from "../../../app/helpers/MainHelpers";
 import { firebaseClient } from "../../clients/FirebaseClient";
@@ -40,4 +44,9 @@ export async function repoFsUserGetByEmail(
   return snapshot.exists() ? (snapshot.data() as UserModel) : null;
 }
 
-
+export async function repoFsUserGetById(id: string): Promise<UserModel | null> {
+  const q = query(userDb, where("id", "==", id));
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return null;
+  return snapshot.docs[0].data() as UserModel;
+}

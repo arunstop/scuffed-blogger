@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { autoRetry } from "../../../app/helpers/MainHelpers";
 import { fbUserDisplayGet } from "../../../app/services/UserService";
-import { UserDisplayModel } from "../../../base/repos/realtimeDb/RealtimeUserRepo";
+import { UserDisplayModel } from "../../../base/data/models/UserDisplayModel";
 import UserAvatar from "./UserAvatar";
 
 function UserHeader({
