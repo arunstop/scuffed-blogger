@@ -86,7 +86,7 @@ function LayoutAuthorPageSlug({
                 >
                   <div
                     className="z-0  rounded-[50%] border-2 border-primary/50 
-                transition-all hover:rounded-xl group-focus-within:rounded-xl  sm:border-4 bg-white"
+                transition-all hover:rounded-xl group-focus-within:rounded-xl  sm:border-4 bg-base-content/30"
                   >
                     <img src={`${avatar}`} alt={`Avatar of ${name}`} />
                   </div>
