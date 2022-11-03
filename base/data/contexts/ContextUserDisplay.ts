@@ -1,4 +1,4 @@
-import { UserDisplayModel } from "../../repos/realtimeDb/RealtimeUserRepo";
+import { UserDisplayModel } from "../models/UserDisplayModel";
 
 export interface UserDisplay{
     displays:UserDisplayModel[],
