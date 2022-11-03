@@ -27,6 +27,7 @@ export const UserPostTab = React.memo(function UserPost({
   const { authStt } = useAuthCtx();
 
   const loadPosts = useCallback(async () => {
+    await waitFor(2000);
     // show loading indicator
     // setLoading(true);
 
@@ -65,29 +66,34 @@ export const UserPostTab = React.memo(function UserPost({
   return (
     <>
       {!feed ? (
-        <>
-          {authStt.user?.id === userProfile.id ? (
-            <div className={`w-full`}>
-              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
-                <span className="sm:text-xl">
-                  No articles found, write your first article and let the world
-                  know!
-                </span>
-                <Link href={"/write"} passHref>
-                  <a className="btn --btn-resp btn-outline">Write Article</a>
-                </Link>
-              </div>
-            </div>
-          ) : (
-            <div className={`w-full`}>
-              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
-                <span className="sm:text-xl">
-                  This user has no public articles.
-                </span>
-              </div>
+        <div className={`w-full`}>
+          {resp && (
+            <>
+              {authStt.user?.id === userProfile.id ? (
+                <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                  <span className="sm:text-xl">
+                    No articles found, write your first article and let the
+                    world know!
+                  </span>
+                  <Link href={"/write"} passHref>
+                    <a className="btn --btn-resp btn-outline">Write Article</a>
+                  </Link>
+                </div>
+              ) : (
+                <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                  <span className="sm:text-xl">
+                    This user has no public articles.
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+          {!resp && (
+            <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+              <LoadingIndicator text="Loading articles" spinner />
             </div>
           )}
-        </>
+        </div>
       ) : (
         <>
           <div className="flex flex-col gap-4 sm:gap-8">
