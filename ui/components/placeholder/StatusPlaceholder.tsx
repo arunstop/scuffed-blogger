@@ -22,6 +22,7 @@ export interface StatusPlaceholderProps {
 interface StatusPlaceholderStylingProps {
   gradientVia: string;
   gradientViaDark: string;
+  iconColor: string;
   textColor: string;
 }
 interface StatusPlaceholderTransitionTypes {
@@ -38,20 +39,23 @@ function getStyle(
     return {
       gradientVia: "via-error/40",
       gradientViaDark: "dark:via-error/20",
-      textColor: "text-error",
+      iconColor: "text-error",
+      textColor: "text-error-content",
     };
 
   if (status === "success")
     return {
       gradientVia: "via-success/40",
       gradientViaDark: "dark:via-success/20",
-      textColor: "text-success",
+      iconColor: "text-success",
+      textColor: "text-success-content",
     };
   else
     return {
       gradientVia: "via-primary/40",
       gradientViaDark: "dark:via-primary/20",
-      textColor: "text-primary",
+      iconColor: "text-primary",
+      textColor: "text-primary-content",
     };
 }
 
@@ -92,7 +96,9 @@ const StatusPlaceholder = React.forwardRef<
       appear
       show
       as={"div"}
-      className={"transition-all duration-500 sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto"}
+      className={
+        "transition-all duration-500 sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto"
+      }
       {...transitionPullV({
         enter: "absolute inset-x-0 w-full",
         entered: "absolute inset-x-0",
@@ -104,7 +110,7 @@ const StatusPlaceholder = React.forwardRef<
           key={`overlay-${newKey}`}
           className={`absolute inset-0 rounded-[10%] bg-gradient-to-r
         from-transparent ${style.gradientVia} ${style.gradientViaDark} 
-        to-transparent animate-fadeIn animate-duration-500`}
+        to-transparent animate-fadeIn`}
         ></div>
         <div
           className={`mx-auto flex min-w-[90%] flex-col w-full 
@@ -119,17 +125,17 @@ const StatusPlaceholder = React.forwardRef<
           >
             {status === "error" && (
               <IoMdCloseCircle
-                className={`text-[4rem] sm:text-[5rem] animate-twPulse animate-infinite ${style.textColor}`}
+                className={`text-[4rem] sm:text-[5rem] animate-twPulse animate-infinite ${style.iconColor}`}
               />
             )}
             {status === "success" && (
               <FaCheckCircle
-                className={`text-[4rem] sm:text-[5rem] animate-twPulse animate-infinite ${style.textColor}`}
+                className={`text-[4rem] sm:text-[5rem] animate-twPulse animate-infinite ${style.iconColor}`}
               />
             )}
             {status === "loading" && (
               <MdWorkspaces
-                className={`animate-twSpin animate-infinite text-[4rem] ${style.textColor} sm:text-[5rem]`}
+                className={`animate-twSpin animate-infinite text-[4rem] ${style.iconColor} sm:text-[5rem]`}
               />
             )}
           </Transition.Child>
@@ -140,7 +146,11 @@ const StatusPlaceholder = React.forwardRef<
           ${transition.labels}
           `}
           >
-            <span className="text-2xl font-black sm:text-3xl">{title}</span>
+            <span
+              className={`text-2xl font-black sm:text-3xl ${style.textColor}`}
+            >
+              {title}
+            </span>
             <span className="whitespace-pre-line text-sm font-semibold sm:text-base">
               {desc}
             </span>
