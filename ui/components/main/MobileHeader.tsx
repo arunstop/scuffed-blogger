@@ -80,7 +80,7 @@ const ActionButton = ({ action }: { action: MobileHeaderActionProps }) => {
     // if label
     <button
       tabIndex={0}
-      className={`btn rounded-xl btn-sm text-lg p-1
+      className={`btn rounded-xl btn-sm text-lg p-1 !font-black
           ${action.disabled ? "!bg-opacity-10" : "btn-ghost text-primary"}`}
       onClick={action.disabled ? undefined : action.action}
       title={action.label}
