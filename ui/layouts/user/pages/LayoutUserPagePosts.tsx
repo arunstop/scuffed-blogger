@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { MdEdit, MdSearch } from "react-icons/md";
+import { MdAdd, MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
@@ -175,7 +175,7 @@ function LayoutUserPagePosts() {
         actions={[
           {
             label: "Write",
-            icon: <MdEdit />,
+            icon: <MdAdd />,
             action() {
               router.push("/write");
             },
