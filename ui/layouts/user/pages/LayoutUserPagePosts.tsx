@@ -3,26 +3,26 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { MdAdd, MdSearch } from "react-icons/md";
+import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
+import { useUiCtx } from "../../../../app/contexts/ui/UiHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
+import { autoRetry } from "../../../../app/helpers/MainHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
+import { scrollToTop } from "../../../../app/hooks/RouteChangeHook";
 import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import {
   ArticleListModelByUser,
   serviceArticleDelete,
   serviceArticleGetByUser,
 } from "../../../../app/services/ArticleService";
-import InputText from "../../../components/input/InputText";
 import Container from "../../../components/common/Container";
-import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
+import InputText from "../../../components/input/InputText";
 import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
-import { autoRetry } from "../../../../app/helpers/MainHelpers";
-import { scrollToTop } from "../../../../app/hooks/RouteChangeHook";
-import { useUiCtx } from "../../../../app/contexts/ui/UiHook";
+import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 
 function LayoutUserPagePosts() {
   const {
@@ -175,7 +175,6 @@ function LayoutUserPagePosts() {
         actions={[
           {
             label: "Write",
-            icon: <MdAdd />,
             action() {
               router.push("/write");
             },
