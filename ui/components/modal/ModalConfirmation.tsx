@@ -31,7 +31,7 @@ function ModalConfirmation({
           },
           className: "!btn-primary",
         },
-        { label: labelCancel, action: onClose, className: "btn-" },
+        { label: labelCancel, action: onClose, className: "", cancel: true },
       ]}
     ></ModalActionTemplate>
   );
