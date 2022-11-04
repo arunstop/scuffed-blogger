@@ -281,8 +281,8 @@ function Sidebar() {
         onConfirm={async () => {
           setDialogLogout(false);
           closeDrawer();
-          await waitFor(1000);
           authAct.unsetUser();
+          await waitFor(1000);
           uiAct.addToast({
             label: "We hope to see you again!",
             type: "success",
