@@ -1,6 +1,7 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
 import { ModalProps } from "../../../base/data/Main";
+import Button from "../common/Button";
 import { ModalActionAction } from "./ModalActionTemplate";
 
 function ModalActionConfirmation({
@@ -8,7 +9,10 @@ function ModalActionConfirmation({
   onClose,
   action,
   closeModal,
-}: ModalProps & { action: ModalActionAction | undefined,closeModal:()=>void }) {
+}: ModalProps & {
+  action: ModalActionAction | undefined;
+  closeModal: () => void;
+}) {
   return (
     <Transition
       show={show}
@@ -25,7 +29,12 @@ function ModalActionConfirmation({
       // leaveTo="opacity-0 scale-0"
       appear
     >
-      <MzContent show={show} action={action} closeConfirmation={() => onClose()} closeModal={closeModal}/>
+      <MzContent
+        show={show}
+        action={action}
+        closeConfirmation={() => onClose()}
+        closeModal={closeModal}
+      />
     </Transition>
   );
 }
@@ -33,8 +42,8 @@ function ModalActionConfirmation({
 const Content = ({
   show,
   action,
-   closeConfirmation,
-   closeModal,
+  closeConfirmation,
+  closeModal,
 }: {
   show: boolean;
   action?: ModalActionAction;
@@ -55,28 +64,29 @@ const Content = ({
         </span>
       </div>
       <div className="inline-flex w-full flex-row-reverse gap-2 sm:gap-4">
-        <button
+        <Button
           className="--btn-resp btn btn-primary flex-1 rounded-xl"
           onClick={() => {
             action?.action?.();
             closeModal();
           }}
+          loadingOnClick={true}
         >
-          OK
-        </button>
-        <button
+          Ok
+        </Button>
+        <Button
           className="--btn-resp btn-outline btn flex-1 rounded-xl"
           onClick={() => closeConfirmation()}
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </>
   );
 };
 
 const MzContent = React.memo(Content, (prev, next) => {
-  const memoize = (prev.show === false && next.show === true) ===false;
+  const memoize = (prev.show === false && next.show === true) === false;
   return memoize;
 });
 
