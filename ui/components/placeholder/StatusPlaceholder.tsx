@@ -40,7 +40,7 @@ function getStyle(
       gradientVia: "via-error/40",
       gradientViaDark: "dark:via-error/20",
       iconColor: "text-error",
-      textColor: "text-error-content",
+      textColor: "text-error-content dark:text-error",
     };
 
   if (status === "success")
@@ -48,14 +48,14 @@ function getStyle(
       gradientVia: "via-success/40",
       gradientViaDark: "dark:via-success/20",
       iconColor: "text-success",
-      textColor: "text-success-content",
+      textColor: "text-success-content dark:text-success",
     };
   else
     return {
       gradientVia: "via-primary/40",
       gradientViaDark: "dark:via-primary/20",
       iconColor: "text-primary",
-      textColor: "text-primary-content",
+      textColor: "",
     };
 }
 
