@@ -3,10 +3,10 @@ import IntersectionObserverTrigger from "./IntesectionObserverTrigger";
 
 export interface InfiniteLoaderProps {
   callback: (intersecting: boolean) => void;
-  loaderKey: string;
-  loaderShown: boolean;
-  loaderChildren: ReactNode;
-  loaderClassName: string;
+  loaderKey?: string;
+  loaderShown?: boolean;
+  loaderChildren?: ReactNode;
+  loaderClassName?: string;
 }
 
 export const InfiniteLoader = React.forwardRef<
