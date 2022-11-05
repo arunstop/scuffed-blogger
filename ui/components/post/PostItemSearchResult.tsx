@@ -62,10 +62,10 @@ function PostItemSearchResultContent({
   return (
     <div
       className="group relative flex animate-fadeIn cursor-pointer gap-4 overflow-hidden rounded-xl
-      ring-1 ring-base-content/10 animate-duration-500"
+      ring-1 ring-base-content/10 animate-duration-500 isolate"
     >
       <img
-        className="absolute inset-0 aspect-video  h-full rounded-xl bg-base-content/30"
+        className="absolute inset-0 h-full w-full rounded-xl object-cover"
         src={
           article.thumbnail ||
           `https://picsum.photos/id/${article.dateAdded
@@ -75,14 +75,30 @@ function PostItemSearchResultContent({
             .join("")}/500/300`
         }
       ></img>
+      {/* <img
+        className="absolute inset-0 aspect-video  h-full rounded-xl bg-base-content/30"
+        src={
+          article.thumbnail ||
+          `https://picsum.photos/id/${article.dateAdded
+            .toString()
+            .split("")
+            .slice(-2)
+            .join("")}/500/300`
+        }
+      ></img> */}
       <div
-        className={`h-full  inset-0  absolute  bg-gradient-to-r
-                            ${
-                              active
-                                ? `w-full from-primary/50 via-primary to-transparent`
-                                : `w-[80%] from-base-100/50 via-base-100 to-base-100`
-                            }
-                            `}
+        className={`h-full inset-0 absolute bg-gradient-to-r w-full 
+        ${
+          withActions
+            ? ""
+            : "group-hover:!from-primary/50 group-hover:!via-primary group-hover:!to-primary"
+        }
+        ${
+          active
+            ? `from-primary/50 via-primary to-primary`
+            : `from-base-100/50 via-base-100 to-base-100`
+        }
+        `}
       ></div>
       {/* <Link  href={`/article/${article.slug}`} passHref> */}
       <div
