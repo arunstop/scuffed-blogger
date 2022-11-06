@@ -2,52 +2,77 @@ import debounce from "lodash/debounce";
 import { useRouter } from "next/dist/client/router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { MdClearAll, MdSearch, MdWorkspaces } from "react-icons/md";
-import { ArticleModel } from "../../../base/data/models/ArticleModel";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 import { useUiModalSearchBehaviorHook } from "../../../app/hooks/UiModalSearchBehaviorHook";
-import { serviceArticleSearch } from "../../../app/services/ArticleService";
+import {
+  ArticleModelFromDb,
+  serviceArticleSearch,
+} from "../../../app/services/ArticleService";
+import Alert from "../common/Alert";
 import InputText from "../input/InputText";
 import ModalTemplate from "../modal/ModalTemplate";
-import PostItemSearchResult from "../post/PostItemSearchResult";
-import Alert from "../common/Alert";
+import LoadingIndicator from "../placeholder/LoadingIndicator";
 import SectionSkeleton from "../placeholder/SectionSkeleton";
+import PostItemSearchResult from "../post/PostItemSearchResult";
+import { InfiniteLoader } from "../utils/InfiniteLoader";
 import MobileHeader, { MobileHeaderActionProps } from "./MobileHeader";
-import { autoRetry } from "../../../app/helpers/MainHelpers";
 
 const SearchModal = React.memo(function SearchModal() {
   const { searchModal, closeSearchModal } = useUiModalSearchBehaviorHook();
   const router = useRouter();
   const searchBarRef = useRef<HTMLInputElement>(null);
-  const [search, setSearch] = useState("");
-  const [articles, setArticles] = useState<ArticleModel[] | null>(null);
+  const [keyword, setKeyword] = useState("");
+  const [articles, setArticles] = useState<ArticleModelFromDb | null>(null);
   const [loading, setLoading] = useState(false);
   // for axios request of fbAritcleSearch
   const controllerRef = useRef<AbortController>(new AbortController());
-
+  const data = articles?.articles;
   const debounceSearch = debounce(
-    async (str: string, abortSignal: AbortSignal) => {
+    async ({
+      keyword,
+      count,
+      start,
+      abortSignal,
+      init,
+    }: {
+      keyword: string;
+      start: number;
+      count: number;
+      abortSignal: AbortSignal;
+      init: boolean;
+    }) => {
       const res = await autoRetry(
         async () =>
           await serviceArticleSearch({
             data: {
               abortSignal: abortSignal,
-              count: 5,
-              start: 0,
-              keyword: str,
+              start: start,
+              count: count,
+              keyword: keyword,
             },
           }),
       );
-      if (!res) return;
-      // console.log(res);
-      setArticles(res);
+      if (!res || !res?.articles.length) {
+        setArticles(null);
+        setLoading(false);
+        return;
+      }
+      setArticles((prev) => {
+        console.log(res.offset);
+        if (!prev || init) return res;
+        return {
+          ...res,
+          articles: [...prev.articles, ...res.articles],
+        };
+      });
       setLoading(false);
     },
     500,
   );
 
-  const handleSearch = useCallback(
-    (ev: React.ChangeEvent<HTMLInputElement>) => {
-      const val = ev.target.value;
-      setSearch(ev.target.value);
+  const search = useCallback(
+    (val: string, repeat?: boolean) => {
+      setKeyword(val);
       // min 2 chars to proceeds
       if (val.trim().toLowerCase().length < 2) return;
       setLoading(true);
@@ -60,7 +85,20 @@ const SearchModal = React.memo(function SearchModal() {
         // console.log("cancel search");
         return controller.abort("Idk");
       }
-      debounceSearch(val, controller.signal);
+      debounceSearch({
+        keyword: val,
+        start: articles?.offset || 0,
+        count: 2,
+        abortSignal: controller.signal,
+        init: !repeat,
+      });
+    },
+    [articles],
+  );
+
+  const handleSearch = useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      search(ev.target.value);
     },
     [],
   );
@@ -81,22 +119,20 @@ const SearchModal = React.memo(function SearchModal() {
         action() {
           scrollContentToTop();
           setArticles(null);
-          setSearch("");
+          setKeyword("");
           // alert('creating articles');
         },
         icon: <MdClearAll />,
-        disabled: !articles?.length && search.length,
+        disabled: !articles?.articles.length && keyword.length,
       },
     ] as MobileHeaderActionProps[];
   }, [articles]);
-
- 
 
   return (
     <ModalTemplate
       value={searchModal}
       onClose={closeSearchModal}
-      title="Search Tuturku"
+      title="Search Articles"
       fullscreen
       className="!z-[13]"
       noHeader
@@ -106,7 +142,7 @@ const SearchModal = React.memo(function SearchModal() {
         back={() => {
           closeSearchModal();
         }}
-        title="Search articles"
+        title={`Search Articles`}
         actions={headerActions}
         toTop={scrollContentToTop}
       />
@@ -115,7 +151,7 @@ const SearchModal = React.memo(function SearchModal() {
           <div className="inline-flex items-center gap-2 sm:gap-4">
             <InputText
               ref={searchBarRef}
-              value={search}
+              value={keyword}
               onChange={handleSearch}
               placeholder="Search articles..."
               icon={
@@ -126,8 +162,8 @@ const SearchModal = React.memo(function SearchModal() {
                 )
               }
               clearIcon
-              clearable={search.trim().length >= 2}
-              clearAction={() => setSearch("")}
+              clearable={keyword.trim().length >= 2}
+              clearAction={() => setKeyword("")}
               type={`search`}
             />
             {/* <button
@@ -138,26 +174,34 @@ const SearchModal = React.memo(function SearchModal() {
           </button> */}
           </div>
         </div>
-        <div className="flex flex-col gap-2 rounded-xl min-h-screen">
-          {/* initial skeleton */}
-          {!articles?.length && !loading && search.length < 2 && (
-            <Alert className="text-center mt-12">
-              <span>
-                Start searching by typing the keyword.
-                <br />
-                Keyword requires 2 characters minimum
-              </span>
-            </Alert>
-          )}
-          {/* no result */}
-          {!articles?.length && !loading && search.length >= 2 && (
-            <SectionSkeleton text="No results found." />
-          )}
-          {articles &&
-            articles.map((e, idx) => {
+        {/* initial skeleton */}
+        {!data?.length && !loading && keyword.length < 2 && (
+          <Alert className="text-center mt-12">
+            <span>
+              Start searching by typing the keyword.
+              <br />
+              Keyword requires 2 characters minimum
+            </span>
+          </Alert>
+        )}
+        {/* no result */}
+        {!data?.length && !loading && keyword.length >= 2 && (
+          <SectionSkeleton text="No results found." />
+        )}
+        {articles && (
+          <InfiniteLoader
+            className="flex flex-col gap-2 rounded-xl min-h-screen"
+            callback={(intersecting) => {
+              if (intersecting) return search(keyword, true);
+            }}
+            loaderKey={articles.offset}
+            loaderShown={articles.offset < articles.total}
+            loaderChildren={<LoadingIndicator spinner />}
+          >
+            {data?.map((e, idx) => {
               return (
                 <div
-                  key={e.id}
+                  key={e.id + idx}
                   className="hover:underline bg-base-100 rounded-xl animate-pop"
                   onClick={() => {
                     const body = document.body;
@@ -169,7 +213,8 @@ const SearchModal = React.memo(function SearchModal() {
                 </div>
               );
             })}
-        </div>
+          </InfiniteLoader>
+        )}
       </div>
     </ModalTemplate>
   );

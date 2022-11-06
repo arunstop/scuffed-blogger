@@ -22,7 +22,8 @@ import {
   repoFsArticleContentAdd,
   repoFsArticleContentDelete,
   repoFsArticleContentUpdate,
-  repoFsArticleDelete, repoFsArticleGetIds,
+  repoFsArticleDelete,
+  repoFsArticleGetIds,
   repoFsArticleUpdate
 } from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
@@ -161,9 +162,9 @@ export async function serviceArticleGetByUser({
     });
     if (!idList) return null;
     const articles: ArticleModel[] = [];
-    for(const id of idList.ids){
+    for (const id of idList.ids) {
       const article = await repoRtArticleGetById(id);
-      if(!article) break;
+      if (!article) break;
       articles.push(article);
     }
     const res: ArticleListModelByUser = {
@@ -512,20 +513,18 @@ export async function serviceArticleSearch({
   callback,
 }: MainApiResponse<
   ApiPagingReqProps & { abortSignal: AbortSignal },
-  ArticleModel[] | null | FirebaseError
->): Promise<ArticleModel[] | null> {
-  console.log("searching...", data.keyword);
+  ArticleModelFromDb | null | FirebaseError
+  >): Promise<ArticleModelFromDb | null> {
   const { keyword, count, start, abortSignal } = data;
+  console.log("searching...", start);
   try {
     const res: ArticleModel[] = await repoRtArticleSearch(
       data.abortSignal,
     ).then((e) => {
       if (e.status !== 200) return [];
-      let articles = values(e.data) as ArticleModel[];
+      const articles = values(e.data) as ArticleModel[];
       const kw = (keyword || "").toLowerCase().trim();
-      // show all articles if no keyword
       if (!kw) {
-        articles = articles.slice(0, count);
         return articles;
       }
       const fuzz = new Fuse(articles, {
@@ -533,11 +532,16 @@ export async function serviceArticleSearch({
       });
       // show filtered articles if there is a keyword
       const searchResult = fuzz.search(kw).map((e) => e.item);
-      articles = searchResult.slice(0, count);
       // articles = (fuzz.search(kw) as unknown as ArticleModel[]).slice(0, count);
-      return articles;
+      return searchResult;
     });
-    return res;
+    console.log(start + count);
+    return {
+      articles: res.slice(start, start + count),
+      offset: start + count,
+      total: res.length,
+      keyword: keyword,
+    };
   } catch (error) {
     return null;
   }
