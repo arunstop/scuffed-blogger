@@ -6,13 +6,13 @@ import {
   MdMoreVert,
   MdRefresh,
   MdStar,
-  MdTrendingUp
+  MdTrendingUp,
 } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
 import {
   serviceArticleContentGet,
-  serviceArticleUpdateView
+  serviceArticleUpdateView,
 } from "../../../../app/services/ArticleService";
 import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import ArticleSectionAction from "../../../components/article/ArticleActions";
@@ -23,12 +23,13 @@ import MainMarkdownContainer from "../../../components/main/MainMarkdownContaine
 import MainPostStatusChip from "../../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../../components/main/MainPostUserPopup";
 import MobileHeader, {
-  MobileHeaderActionProps
+  MobileHeaderActionProps,
 } from "../../../components/main/MobileHeader";
 import ModalImagePreview from "../../../components/modal/ModalImagePreview";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import UserHeader from "../../../components/user/UserHeader";
 import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
+import Memoized from "../../../components/utils/Memoized";
 import LayoutArticleMoreSection from "../LayoutArticleMoreSection";
 
 function LayoutArticlePageSlug({
@@ -143,7 +144,9 @@ function LayoutArticlePageSlug({
       <Container>
         <div className="inline-flex justify-between">
           <div className="dropdown-hover dropdown">
-            <UserHeader id={article.author} />
+            <Memoized show>
+              <UserHeader id={article.author} />
+            </Memoized>
 
             <div tabIndex={0} className="dropdown-content pt-2">
               <MainUserPopup id={articleId + ""} />
