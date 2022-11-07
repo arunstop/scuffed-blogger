@@ -10,7 +10,9 @@ function Memoized({ show, children }: MemoizedProps) {
 }
 
 export default React.memo(Memoized, (prev, next) => {
-  // memoize when hiding
+  // if showing static show value then memoize it
+  if (prev.show === true && next.show === true) return true;
+  // or memoize when getting hidden while the previous state is showing
   const hiding = prev.show === true && next.show === false;
   return hiding === true;
 });

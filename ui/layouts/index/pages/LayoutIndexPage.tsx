@@ -1,6 +1,4 @@
 import { useRouter } from "next/router";
-import React from "react";
-import { MdEdit } from "react-icons/md";
 import { APP_NAME } from "../../../../app/helpers/Constants";
 import Container from "../../../components/common/Container";
 import MobileHeader from "../../../components/main/MobileHeader";
@@ -16,7 +14,7 @@ function LayoutIndexPage() {
         actions={[
           {
             label: "Write",
-            icon: <MdEdit />,
+            // icon: <MdAdd />,
             action() {
               router.push(`/write`);
             },

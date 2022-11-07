@@ -5,7 +5,7 @@ import Dropdown, { DropdownOption } from "../common/Dropdown";
 
 export interface MobileHeaderActionProps {
   label: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   action?: () => void;
   options?: DropdownOption[];
   disabled?: boolean;
@@ -45,18 +45,15 @@ function MobileHeader({ title, back, actions, toTop }: MobileHeaderProps) {
       {!!actions?.length && (
         <div className="flex items-center gap-2">
           {actions.map((e, idx) => {
+            if (!e.options?.length)
+              return <ActionButton key={idx} action={e} />;
             return (
-              <Dropdown key={idx} options={e.options || []} className="dropdown-end">
-                <button
-                  tabIndex={0}
-                  className={`btn rounded-xl btn-sm  text-2xl  aspect-square p-0
-                  ${e.disabled ? "!bg-opacity-10" : "btn-ghost text-primary"}`}
-                  onClick={e.disabled ? undefined : e.action}
-                  title={e.label}
-                  disabled={e.disabled}
-                >
-                  {e.icon}
-                </button>
+              <Dropdown
+                key={idx}
+                options={e.options || []}
+                className="dropdown-end"
+              >
+                <ActionButton action={e} />
               </Dropdown>
             );
           })}
@@ -65,5 +62,33 @@ function MobileHeader({ title, back, actions, toTop }: MobileHeaderProps) {
     </div>
   );
 }
+
+const ActionButton = ({ action }: { action: MobileHeaderActionProps }) => {
+  return action.icon ? (
+    // if icon
+    <button
+      tabIndex={0}
+      className={`btn rounded-xl btn-sm  text-2xl  aspect-square p-0
+      ${action.disabled ? "!bg-opacity-10" : "btn-ghost text-primary"}`}
+      onClick={action.disabled ? undefined : action.action}
+      title={action.label}
+      disabled={action.disabled}
+    >
+      {action.icon}
+    </button>
+  ) : (
+    // if label
+    <button
+      tabIndex={0}
+      className={`btn rounded-xl btn-sm text-lg p-1 !font-black
+          ${action.disabled ? "!bg-opacity-10" : "btn-ghost text-primary"}`}
+      onClick={action.disabled ? undefined : action.action}
+      title={action.label}
+      disabled={action.disabled}
+    >
+      {action.label}
+    </button>
+  );
+};
 
 export default MobileHeader;

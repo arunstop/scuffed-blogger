@@ -56,9 +56,9 @@ function MainHeaderBigSearchBar() {
             },
           }),
       );
-      if (!res) return;
+      if (!res||!res.articles.length) return;
       // console.log(res);
-      setResult(res);
+      setResult(res.articles);
       setLoading(false);
     }, 500),
     [],

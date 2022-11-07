@@ -2,6 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, ReactNode, useEffect, useState } from "react";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
 import { ModalProps } from "../../../base/data/Main";
+import Button from "../common/Button";
 import GradientBackground from "../utils/GradientBackground";
 import ModalActionConfirmation from "./ModalActionConfirmation";
 import ModalActionItemsContainer from "./ModalActionItemsContainer";
@@ -24,6 +25,7 @@ export interface ModalActionAction {
 export interface ModalConfirmation {
   className?: string;
   label: string;
+  cancel?: boolean;
   action?: () => void;
 }
 
@@ -175,27 +177,26 @@ const ModalActionTemplate = ({
                         className=" animate-fadeInUp animate-duration-500 w-full flex-1 flex"
                         style={{ animationDelay: `${(idx + 1) * 100}ms` }}
                       >
-                        <button
+                        <Button
                           className={`--btn-resp --btn-base  btn rounded-xl border-0 shadow-xl
                         ring-1 ring-gray-600/20 w-full ${e.className}`}
                           onClick={e.action}
-                          role={"button"}
+                          loadingOnClick={!e.cancel}
                         >
                           {e.label}
-                        </button>
+                        </Button>
                       </div>
                     );
                   })}
                 {!isConfirmation && (
                   <div className="animate-fadeInUp animate-duration-500 animate-delay-100 flex-1 flex">
-                    <button
-                      className="--btn-resp --btn-base btn rounded-xl border-0 shadow-xl 
-                      ring-1 ring-gray-600/20 w-full"
+                    <Button
+                      className={`--btn-resp --btn-base btn rounded-xl border-0 shadow-xl 
+                      ring-1 ring-gray-600/20 w-full`}
                       onClick={closeModal}
-                      role={"button"}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>

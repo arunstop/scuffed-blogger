@@ -17,7 +17,7 @@ import ErrorPlaceholder from "../../components/placeholder/ErrorPlaceholder";
 import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
 import PostItem from "../../components/post/PostItem";
 import PostOptionModal from "../../components/post/PostOptionModal";
-import IntersectionObserverTrigger from "../../components/utils/IntesectionObserverTrigger";
+import { InfiniteLoader } from "../../components/utils/InfiniteLoader";
 
 function LayoutIndexPostSection() {
   return (
@@ -86,37 +86,31 @@ function Child() {
         )}
         {!!feed && (
           <>
-            <>
-              <div
-                className="flex flex-col gap-4 sm:gap-8 w-full"
-                id="main-content"
-              >
-                {feed.articles.map((e) => {
-                  return (
-                    <PostItem
-                      key={e.id}
-                      article={e}
-                      userDisplay={displays.find((dd) => dd.id === e.author)}
-                      observe
-                    />
-                  );
-                })}
-              </div>
-              <PostOptionModal />
-            </>
-
-            {/* when loading */}
-            {resp?.status !== "error" && feed.articles.length < feed.total && (
-              <IntersectionObserverTrigger
-                key={feed.offset}
-                callback={(intersecting) => {
-                  if (intersecting) return loadPosts();
-                }}
-                className="animate-fadeIn"
-              >
-                <LoadingIndicator spinner />
-              </IntersectionObserverTrigger>
-            )}
+            <InfiniteLoader
+              className="flex flex-col gap-4 sm:gap-8 w-full"
+              callback={(intersecting) => {
+                if (intersecting) return loadPosts();
+              }}
+              loaderShown={
+                resp?.status !== "error" &&
+                feed.articles.length < feed.total
+              }
+              loaderKey={feed?.offset + ""}
+              loaderClassName="animate-fadeIn"
+              loaderChildren={<LoadingIndicator spinner />}
+            >
+              {feed.articles.map((e) => {
+                return (
+                  <PostItem
+                    key={e.id}
+                    article={e}
+                    userDisplay={displays.find((dd) => dd.id === e.author)}
+                    observe
+                  />
+                );
+              })}
+            </InfiniteLoader>
+            <PostOptionModal />
           </>
         )}
         {/* when error */}

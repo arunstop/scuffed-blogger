@@ -5,7 +5,7 @@ import { waitFor } from "../../../app/helpers/DelayHelpers";
 import { autoRetry } from "../../../app/helpers/MainHelpers";
 import {
   ArticleListModelByUser,
-  serviceArticleGetByUser,
+  serviceArticleGetByUser
 } from "../../../app/services/ArticleService";
 import { MainNetworkResponse } from "../../../base/data/Main";
 import { toUserDisplay } from "../../../base/data/models/UserDisplayModel";
@@ -13,7 +13,7 @@ import { UserModel } from "../../../base/data/models/UserModel";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import PostItem from "../post/PostItem";
 import PostOptionModal from "../post/PostOptionModal";
-import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
+import { InfiniteLoader } from "../utils/InfiniteLoader";
 
 export const UserPostTab = React.memo(function UserPost({
   userProfile,
@@ -27,6 +27,7 @@ export const UserPostTab = React.memo(function UserPost({
   const { authStt } = useAuthCtx();
 
   const loadPosts = useCallback(async () => {
+    // await waitFor(2000);
     // show loading indicator
     // setLoading(true);
 
@@ -35,7 +36,7 @@ export const UserPostTab = React.memo(function UserPost({
         await serviceArticleGetByUser({
           articleListId: userProfile?.list.posts || "",
           keyword: "",
-          paging: { start: offset, end: offset + 10 },
+          paging: { start: offset, end: offset + 5 },
           callback: (resp) => {
             setResp(resp);
           },
@@ -65,32 +66,49 @@ export const UserPostTab = React.memo(function UserPost({
   return (
     <>
       {!feed ? (
-        <>
-          {authStt.user?.id === userProfile.id ? (
-            <div className={`w-full`}>
-              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
-                <span className="sm:text-xl">
-                  No articles found, write your first article and let the world
-                  know!
-                </span>
-                <Link href={"/write"} passHref>
-                  <a className="btn --btn-resp btn-outline">Write Article</a>
-                </Link>
-              </div>
-            </div>
-          ) : (
-            <div className={`w-full`}>
-              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
-                <span className="sm:text-xl">
-                  This user has no public articles.
-                </span>
-              </div>
+        <div className={`w-full`}>
+          {resp && (
+            <>
+              {authStt.user?.id === userProfile.id ? (
+                <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                  <span className="sm:text-xl">
+                    No articles found, write your first article and let the
+                    world know!
+                  </span>
+                  <Link href={"/write"} passHref>
+                    <a className="btn --btn-resp btn-outline">Write Article</a>
+                  </Link>
+                </div>
+              ) : (
+                <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                  <span className="sm:text-xl">
+                    This user has no public articles.
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+          {!resp && (
+            <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+              <LoadingIndicator text="Loading articles" spinner />
             </div>
           )}
-        </>
+        </div>
       ) : (
         <>
-          <div className="flex flex-col gap-4 sm:gap-8">
+          <InfiniteLoader
+            className="flex flex-col gap-4 sm:gap-8"
+            callback={(intersecting) => {
+              if (intersecting) return loadPosts();
+            }}
+            loaderKey={feed.offset}
+            loaderShown={
+              resp?.status !== "error" &&
+              feed.articles.length < feed.totalArticle
+            }
+            loaderClassName="animate-fadeIn"
+            loaderChildren={<LoadingIndicator spinner />}
+          >
             {feed.articles.map((e) => {
               return (
                 <PostItem
@@ -100,19 +118,7 @@ export const UserPostTab = React.memo(function UserPost({
                 />
               );
             })}
-            {resp?.status !== "error" &&
-              feed.articles.length < feed.totalArticle && (
-                <IntersectionObserverTrigger
-                  key={feed.offset}
-                  callback={(intersecting) => {
-                    if (intersecting) return loadPosts();
-                  }}
-                  className="animate-fadeIn"
-                >
-                  <LoadingIndicator spinner />
-                </IntersectionObserverTrigger>
-              )}
-          </div>
+          </InfiniteLoader>
         </>
       )}
       <PostOptionModal />

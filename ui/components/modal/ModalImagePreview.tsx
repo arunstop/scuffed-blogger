@@ -2,15 +2,21 @@ import React, { ReactNode } from "react";
 import { MdClose } from "react-icons/md";
 import { unblur } from "../../../app/helpers/UiHelpers";
 
-function ModalImagePreview({ children }: { children: ReactNode }) {
+function ModalImagePreview({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <a
-      className="group relative isolate  flex  cursor-pointer overflow-hidden 
+      className={`group relative isolate  flex  cursor-pointer overflow-hidden 
       transition-[width] duration-300 
       focus-within:fixed  focus-within:inset-0 focus-within:z-[100] 
       focus-within:aspect-auto focus-within:cursor-default focus-within:rounded-none  
       focus-within:p-2 focus-within:backdrop-blur-sm sm:focus-within:p-4
-    "
+      ${className || ""}`}
       tabIndex={0}
     >
       <div

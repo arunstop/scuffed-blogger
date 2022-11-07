@@ -3,26 +3,27 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { MdEdit, MdSearch } from "react-icons/md";
+import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
+import { useUiCtx } from "../../../../app/contexts/ui/UiHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
+import { autoRetry } from "../../../../app/helpers/MainHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
+import { scrollToTop } from "../../../../app/hooks/RouteChangeHook";
 import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import {
   ArticleListModelByUser,
   serviceArticleDelete,
   serviceArticleGetByUser,
 } from "../../../../app/services/ArticleService";
-import InputText from "../../../components/input/InputText";
+import { MainNetworkResponse, netLoading } from "../../../../base/data/Main";
 import Container from "../../../components/common/Container";
-import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
+import InputText from "../../../components/input/InputText";
 import MobileHeader from "../../../components/main/MobileHeader";
 import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
-import { autoRetry } from "../../../../app/helpers/MainHelpers";
-import { scrollToTop } from "../../../../app/hooks/RouteChangeHook";
-import { useUiCtx } from "../../../../app/contexts/ui/UiHook";
+import { InfiniteLoader } from "../../../components/utils/InfiniteLoader";
 
 function LayoutUserPagePosts() {
   const {
@@ -35,7 +36,7 @@ function LayoutUserPagePosts() {
   const [articleData, setArticleData] = useState<ArticleListModelByUser>();
   const [articleDataInit, setArticleDataInit] =
     useState<ArticleListModelByUser>();
-  const [loadingArticles, setLoadingArticles] = useState(true);
+  const [resp, setResp] = useState<MainNetworkResponse>();
   // const [keyword, setKeyword] = useState("");
   // routed modal
   const modalDelete = useRoutedModalHook("articleId");
@@ -65,15 +66,20 @@ function LayoutUserPagePosts() {
     // console.log("param", offset);
     // console.log("articleData", articleData?.offset);
     if (!user) return;
+    setResp(netLoading("Loading articles..."));
     const articleByUser = await autoRetry(
       async () =>
         await serviceArticleGetByUser({
           articleListId: user.list.posts,
           keyword: keyword || "",
           paging: { start: offset, end: offset + 5 },
+          callback: async (res) => {
+            if (res.status === "loading") return;
+            setResp(res);
+          },
         }),
     );
-    if (!articleByUser) return setLoadingArticles(false);
+    if (!articleByUser) return;
     console.log("new", articleByUser.offset);
     setArticleData((prevArticleData) => {
       if (!prevArticleData) return articleByUser;
@@ -88,8 +94,6 @@ function LayoutUserPagePosts() {
       return articleByUser;
     });
     if (init) setArticleDataInit(articleByUser);
-    await waitFor(500);
-    setLoadingArticles(false);
   };
 
   const deleteArticle = useCallback(async () => {
@@ -136,7 +140,7 @@ function LayoutUserPagePosts() {
     if (!keyword && lastKw) return setArticleData(articleDataInit);
     if (kw.length < 2) return;
     console.log("searching...");
-    setLoadingArticles(true);
+    setResp(netLoading("Searching..."));
     getArticles({ init: false, keyword: kw });
   }
 
@@ -144,7 +148,7 @@ function LayoutUserPagePosts() {
     if (!articleData) return;
     if (articleData.offset > articleData.totalArticle)
       return console.log("maxed out", articleData?.offset);
-    setLoadingArticles(true);
+    setResp(netLoading("Searching..."));
     await waitFor(500);
     getArticles({
       init: false,
@@ -175,7 +179,6 @@ function LayoutUserPagePosts() {
         actions={[
           {
             label: "Write",
-            icon: <MdEdit />,
             action() {
               router.push("/write");
             },
@@ -227,6 +230,9 @@ function LayoutUserPagePosts() {
             </div>
           </div>
         )}
+        {resp?.status === "loading" && !articleDataInit && (
+          <LoadingIndicator text={`Loading articles`} spinner />
+        )}
         {!!articles.length && (
           <p className="sm:text-xl">
             <span className="font-bold">{articleCount}</span>{" "}
@@ -234,8 +240,24 @@ function LayoutUserPagePosts() {
           </p>
         )}
         {/* articles */}
-        {articles.length ? (
-          <div className="flex flex-col gap-2 sm:gap-4">
+        {!!articles.length && (
+          <InfiniteLoader
+            className="flex flex-col gap-2 sm:gap-4"
+            callback={async (intersecting) => {
+              if (intersecting) return loadMoreArticles();
+            }}
+            loaderKey={articleData?.offset + ""}
+            loaderShown={
+              resp?.status !== "loading" &&
+              !!articleData &&
+              articleData.offset < articleData.totalArticle
+            }
+            loaderChildren={
+              <Transition appear {...transitionPullV()}>
+                <LoadingIndicator text={``} spinner />
+              </Transition>
+            }
+          >
             {articles.map((e, idx) => {
               return (
                 <div key={e.id} className="flex">
@@ -248,10 +270,10 @@ function LayoutUserPagePosts() {
                 </div>
               );
             })}
-          </div>
-        ) : null}
+          </InfiniteLoader>
+        )}
 
-        {!loadingArticles && (
+        {resp?.status !== "loading" && (
           <>
             {/* no articles */}
             {!articleDataInit?.totalArticle ? (
@@ -291,24 +313,6 @@ function LayoutUserPagePosts() {
               )
             )}
           </>
-        )}
-        {loadingArticles ? (
-          <Transition appear {...transitionPullV()}>
-            <div className={`w-full h-[30rem]`}>
-              <LoadingIndicator text={``} spinner />
-            </div>
-          </Transition>
-        ) : (
-          articleData &&
-          articleData.offset < articleData.totalArticle && (
-            <IntersectionObserverTrigger
-              key={articleData.offset + ""}
-              callback={async (intersecting) => {
-                if (intersecting) return loadMoreArticles();
-              }}
-              className="flex w-full "
-            ></IntersectionObserverTrigger>
-          )
         )}
 
         {/* pagination */}
