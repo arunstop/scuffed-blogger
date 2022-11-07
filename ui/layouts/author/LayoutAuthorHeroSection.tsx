@@ -18,7 +18,7 @@ function LayoutAuthorHeroSection({
   return (
     <div className="relative flex h-auto w-full flex-col">
       <img
-        className="absolute h-[10rem] w-full max-w-none rounded-xl bg-primary/10 object-cover sm:h-[15rem] blur-lg"
+        className="absolute h-[10rem] w-full max-w-none rounded-xl bg-primary/10 object-cover blur-lg sm:h-[15rem]"
         src={`${avatar}`}
         alt="Image"
         width={240}
@@ -28,13 +28,13 @@ function LayoutAuthorHeroSection({
         <div>
           <ModalImagePreview>
             <a
-              className="avatar group-focus-within:max-w-[60vw] w-24 sm:w-48 group-focus-within:sm:max-w-[60vw] 
-          justify-center group  duration-300 group-focus-within:m-auto m-0 max-h-[90vh] group-focus-within:w-full
-          aspect-square"
+              className="group avatar m-0 aspect-square max-h-[90vh] w-24 justify-center  duration-300 
+              group-focus-within:pointer-events-none group-focus-within:m-auto group-focus-within:w-full 
+              group-focus-within:max-w-[60vw] sm:w-48 group-focus-within:sm:max-w-[60vw]"
             >
               <div
-                className="z-0  rounded-[50%] border-2 border-primary/50 
-        transition-all hover:rounded-xl group-focus-within:rounded-xl  sm:border-4 bg-base-content/30"
+                className="pointer-events-auto  z-0 rounded-[50%] border-2 border-primary/50 bg-base-content/30 
+                transition-all  hover:rounded-xl group-focus-within:rounded-xl sm:border-4"
               >
                 <img src={`${avatar}`} alt={`Avatar of ${name}`} />
               </div>
