@@ -31,7 +31,9 @@ function LayoutUserPagePosts() {
     authAct,
   } = useAuthCtx();
 
-  const { uiAct } = useUiCtx();
+  const {
+    action: { addToast, removeToast },
+  } = useUiCtx();
   const router = useRouter();
   const [articleData, setArticleData] = useState<ArticleListModelByUser>();
   const [articleDataInit, setArticleDataInit] =
@@ -114,7 +116,7 @@ function LayoutUserPagePosts() {
     scrollToTop();
     await getArticles({ init: true });
     modalDelete.close();
-    uiAct.addToast({
+    addToast({
       label: "Article successfully deleted",
       type: "success",
     });

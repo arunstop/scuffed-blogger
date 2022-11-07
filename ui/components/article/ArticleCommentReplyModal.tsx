@@ -40,7 +40,6 @@ function Content({
   const { action } = useCommentCtx();
   const [reply, setReply] = useState("");
 
-  // const { uiStt, uiAct } = useUiCtx();
   function closeModal() {
     onClose();
     setReply("");
