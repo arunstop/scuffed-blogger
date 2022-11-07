@@ -6,7 +6,7 @@ import { autoRetry } from "../../../app/helpers/MainHelpers";
 import { useUiModalSearchBehaviorHook } from "../../../app/hooks/UiModalSearchBehaviorHook";
 import {
   ArticleModelFromDb,
-  serviceArticleSearch,
+  serviceArticleSearch
 } from "../../../app/services/ArticleService";
 import Alert from "../common/Alert";
 import InputText from "../input/InputText";
@@ -88,7 +88,7 @@ const SearchModal = React.memo(function SearchModal() {
       debounceSearch({
         keyword: val,
         start: articles?.offset || 0,
-        count: 2,
+        count: 5,
         abortSignal: controller.signal,
         init: !repeat,
       });
