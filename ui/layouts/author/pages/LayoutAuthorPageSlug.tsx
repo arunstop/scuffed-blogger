@@ -1,9 +1,11 @@
+import { useAtom } from "jotai";
 import { useRouter } from "next/dist/client/router";
 import { MdMoreVert } from "react-icons/md";
+import { routeHistoryAtom } from "../../../../app/hooks/RouteChangeHook";
 import { UserDisplayModel } from "../../../../base/data/models/UserDisplayModel";
 import Container from "../../../components/common/Container";
 import MobileHeader, {
-  MobileHeaderActionProps
+  MobileHeaderActionProps,
 } from "../../../components/main/MobileHeader";
 import UserContent from "../../../components/user/UserContent";
 import LayoutAuthorHeroSection from "../LayoutAuthorHeroSection";
@@ -17,6 +19,7 @@ function LayoutAuthorPageSlug({
 }) {
   const { avatar, id, name, username, desc } = userDisplay;
   const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
 
   const getActions = (): MobileHeaderActionProps[] => {
     return [
@@ -62,7 +65,11 @@ function LayoutAuthorPageSlug({
     <>
       <MobileHeader
         title={userDisplay.name}
-        back={() => router.back()}
+        back={() =>
+          history.length
+            ? router.replace(history[history.length - 1])
+            : router.push("/")
+        }
         actions={getActions()}
       />
       <Container>

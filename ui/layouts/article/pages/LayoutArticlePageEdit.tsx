@@ -1,9 +1,11 @@
 import { FirebaseError } from "firebase/app";
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useWritingPanelCtx } from "../../../../app/contexts/writingPanel/WritingPanelHook";
 import { WritingPanelProvider } from "../../../../app/contexts/writingPanel/WritingPanelProvider";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
+import { routeHistoryAtom } from "../../../../app/hooks/RouteChangeHook";
 import {
   serviceArticleContentGet,
   serviceArticleUpdate,
@@ -31,6 +33,7 @@ function LayoutArticlePageEditContent({
 }) {
   const { state: wpState, action: wpAction } = useWritingPanelCtx();
   const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
 
   const [oldArticleUpdated, setOldArticleUpdated] =
     useState(articleContentless);
@@ -144,9 +147,10 @@ function LayoutArticlePageEditContent({
   return (
     <>
       <MobileHeader
-        back={() => {
-          router.back();
-        }}
+        back={() =>
+          history.length
+            ? router.replace(history[history.length - 1])
+            : router.push("/")}
         title={`Edit Article`}
       />
       <Container className="">

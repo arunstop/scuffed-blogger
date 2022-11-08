@@ -1,3 +1,4 @@
+import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -6,9 +7,11 @@ import {
   MdHome,
   MdOutlineSentimentVeryDissatisfied,
 } from "react-icons/md";
+import { routeHistoryAtom } from "../app/hooks/RouteChangeHook";
 
 function Custom404() {
   const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
 
   return (
     <div className="flex flex-col min-h-[100vh]">
@@ -26,7 +29,11 @@ function Custom404() {
         <div className="flex gap-2 sm:gap-4">
           <button
             className="btn btn-primary text-lg sm:text-xl gap-2 sm:gap-4"
-            onClick={() => router.back()}
+            onClick={() =>
+              history.length
+                ? router.replace(history[history.length - 1])
+                : router.push("/")
+            }
           >
             <MdArrowBack className="text-2xl sm:text-3xl" />
             Go back

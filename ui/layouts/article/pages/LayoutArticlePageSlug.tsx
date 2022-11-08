@@ -1,4 +1,5 @@
 import { formatDistance } from "date-fns";
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -10,6 +11,7 @@ import {
 } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
+import { routeHistoryAtom } from "../../../../app/hooks/RouteChangeHook";
 import {
   serviceArticleContentGet,
   serviceArticleUpdateView,
@@ -37,11 +39,12 @@ function LayoutArticlePageSlug({
 }: {
   articleContentless: ArticleModel;
 }) {
-  const router = useRouter();
   const articleId = articleContentless.id;
   const {
     authStt: { user },
   } = useAuthCtx();
+  const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
 
   const [article, setArticle] = useState(articleContentless);
 
@@ -137,7 +140,11 @@ function LayoutArticlePageSlug({
     <>
       <ArticleProgressBar />
       <MobileHeader
-        back={() => router.back()}
+        back={() =>
+          history.length
+            ? router.replace(history[history.length - 1])
+            : router.push("/")
+        }
         title="Read Article"
         actions={getHeaderAction()}
       />

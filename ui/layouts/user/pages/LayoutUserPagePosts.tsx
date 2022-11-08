@@ -1,4 +1,5 @@
 import { Transition } from "@headlessui/react";
+import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import { useUiCtx } from "../../../../app/contexts/ui/UiHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
-import { scrollToTop } from "../../../../app/hooks/RouteChangeHook";
+import { routeHistoryAtom, scrollToTop } from "../../../../app/hooks/RouteChangeHook";
 import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import {
   ArticleListModelByUser,
@@ -35,6 +36,7 @@ function LayoutUserPagePosts() {
     action: { addToast, removeToast },
   } = useUiCtx();
   const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
   const [articleData, setArticleData] = useState<ArticleListModelByUser>();
   const [articleDataInit, setArticleDataInit] =
     useState<ArticleListModelByUser>();
@@ -175,9 +177,10 @@ function LayoutUserPagePosts() {
     <>
       <MobileHeader
         title={`My Posts`}
-        back={() => {
-          router.back();
-        }}
+        back={() =>
+          history.length
+            ? router.replace(history[history.length - 1])
+            : router.push("/")}
         actions={[
           {
             label: "Write",
