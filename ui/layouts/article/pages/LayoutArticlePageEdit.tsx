@@ -16,6 +16,7 @@ import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import Container from "../../../components/common/Container";
 import MobileHeader from "../../../components/main/MobileHeader";
 import { StatusPlaceholderProps } from "../../../components/placeholder/StatusPlaceholder";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 import LayoutArticleForm from "../LayoutArticleForm";
 
 export interface ArticleSubmissionProps {
@@ -143,14 +144,11 @@ function LayoutArticlePageEditContent({
   useEffect(() => {
     getContent();
   }, []);
-  
+
   return (
     <>
       <MobileHeader
-        back={() =>
-          history.length
-            ? router.replace(history[history.length - 1])
-            : router.push("/")}
+        back={() => smartBack(router, history)}
         title={`Edit Article`}
       />
       <Container className="">

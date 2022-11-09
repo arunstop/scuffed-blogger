@@ -9,6 +9,7 @@ import ToastContainer from "./ToastContainer";
 import BottomBar from "./BottomBar";
 import { useAtom } from "jotai";
 import { routeHistoryAtom } from "../../../app/hooks/RouteChangeHook";
+import { useRouter } from "next/router";
 
 function LayoutMainWrapper({ children }: { children: ReactNode }) {
   const {
@@ -16,11 +17,14 @@ function LayoutMainWrapper({ children }: { children: ReactNode }) {
     authStt: { user },
   } = useAuthCtx();
   const [history] = useAtom(routeHistoryAtom);
+  const router = useRouter();
   return (
     <>
-    <div className="fixed inset-0 bg-red-500/20 pointer-events-none z-[200]">
-    {JSON.stringify(history)}
-    </div>
+      <div className="fixed inset-0 bg-red-500/20 pointer-events-none z-[200]">
+        {history[history.length - 1]}
+        {<br/>}
+        {router.asPath}
+      </div>
       {/* Header for desktop */}
       <Header />
       {/* Children */}

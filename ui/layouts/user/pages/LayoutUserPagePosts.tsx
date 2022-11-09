@@ -10,7 +10,10 @@ import { useUiCtx } from "../../../../app/contexts/ui/UiHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
-import { routeHistoryAtom, scrollToTop } from "../../../../app/hooks/RouteChangeHook";
+import {
+  routeHistoryAtom,
+  scrollToTop,
+} from "../../../../app/hooks/RouteChangeHook";
 import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import {
   ArticleListModelByUser,
@@ -25,6 +28,7 @@ import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
 import { InfiniteLoader } from "../../../components/utils/InfiniteLoader";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 
 function LayoutUserPagePosts() {
   const {
@@ -177,10 +181,7 @@ function LayoutUserPagePosts() {
     <>
       <MobileHeader
         title={`My Posts`}
-        back={() =>
-          history.length
-            ? router.replace(history[history.length - 1])
-            : router.push("/")}
+        back={() => smartBack(router, history)}
         actions={[
           {
             label: "Write",

@@ -14,6 +14,7 @@ import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import { UserModel } from "../../../../base/data/models/UserModel";
 import Container from "../../../components/common/Container";
 import MobileHeader from "../../../components/main/MobileHeader";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 import LayoutArticleForm from "../LayoutArticleForm";
 import { ArticleSubmissionProps } from "./LayoutArticlePageEdit";
 
@@ -200,13 +201,7 @@ function LayoutArticlePageWrite() {
   const title = `Write Article`;
   return (
     <>
-      <MobileHeader
-        back={() =>
-          history.length
-            ? router.replace(history[history.length - 1])
-            : router.push("/")}
-        title={title}
-      />
+      <MobileHeader back={() => smartBack(router, history)} title={title} />
       <Container>
         <WritingPanelProvider>
           <LayoutArticlePageWriteContent title={title} />

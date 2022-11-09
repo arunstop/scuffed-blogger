@@ -32,6 +32,7 @@ import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import UserHeader from "../../../components/user/UserHeader";
 import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 import Memoized from "../../../components/utils/Memoized";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 import LayoutArticleMoreSection from "../LayoutArticleMoreSection";
 
 function LayoutArticlePageSlug({
@@ -140,11 +141,7 @@ function LayoutArticlePageSlug({
     <>
       <ArticleProgressBar />
       <MobileHeader
-        back={() =>
-          history.length
-            ? router.replace(history[history.length - 1])
-            : router.push("/")
-        }
+        back={() => smartBack(router, history)}
         title="Read Article"
         actions={getHeaderAction()}
       />

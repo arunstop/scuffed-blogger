@@ -8,6 +8,7 @@ import MobileHeader, {
   MobileHeaderActionProps,
 } from "../../../components/main/MobileHeader";
 import UserContent from "../../../components/user/UserContent";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 import LayoutAuthorHeroSection from "../LayoutAuthorHeroSection";
 
 function LayoutAuthorPageSlug({
@@ -65,11 +66,7 @@ function LayoutAuthorPageSlug({
     <>
       <MobileHeader
         title={userDisplay.name}
-        back={() =>
-          history.length
-            ? router.replace(history[history.length - 1])
-            : router.push("/")
-        }
+        back={() => smartBack(router, history)}
         actions={getActions()}
       />
       <Container>

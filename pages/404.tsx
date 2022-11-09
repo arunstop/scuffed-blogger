@@ -8,6 +8,7 @@ import {
   MdOutlineSentimentVeryDissatisfied,
 } from "react-icons/md";
 import { routeHistoryAtom } from "../app/hooks/RouteChangeHook";
+import { smartBack } from "../ui/helpers/RouterSmartBackHelpers";
 
 function Custom404() {
   const router = useRouter();
@@ -29,11 +30,7 @@ function Custom404() {
         <div className="flex gap-2 sm:gap-4">
           <button
             className="btn btn-primary text-lg sm:text-xl gap-2 sm:gap-4"
-            onClick={() =>
-              history.length
-                ? router.replace(history[history.length - 1])
-                : router.push("/")
-            }
+            onClick={() => smartBack(router, history)}
           >
             <MdArrowBack className="text-2xl sm:text-3xl" />
             Go back
