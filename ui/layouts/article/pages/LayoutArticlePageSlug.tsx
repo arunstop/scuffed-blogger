@@ -1,4 +1,5 @@
 import { formatDistance } from "date-fns";
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -10,6 +11,7 @@ import {
 } from "react-icons/md";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
+import { routeHistoryAtom } from "../../../../app/hooks/RouteChangeHook";
 import {
   serviceArticleContentGet,
   serviceArticleUpdateView,
@@ -30,6 +32,7 @@ import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import UserHeader from "../../../components/user/UserHeader";
 import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
 import Memoized from "../../../components/utils/Memoized";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 import LayoutArticleMoreSection from "../LayoutArticleMoreSection";
 
 function LayoutArticlePageSlug({
@@ -37,11 +40,12 @@ function LayoutArticlePageSlug({
 }: {
   articleContentless: ArticleModel;
 }) {
-  const router = useRouter();
   const articleId = articleContentless.id;
   const {
     authStt: { user },
   } = useAuthCtx();
+  const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
 
   const [article, setArticle] = useState(articleContentless);
 
@@ -137,7 +141,7 @@ function LayoutArticlePageSlug({
     <>
       <ArticleProgressBar />
       <MobileHeader
-        back={() => router.back()}
+        back={() => smartBack(router, history)}
         title="Read Article"
         actions={getHeaderAction()}
       />

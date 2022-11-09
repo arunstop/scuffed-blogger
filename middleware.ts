@@ -23,7 +23,7 @@ export function middleware(request: NextRequest) {
     //   matching requested route to the protected routes array
     const isTresspassing =
       protectedRoutes.filter((e) => {
-        return pathname.includes(e.toLowerCase());
+        return pathname.includes(e.toLowerCase().substring(1));
       }).length > 0;
     const onAuthPage = pathname.includes("auth");
     // if invalid

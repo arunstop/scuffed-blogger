@@ -19,9 +19,11 @@ function ArticleCommentOptionModal({
   } = useAuthCtx();
   const {
     state: { comments, replies },
-    action,
+    action: { deleteComment, deleteReply },
   } = useCommentCtx();
-  const { uiAct } = useUiCtx();
+  const {
+    action: { addToast },
+  } = useUiCtx();
 
   const paramArr = paramValue.split(".");
   const isParentComment = paramArr.length === 1;
@@ -67,8 +69,8 @@ function ArticleCommentOptionModal({
           const invalidLength = paramValue.length !== 38;
           if (invalidLength) return;
           // commit an action based on the type of the comment
-          action.deleteComment(paramArr[0]);
-          uiAct.addToast({
+          deleteComment(paramArr[0]);
+          addToast({
             label: "Comment successfully deleted",
             type: "success",
           });
@@ -79,8 +81,8 @@ function ArticleCommentOptionModal({
         const parentId = paramArr[0];
         const id = paramArr[1];
         // commit an action based on the type of the comment
-        action.deleteReply(parentId, id); //reply
-        uiAct.addToast({
+        deleteReply(parentId, id); //reply
+        addToast({
           label: "Reply successfully deleted",
           type: "success",
         });

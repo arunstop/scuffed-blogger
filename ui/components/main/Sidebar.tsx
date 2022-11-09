@@ -31,8 +31,8 @@ function Sidebar() {
   } = useAuthCtx();
 
   const {
-    uiStt: { darkMode },
-    uiAct,
+    state: { darkMode },
+    action: { addToast, toggleDarkMode},
   } = useUiCtx();
 
   const allMenus: (MainMenuItemProps & { show: boolean })[] = [
@@ -107,7 +107,7 @@ function Sidebar() {
       ),
       action: () => {
         // closeDrawer();
-        uiAct.toggleDarkMode(!darkMode);
+        toggleDarkMode(!darkMode);
       },
       show: true,
     },
@@ -283,7 +283,7 @@ function Sidebar() {
           closeDrawer();
           authAct.unsetUser();
           await waitFor(1000);
-          uiAct.addToast({
+          addToast({
             label: "We hope to see you again!",
             type: "success",
           });

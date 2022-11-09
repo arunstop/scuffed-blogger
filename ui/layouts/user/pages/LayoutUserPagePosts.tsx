@@ -1,4 +1,5 @@
 import { Transition } from "@headlessui/react";
+import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -9,7 +10,10 @@ import { useUiCtx } from "../../../../app/contexts/ui/UiHook";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
-import { scrollToTop } from "../../../../app/hooks/RouteChangeHook";
+import {
+  routeHistoryAtom,
+  scrollToTop,
+} from "../../../../app/hooks/RouteChangeHook";
 import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import {
   ArticleListModelByUser,
@@ -24,6 +28,7 @@ import ModalConfirmation from "../../../components/modal/ModalConfirmation";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import PostItemSearchResult from "../../../components/post/PostItemSearchResult";
 import { InfiniteLoader } from "../../../components/utils/InfiniteLoader";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 
 function LayoutUserPagePosts() {
   const {
@@ -31,8 +36,11 @@ function LayoutUserPagePosts() {
     authAct,
   } = useAuthCtx();
 
-  const { uiAct } = useUiCtx();
+  const {
+    action: { addToast, removeToast },
+  } = useUiCtx();
   const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
   const [articleData, setArticleData] = useState<ArticleListModelByUser>();
   const [articleDataInit, setArticleDataInit] =
     useState<ArticleListModelByUser>();
@@ -114,7 +122,7 @@ function LayoutUserPagePosts() {
     scrollToTop();
     await getArticles({ init: true });
     modalDelete.close();
-    uiAct.addToast({
+    addToast({
       label: "Article successfully deleted",
       type: "success",
     });
@@ -173,9 +181,7 @@ function LayoutUserPagePosts() {
     <>
       <MobileHeader
         title={`My Posts`}
-        back={() => {
-          router.back();
-        }}
+        back={() => smartBack(router, history)}
         actions={[
           {
             label: "Write",

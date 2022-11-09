@@ -10,7 +10,7 @@ function ModalImagePreview({
   className?: string;
 }) {
   return (
-    <a
+    <div
       className={`group relative isolate  flex  cursor-pointer overflow-hidden 
       transition-[width] duration-300 
       focus-within:fixed  focus-within:inset-0 focus-within:z-[100] 
@@ -33,7 +33,7 @@ function ModalImagePreview({
         <MdClose className="text-2xl text-white sm:text-3xl" />
       </button>
       {children}
-    </a>
+    </div>
   );
 }
 

@@ -1,9 +1,11 @@
 import { FirebaseError } from "firebase/app";
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useWritingPanelCtx } from "../../../../app/contexts/writingPanel/WritingPanelHook";
 import { WritingPanelProvider } from "../../../../app/contexts/writingPanel/WritingPanelProvider";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
+import { routeHistoryAtom } from "../../../../app/hooks/RouteChangeHook";
 import {
   serviceArticleContentGet,
   serviceArticleUpdate,
@@ -14,6 +16,7 @@ import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import Container from "../../../components/common/Container";
 import MobileHeader from "../../../components/main/MobileHeader";
 import { StatusPlaceholderProps } from "../../../components/placeholder/StatusPlaceholder";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 import LayoutArticleForm from "../LayoutArticleForm";
 
 export interface ArticleSubmissionProps {
@@ -31,6 +34,7 @@ function LayoutArticlePageEditContent({
 }) {
   const { state: wpState, action: wpAction } = useWritingPanelCtx();
   const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
 
   const [oldArticleUpdated, setOldArticleUpdated] =
     useState(articleContentless);
@@ -140,13 +144,11 @@ function LayoutArticlePageEditContent({
   useEffect(() => {
     getContent();
   }, []);
-  
+
   return (
     <>
       <MobileHeader
-        back={() => {
-          router.back();
-        }}
+        back={() => smartBack(router, history)}
         title={`Edit Article`}
       />
       <Container className="">
