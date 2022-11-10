@@ -22,11 +22,6 @@ export interface RegisterFormFields {
   cPassword: string;
   name: string;
 }
-export interface AuthRegisterProps {
-  email: string;
-  password: string;
-  name: string;
-}
 
 function AuthRegisterForm({
   changeForm,
@@ -150,7 +145,7 @@ function AuthRegisterForm({
     );
     await waitFor(2000);
     await fbUserAuthRegister({
-      fields: { ...data, email: data.email.toLowerCase() },
+      data: { fields: { ...data, email: data.email.toLowerCase() } },
       callback: async (resp) => {
         // if loading
         if (resp.status === "loading") {

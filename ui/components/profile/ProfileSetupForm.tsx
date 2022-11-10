@@ -96,11 +96,13 @@ function ProfileSetupForm() {
     scrollToTop(true);
     if (!user) return alert("Not Logged in");
     await fbUserUpdate({
-      file: data.avatar,
-      user: {
-        ...user,
-        profileCompletion: "REQ_CHOOSE_TOPIC",
-        ..._.omit(data, ["avatar"]),
+      data: {
+        file: data.avatar,
+        user: {
+          ...user,
+          profileCompletion: "REQ_CHOOSE_TOPIC",
+          ..._.omit(data, ["avatar"]),
+        },
       },
       callback: async (resp) => {
         console.log(resp);
@@ -187,25 +189,25 @@ function ProfileSetupForm() {
           Please setup your profile
         </span>
         <div className="flex flex-col w-full relative">
-        <Transition
-              appear
-              show={!!netResp?.data}
-              as={"div"}
-              className={"absolute inset-0"}
-              {...transitionPullV({
-                enter: " w-full",
-                entered: "",
-                leave: " w-full",
-              })}
-            >
-              <Memoized show={!!netResp?.data}>
-                {netResp?.data && (
-                  <StatusPlaceholder
-                    {...(netResp.data as StatusPlaceholderProps)}
-                  />
-                )}
-              </Memoized>
-            </Transition>
+          <Transition
+            appear
+            show={!!netResp?.data}
+            as={"div"}
+            className={"absolute inset-0"}
+            {...transitionPullV({
+              enter: " w-full",
+              entered: "",
+              leave: " w-full",
+            })}
+          >
+            <Memoized show={!!netResp?.data}>
+              {netResp?.data && (
+                <StatusPlaceholder
+                  {...(netResp.data as StatusPlaceholderProps)}
+                />
+              )}
+            </Memoized>
+          </Transition>
 
           <Transition
             appear

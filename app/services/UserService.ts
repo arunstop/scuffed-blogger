@@ -30,23 +30,31 @@ import {
   repoRtUserSessionLatestSet,
 } from "../../base/repos/realtimeDb/RealtimeUserRepo";
 import { repoStFileDeleteByFullLink } from "../../base/repos/StorageModules";
-import { LoginFields } from "../../ui/components/auth/AuthLoginForm";
-import { AuthRegisterProps } from "../../ui/components/auth/AuthRegisterForm";
 import { imageToPng } from "../helpers/MainHelpers";
 
 import { serviceFileUpload } from "./FileService";
+export interface LoginFields {
+  email: string;
+  password: string;
+}
+export interface AuthRegisterProps {
+  email: string;
+  password: string;
+  name: string;
+}
 
 // Auth
 type AuthUserProps = UserModel | null | FirebaseError;
 // @returns complete user information if successfull
 export async function fbUserAuthRegister({
-  fields,
+  data,
   callback,
-}: {
-  fields: AuthRegisterProps;
-  callback?: (resp: MainNetworkResponse<AuthUserProps>) => void;
-}): Promise<AuthUserProps> {
-  let data: AuthUserProps = null;
+}: MainApiResponse<
+  { fields: AuthRegisterProps },
+  AuthUserProps
+>): Promise<AuthUserProps> {
+  const { fields } = data;
+  let res: AuthUserProps = null;
 
   // create new user on firestoer
   // register on auth
@@ -54,11 +62,13 @@ export async function fbUserAuthRegister({
 
   // 1. Create new user in firestore to check if that user already exists
   try {
-    data = await fbUserAdd({
-      user: createUserModel({
-        ...fields,
-        id: nanoid(24),
-      }),
+    res = await fbUserAdd({
+      data: {
+        user: createUserModel({
+          ...fields,
+          id: nanoid(24),
+        }),
+      },
       callback: (resp) => {
         // Show success
         if (resp.status === "error") {
@@ -70,14 +80,14 @@ export async function fbUserAuthRegister({
         else if (resp.status === "success") {
           callback?.(
             netSuccess<UserModel>("User has been registered to the database", {
-              ...(data as UserModel),
+              ...(res as UserModel),
             }),
           );
         }
       },
     });
     // if somehow data is null then throw an error
-    if (data === null)
+    if (res === null)
       throw new FirebaseError("client-error", "Error when adding data.");
   } catch (error) {
     console.log(error);
@@ -98,8 +108,8 @@ export async function fbUserAuthRegister({
     authData = userCred.user;
     if (authData === null)
       throw new FirebaseError("client-error", "Error when authenticating user");
-    data = {
-      ...(data as UserModel),
+    res = {
+      ...(res as UserModel),
       localAuthData: authData,
     };
   } catch (error) {
@@ -112,12 +122,12 @@ export async function fbUserAuthRegister({
     // remove firebaseUser before updating document
     // because firebaseUser meant to be used for local machine
     await repoFsUserUpdate({
-      ...data,
+      ...res,
       localAuthData: undefined,
       session: undefined,
     });
     // user data with new session intact
-    data = await repoRtUserSessionAdd(data);
+    res = await repoRtUserSessionAdd(res);
   } catch (error) {
     console.log(error);
     callback?.(netError<FirebaseError>(error + "", error as FirebaseError));
@@ -125,20 +135,21 @@ export async function fbUserAuthRegister({
   }
   callback?.(
     netSuccess<UserModel>("User has been registered to the database", {
-      ...(data as UserModel),
+      ...(res as UserModel),
     }),
   );
-  return data;
+  return res;
 }
 
 // @returns complete user information if successfull
 export async function fbUserAuthLogin({
-  fields,
+  data,
   callback,
-}: {
-  fields: LoginFields;
-  callback?: (resp: MainNetworkResponse<AuthUserProps>) => void;
-}): Promise<AuthUserProps> {
+}: MainApiResponse<
+  { fields: LoginFields },
+  AuthUserProps
+>): Promise<AuthUserProps> {
+  const { fields } = data;
   try {
     // sign in the user
     const userCred = await signInWithEmailAndPassword(
@@ -194,22 +205,23 @@ type AddUserCallbackProps = UserModel | null | FirebaseError;
 type AddUserProps = UserModel | null;
 // @return UserModel if exists
 export async function fbUserAdd({
-  user,
+  data,
   callback,
-}: {
-  user: UserModel;
-  callback?: (resp: MainNetworkResponse<AddUserCallbackProps>) => void;
-}): Promise<AddUserProps> {
-  let data: AddUserProps = null;
+}: MainApiResponse<
+  { user: UserModel },
+  AddUserCallbackProps
+>): Promise<AddUserProps> {
+  const { user } = data;
+  let res: AddUserProps = null;
   try {
     await repoFsUserAdd(user);
-    data = user;
+    res = user;
     await repoRtUserDisplayAdd({
-      id: data.id,
-      name: data.name,
-      avatar: data.avatar,
-      username: data.username,
-      desc: data.desc,
+      id: res.id,
+      name: res.name,
+      avatar: res.avatar,
+      username: res.username,
+      desc: res.desc,
     });
     // Show success
     callback?.(
@@ -225,19 +237,18 @@ export async function fbUserAdd({
       netError<AddUserCallbackProps>(error + "", error as FirebaseError),
     );
   }
-  return data;
+  return res;
 }
 
 type UpdateProfileProps = null | FirebaseError | UserModel;
 export async function fbUserUpdate({
-  file,
-  user,
+  data,
   callback,
-}: {
-  file?: FileList;
-  user: UserModel;
-  callback?: (resp: MainNetworkResponse<UpdateProfileProps>) => void;
-}): Promise<UpdateProfileProps> {
+}: MainApiResponse<
+  { file?: FileList; user: UserModel },
+  UpdateProfileProps
+>): Promise<UpdateProfileProps> {
+  const { user, file } = data;
   let updatedUserData = {
     ...user,
     username: user.username,
@@ -315,12 +326,13 @@ type GetUserCallbackProps = UserModel | null | FirebaseError;
 type GetUserProps = UserModel | null;
 // @return UserModel if exists
 export async function fbUserGet({
-  email,
+  data,
   callback,
-}: {
-  email: string;
-  callback?: (resp: MainNetworkResponse<GetUserCallbackProps>) => void;
-}): Promise<UserModel | null> {
+}: MainApiResponse<
+  { email: string },
+  GetUserCallbackProps
+>): Promise<UserModel | null> {
+  const { email } = data;
   try {
     // Get user from database
     const user = await repoFsUserGetByEmail(email);

@@ -124,10 +124,12 @@ function ProfileChooseTopicsForm() {
 
     if (!user) return alert("Not Logged in");
     await fbUserUpdate({
-      user: {
-        ...user,
-        profileCompletion: "COMPLETE",
-        list: { ...user.list!, topics: data.topics },
+      data: {
+        user: {
+          ...user,
+          profileCompletion: "COMPLETE",
+          list: { ...user.list!, topics: data.topics },
+        },
       },
       callback: async (resp) => {
         console.log(resp);
@@ -211,24 +213,24 @@ function ProfileChooseTopicsForm() {
         <div className="flex flex-col w-full relative">
           {/* Status States*/}
           <Transition
-              appear
-              show={!!netResp}
-              as={"div"}
-              className={"absolute inset-0 "}
-              {...transitionPullV({
-                enter: " w-full",
-                entered: "",
-                leave: " w-full",
-              })}
-            >
-              <Memoized show={!!netResp}>
-                {netResp && (
-                  <StatusPlaceholder
-                    {...(netResp?.data as StatusPlaceholderProps)}
-                  />
-                )}
-              </Memoized>
-            </Transition>
+            appear
+            show={!!netResp}
+            as={"div"}
+            className={"absolute inset-0 "}
+            {...transitionPullV({
+              enter: " w-full",
+              entered: "",
+              leave: " w-full",
+            })}
+          >
+            <Memoized show={!!netResp}>
+              {netResp && (
+                <StatusPlaceholder
+                  {...(netResp?.data as StatusPlaceholderProps)}
+                />
+              )}
+            </Memoized>
+          </Transition>
 
           <Transition
             appear
