@@ -81,7 +81,7 @@ function ProfileChooseTopicsForm() {
   const getTopics = async () => {
     // get topics from rtdb
     const topicsFromDb = await autoRetry(
-      async () => await serviceTopicGetAll({ keyword: "" }),
+      async () => await serviceTopicGetAll({data:{ keyword: "" }}),
     );
     if (!topicsFromDb) return;
     // set states
