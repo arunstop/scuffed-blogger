@@ -8,12 +8,12 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../base/data/Main";
 import {
   ArticleModel,
   toArticleModel,
-  toArticleModelUpdated
+  toArticleModelUpdated,
 } from "../../base/data/models/ArticleModel";
 import { UserModel } from "../../base/data/models/UserModel";
 import {
@@ -24,7 +24,7 @@ import {
   repoFsArticleContentUpdate,
   repoFsArticleDelete,
   repoFsArticleGetIds,
-  repoFsArticleUpdate
+  repoFsArticleUpdate,
 } from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
   repoRtArticleGetAll,
@@ -33,7 +33,7 @@ import {
   repoRtArticleMirrorDelete,
   repoRtArticleMirrorUpdate,
   repoRtArticleSearch,
-  repoRtArticleUpdateView
+  repoRtArticleUpdateView,
 } from "../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 import Fuse from "fuse.js";
@@ -42,7 +42,7 @@ import { MainApiResponse } from "../../base/data/Main";
 import { ArticleListModel } from "../../base/data/models/ArticleListModel";
 import {
   repoStDirectoryDelete,
-  repoStFileDeleteByFullLink
+  repoStFileDeleteByFullLink,
 } from "../../base/repos/StorageModules";
 import { imageToPng } from "../helpers/MainHelpers";
 import { serviceFileUpload } from "./FileService";
@@ -138,27 +138,20 @@ export async function serviceArticleMirrorGetAll({
 // }
 
 export async function serviceArticleGetByUser({
-  articleListId,
-  keyword,
-  paging,
+  data,
   callback,
-}: {
-  articleListId: string;
-  keyword: string;
-  paging: {
-    start: number;
-    end: number;
-  };
-  callback?: (
-    resp: MainNetworkResponse<ArticleListModelByUser | null | FirebaseError>,
-  ) => void;
-}): Promise<ArticleListModelByUser | null> {
+}: MainApiResponse<
+  { articleListId: string } & ApiPagingReqProps,
+  ArticleListModelByUser | FirebaseError | null
+>): Promise<ArticleListModelByUser | null> {
+  const { articleListId, keyword, start, count } = data;
   try {
     // console.log("paging = ", `${paging.start} + ${paging.end}`)
     const idList = await repoFsArticleGetIds({
       articleListRefId: articleListId,
       keyword: keyword,
-      paging: paging,
+      start: start,
+      count: count,
     });
     if (!idList) return null;
     const articles: ArticleModel[] = [];
@@ -514,7 +507,7 @@ export async function serviceArticleSearch({
 }: MainApiResponse<
   ApiPagingReqProps & { abortSignal: AbortSignal },
   ArticleModelFromDb | null | FirebaseError
-  >): Promise<ArticleModelFromDb | null> {
+>): Promise<ArticleModelFromDb | null> {
   const { keyword, count, start, abortSignal } = data;
   console.log("searching...", start);
   try {
