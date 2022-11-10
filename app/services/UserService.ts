@@ -250,9 +250,11 @@ export async function fbUserUpdate({
   if (convertedImg) {
     try {
       const imageUrl = await serviceFileUpload({
-        file: convertedImg,
-        directory: "images/avatars",
-        name: user.id,
+        data: {
+          file: convertedImg,
+          directory: "images/avatars",
+          name: user.id,
+        },
       });
       // console.log("imageUrl : " + imageUrl);
       if (!imageUrl) {

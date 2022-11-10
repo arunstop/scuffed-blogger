@@ -238,9 +238,11 @@ export async function serviceArticleAdd({
       if (!convertedImg) throw new Error("Error when converting image");
 
       const thumbnailUrl = await serviceFileUpload({
-        file: convertedImg,
-        directory: `/thumbnails/${article.id}/`,
-        name: article.id,
+        data: {
+          file: convertedImg,
+          directory: `/thumbnails/${article.id}/`,
+          name: article.id,
+        },
       });
 
       if (!thumbnailUrl) {
@@ -440,9 +442,11 @@ export async function serviceArticleUpdate({
     // upload/replace the new one
     try {
       const thumbnailUrl = await serviceFileUpload({
-        file: thumbnail[0],
-        directory: `/thumbnails/${article.id}/`,
-        name: article.id,
+        data: {
+          file: thumbnail[0],
+          directory: `/thumbnails/${article.id}/`,
+          name: article.id,
+        },
       });
 
       if (!thumbnailUrl) {
@@ -551,8 +555,11 @@ export async function serviceArticleUpdateView({
 export async function serviceArticleGetById({
   data,
   callback,
-}: MainApiResponse<{id:string},ArticleModel |FirebaseError| null>): Promise<ArticleModel | null> {
-  const {id} = data;
+}: MainApiResponse<
+  { id: string },
+  ArticleModel | FirebaseError | null
+>): Promise<ArticleModel | null> {
+  const { id } = data;
   // await waitFor(2000);
   try {
     //   Call the endpoint
