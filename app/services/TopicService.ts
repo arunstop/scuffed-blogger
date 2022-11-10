@@ -1,3 +1,4 @@
+import { netError, netSuccess } from "./../../base/data/Main";
 import { MainApiResponse } from "../../base/data/Main";
 import {
   ITopic,
@@ -9,18 +10,21 @@ export async function serviceTopicGetAll({
   callback,
 }: MainApiResponse<
   { keyword: string; abortSignal?: AbortSignal },
-  string[]
+  string[] | null
 >): Promise<string[] | null> {
   const { keyword, abortSignal } = data;
   try {
-    const topics = await repoRtTopicGet(keyword, abortSignal).then((e) => {
-      const res = e.data as ITopic[];
-      if (!res.length) return [];
-      return res.map((topic) => topic.name);
+    const topics = await repoRtTopicGet(keyword, abortSignal).then((res) => {
+      const topics = res.data.data as ITopic[];
+      if (!topics.length) return [];
+      const strTopics = topics.map((topic) => topic.name);
+      callback?.(netSuccess(res.data.message, strTopics));
+      return strTopics;
     });
     return topics;
   } catch (error) {
     console.log(error);
+    callback?.(netError(error as string, null));
     return null;
   }
 }
