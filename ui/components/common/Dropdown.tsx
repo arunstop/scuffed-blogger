@@ -1,7 +1,4 @@
-import React, {
-  ReactNode,
-  useCallback, useState
-} from "react";
+import React, { ReactNode, useCallback, useState } from "react";
 export interface DropdownOption {
   icon?: ReactNode;
   label: string;
@@ -30,7 +27,6 @@ function Dropdown({
   const clearConfirmation = useCallback(() => {
     setConfirmation(undefined);
   }, []);
-  
 
   // useEffect(() => {
   //   console.log(triggerRef.current?.innerHTML);
@@ -39,7 +35,7 @@ function Dropdown({
 
   return (
     <div {...props} className={`dropdown ${className}`}>
-      <div  tabIndex={0} onFocus={()=>clearConfirmation()}>
+      <div tabIndex={0} onFocus={() => clearConfirmation()}>
         {children}
       </div>
       {!!options.length && (
@@ -48,7 +44,11 @@ function Dropdown({
           className={`dropdown-content menu !z-[1]  rounded-xl bg-base-300 p-2 text-sm
           font-bold ring-[1px] ring-base-content/10 sm:text-base [&_a]:!rounded-xl relative 
           max-w-[95vw]
-          ${confirmation ? `w-[20rem] !transition-all !duration-200` : `w-[12rem]`}
+          ${
+            confirmation
+              ? `w-[20rem] !transition-all !duration-200`
+              : `w-[12rem]`
+          }
           `}
         >
           {options.map((e, idx) => {
@@ -58,6 +58,7 @@ function Dropdown({
                 show={!!confirmation}
                 option={confirmation}
                 cancel={clearConfirmation}
+                dispose={blur}
               />
             ) : (
               <li key={idx}>
@@ -92,10 +93,12 @@ function Dropdown({
 function OptionConfirmation({
   option,
   cancel,
+  dispose,
 }: {
   option: DropdownOption;
   show: boolean;
   cancel: () => void;
+  dispose: () => void;
 }) {
   if (!option.confirmation) return <></>;
   const {
@@ -103,10 +106,22 @@ function OptionConfirmation({
   } = option;
   return (
     <div className="flex flex-col p-2 sm:p-4 gap-2 sm:gap-4 rounded-lg bg-primary/30 mb-2 sm:mb-4">
-      <span className="text-lg sm:text-xl text-center">{title || "Confirmation"}</span>
-      <span className="text-sm sm:text-base text-center">{desc || "Are you sure?"}</span>
+      <span className="text-lg sm:text-xl text-center">
+        {title || "Confirmation"}
+      </span>
+      <span className="text-sm sm:text-base text-center">
+        {desc || "Are you sure?"}
+      </span>
       {/*using <button> instead of <a> makes the dropdown-content unblur */}
-      <a className="btn btn-primary btn-xs sm:btn-sm flex-1" onClick={option.action}>Ok</a>
+      <a
+        className="btn btn-primary btn-xs sm:btn-sm flex-1"
+        onClick={() => {
+          option.action?.();
+          dispose();
+        }}
+      >
+        Ok
+      </a>
       <a className="btn  btn-xs sm:btn-sm flex-1" onClick={cancel}>
         Cancel
       </a>

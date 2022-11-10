@@ -1,26 +1,26 @@
 import { Transition } from "@headlessui/react";
 import { FirebaseError } from "firebase/app";
+import { debounce } from "lodash";
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdSearch } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
-import { UserModel } from "../../../base/data/models/UserModel";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../../app/hooks/NetworkActionHook";
 import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
-import InputText from "../input/InputText";
+import { serviceTopicGetAll } from "../../../app/services/TopicService";
+import { fbUserUpdate } from "../../../app/services/UserService";
+import { UserModel } from "../../../base/data/models/UserModel";
 import Alert from "../common/Alert";
-import GradientBackground from "../utils/GradientBackground";
+import InputText from "../input/InputText";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import StatusPlaceholder, {
   StatusPlaceholderProps,
 } from "../placeholder/StatusPlaceholder";
-import { serviceTopicGetAll } from "../../../app/services/TopicService";
-import { fbUserUpdate } from "../../../app/services/UserService";
-import { autoRetry } from "../../../app/helpers/MainHelpers";
-import Memoized from "../utils/Memoized";
+import GradientBackground from "../utils/GradientBackground";
 
 export interface SetupProfileFormFields {
   topics: string[];
@@ -73,31 +73,29 @@ function ProfileChooseTopicsForm() {
 
   const selectedTopics = watch("topics");
 
-  const [search, setSearch] = useState("");
+  const [keyword, setKeyword] = useState("");
   // const [selectedTopics, setSearch] = useState("");
   const [topics, setTopics] = useState<string[]>([]);
+  const [topicsInit, setTopicsInit] = useState<string[]>([]);
   const [loadingTopics, setLoadingTopics] = useState(true);
+  const controllerRef = useRef<AbortController>(new AbortController());
 
   const getTopics = async () => {
     // get topics from rtdb
     const topicsFromDb = await autoRetry(
-      async () => await serviceTopicGetAll({ keyword: "" }),
+      async () => await serviceTopicGetAll({ data: { keyword: "" } }),
     );
     if (!topicsFromDb) return;
     // set states
     setLoadingTopics(false);
     setTopics(topicsFromDb);
+    setTopicsInit(topicsFromDb);
   };
 
   useEffect(() => {
     getTopics();
+    return () => {};
   }, []);
-
-  const searchedList = !topics
-    ? []
-    : topics.filter((e) =>
-        e.toLowerCase().includes(search.toLowerCase().trim()),
-      );
 
   const onSubmit: SubmitHandler<SetupProfileFormFields> = async (data) => {
     if (!hasLoaded) {
@@ -124,10 +122,12 @@ function ProfileChooseTopicsForm() {
 
     if (!user) return alert("Not Logged in");
     await fbUserUpdate({
-      user: {
-        ...user,
-        profileCompletion: "COMPLETE",
-        list: { ...user.list!, topics: data.topics },
+      data: {
+        user: {
+          ...user,
+          profileCompletion: "COMPLETE",
+          list: { ...user.list!, topics: data.topics },
+        },
       },
       callback: async (resp) => {
         console.log(resp);
@@ -191,6 +191,68 @@ function ProfileChooseTopicsForm() {
     });
   };
 
+  const debounceSearch = debounce(
+    async ({ q, abortSignal }: { q: string; abortSignal: AbortSignal }) => {
+      const res = await autoRetry(
+        async () =>
+          await serviceTopicGetAll({
+            data: { keyword: q, abortSignal: abortSignal },
+          }),
+      );
+      if (!res || !res.length) {
+        setTopics([]);
+        setLoadingTopics(false);
+        return;
+      }
+
+      setTopics(res);
+      setLoadingTopics(false);
+    },
+    500,
+  );
+
+  const search = useCallback(
+    (val: string) => {
+      setKeyword(val);
+      const isAborted = controllerRef.current.signal.aborted;
+
+      if (val.trim().toLowerCase().length < 2) {
+        controllerRef.current.abort("Too few keyword");
+        // set topics to the initial topics value if input value is empty
+        if (val.trim().toLowerCase().length === 0)
+          return setTopics((prev) => {
+            if (prev.toString() === topicsInit.toString()) return prev;
+            return topicsInit;
+          });
+        return;
+      }
+
+      setLoadingTopics(true);
+
+      if (isAborted) controllerRef.current = new AbortController();
+
+      debounceSearch({ q: val, abortSignal: controllerRef.current.signal });
+    },
+    [topics, topicsInit],
+  );
+
+  const handleSearch = useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      search(ev.target.value);
+    },
+    [],
+  );
+
+  const clear = useCallback(() => {
+    resetField("topics");
+    setTopics(topicsInit);
+    setKeyword("");
+    document.getElementById("container-topics")?.scrollTo({
+      top: 0,
+    });
+    scrollToTop();
+  }, [topicsInit]);
+
   return (
     <>
       <Transition
@@ -211,24 +273,22 @@ function ProfileChooseTopicsForm() {
         <div className="flex flex-col w-full relative">
           {/* Status States*/}
           <Transition
-              appear
-              show={!!netResp}
-              as={"div"}
-              className={"absolute inset-0 "}
-              {...transitionPullV({
-                enter: " w-full",
-                entered: "",
-                leave: " w-full",
-              })}
-            >
-              <Memoized show={!!netResp}>
-                {netResp && (
-                  <StatusPlaceholder
-                    {...(netResp?.data as StatusPlaceholderProps)}
-                  />
-                )}
-              </Memoized>
-            </Transition>
+            appear
+            show={!!netResp}
+            as={"div"}
+            className={"absolute inset-0 "}
+            {...transitionPullV({
+              enter: " w-full",
+              entered: "",
+              leave: " w-full",
+            })}
+          >
+            {netResp && (
+              <StatusPlaceholder
+                {...(netResp?.data as StatusPlaceholderProps)}
+              />
+            )}
+          </Transition>
 
           <Transition
             appear
@@ -294,24 +354,25 @@ function ProfileChooseTopicsForm() {
                   type="text"
                   placeholder="Technology..."
                   icon={<MdSearch />}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  value={keyword}
+                  onChange={handleSearch}
                   clearable
                 />
                 {selectedTopics.length !== 0 && (
                   <span
                     className={`btn btn-xs sm:btn-sm btn-outline text-xs sm:text-sm 
                     md:text-md`}
-                    onClick={() => {
-                      resetField("topics");
-                    }}
+                    onClick={() => clear()}
                   >
                     Clear
                   </span>
                 )}
               </div>
 
-              <div className="flex flex-wrap gap-1 sm:gap-2 content-start justify-center h-96 overflow-auto px-2">
+              <div
+                id="container-topics"
+                className="flex flex-wrap gap-1 sm:gap-2 content-start justify-center h-96 overflow-auto px-2"
+              >
                 {/* Loading indicator */}
                 {loadingTopics ? (
                   <div className={`w-full`}>
@@ -320,13 +381,13 @@ function ProfileChooseTopicsForm() {
                 ) : (
                   <>
                     {/* Not found */}
-                    {!searchedList.length && (
+                    {!topics.length && (
                       <span className="font-semibold text-xs sm:text-sm md:text-md">
                         Cannot find any topics matched with{" "}
-                        <span className="font-black">`{search}`</span>
+                        <span className="font-black">`{keyword}`</span>
                       </span>
                     )}
-                    {searchedList.map((e, idx) => {
+                    {topics.map((e, idx) => {
                       return (
                         <label key={idx}>
                           <input

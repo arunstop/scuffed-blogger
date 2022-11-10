@@ -3,8 +3,11 @@ import { useUiCtx } from "../../../app/contexts/ui/UiHook";
 import Toast from "../../components/main/Toast";
 
 function ToastContainer() {
-  const { uiStt, uiAct } = useUiCtx();
-  const disposeToast = useCallback((id: string) => uiAct.removeToast(id), []);
+  const {
+    state,
+    action: { removeToast },
+  } = useUiCtx();
+  const disposeToast = useCallback((id: string) => removeToast(id), []);
   console.log("rendering toast container");
   return (
     <div className="fixed inset-x-0 bottom-0 flex justify-center mb-[3rem] sm:mb-0 pointer-events-none z-[101]">
@@ -32,7 +35,7 @@ function ToastContainer() {
           clear
         </button> */}
         <div className="flex flex-col-reverse gap-2 sm:gap-2 items-center">
-          {uiStt.toasts.map((e) => {
+          {state.toasts.map((e) => {
             return (
               <Toast key={e.id} toast={e} dispose={() => disposeToast(e.id)} />
             );

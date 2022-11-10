@@ -1,23 +1,40 @@
 import { Transition } from "@headlessui/react";
 import React, { useCallback, useEffect, useState } from "react";
+import {
+  UserDisplayProvider,
+  useUserDisplayActions,
+  useUserDisplayStates,
+} from "../../../app/contexts/userDisplay/UserDisplayContext";
+
 import { waitFor } from "../../../app/helpers/DelayHelpers";
+import { autoRetry } from "../../../app/helpers/MainHelpers";
 import {
   ArticleModelFromDb,
   serviceArticleMirrorGetAll,
 } from "../../../app/services/ArticleService";
 import { MainNetworkResponse } from "../../../base/data/Main";
-import IntersectionObserverTrigger from "../../components/utils/IntesectionObserverTrigger";
 import ErrorPlaceholder from "../../components/placeholder/ErrorPlaceholder";
 import LoadingIndicator from "../../components/placeholder/LoadingIndicator";
 import PostItem from "../../components/post/PostItem";
 import PostOptionModal from "../../components/post/PostOptionModal";
-import { autoRetry } from "../../../app/helpers/MainHelpers";
+import { InfiniteLoader } from "../../components/utils/InfiniteLoader";
 
 function LayoutIndexPostSection() {
+  return (
+    <UserDisplayProvider>
+      <Child />
+    </UserDisplayProvider>
+  );
+}
+
+function Child() {
   const [feed, setFeed] = useState<ArticleModelFromDb | null>(null);
   const [resp, setResp] = useState<MainNetworkResponse>();
   // const [loading, setLoading] = useState(true);
   // const [status, setStatus] = useState<MainNetworkResponse>();
+  const actions = useUserDisplayActions();
+  const displays = useUserDisplayStates((e) => e["displays"]);
+
   const loadPosts = useCallback(async () => {
     // show loading indicator
     // setLoading(true);
@@ -47,6 +64,11 @@ function LayoutIndexPostSection() {
         };
       return articlesFromDb;
     });
+    // unique user list
+    const userIds = [...new Set(articlesFromDb.articles.map((e) => e.author))];
+    userIds.forEach((e) => {
+      actions.addUserDisplay(e);
+    });
     // await waitFor(4000);
     // setStatus(false);
   }, [feed]);
@@ -64,30 +86,31 @@ function LayoutIndexPostSection() {
         )}
         {!!feed && (
           <>
-            <>
-              <div
-                className="flex flex-col gap-4 sm:gap-8 w-full"
-                id="main-content"
-              >
-                {feed.articles.map((e) => {
-                  return <PostItem key={e.id} article={e} observe />;
-                })}
-              </div>
-              <PostOptionModal />
-            </>
-
-            {/* when loading */}
-            {resp?.status !== "error" && feed.articles.length < feed.total && (
-              <IntersectionObserverTrigger
-                key={feed.offset}
-                callback={(intersecting) => {
-                  if (intersecting) return loadPosts();
-                }}
-                className="animate-fadeIn"
-              >
-                <LoadingIndicator spinner />
-              </IntersectionObserverTrigger>
-            )}
+            <InfiniteLoader
+              className="flex flex-col gap-4 sm:gap-8 w-full"
+              callback={(intersecting) => {
+                if (intersecting) return loadPosts();
+              }}
+              loaderShown={
+                resp?.status !== "error" &&
+                feed.articles.length < feed.total
+              }
+              loaderKey={feed?.offset + ""}
+              loaderClassName="animate-fadeIn"
+              loaderChildren={<LoadingIndicator spinner />}
+            >
+              {feed.articles.map((e) => {
+                return (
+                  <PostItem
+                    key={e.id}
+                    article={e}
+                    userDisplay={displays.find((dd) => dd.id === e.author)}
+                    observe
+                  />
+                );
+              })}
+            </InfiniteLoader>
+            <PostOptionModal />
           </>
         )}
         {/* when error */}

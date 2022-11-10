@@ -10,12 +10,7 @@ import { waitFor } from "../../../app/helpers/DelayHelpers";
 import InputText from "../input/InputText";
 import { StatusPlaceholderAction } from "../placeholder/StatusPlaceholder";
 import { AuthFormProps } from "./AuthPanel";
-import { fbUserAuthLogin } from "../../../app/services/UserService";
-
-export interface LoginFields {
-  email: string;
-  password: string;
-}
+import { fbUserAuthLogin, LoginFields } from "../../../app/services/UserService";
 
 function AuthRegisterForm({
   changeForm,
@@ -149,7 +144,7 @@ function AuthRegisterForm({
       ),
     );
     await fbUserAuthLogin({
-      fields: data,
+      data : {fields:data},
       callback: async (resp) => {
         // if loading
         if (resp.status === "loading") {

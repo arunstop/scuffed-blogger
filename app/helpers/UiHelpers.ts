@@ -50,3 +50,7 @@ export const initClientDarkMode = (toggler: (val: boolean) => void) => {
     body.classList.contains("dark") && body.getAttribute("data-theme") !== "";
   toggler(onDarkMode);
 };
+
+export function unblur() {
+  (document.activeElement as HTMLElement).blur();
+}

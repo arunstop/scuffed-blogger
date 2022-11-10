@@ -32,6 +32,7 @@ function WritingPanelForm({
     resetField,
     reset,
     setValue,
+    clearErrors,
   } = useForm<WritingPanelFormProps>({
     mode: "onChange",
   });
@@ -49,8 +50,6 @@ function WritingPanelForm({
 
   // set the values of form formData (state) set with article draft
   useEffect(() => {
-    // console.log("current form",getValues("thumbnail"));
-    console.log(formData);
     if (formData)
       return reset({
         ...formData,
@@ -59,7 +58,6 @@ function WritingPanelForm({
     // or if no more formData
     // and detected if form was filled,
     // reset the whole form
-    console.log(getValues("title"));
     if (getValues("title")) return reset();
   }, [formData]);
 
@@ -98,34 +96,49 @@ function WritingPanelForm({
           </span>
           <div className="flex w-full flex-col sm:w-max">
             <label
+              key={errors.thumbnail?.message || "thumbnail-container"}
+              id="thumbnail-upload-trigger"
               className={`flex w-full sm:w-[30rem] h-auto aspect-video
               rounded-lg border-2  group overflow-hidden
               flex-col relative
               ${
-                thumbnail || formData?.defaultThumbnailPreview
-                  ? "border-solid border-base-content"
+                errors.thumbnail
+                  ? "border-dashed border-error"
+                  : thumbnail || formData?.defaultThumbnailPreview
+                  ? "border-solid border-content"
                   : "border-dashed border-base-content/20"
               }
+              ${errors.thumbnail ? "animate-headShake duration-500" : ""}
               `}
             >
               {/* thumbnail */}
-              <img
-                className={`h-full w-full cursor-pointer object-cover transition-transform duration-500 
-                group-hover:scale-125`}
-                src={
-                  thumbnail
-                    ? URL.createObjectURL(thumbnail)
-                    : formData?.defaultThumbnailPreview ||
-                      "https://picsum.photos/seed/picsum/300/600"
-                }
-                alt="thumbnail"
-              />
+              <div
+                key={thumbnail?.name || "placeholder-img"}
+                className={`h-full w-full cursor-pointer  animate-zoomIn`}
+              >
+                <img
+                  className={`w-full h-full object-cover transition-transform duration-500 
+                  group-hover:scale-125`}
+                  src={
+                    thumbnail
+                      ? URL.createObjectURL(thumbnail)
+                      : formData?.defaultThumbnailPreview ||
+                        "https://picsum.photos/seed/picsum/300/600"
+                  }
+                  alt="thumbnail"
+                />
+              </div>
               {/* Overlays and icon */}
               <div
-                className="group pointer-events-none absolute inset-0 flex items-center justify-center 
-                bg-black/0 transition-[opacity,background-color] duration-500 group-hover:bg-black/60
-                group-hover:opacity-100 z-0
-                "
+                className={`group pointer-events-none absolute inset-0 z-0 flex flex-col items-center 
+                justify-center  transition-[opacity,background-color] duration-500 gap-2 sm:gap-4
+                group-hover:opacity-100
+                ${
+                  errors.thumbnail
+                    ? "bg-error/60 group-hover:bg-error/90"
+                    : "bg-black/0 group-hover:bg-black/60"
+                }
+                `}
               >
                 <div
                   className="flex items-center justify-center rounded-full bg-black/60 p-2 transition-transform
@@ -137,6 +150,11 @@ function WritingPanelForm({
                     <MdAdd className="text-3xl text-white sm:text-4xl" />
                   )}
                 </div>
+                {errors.thumbnail && (
+                  <div className="p-1 sm:p-2 rounded-lg bg-error/90 text-white ring-2 ring-base-content text-sm sm:text-base">
+                    {errors.thumbnail?.message}
+                  </div>
+                )}
               </div>
 
               <Controller
@@ -188,37 +206,65 @@ function WritingPanelForm({
                 name="thumbnail"
               />
             </label>
-            {thumbnail && (
-              <div className="flex justify-center gap-4 sm:gap-8">
+            <div className="flex justify-center gap-4 sm:gap-8">
+              {thumbnail && !errors.thumbnail && (
                 <button
-                  className="--btn-resp btn btn-link text-base-content"
+                  className="--btn-resp btn-link btn text-base-content"
                   onClick={() => {
-                    // using normal `reset` instead of `resetField`
+                    // using normal reset instead of resetField
                     // because after switching back from preview
-                    // `reset` doesn't work for some reason.
-                    reset({ thumbnail: undefined }, { keepValues: false });
+                    // reset doesn't work for some reason.
+                    // reset({ thumbnail: undefined }, { keepValues: false });
 
-                    // resetField("thumbnail",{defaultValue:undefined});
+                    resetField("thumbnail", { defaultValue: undefined });
                   }}
                   type="button"
                   tabIndex={-1}
                 >
                   Cancel
                 </button>
-                {/* <button
-              className="--btn-resp btn btn-link text-primary gap-1 sm:gap-2"
-              onClick={() => {
-                onSubmit();
-              }}
-              type="button"
-            >
-              <span className="text-xl sm:text-2xl">
-                {!thumbnail ? <MdAdd /> : <MdEdit />}
-              </span>
-              {!thumbnail ? "Add a thumbnail" : "Change thumbnail"}
-            </button> */}
-              </div>
-            )}
+              )}
+              {thumbnail && errors.thumbnail && (
+                <button
+                  className="--btn-resp btn-link btn text-base-content"
+                  onClick={() => {
+                    clearErrors("thumbnail");
+                  }}
+                  type="button"
+                  tabIndex={-1}
+                >
+                  Undo
+                </button>
+              )}
+              {!thumbnail && errors.thumbnail && (
+                <div className="flex justify-around w-full ">
+                  <button
+                    className="--btn-resp btn-link btn text-base-content"
+                    onClick={() => {
+                      document
+                        .getElementById("thumbnail-upload-trigger")
+                        ?.click();
+                    }}
+                    type="button"
+                    tabIndex={-1}
+                  >
+                    Try again
+                  </button>
+                  {!!formData?.defaultThumbnailPreview && (
+                    <button
+                      className="--btn-resp btn-link btn text-base-content"
+                      onClick={() => {
+                        clearErrors("thumbnail");
+                      }}
+                      type="button"
+                      tabIndex={-1}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -299,7 +345,7 @@ function WritingPanelForm({
           Reset
         </button>
         <button
-          className="--btn-resp btn btn-primary"
+          className="--btn-resp btn-primary btn"
           onClick={() => {
             scrollToTop(true);
             onSubmit();

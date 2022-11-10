@@ -22,8 +22,8 @@ import MainHeaderBigSearchBar from "./main/MainHeaderBigSearchBar";
 function Header() {
   // console.log("header");
   const {
-    uiStt: { darkMode },
-    uiAct,
+    state: { darkMode },
+    action,
   } = useUiCtx();
 
   const router = useRouter();

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { autoRetry } from "../../../app/helpers/MainHelpers";
 import { fbUserDisplayGet } from "../../../app/services/UserService";
-import { UserDisplayModel } from "../../../base/repos/realtimeDb/RealtimeUserRepo";
+import { UserDisplayModel } from "../../../base/data/models/UserDisplayModel";
 import UserAvatar from "./UserAvatar";
 
 function UserHeader({
@@ -19,16 +19,16 @@ function UserHeader({
     );
     if (displayFromDb) setDisplay(displayFromDb);
   }
-  //   load from db is
+  // load from db if userDisplay is not initialized
   useEffect(() => {
     if (userDisplay) return;
-    console.log(userDisplay);
     if (!id) return;
     loadUserDisplay(id);
   }, []);
+
   return display ? (
     <Link href={`/author/${display.id || ""}`} passHref>
-      <a className="flex flex-row items-center gap-4 hover:underline animate-fadeIn">
+      <a className="flex flex-row items-center gap-4 hover:underline animate-fadeIn animate-duration-300">
         <UserAvatar src={display.avatar} />
         <div className="flex flex-col">
           <span className="text-base font-bold sm:text-lg !leading-[1.2] capitalize">

@@ -11,7 +11,7 @@ import { ArticleModelFromDb } from "../../../app/services/ArticleService";
 import { firebaseClient } from "../../clients/FirebaseClient";
 
 const db = firebaseClient.rtdb;
-const rtdbUrl = `https://tuturku-3e16b-default-rtdb.asia-southeast1.firebasedatabase.app/`;
+const rtdbUrl = `https://tuturku-3e16b-default-rtdb.asia-southeast1.firebasedatabase.app`;
 export async function repoRtArticleGetById(
   id: string,
 ): Promise<ArticleModel | null> {
@@ -57,8 +57,6 @@ export async function repoRtArticleGetAll({
     } else {
       data = dataRaw;
     }
-
-    console.log(data);
 
     // if count is zero  meaning it will return all the data.
     const limit = !count ? undefined : start + count;

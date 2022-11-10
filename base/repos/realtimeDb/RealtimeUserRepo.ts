@@ -2,16 +2,11 @@ import { get, ref, set, update } from "firebase/database";
 import { firebaseClient } from "../../clients/FirebaseClient";
 import { UserModel, UserSession } from "../../data/models/UserModel";
 import uaParser from "ua-parser-js";
+import { UserDisplayModel } from "../../data/models/UserDisplayModel";
+import { toJsonFriendly } from "../../../app/helpers/MainHelpers";
 
 function getRtdb() {
   return firebaseClient.rtdb;
-}
-
-export interface UserDisplayModel {
-  id: string;
-  name: string;
-  avatar: string;
-  username: string;
 }
 
 export async function repoRtUserDisplayGetById(userId: string) {
@@ -21,20 +16,19 @@ export async function repoRtUserDisplayGetById(userId: string) {
   if (!res.exists()) return null;
   const dataRaw = res.val();
   const data = dataRaw as UserDisplayModel;
-  console.log("data", data);
   return data;
 }
 
 export async function repoRtUserDisplayAdd(userDisplay: UserDisplayModel) {
   const path = `userDisplayList/${userDisplay.id}`;
   const rr = ref(getRtdb(), path);
-  return await set(rr, userDisplay);
+  return await set(rr, toJsonFriendly(userDisplay));
 }
 
 export async function repoRtUserDisplayUpdate(userDisplay: UserDisplayModel) {
   const path = `userDisplayList/${userDisplay.id}`;
   const rr = ref(getRtdb(), path);
-  return await update(rr, userDisplay);
+  return await update(rr, toJsonFriendly(userDisplay));
 }
 
 

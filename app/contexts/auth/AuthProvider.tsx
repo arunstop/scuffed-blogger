@@ -94,7 +94,7 @@ export const AuthProvider = ({
         ) {
           // getting new data
           // console.log("getting new data");
-          const newUserData = await fbUserGet({ email: localUserData.email });
+          const newUserData = await fbUserGet({data:{ email: localUserData.email }});
 
           // if failed getting user data
           if (!newUserData) return action.unsetUser();

@@ -1,3 +1,4 @@
+import { ApiPagingReqProps } from "./../../data/Main";
 import { ArticleListModel } from "../../data/models/ArticleListModel";
 // =============================
 // IMPORTANT : converting JSON stringify and then parse again
@@ -21,7 +22,10 @@ import {
   ArticleModel,
   factoryArticleComplete,
 } from "../../data/models/ArticleModel";
-import { ArticleListModelByUser } from "../../../app/services/ArticleService";
+import {
+  ArticleIdsByUser,
+  ArticleListModelByUser,
+} from "../../../app/services/ArticleService";
 import { firebaseClient } from "../../clients/FirebaseClient";
 
 const articleDb = firebaseClient.collections.articles;
@@ -35,6 +39,59 @@ export async function repoFsArticleGetAll(): Promise<ArticleModel[] | null> {
     factoryArticleComplete(doc.data() as ArticleModel),
   );
   return list;
+}
+
+// @return article ids
+export async function repoFsArticleGetIds({
+  articleListRefId,
+  start,
+  count,
+  keyword,
+}: {
+  articleListRefId: string;
+} & ApiPagingReqProps): Promise<ArticleIdsByUser | null> {
+  const end = start + count;
+  const ref = doc(articleDb, articleListRefId);
+  const snapshot = await getDoc(ref);
+  if (!snapshot.exists()) return null;
+
+  const dataRaw = snapshot.data() as ArticleListModel;
+  if (!dataRaw.articles.length) return null;
+
+  const data = {
+    ids: dataRaw.articles.map((e) => e.id).slice(start, end),
+    keyword: keyword,
+    offset: end,
+    totalArticle: dataRaw.articles.length,
+  } as ArticleIdsByUser;
+
+  // no keyword
+  if (!keyword) return data;
+  // with keyword
+  const kw = keyword.trim().toLowerCase();
+  const filteredArticles = dataRaw.articles
+    .filter((e) => {
+      const title = e.title.toLowerCase().trim();
+      const desc = e.desc.toLowerCase().trim();
+      const topics = e.topics?.join(" ").toLowerCase().trim() || "";
+      const tags = e.tags.join(" ").toLowerCase().trim();
+      // const date = format(e.dateAdded, "EEEE, DDDD MMMM yyyy")
+      //   .toLowerCase()
+      //   .trim();
+      return (
+        title.includes(kw) ||
+        desc.includes(kw) ||
+        topics.includes(kw) ||
+        tags.includes(kw)
+      );
+    })
+    .map((e) => e.id);
+
+  return {
+    ...data,
+    ids: filteredArticles.slice(start, end),
+    totalArticle: filteredArticles.length,
+  };
 }
 
 // @return all articles

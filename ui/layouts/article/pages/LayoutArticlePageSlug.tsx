@@ -1,14 +1,17 @@
 import { formatDistance } from "date-fns";
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
-  MdClose,
   MdForum,
   MdMoreVert,
   MdRefresh,
   MdStar,
   MdTrendingUp,
 } from "react-icons/md";
+import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
+import { autoRetry } from "../../../../app/helpers/MainHelpers";
+import { routeHistoryAtom } from "../../../../app/hooks/RouteChangeHook";
 import {
   serviceArticleContentGet,
   serviceArticleUpdateView,
@@ -17,37 +20,39 @@ import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import ArticleSectionAction from "../../../components/article/ArticleActions";
 import ArticleProgressBar from "../../../components/article/ArticleProgressBar";
 import Container from "../../../components/common/Container";
-import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
+import Dropdown, { DropdownOption } from "../../../components/common/Dropdown";
 import MainMarkdownContainer from "../../../components/main/MainMarkdownContainer";
 import MainPostStatusChip from "../../../components/main/MainPostFilterChip";
 import MainUserPopup from "../../../components/main/MainPostUserPopup";
 import MobileHeader, {
   MobileHeaderActionProps,
 } from "../../../components/main/MobileHeader";
+import ModalImagePreview from "../../../components/modal/ModalImagePreview";
 import LoadingIndicator from "../../../components/placeholder/LoadingIndicator";
 import UserHeader from "../../../components/user/UserHeader";
+import IntersectionObserverTrigger from "../../../components/utils/IntesectionObserverTrigger";
+import Memoized from "../../../components/utils/Memoized";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 import LayoutArticleMoreSection from "../LayoutArticleMoreSection";
-import { autoRetry } from "../../../../app/helpers/MainHelpers";
-import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
-import Dropdown, { DropdownOption } from "../../../components/common/Dropdown";
 
 function LayoutArticlePageSlug({
   articleContentless,
 }: {
   articleContentless: ArticleModel;
 }) {
-  const router = useRouter();
   const articleId = articleContentless.id;
   const {
     authStt: { user },
   } = useAuthCtx();
+  const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
 
   const [article, setArticle] = useState(articleContentless);
 
   const getContent = useCallback(async () => {
     const content = await autoRetry(
       async (attempt, max) =>
-        await serviceArticleContentGet({ id: article.id }),
+        await serviceArticleContentGet({ data: { id: article.id } }),
     );
     if (content) {
       setArticle((prev) => ({ ...prev, content: content }));
@@ -136,14 +141,16 @@ function LayoutArticlePageSlug({
     <>
       <ArticleProgressBar />
       <MobileHeader
-        back={() => router.back()}
+        back={() => smartBack(router, history)}
         title="Read Article"
         actions={getHeaderAction()}
       />
       <Container>
         <div className="inline-flex justify-between">
           <div className="dropdown-hover dropdown">
-            <UserHeader id={article.author} />
+            <Memoized show>
+              <UserHeader id={article.author} />
+            </Memoized>
 
             <div tabIndex={0} className="dropdown-content pt-2">
               <MainUserPopup id={articleId + ""} />
@@ -201,23 +208,7 @@ function LayoutArticlePageSlug({
           {article?.desc || `Article's Description`}
         </h2>
         <div className="flex flex-col gap-2 sm:gap-4">
-          <a
-            className="group relative isolate  flex
-            aspect-video w-full cursor-pointer overflow-hidden rounded-xl transition-all
-            duration-300 focus-within:fixed focus-within:inset-0 focus-within:z-[100]  focus-within:aspect-auto 
-            focus-within:cursor-default focus-within:rounded-none focus-within:bg-black/60 
-            focus-within:p-2 focus-within:backdrop-blur-sm sm:focus-within:p-4"
-            tabIndex={0}
-          >
-            <button
-              className="btn-outline btn-circle btn absolute right-0 top-0 z-[20] m-2 hidden border-white 
-              group-focus-within:inline-flex sm:m-4"
-              onClick={() => {
-                (document.activeElement as HTMLElement).blur();
-              }}
-            >
-              <MdClose className="text-2xl text-white sm:text-3xl"></MdClose>
-            </button>
+          <ModalImagePreview className="rounded-xl">
             <img
               className="z-10 h-full w-full max-w-none bg-primary object-cover transition-transform duration-500
               hover:scale-[1.2] group-focus-within:my-auto group-focus-within:h-auto group-focus-within:max-h-[90vh]
@@ -233,7 +224,7 @@ function LayoutArticlePageSlug({
               width={240}
               height={240}
             />
-          </a>
+          </ModalImagePreview>
         </div>
 
         {article.content ? (

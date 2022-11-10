@@ -1,5 +1,5 @@
 import { FirebaseError } from "firebase/app";
-import { values } from "lodash";
+import { omit, values } from "lodash";
 import { nanoid } from "nanoid";
 import { WritingPanelFormProps } from "../../base/data/contexts/WritingPanelTypes";
 import {
@@ -23,11 +23,12 @@ import {
   repoFsArticleContentDelete,
   repoFsArticleContentUpdate,
   repoFsArticleDelete,
-  repoFsArticleGetByUser,
+  repoFsArticleGetIds,
   repoFsArticleUpdate,
 } from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
   repoRtArticleGetAll,
+  repoRtArticleGetById,
   repoRtArticleMirrorAdd,
   repoRtArticleMirrorDelete,
   repoRtArticleMirrorUpdate,
@@ -43,19 +44,18 @@ import {
   repoStDirectoryDelete,
   repoStFileDeleteByFullLink,
 } from "../../base/repos/StorageModules";
-import { serviceFileUpload } from "./FileService";
 import { imageToPng } from "../helpers/MainHelpers";
-
-// Adding article, now using direct firebaseClient
-interface PropsAddArticle {
-  rawArticle: WritingPanelFormProps;
-  user: UserModel;
-  callback?: (
-    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
-  ) => void;
-}
+import { serviceFileUpload } from "./FileService";
 
 export type ArticleListModelByUser = ArticleListModel & {
+  totalArticle: number;
+  keyword: string;
+  offset: number;
+};
+
+export type ArticleIdsByUser = Omit<ArticleListModel, "articles"> & {
+  ids: string[];
+} & {
   totalArticle: number;
   keyword: string;
   offset: number;
@@ -90,32 +90,80 @@ export async function serviceArticleMirrorGetAll({
   }
 }
 
+// export async function serviceArticleGetByUser({
+//   articleListId,
+//   keyword,
+//   paging,
+//   callback,
+// }: {
+//   articleListId: string;
+//   keyword: string;
+//   paging: {
+//     start: number;
+//     end: number;
+//   };
+//   callback?: (
+//     resp: MainNetworkResponse<ArticleListModelByUser | null | FirebaseError>,
+//   ) => void;
+// }): Promise<ArticleListModelByUser | null> {
+//   try {
+//     // console.log("paging = ", `${paging.start} + ${paging.end}`)
+//     const data = await repoFsArticleGetByUser(articleListId, keyword, paging);
+//     callback?.(
+//       netSuccess<ArticleListModelByUser | null>(
+//         "Success getting user's posts",
+//         data,
+//       ),
+//     );
+//     return data;
+//   } catch (error) {
+//     console.log(error);
+//     callback?.(
+//       netError<FirebaseError>(
+//         "Error when getting users's posts",
+//         error as FirebaseError,
+//       ),
+//     );
+//     return null;
+//   }
+// }
+
 export async function serviceArticleGetByUser({
-  articleListId,
-  keyword,
-  paging,
+  data,
   callback,
-}: {
-  articleListId: string;
-  keyword: string;
-  paging: {
-    start: number;
-    end: number;
-  };
-  callback?: (
-    resp: MainNetworkResponse<ArticleListModelByUser | null | FirebaseError>,
-  ) => void;
-}): Promise<ArticleListModelByUser | null> {
+}: MainApiResponse<
+  { articleListId: string } & ApiPagingReqProps,
+  ArticleListModelByUser | FirebaseError | null
+>): Promise<ArticleListModelByUser | null> {
+  const { articleListId, keyword, start, count } = data;
   try {
     // console.log("paging = ", `${paging.start} + ${paging.end}`)
-    const data = await repoFsArticleGetByUser(articleListId, keyword, paging);
+    const idList = await repoFsArticleGetIds({
+      articleListRefId: articleListId,
+      keyword: keyword,
+      start: start,
+      count: count,
+    });
+    if (!idList) return null;
+    const articles: ArticleModel[] = [];
+    for (const id of idList.ids) {
+      const article = await repoRtArticleGetById(id);
+      if (!article) break;
+      articles.push(article);
+    }
+    const res: ArticleListModelByUser = {
+      ...omit(idList, ["ids"]),
+      keyword: idList.keyword,
+      offset: idList.offset,
+      articles: articles,
+    };
     callback?.(
       netSuccess<ArticleListModelByUser | null>(
         "Success getting user's posts",
-        data,
+        res,
       ),
     );
-    return data;
+    return res;
   } catch (error) {
     console.log(error);
     callback?.(
@@ -129,10 +177,13 @@ export async function serviceArticleGetByUser({
 }
 
 export async function serviceArticleAdd({
-  rawArticle,
-  user,
+  data,
   callback,
-}: PropsAddArticle): Promise<ArticleModel | null> {
+}: MainApiResponse<
+  { user: UserModel; rawArticle: WritingPanelFormProps },
+  ArticleModel | FirebaseError | null
+>): Promise<ArticleModel | null> {
+  const { rawArticle, user } = data;
   // generate article
   const id = nanoid(24);
   const article = toArticleModel({
@@ -187,9 +238,11 @@ export async function serviceArticleAdd({
       if (!convertedImg) throw new Error("Error when converting image");
 
       const thumbnailUrl = await serviceFileUpload({
-        file: convertedImg,
-        directory: `/thumbnails/${article.id}/`,
-        name: article.id,
+        data: {
+          file: convertedImg,
+          directory: `/thumbnails/${article.id}/`,
+          name: article.id,
+        },
       });
 
       if (!thumbnailUrl) {
@@ -221,14 +274,13 @@ export async function serviceArticleAdd({
 }
 
 export async function serviceArticleDelete({
-  article,
-  user,
+  data,
   callback,
-}: {
-  article: ArticleModel;
-  user: UserModel;
-  callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
-}): Promise<UserModel | null> {
+}: MainApiResponse<
+  { article: ArticleModel; user: UserModel },
+  string | FirebaseError | null
+>): Promise<UserModel | null> {
+  const { article, user } = data;
   // delete article
   try {
     await repoFsArticleDelete({
@@ -297,12 +349,12 @@ export async function serviceArticleDelete({
 }
 
 export async function serviceArticleContentGet({
-  id,
+  data,
   callback,
-}: {
-  id: string;
-  callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
-}): Promise<string | null> {
+}: MainApiResponse<{ id: string }, string | null | FirebaseError>): Promise<
+  string | null
+> {
+  const { id } = data;
   try {
     const data = await fsArticleContentGet(id);
     callback?.(netSuccess<string | null>("Success getting user's posts", data));
@@ -319,21 +371,18 @@ export async function serviceArticleContentGet({
   }
 }
 
-type PropsEditArticle = {
-  oldArticle: ArticleModel;
-  rawArticle: WritingPanelFormProps;
-  userPostsRef: string;
-  callback?: (
-    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
-  ) => void;
-};
-
 export async function serviceArticleUpdate({
-  oldArticle,
-  rawArticle,
-  userPostsRef,
+  data,
   callback,
-}: PropsEditArticle) {
+}: MainApiResponse<
+  {
+    oldArticle: ArticleModel;
+    rawArticle: WritingPanelFormProps;
+    userPostsRef: string;
+  },
+  ArticleModel | null | FirebaseError
+>) {
+  const { oldArticle, rawArticle, userPostsRef } = data;
   // generate updated article
   const article = toArticleModelUpdated({
     oldArticle: oldArticle,
@@ -393,9 +442,11 @@ export async function serviceArticleUpdate({
     // upload/replace the new one
     try {
       const thumbnailUrl = await serviceFileUpload({
-        file: thumbnail[0],
-        directory: `/thumbnails/${article.id}/`,
-        name: article.id,
+        data: {
+          file: thumbnail[0],
+          directory: `/thumbnails/${article.id}/`,
+          name: article.id,
+        },
       });
 
       if (!thumbnailUrl) {
@@ -449,20 +500,18 @@ export async function serviceArticleSearch({
   callback,
 }: MainApiResponse<
   ApiPagingReqProps & { abortSignal: AbortSignal },
-  ArticleModel[] | null | FirebaseError
->): Promise<ArticleModel[] | null> {
-  console.log("searching...", data.keyword);
+  ArticleModelFromDb | null | FirebaseError
+>): Promise<ArticleModelFromDb | null> {
   const { keyword, count, start, abortSignal } = data;
+  console.log("searching...", start);
   try {
     const res: ArticleModel[] = await repoRtArticleSearch(
       data.abortSignal,
     ).then((e) => {
       if (e.status !== 200) return [];
-      let articles = values(e.data) as ArticleModel[];
+      const articles = values(e.data) as ArticleModel[];
       const kw = (keyword || "").toLowerCase().trim();
-      // show all articles if no keyword
       if (!kw) {
-        articles = articles.slice(0, count);
         return articles;
       }
       const fuzz = new Fuse(articles, {
@@ -470,11 +519,16 @@ export async function serviceArticleSearch({
       });
       // show filtered articles if there is a keyword
       const searchResult = fuzz.search(kw).map((e) => e.item);
-      articles = searchResult.slice(0, count);
       // articles = (fuzz.search(kw) as unknown as ArticleModel[]).slice(0, count);
-      return articles;
+      return searchResult;
     });
-    return res;
+    console.log(start + count);
+    return {
+      articles: res.slice(start, start + count),
+      offset: start + count,
+      total: res.length,
+      keyword: keyword,
+    };
   } catch (error) {
     return null;
   }
@@ -499,13 +553,13 @@ export async function serviceArticleUpdateView({
 }
 
 export async function serviceArticleGetById({
-  id,
+  data,
   callback,
-}: {
-  id: string;
-  callback?: (resp: MainNetworkResponse<ArticleModel | null>) => void;
-}): Promise<ArticleModel | null> {
-  console.log(id);
+}: MainApiResponse<
+  { id: string },
+  ArticleModel | FirebaseError | null
+>): Promise<ArticleModel | null> {
+  const { id } = data;
   // await waitFor(2000);
   try {
     //   Call the endpoint

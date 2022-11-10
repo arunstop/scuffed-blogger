@@ -1,4 +1,5 @@
 import { FirebaseError } from "firebase/app";
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { useAuthCtx } from "../../../../app/contexts/auth/AuthHook";
@@ -6,12 +7,14 @@ import { useWritingPanelCtx } from "../../../../app/contexts/writingPanel/Writin
 import { WritingPanelProvider } from "../../../../app/contexts/writingPanel/WritingPanelProvider";
 import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
+import { routeHistoryAtom } from "../../../../app/hooks/RouteChangeHook";
 import { serviceArticleAdd } from "../../../../app/services/ArticleService";
 import { MainNetworkResponse } from "../../../../base/data/Main";
 import { ArticleModel } from "../../../../base/data/models/ArticleModel";
 import { UserModel } from "../../../../base/data/models/UserModel";
 import Container from "../../../components/common/Container";
 import MobileHeader from "../../../components/main/MobileHeader";
+import { smartBack } from "../../../helpers/RouterSmartBackHelpers";
 import LayoutArticleForm from "../LayoutArticleForm";
 import { ArticleSubmissionProps } from "./LayoutArticlePageEdit";
 
@@ -143,9 +146,11 @@ function LayoutArticlePageWriteContent({ title }: { title: string }) {
         // Auth required
         if (!authStt.user) return null;
         return await serviceArticleAdd({
-          rawArticle: data,
-          // correct non-null assertion becase we know that isLoggedIn already true
-          user: authStt.user,
+          data: {
+            rawArticle: data,
+            // correct non-null assertion becase we know that isLoggedIn already true
+            user: authStt.user,
+          },
           callback: async (resp) => {
             // change loading state, if it's loading, no need to wait
             if (resp.status !== "loading") await waitFor(2000);
@@ -194,15 +199,11 @@ function LayoutArticlePageWriteContent({ title }: { title: string }) {
 
 function LayoutArticlePageWrite() {
   const router = useRouter();
+  const [history] = useAtom(routeHistoryAtom);
   const title = `Write Article`;
   return (
     <>
-      <MobileHeader
-        back={() => {
-          router.back();
-        }}
-        title={title}
-      />
+      <MobileHeader back={() => smartBack(router, history)} title={title} />
       <Container>
         <WritingPanelProvider>
           <LayoutArticlePageWriteContent title={title} />

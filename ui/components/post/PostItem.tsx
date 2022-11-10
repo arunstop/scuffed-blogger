@@ -2,18 +2,22 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MdBookmarkAdd, MdMoreHoriz } from "react-icons/md";
-import { ArticleModel } from "../../../base/data/models/ArticleModel";
 import { dateDistanceGet } from "../../../app/helpers/MainHelpers";
 import { getElById } from "../../../app/helpers/UiHelpers";
-import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
+import { ArticleModel } from "../../../base/data/models/ArticleModel";
+import { UserDisplayModel } from "../../../base/data/models/UserDisplayModel";
 import MainUserPopup from "../main/MainPostUserPopup";
-import MainUserLabel from "../main/MainUserLabel";
+import UserHeader from "../user/UserHeader";
+import IntersectionObserverTrigger from "../utils/IntesectionObserverTrigger";
 
 interface PostItemProps {
   article: ArticleModel;
+  userDisplay?: UserDisplayModel;
   observe?: boolean;
 }
-function PostItem({ article, observe }: PostItemProps) {
+
+function PostItem(props: PostItemProps) {
+  const { article, observe, userDisplay } = props;
   const [visible, setVisible] = useState(true);
   const elementId = `article-${article.id}`;
   const element = getElById(elementId);
@@ -31,10 +35,10 @@ function PostItem({ article, observe }: PostItemProps) {
             }
       }
     >
-      {visible && <PostItemContent article={article} />}
+      {visible && <PostItemContent {...props} />}
     </IntersectionObserverTrigger>
   ) : (
-    <PostItemContent article={article} />
+    <PostItemContent {...props} />
   );
 }
 
@@ -49,9 +53,10 @@ function PostItem({ article, observe }: PostItemProps) {
 //   const { article, style } = props;
 
 // old
-const PostItemContent = ({ article }: { article: ArticleModel }) => {
+const PostItemContent = ({ article, userDisplay }: PostItemProps) => {
   const router = useRouter();
   const duration = Math.ceil(article.duration);
+
   return (
     <div
       className="group relative flex w-full animate-fadeIn flex-col
@@ -108,9 +113,7 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
       <div className="z-[1] flex flex-1 flex-col gap-2 p-4 sm:gap-4">
         <div className="inline-flex items-center gap-2 sm:gap-4">
           <div className="dropdown-hover dropdown z-[2] self-start sm:dropdown-end">
-            <MainUserLabel
-              id={article.dateUpdated.toString().substring(0, -2)}
-            />
+            <UserHeader id={article.author} userDisplay={userDisplay} />
 
             <div tabIndex={0} className="dropdown-content hidden pt-2 sm:block">
               <MainUserPopup id={article.slug} />
@@ -147,9 +150,9 @@ const PostItemContent = ({ article }: { article: ArticleModel }) => {
           {`${article.desc}`}
         </span>
         <div className="block text-xs sm:text-sm [&>b]:mx-[0.5rem] line-clamp-1 font-medium">
-        <span className="">{article.views} views</span>
-        <b className="font-black">&middot;</b>
-          
+          <span className="">{article.views} views</span>
+          <b className="font-black">&middot;</b>
+
           <span className="">
             {`${dateDistanceGet(article.dateAdded, Date.now())} ago`}
           </span>
