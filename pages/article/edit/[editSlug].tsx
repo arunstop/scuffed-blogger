@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps<{
   // Getting id from the slug from the last 24 chars
   const slug = (context.query.editSlug || "") as string;
   const articleContentless = await autoRetry(
-    async () => await serviceArticleGetById({ id: slug }),
+    async () => await serviceArticleGetById({ data: { id: slug } }),
   );
   // Show 404 if article not found or
   // if the slugs don't  match

@@ -66,9 +66,11 @@ function LayoutArticlePageEditContent({
       const updateArticle = await autoRetry(
         async () =>
           await serviceArticleUpdate({
-            oldArticle: oldArticleUpdated,
-            rawArticle: data,
-            userPostsRef: userPostsRef,
+            data: {
+              oldArticle: oldArticleUpdated,
+              rawArticle: data,
+              userPostsRef: userPostsRef,
+            },
             callback: (resp) => {
               if (resp.status === "error") {
                 setResp(
@@ -129,7 +131,8 @@ function LayoutArticlePageEditContent({
   async function getContent() {
     if (!wpState.formData) return;
     const content = await autoRetry(
-      async () => await serviceArticleContentGet({ id: articleContentless.id }),
+      async () =>
+        await serviceArticleContentGet({ data: { id: articleContentless.id } }),
     );
     const contentDecoded = decodeURIComponent(content || "");
     // set the content on the writingPanelCtx

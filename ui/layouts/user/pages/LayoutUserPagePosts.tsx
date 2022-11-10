@@ -117,8 +117,10 @@ function LayoutUserPagePosts() {
     const deleteArticle = await autoRetry(
       async () =>
         await serviceArticleDelete({
-          article: articleTarget,
-          user: user,
+          data: {
+            article: articleTarget,
+            user: user,
+          },
         }),
     );
     if (!deleteArticle) return;

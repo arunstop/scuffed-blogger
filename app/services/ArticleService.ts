@@ -47,15 +47,6 @@ import {
 import { imageToPng } from "../helpers/MainHelpers";
 import { serviceFileUpload } from "./FileService";
 
-// Adding article, now using direct firebaseClient
-interface PropsAddArticle {
-  rawArticle: WritingPanelFormProps;
-  user: UserModel;
-  callback?: (
-    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
-  ) => void;
-}
-
 export type ArticleListModelByUser = ArticleListModel & {
   totalArticle: number;
   keyword: string;
@@ -186,10 +177,13 @@ export async function serviceArticleGetByUser({
 }
 
 export async function serviceArticleAdd({
-  rawArticle,
-  user,
+  data,
   callback,
-}: PropsAddArticle): Promise<ArticleModel | null> {
+}: MainApiResponse<
+  { user: UserModel; rawArticle: WritingPanelFormProps },
+  ArticleModel | FirebaseError | null
+>): Promise<ArticleModel | null> {
+  const { rawArticle, user } = data;
   // generate article
   const id = nanoid(24);
   const article = toArticleModel({
@@ -278,14 +272,13 @@ export async function serviceArticleAdd({
 }
 
 export async function serviceArticleDelete({
-  article,
-  user,
+  data,
   callback,
-}: {
-  article: ArticleModel;
-  user: UserModel;
-  callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
-}): Promise<UserModel | null> {
+}: MainApiResponse<
+  { article: ArticleModel; user: UserModel },
+  string | FirebaseError | null
+>): Promise<UserModel | null> {
+  const { article, user } = data;
   // delete article
   try {
     await repoFsArticleDelete({
@@ -354,12 +347,12 @@ export async function serviceArticleDelete({
 }
 
 export async function serviceArticleContentGet({
-  id,
+  data,
   callback,
-}: {
-  id: string;
-  callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
-}): Promise<string | null> {
+}: MainApiResponse<{ id: string }, string | null | FirebaseError>): Promise<
+  string | null
+> {
+  const { id } = data;
   try {
     const data = await fsArticleContentGet(id);
     callback?.(netSuccess<string | null>("Success getting user's posts", data));
@@ -376,21 +369,18 @@ export async function serviceArticleContentGet({
   }
 }
 
-type PropsEditArticle = {
-  oldArticle: ArticleModel;
-  rawArticle: WritingPanelFormProps;
-  userPostsRef: string;
-  callback?: (
-    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
-  ) => void;
-};
-
 export async function serviceArticleUpdate({
-  oldArticle,
-  rawArticle,
-  userPostsRef,
+  data,
   callback,
-}: PropsEditArticle) {
+}: MainApiResponse<
+  {
+    oldArticle: ArticleModel;
+    rawArticle: WritingPanelFormProps;
+    userPostsRef: string;
+  },
+  ArticleModel | null | FirebaseError
+>) {
+  const { oldArticle, rawArticle, userPostsRef } = data;
   // generate updated article
   const article = toArticleModelUpdated({
     oldArticle: oldArticle,
@@ -559,13 +549,10 @@ export async function serviceArticleUpdateView({
 }
 
 export async function serviceArticleGetById({
-  id,
+  data,
   callback,
-}: {
-  id: string;
-  callback?: (resp: MainNetworkResponse<ArticleModel | null>) => void;
-}): Promise<ArticleModel | null> {
-  console.log(id);
+}: MainApiResponse<{id:string},ArticleModel |FirebaseError| null>): Promise<ArticleModel | null> {
+  const {id} = data;
   // await waitFor(2000);
   try {
     //   Call the endpoint
