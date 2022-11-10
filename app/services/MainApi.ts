@@ -1,9 +1,9 @@
 import { FirebaseError } from "firebase/app";
 import { User } from "firebase/auth";
-import { AuthRegisterProps } from "../../ui/components/auth/AuthRegisterForm";
 import { MainNetworkResponse } from "../../base/data/Main";
 import { ArticleModel } from "../../base/data/models/ArticleModel";
 import { axiosClient } from "../../base/clients/AxiosClient";
+import { AuthRegisterProps } from "./UserService";
 
 async function getDummy({
   callback,

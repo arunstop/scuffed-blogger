@@ -146,9 +146,11 @@ function LayoutArticlePageWriteContent({ title }: { title: string }) {
         // Auth required
         if (!authStt.user) return null;
         return await serviceArticleAdd({
-          rawArticle: data,
-          // correct non-null assertion becase we know that isLoggedIn already true
-          user: authStt.user,
+          data: {
+            rawArticle: data,
+            // correct non-null assertion becase we know that isLoggedIn already true
+            user: authStt.user,
+          },
           callback: async (resp) => {
             // change loading state, if it's loading, no need to wait
             if (resp.status !== "loading") await waitFor(2000);

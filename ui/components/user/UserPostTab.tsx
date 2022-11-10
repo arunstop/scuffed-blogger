@@ -5,7 +5,7 @@ import { waitFor } from "../../../app/helpers/DelayHelpers";
 import { autoRetry } from "../../../app/helpers/MainHelpers";
 import {
   ArticleListModelByUser,
-  serviceArticleGetByUser
+  serviceArticleGetByUser,
 } from "../../../app/services/ArticleService";
 import { MainNetworkResponse } from "../../../base/data/Main";
 import { toUserDisplay } from "../../../base/data/models/UserDisplayModel";
@@ -31,12 +31,15 @@ export const UserPostTab = React.memo(function UserPost({
     // show loading indicator
     // setLoading(true);
 
+    if (!userProfile) return;
     const articleByUser = await autoRetry(
       async () =>
         await serviceArticleGetByUser({
-          articleListId: userProfile?.list.posts || "",
-          keyword: "",
-          paging: { start: offset, end: offset + 5 },
+          data: {
+            articleListId: userProfile.list.posts,
+            count: 5,
+            start: offset,
+          },
           callback: (resp) => {
             setResp(resp);
           },

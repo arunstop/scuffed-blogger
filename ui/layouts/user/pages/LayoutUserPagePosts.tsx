@@ -78,9 +78,12 @@ function LayoutUserPagePosts() {
     const articleByUser = await autoRetry(
       async () =>
         await serviceArticleGetByUser({
-          articleListId: user.list.posts,
-          keyword: keyword || "",
-          paging: { start: offset, end: offset + 5 },
+          data: {
+            articleListId: user.list.posts,
+            keyword: keyword || "",
+            start: offset,
+            count: 5,
+          },
           callback: async (res) => {
             if (res.status === "loading") return;
             setResp(res);
@@ -114,8 +117,10 @@ function LayoutUserPagePosts() {
     const deleteArticle = await autoRetry(
       async () =>
         await serviceArticleDelete({
-          article: articleTarget,
-          user: user,
+          data: {
+            article: articleTarget,
+            user: user,
+          },
         }),
     );
     if (!deleteArticle) return;

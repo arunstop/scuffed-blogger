@@ -1,29 +1,27 @@
 import { FirebaseError } from "firebase/app";
 import {
-  UploadTaskSnapshot,
+  getDownloadURL,
   ref,
   uploadBytesResumable,
-  getDownloadURL,
+  UploadTaskSnapshot,
 } from "firebase/storage";
 import { nanoid } from "nanoid";
 import { firebaseClient } from "../../base/clients/FirebaseClient";
-import { MainNetworkResponse, netLoading, netError, netSuccess } from "../../base/data/Main";
+import { netError, netLoading, netSuccess } from "../../base/data/Main";
+import { MainApiResponse } from "./../../base/data/Main";
 
 type UploadFileProps = null | string | FirebaseError | UploadTaskSnapshot;
 // Upload file
 // @Returns the download url
 export async function serviceFileUpload({
-  file,
-  directory,
-  name,
+  data,
   callback,
-}: {
-  file: File;
-  directory: string;
-  name?: string;
-  callback?: (resp: MainNetworkResponse<UploadFileProps>) => void;
-}): Promise<string> {
-  let data = "";
+}: MainApiResponse<
+  { file: File; directory: string; name?: string },
+  UploadFileProps
+>): Promise<string> {
+  const { file, directory, name } = data;
+  let res = "";
   // const file = fields.avatar[0];
   // Splitting the name by with .  then get the last item
   // which results the extension of the file
@@ -52,13 +50,13 @@ export async function serviceFileUpload({
     // handle success
     async () => {
       // data = await getDownloadURL(uploadTask.snapshot.ref);
-      callback?.(netSuccess<string>("", data));
+      callback?.(netSuccess<string>("", res));
       // console.log(data);
     },
   );
   await uploadTask.then(async (e) => {
-    data = await getDownloadURL(uploadTask.snapshot.ref);
+    res = await getDownloadURL(uploadTask.snapshot.ref);
   });
 
-  return data;
+  return res;
 }

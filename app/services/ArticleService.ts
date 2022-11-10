@@ -8,12 +8,12 @@ import {
   MainNetworkResponse,
   netError,
   netLoading,
-  netSuccess
+  netSuccess,
 } from "../../base/data/Main";
 import {
   ArticleModel,
   toArticleModel,
-  toArticleModelUpdated
+  toArticleModelUpdated,
 } from "../../base/data/models/ArticleModel";
 import { UserModel } from "../../base/data/models/UserModel";
 import {
@@ -24,7 +24,7 @@ import {
   repoFsArticleContentUpdate,
   repoFsArticleDelete,
   repoFsArticleGetIds,
-  repoFsArticleUpdate
+  repoFsArticleUpdate,
 } from "../../base/repos/firestoreDb/FirestoreArticleRepo";
 import {
   repoRtArticleGetAll,
@@ -33,7 +33,7 @@ import {
   repoRtArticleMirrorDelete,
   repoRtArticleMirrorUpdate,
   repoRtArticleSearch,
-  repoRtArticleUpdateView
+  repoRtArticleUpdateView,
 } from "../../base/repos/realtimeDb/RealtimeArticleRepo";
 
 import Fuse from "fuse.js";
@@ -42,19 +42,10 @@ import { MainApiResponse } from "../../base/data/Main";
 import { ArticleListModel } from "../../base/data/models/ArticleListModel";
 import {
   repoStDirectoryDelete,
-  repoStFileDeleteByFullLink
+  repoStFileDeleteByFullLink,
 } from "../../base/repos/StorageModules";
 import { imageToPng } from "../helpers/MainHelpers";
 import { serviceFileUpload } from "./FileService";
-
-// Adding article, now using direct firebaseClient
-interface PropsAddArticle {
-  rawArticle: WritingPanelFormProps;
-  user: UserModel;
-  callback?: (
-    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
-  ) => void;
-}
 
 export type ArticleListModelByUser = ArticleListModel & {
   totalArticle: number;
@@ -138,27 +129,20 @@ export async function serviceArticleMirrorGetAll({
 // }
 
 export async function serviceArticleGetByUser({
-  articleListId,
-  keyword,
-  paging,
+  data,
   callback,
-}: {
-  articleListId: string;
-  keyword: string;
-  paging: {
-    start: number;
-    end: number;
-  };
-  callback?: (
-    resp: MainNetworkResponse<ArticleListModelByUser | null | FirebaseError>,
-  ) => void;
-}): Promise<ArticleListModelByUser | null> {
+}: MainApiResponse<
+  { articleListId: string } & ApiPagingReqProps,
+  ArticleListModelByUser | FirebaseError | null
+>): Promise<ArticleListModelByUser | null> {
+  const { articleListId, keyword, start, count } = data;
   try {
     // console.log("paging = ", `${paging.start} + ${paging.end}`)
     const idList = await repoFsArticleGetIds({
       articleListRefId: articleListId,
       keyword: keyword,
-      paging: paging,
+      start: start,
+      count: count,
     });
     if (!idList) return null;
     const articles: ArticleModel[] = [];
@@ -193,10 +177,13 @@ export async function serviceArticleGetByUser({
 }
 
 export async function serviceArticleAdd({
-  rawArticle,
-  user,
+  data,
   callback,
-}: PropsAddArticle): Promise<ArticleModel | null> {
+}: MainApiResponse<
+  { user: UserModel; rawArticle: WritingPanelFormProps },
+  ArticleModel | FirebaseError | null
+>): Promise<ArticleModel | null> {
+  const { rawArticle, user } = data;
   // generate article
   const id = nanoid(24);
   const article = toArticleModel({
@@ -251,9 +238,11 @@ export async function serviceArticleAdd({
       if (!convertedImg) throw new Error("Error when converting image");
 
       const thumbnailUrl = await serviceFileUpload({
-        file: convertedImg,
-        directory: `/thumbnails/${article.id}/`,
-        name: article.id,
+        data: {
+          file: convertedImg,
+          directory: `/thumbnails/${article.id}/`,
+          name: article.id,
+        },
       });
 
       if (!thumbnailUrl) {
@@ -285,14 +274,13 @@ export async function serviceArticleAdd({
 }
 
 export async function serviceArticleDelete({
-  article,
-  user,
+  data,
   callback,
-}: {
-  article: ArticleModel;
-  user: UserModel;
-  callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
-}): Promise<UserModel | null> {
+}: MainApiResponse<
+  { article: ArticleModel; user: UserModel },
+  string | FirebaseError | null
+>): Promise<UserModel | null> {
+  const { article, user } = data;
   // delete article
   try {
     await repoFsArticleDelete({
@@ -361,12 +349,12 @@ export async function serviceArticleDelete({
 }
 
 export async function serviceArticleContentGet({
-  id,
+  data,
   callback,
-}: {
-  id: string;
-  callback?: (resp: MainNetworkResponse<string | null | FirebaseError>) => void;
-}): Promise<string | null> {
+}: MainApiResponse<{ id: string }, string | null | FirebaseError>): Promise<
+  string | null
+> {
+  const { id } = data;
   try {
     const data = await fsArticleContentGet(id);
     callback?.(netSuccess<string | null>("Success getting user's posts", data));
@@ -383,21 +371,18 @@ export async function serviceArticleContentGet({
   }
 }
 
-type PropsEditArticle = {
-  oldArticle: ArticleModel;
-  rawArticle: WritingPanelFormProps;
-  userPostsRef: string;
-  callback?: (
-    resp: MainNetworkResponse<ArticleModel | null | FirebaseError>,
-  ) => void;
-};
-
 export async function serviceArticleUpdate({
-  oldArticle,
-  rawArticle,
-  userPostsRef,
+  data,
   callback,
-}: PropsEditArticle) {
+}: MainApiResponse<
+  {
+    oldArticle: ArticleModel;
+    rawArticle: WritingPanelFormProps;
+    userPostsRef: string;
+  },
+  ArticleModel | null | FirebaseError
+>) {
+  const { oldArticle, rawArticle, userPostsRef } = data;
   // generate updated article
   const article = toArticleModelUpdated({
     oldArticle: oldArticle,
@@ -457,9 +442,11 @@ export async function serviceArticleUpdate({
     // upload/replace the new one
     try {
       const thumbnailUrl = await serviceFileUpload({
-        file: thumbnail[0],
-        directory: `/thumbnails/${article.id}/`,
-        name: article.id,
+        data: {
+          file: thumbnail[0],
+          directory: `/thumbnails/${article.id}/`,
+          name: article.id,
+        },
       });
 
       if (!thumbnailUrl) {
@@ -514,7 +501,7 @@ export async function serviceArticleSearch({
 }: MainApiResponse<
   ApiPagingReqProps & { abortSignal: AbortSignal },
   ArticleModelFromDb | null | FirebaseError
-  >): Promise<ArticleModelFromDb | null> {
+>): Promise<ArticleModelFromDb | null> {
   const { keyword, count, start, abortSignal } = data;
   console.log("searching...", start);
   try {
@@ -566,13 +553,13 @@ export async function serviceArticleUpdateView({
 }
 
 export async function serviceArticleGetById({
-  id,
+  data,
   callback,
-}: {
-  id: string;
-  callback?: (resp: MainNetworkResponse<ArticleModel | null>) => void;
-}): Promise<ArticleModel | null> {
-  console.log(id);
+}: MainApiResponse<
+  { id: string },
+  ArticleModel | FirebaseError | null
+>): Promise<ArticleModel | null> {
+  const { id } = data;
   // await waitFor(2000);
   try {
     //   Call the endpoint

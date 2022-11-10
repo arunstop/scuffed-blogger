@@ -52,7 +52,7 @@ function LayoutArticlePageSlug({
   const getContent = useCallback(async () => {
     const content = await autoRetry(
       async (attempt, max) =>
-        await serviceArticleContentGet({ id: article.id }),
+        await serviceArticleContentGet({ data: { id: article.id } }),
     );
     if (content) {
       setArticle((prev) => ({ ...prev, content: content }));

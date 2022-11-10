@@ -1,13 +1,10 @@
-import { MainNetworkResponse } from "../../base/data/Main";
+import { MainApiResponse } from "../../base/data/Main";
 import { repoRtTopicGet } from "../../base/repos/RtdbModules";
 
 export async function serviceTopicGetAll({
-  keyword,
+  data,
   callback,
-}: {
-  keyword: string;
-  callback?: (resp: MainNetworkResponse<string[]>) => void;
-}): Promise<string[] | null> {
+}: MainApiResponse<{ keyword: string }, string[]>): Promise<string[] | null> {
   try {
     const topics = await repoRtTopicGet();
     // console.log(topics);

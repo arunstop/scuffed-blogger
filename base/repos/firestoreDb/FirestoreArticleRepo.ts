@@ -1,3 +1,4 @@
+import { ApiPagingReqProps } from "./../../data/Main";
 import { ArticleListModel } from "../../data/models/ArticleListModel";
 // =============================
 // IMPORTANT : converting JSON stringify and then parse again
@@ -43,16 +44,13 @@ export async function repoFsArticleGetAll(): Promise<ArticleModel[] | null> {
 // @return article ids
 export async function repoFsArticleGetIds({
   articleListRefId,
+  start,
+  count,
   keyword,
-  paging,
 }: {
   articleListRefId: string;
-  keyword: string;
-  paging: {
-    start: number;
-    end: number;
-  };
-}): Promise<ArticleIdsByUser | null> {
+} & ApiPagingReqProps): Promise<ArticleIdsByUser | null> {
+  const end = start + count;
   const ref = doc(articleDb, articleListRefId);
   const snapshot = await getDoc(ref);
   if (!snapshot.exists()) return null;
@@ -61,9 +59,9 @@ export async function repoFsArticleGetIds({
   if (!dataRaw.articles.length) return null;
 
   const data = {
-    ids: dataRaw.articles.map((e) => e.id).slice(paging.start,paging.end),
+    ids: dataRaw.articles.map((e) => e.id).slice(start, end),
     keyword: keyword,
-    offset: paging.end,
+    offset: end,
     totalArticle: dataRaw.articles.length,
   } as ArticleIdsByUser;
 
@@ -91,7 +89,7 @@ export async function repoFsArticleGetIds({
 
   return {
     ...data,
-    ids: filteredArticles.slice(paging.start, paging.end),
+    ids: filteredArticles.slice(start, end),
     totalArticle: filteredArticles.length,
   };
 }
