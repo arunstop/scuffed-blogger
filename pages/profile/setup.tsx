@@ -1,8 +1,18 @@
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import React from "react";
-import MainContainer from "../../components/main/MainContainer";
-import ProfileSetupForm from "../../components/profile/ProfileSetupForm";
-import { APP_NAME } from "../../utils/helpers/Constants";
+import SplashScreen from "../../ui/components/placeholder/SplashScreen";
+import { APP_NAME } from "../../app/helpers/Constants";
+
+
+const LazyLayoutProfilePageSetup = dynamic(
+  () => import("../../ui/layouts/profile/pages/LayoutProfilePageSetup"),
+  {
+    ssr: false,
+    loading(loadingProps) {
+      return <SplashScreen />;
+    },
+  },
+);
 
 function ProfileSetup() {
   const title = "Setup your " + APP_NAME + " profile - " + APP_NAME;
@@ -15,11 +25,8 @@ function ProfileSetup() {
         <meta name="description" content={"Setup your profile"} />
       </Head>
       {/* <Header /> */}
-      <MainContainer>
-        <div className="relative z-0 min-h-screen overflow-hidden rounded-xl">
-        <ProfileSetupForm />
-        </div>
-      </MainContainer>
+      <LazyLayoutProfilePageSetup />
+      
       {/* <Footer/> */}
     </>
   );
