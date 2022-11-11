@@ -217,6 +217,8 @@ function ProfileChooseTopicsForm() {
       const isAborted = controllerRef.current.signal.aborted;
 
       if (val.trim().toLowerCase().length < 2) {
+        console.log(topicsInit);
+
         controllerRef.current.abort("Too few keyword");
         // set topics to the initial topics value if input value is empty
         if (val.trim().toLowerCase().length === 0)
@@ -240,7 +242,7 @@ function ProfileChooseTopicsForm() {
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       search(ev.target.value);
     },
-    [],
+    [topics, topicsInit],
   );
 
   const clear = useCallback(() => {
@@ -356,7 +358,12 @@ function ProfileChooseTopicsForm() {
                   icon={<MdSearch />}
                   value={keyword}
                   onChange={handleSearch}
+                  clearIcon={keyword.trim().length>=2}
                   clearable
+                  clearAction={()=>{
+                    setKeyword("");
+                    setTopics(topicsInit);
+                  }}
                 />
                 {selectedTopics.length !== 0 && (
                   <span
