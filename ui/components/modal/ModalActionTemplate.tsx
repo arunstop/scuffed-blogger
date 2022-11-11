@@ -4,8 +4,9 @@ import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
 import { ModalProps } from "../../../base/data/Main";
 import Button from "../common/Button";
 import GradientBackground from "../utils/GradientBackground";
+import Memoized from "../utils/Memoized";
 import ModalActionConfirmation from "./ModalActionConfirmation";
-import ModalActionItemsContainer from "./ModalActionItemsContainer";
+import ModalActionItem from "./ModalActionItem";
 
 export interface ModalActionConfirmation {
   title: string;
@@ -145,12 +146,22 @@ const ModalActionTemplate = ({
                 </Dialog.Title>
                 {/* Action section */}
                 {!confirmingAction && (
-                  <ModalActionItemsContainer
-                    show={value}
-                    actions={actions}
-                    openConfirmation={(data) => setConfirmingAction(data)}
-                    closeModal={closeModal}
-                  />
+                  <Memoized show={value}>
+                    <>
+                      {actions.map((e, idx) => {
+                        return (
+                          <ModalActionItem
+                            key={idx}
+                            openConfirmation={(data) =>
+                              setConfirmingAction(data)
+                            }
+                            closeModal={closeModal}
+                            {...e}
+                          />
+                        );
+                      })}
+                    </>
+                  </Memoized>
                 )}
                 {!!confirmingAction && (
                   <>

@@ -148,7 +148,7 @@ function LayoutArticlePageSlug({
       <Container>
         <div className="inline-flex justify-between">
           <div className="dropdown-hover dropdown">
-            <Memoized show>
+            <Memoized show once>
               <UserHeader id={article.author} />
             </Memoized>
 

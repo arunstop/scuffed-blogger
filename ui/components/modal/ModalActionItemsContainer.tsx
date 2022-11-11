@@ -4,7 +4,7 @@ import {
   ModalActionAction
 } from "./ModalActionTemplate";
 
-function ModalActionItemsContainer({
+export default function ModalActionItemsContainer({
   show,
   actions,
   openConfirmation,
@@ -30,9 +30,3 @@ function ModalActionItemsContainer({
     </>
   );
 }
-
-export default React.memo(ModalActionItemsContainer, (prev, next) => {
-  // re-render when the prev has the same length as the next
-  if (prev.show === false && next.show === true) return false;
-  return true;
-});

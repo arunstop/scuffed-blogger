@@ -4,8 +4,10 @@ import { useCommentCtx } from "../../../app/contexts/comment/CommentHook";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
 import { ModalProps } from "../../../base/data/Main";
 import { CommentModel } from "../../../base/data/models/CommentModel";
+import Button from "../common/Button";
 import MobileHeader from "../main/MobileHeader";
 import ModalTemplate from "../modal/ModalTemplate";
+import Memoized from "../utils/Memoized";
 import ArticleCommentItem from "./ArticleCommentItem";
 
 const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
@@ -19,7 +21,9 @@ const ArticleCommentReplyModal = React.memo(function ArticleCommentReplyModal({
       onClose={onClose}
       title={`Replying to ${parentComment?.userName || "a comment"}`}
     >
-      <MzContent show={value} onClose={onClose} parentComment={parentComment} />
+      <Memoized show once>
+        <Content show={value} onClose={onClose} parentComment={parentComment} />
+      </Memoized>
     </ModalTemplate>
   );
 });
@@ -98,23 +102,19 @@ function Content({
               Cancel
             </button>
           )}
-          <button
+          <Button
             className={`flex-1 sm:flex-none font-bold btn btn-primary 
             normal-case text-xl sm:w-48 transition --btn-resp
             ${reply.length !== 0 ? "" : "btn-disabled"}`}
             onClick={() => submitReply(reply)}
+            loadingOnClick
           >
             Reply
-          </button>
+          </Button>
         </div>
       </div>
     </>
   );
 }
-
-const MzContent = React.memo(Content, (prev, next) => {
-  if (prev.show === false && next.show === true) return false;
-  return true;
-});
 
 export default ArticleCommentReplyModal;
