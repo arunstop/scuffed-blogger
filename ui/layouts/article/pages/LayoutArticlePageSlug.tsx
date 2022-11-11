@@ -210,9 +210,9 @@ function LayoutArticlePageSlug({
         <div className="flex flex-col gap-2 sm:gap-4">
           <ModalImagePreview className="rounded-xl">
             <img
-              className="z-10 h-full w-full max-w-none bg-primary object-cover transition-transform duration-500
-              hover:scale-[1.2] group-focus-within:my-auto group-focus-within:h-auto group-focus-within:max-h-[90vh]
-              group-focus-within:rounded-xl
+              className="z-10 aspect-video h-full w-full max-w-none bg-primary object-cover transition-transform self-center
+              duration-500 hover:scale-[1.2] group-focus-within:my-auto group-focus-within:aspect-auto sm:group-focus-within:max-w-[80vw]
+              group-focus-within:h-auto group-focus-within:max-h-[90vh] group-focus-within:rounded-xl sm:group-focus-within:m-auto
               group-focus-within:object-fill group-focus-within:duration-[0] group-focus-within:hover:scale-100"
               src={
                 article?.thumbnail ||
