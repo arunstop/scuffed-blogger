@@ -3,6 +3,7 @@ import React from "react";
 import { Fragment, ReactNode } from "react";
 import { FaTimes } from "react-icons/fa";
 import { ModalProps } from "../../../base/data/Main";
+import Memoized from "../utils/Memoized";
 
 interface ModalTemplateProps {
   title: string;
@@ -82,12 +83,14 @@ ModalProps & ModalTemplateProps) => {
               >
                 {/* gradient background */}
                 {/* <GradientBackground height="100%" /> */}
-                <MzHeader
-                  show={value}
-                  noCloseButton={noCloseButton}
-                  onClose={onClose}
-                  title={title}
-                />
+                <Memoized show once>
+                  <Header
+                    show={value}
+                    noCloseButton={noCloseButton}
+                    onClose={onClose}
+                    title={title}
+                  />
+                </Memoized>
                 {children}
               </div>
             </div>
@@ -98,7 +101,7 @@ ModalProps & ModalTemplateProps) => {
   );
 };
 
-const header = ({
+const Header = ({
   show,
   title,
   noCloseButton,
@@ -133,10 +136,5 @@ const header = ({
     </>
   );
 };
-
-const MzHeader = React.memo(header, (prev, next) => {
-  if (prev.show === false && next.show === true) return false;
-  return true;
-});
 
 export default ModalTemplate;
