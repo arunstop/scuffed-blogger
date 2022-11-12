@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
@@ -7,9 +8,15 @@ import {
   ArticleListModelByUser,
   serviceArticleGetByUser,
 } from "../../../app/services/ArticleService";
-import { MainNetworkResponse } from "../../../base/data/Main";
+import {
+  MainNetworkResponse,
+  netEmpty,
+  netError,
+  netLoading,
+} from "../../../base/data/Main";
 import { toUserDisplay } from "../../../base/data/models/UserDisplayModel";
 import { UserModel } from "../../../base/data/models/UserModel";
+import Button from "../common/Button";
 import LoadingIndicator from "../placeholder/LoadingIndicator";
 import PostItem from "../post/PostItem";
 import PostOptionModal from "../post/PostOptionModal";
@@ -20,6 +27,7 @@ export const UserPostTab = React.memo(function UserPost({
 }: {
   userProfile?: UserModel;
 }) {
+  const router = useRouter();
   const [feed, setFeed] = useState<ArticleListModelByUser>();
   const offset = feed?.offset || 0;
   const [resp, setResp] = useState<MainNetworkResponse>();
@@ -30,6 +38,8 @@ export const UserPostTab = React.memo(function UserPost({
     // await waitFor(2000);
     // show loading indicator
     // setLoading(true);
+    setResp(netLoading("Loading posts"));
+    await waitFor(2000);
 
     if (!userProfile) return;
     const articleByUser = await autoRetry(
@@ -48,7 +58,7 @@ export const UserPostTab = React.memo(function UserPost({
 
     // add delay if feed already loaded for ui purposes
     if (feed) await waitFor(200);
-    if (!articleByUser) return;
+    if (!articleByUser) return setResp(netEmpty("No data"));
     setFeed((prev) => {
       if (prev)
         return {
@@ -62,6 +72,7 @@ export const UserPostTab = React.memo(function UserPost({
   useEffect(() => {
     if (!userProfile) return;
     loadPosts();
+    setResp(netError("Error : testing error"));
     return () => {};
   }, [userProfile]);
 
@@ -70,7 +81,35 @@ export const UserPostTab = React.memo(function UserPost({
     <>
       {!feed ? (
         <div className={`w-full`}>
-          {resp && (
+          {(!resp || resp?.status === "loading") && (
+            <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+              <LoadingIndicator text="Loading articles" spinner />
+            </div>
+          )}
+          {resp?.status === "error" && (
+            <div className={`w-full`}>
+              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                <span className="sm:text-xl">
+                  Whoops! Somethings is just not quite right...
+                </span>
+                <div className="flex gap-2 sm:gap-4">
+                  <Button
+                    className="btn --btn-resp btn-outline"
+                    onClick={() => loadPosts()}
+                  >
+                    Try again
+                  </Button>
+                  <Button
+                    className="btn --btn-resp btn-outline"
+                    onClick={() => router.reload()}
+                  >
+                    Reload page
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+          {resp?.status === "empty" && (
             <>
               {authStt.user?.id === userProfile.id ? (
                 <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
@@ -85,16 +124,11 @@ export const UserPostTab = React.memo(function UserPost({
               ) : (
                 <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
                   <span className="sm:text-xl">
-                    This user has no public articles.
+                    This user has not pulicize any articles yet.
                   </span>
                 </div>
               )}
             </>
-          )}
-          {!resp && (
-            <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
-              <LoadingIndicator text="Loading articles" spinner />
-            </div>
           )}
         </div>
       ) : (
