@@ -14,7 +14,7 @@ value is Falsy {
   return value == false;
 }
 
-export type NetworkResponseStatus = "loading" | "success" | "error";
+export type NetworkResponseStatus = "loading" | "success" | "error" | "empty";
 
 export interface MainNetworkResponse<T = unknown> {
   message: string;
@@ -29,7 +29,7 @@ export const netLoading = <T = null>(
 ): MainNetworkResponse<T | null> => ({
   status: "loading",
   data: data ? data : null,
-  message:message||"",
+  message: message || "",
 });
 
 export const netError = <T = null>(
@@ -46,6 +46,14 @@ export const netSuccess = <T>(
   data: T,
 ): MainNetworkResponse<T> => ({ status: "success", data: data, message });
 
+export const netEmpty = <T>(
+  message: string,
+  data?: T,
+): MainNetworkResponse<T | null> => ({
+  status: "empty",
+  data: data ?? null,
+  message,
+});
 
 export interface ApiPagingReqProps {
   start: number;
