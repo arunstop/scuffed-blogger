@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { isUserModel } from "./base/data/models/UserModel";
 import { COOKIE_USER_AUTH } from "./app/helpers/Constants";
 
-const protectedRoutes = ["/write", "/user/posts", "/auth", "/profile"];
+const protectedRoutes = ["/write/", "/user/posts/", "/auth/", "/profile/"];
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
   try {
-    const pathname = request.nextUrl.pathname.toLowerCase().split("/");
+    const pathname = request.nextUrl.pathname.toLowerCase()+"/";
 
     // check if user requested to access to protected routes without authenticating
     // a.k.a tresspassing
@@ -21,11 +21,8 @@ export function middleware(request: NextRequest) {
     }
 
     //   matching requested route to the protected routes array
-    const isTresspassing =
-      protectedRoutes.filter((e) => {
-        return pathname.includes(e.toLowerCase().substring(1));
-      }).length > 0;
-    const onAuthPage = pathname.includes("auth");
+    const isTresspassing =!!protectedRoutes.find((e)=>e.includes(pathname));
+    const onAuthPage = pathname.includes("/auth/");
     // if invalid
     if (!isCookieValid) {
       //   if tresspassing and not on auth page, then redirect to auth

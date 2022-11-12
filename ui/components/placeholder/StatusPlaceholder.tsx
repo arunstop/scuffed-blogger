@@ -81,6 +81,12 @@ function getTransition(
         labels: "animate-fadeInUp animate-duration-[1000ms]",
         actions: "animate-slideInLeft animate-duration-[1000ms]",
       };
+    default:
+      return {
+        icon: "animate-rotateInUpRight animate-duration-[1500ms]",
+        labels: "animate-fadeInUp animate-duration-[1000ms]",
+        actions: "animate-slideInLeft animate-duration-[1000ms]",
+      };
   }
 }
 
