@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { isUserModel } from "./base/data/models/UserModel";
 import { COOKIE_USER_AUTH } from "./app/helpers/Constants";
 
-const protectedRoutes = ["/write/", "/user/posts/", "/auth/", "/profile/"];
+export const config = {
+  matcher: ["/write/", "/user/posts/", "/auth/", "/profile/"],
+};
+
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
@@ -21,7 +24,7 @@ export function middleware(request: NextRequest) {
     }
 
     //   matching requested route to the protected routes array
-    const isTresspassing =!!protectedRoutes.find((e)=>e.includes(pathname));
+    const isTresspassing =!!config.matcher.find((e)=>e.includes(pathname));
     const onAuthPage = pathname.includes("/auth/");
     // if invalid
     if (!isCookieValid) {
@@ -42,6 +45,3 @@ export function middleware(request: NextRequest) {
   }
 }
 
-export const config = {
-  matcher: protectedRoutes,
-};
