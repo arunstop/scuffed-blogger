@@ -1,3 +1,27 @@
+# build script :
+# docker build -t scuffeddeveloper/tuturku:0.0.x .
+
+# running script :
+#
+
+# cleaning script :
+# docker system prune
+# docker image prune
+# docker container prune
+
+# view docker images  :
+# docker images
+
+# view processes :
+# docker ps
+# docker ps -a (view all processes incl. stopped ones)
+
+# stop containers
+# docker kill $(docker ps -q)
+# docker rm $(docker ps -a -q)
+# docker rmi $(docker images -q)
+
+
 # Install dependencies only when needed
 FROM node:16-alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
