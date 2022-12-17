@@ -10,6 +10,7 @@ import SplashScreen from "../ui/components/placeholder/SplashScreen";
 import { isUserModel, UserModel } from "../base/data/models/UserModel";
 import { APP_DESC, APP_NAME, COOKIE_USER_AUTH } from "../app/helpers/Constants";
 import { useRouteChange } from "../app/hooks/RouteChangeHook";
+// import LayoutAppWrapper from "../ui/layouts/main/LayoutAppWrapper";
 
 interface AdditionalAppProps {
   user?: UserModel;
@@ -18,20 +19,20 @@ const LazyNextProgressBar = dynamic(() => import("nextjs-progressbar"), {
   ssr: false,
 });
 
-const LazyLayoutMainWrapper = dynamic(
-  () => import("../ui/layouts/main/LayoutMainWrapper"),
-  {
-    ssr: false,
-    loading(loadingProps) {
-      return <SplashScreen />;
-    },
-  },
-);
+// const LazyLayoutMainWrapper = dynamic(
+//   () => import("../ui/layouts/main/LayoutMainWrapper"),
+//   {
+//     ssr: false,
+//     loading(loadingProps) {
+//       return <SplashScreen />;
+//     },
+//   },
+// );
 
 const LazyLayoutAppWrapper = dynamic(
   () => import("../ui/layouts/main/LayoutAppWrapper"),
   {
-    ssr: false,
+    ssr: true,
     loading(loadingProps) {
       return <SplashScreen />;
     },
@@ -110,10 +111,11 @@ const MainApp = ({
         <meta property="og:description" content="Let your voices be heard!" />
         <meta property="og:site_name" content="Tuturku" />
         <meta property="og:url" content="https://tuturku.vercel.app" />
-        <meta
+        {/* <meta
           property="og:image"
           content="https://tuturku.vercel.app/icons/384.png"
-        />
+          
+        /> */}
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
