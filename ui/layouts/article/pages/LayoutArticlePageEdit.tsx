@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useWritingPanelCtx } from "../../../../app/contexts/writingPanel/WritingPanelHook";
 import { WritingPanelProvider } from "../../../../app/contexts/writingPanel/WritingPanelProvider";
+import { waitFor } from "../../../../app/helpers/DelayHelpers";
 import { autoRetry } from "../../../../app/helpers/MainHelpers";
 import { routeHistoryAtom } from "../../../../app/hooks/RouteChangeHook";
 import {
@@ -63,6 +64,7 @@ function LayoutArticlePageEditContent({
           ],
         }),
       );
+      
       const updateArticle = await autoRetry(
         async () =>
           await serviceArticleUpdate({
@@ -71,7 +73,8 @@ function LayoutArticlePageEditContent({
               rawArticle: data,
               userPostsRef: userPostsRef,
             },
-            callback: (resp) => {
+            callback: async (resp) => {
+              await waitFor(2000);
               if (resp.status === "error") {
                 setResp(
                   netLoading<StatusPlaceholderProps>("", {

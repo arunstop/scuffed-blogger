@@ -1,11 +1,26 @@
+import dynamic from "next/dynamic";
 import { ReactNode } from "react";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import ScrollTopButton from "../../components/main/ScrollTopButton";
-import SearchModal from "../../components/main/SearchModal";
-import Sidebar from "../../components/main/Sidebar";
-import BottomBar from "./BottomBar";
-import ToastContainer from "./ToastContainer";
+const LazyFooter = dynamic(() => import("../../components/Footer"), {
+  ssr: false,
+});
+const LazyHeader = dynamic(() => import("../../components/Header"), {
+  ssr: false,
+});
+const LazyScrollTopButton = dynamic(
+  () => import("../../components/main/ScrollTopButton"),
+  { ssr: false },
+);
+const LazySearchModal = dynamic(
+  () => import("../../components/main/SearchModal"),
+  { ssr: false },
+);
+const LazySidebar = dynamic(() => import("../../components/main/Sidebar"), {
+  ssr: false,
+});
+const LazyBottomBar = dynamic(() => import("./BottomBar"), { ssr: false });
+const LazyToastContainer = dynamic(() => import("./ToastContainer"), {
+  ssr: false,
+});
 
 function LayoutMainWrapper({ children }: { children: ReactNode }) {
   return (
@@ -16,20 +31,20 @@ function LayoutMainWrapper({ children }: { children: ReactNode }) {
         {router.asPath}
       </div> */}
       {/* Header for desktop */}
-      <Header />
+      <LazyHeader />
       {/* Children */}
       {children}
       {/* BottomBar for mobile */}
-      <BottomBar />
+      <LazyBottomBar />
       {/* Modal/Sidebar Containers */}
       <>
-        <Sidebar />
-        <SearchModal />
+        <LazySidebar />
+        <LazySearchModal />
       </>
       {/* Footer */}
-      <Footer />
-      <ScrollTopButton />
-      <ToastContainer />
+      <LazyFooter />
+      <LazyScrollTopButton />
+      <LazyToastContainer />
     </>
   );
 }

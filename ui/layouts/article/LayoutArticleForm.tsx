@@ -8,13 +8,12 @@ import { useNetworkAction } from "../../../app/hooks/NetworkActionHook";
 import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
 import {
   WritingPanelFormProps,
-  WritingPanelTabTypes,
+  WritingPanelTabTypes
 } from "../../../base/data/contexts/WritingPanelTypes";
 import MainPageTitle from "../../components/main/MainPageTitle";
 import StatusPlaceholder, {
-  StatusPlaceholderProps,
+  StatusPlaceholderProps
 } from "../../components/placeholder/StatusPlaceholder";
-import Memoized from "../../components/utils/Memoized";
 import WritingPanelForm from "../../components/write/WritingPanelForm";
 import WritingPanelPreview from "../../components/write/WritingPanelPreview";
 import { ArticleSubmissionProps } from "./pages/LayoutArticlePageEdit";
@@ -83,11 +82,9 @@ function LayoutArticleForm({ title, submitArticle }: LayoutArticleFormProps) {
             leave: " w-full",
           })}
         >
-          <Memoized show={!!netAct.netResp?.data}>
-            {!!netAct.netResp?.data && (
-              <StatusPlaceholder {...netAct.netResp.data} />
-            )}
-          </Memoized>
+          {!!netAct.netResp?.data && (
+            <StatusPlaceholder {...netAct.netResp.data} />
+          )}
         </Transition>
 
         <Transition
