@@ -9,22 +9,21 @@ import {
   MdAlternateEmail,
   MdEdit,
   MdNotes,
-  MdPerson,
+  MdPerson
 } from "react-icons/md";
 import { useAuthCtx } from "../../../app/contexts/auth/AuthHook";
-import { UserModel } from "../../../base/data/models/UserModel";
 import { waitFor } from "../../../app/helpers/DelayHelpers";
 import { transitionPullV } from "../../../app/helpers/UiTransitionHelpers";
 import { useNetworkAction } from "../../../app/hooks/NetworkActionHook";
 import { scrollToTop } from "../../../app/hooks/RouteChangeHook";
 import { fbUserUpdate } from "../../../app/services/UserService";
-import InputTextArea from "../input/InputTextArea";
+import { UserModel } from "../../../base/data/models/UserModel";
 import InputText from "../input/InputText";
-import GradientBackground from "../utils/GradientBackground";
+import InputTextArea from "../input/InputTextArea";
 import StatusPlaceholder, {
-  StatusPlaceholderProps,
+  StatusPlaceholderProps
 } from "../placeholder/StatusPlaceholder";
-import Memoized from "../utils/Memoized";
+import GradientBackground from "../utils/GradientBackground";
 
 export interface SetupProfileFormFields {
   username: string;
@@ -77,8 +76,8 @@ function ProfileSetupForm() {
       message: "Loading...",
       data: {
         status: "loading",
-        title: "Processing your data",
-        desc: "Loding to execute your action",
+        title: "Submitting your profile...",
+        desc: "Don't worry this won't take long, we promise.",
         actions: [
           {
             label: "Cancel",
@@ -200,13 +199,11 @@ function ProfileSetupForm() {
               leave: " w-full",
             })}
           >
-            <Memoized show={!!netResp?.data}>
               {netResp?.data && (
                 <StatusPlaceholder
                   {...(netResp.data as StatusPlaceholderProps)}
                 />
               )}
-            </Memoized>
           </Transition>
 
           <Transition
