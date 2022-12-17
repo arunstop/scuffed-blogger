@@ -6,6 +6,7 @@ import {
   ApiPagingReqProps,
   ApiPagingResultProps,
   MainNetworkResponse,
+  netEmpty,
   netError,
   netLoading,
   netSuccess,
@@ -148,7 +149,7 @@ export async function serviceArticleGetByUser({
     const articles: ArticleModel[] = [];
     for (const id of idList.ids) {
       const article = await repoRtArticleGetById(id);
-      if (!article) break;
+      if (!article) continue;
       articles.push(article);
     }
     const res: ArticleListModelByUser = {
@@ -157,12 +158,21 @@ export async function serviceArticleGetByUser({
       offset: idList.offset,
       articles: articles,
     };
-    callback?.(
-      netSuccess<ArticleListModelByUser | null>(
-        "Success getting user's posts",
-        res,
-      ),
-    );
+    if (!res.articles.length) {
+      callback?.(
+        netEmpty<ArticleListModelByUser | null>(
+          "User has no posts",
+          res,
+        ),
+      );
+    } else {
+      callback?.(
+        netSuccess<ArticleListModelByUser | null>(
+          "Success getting user's posts",
+          res,
+        ),
+      );
+    }
     return res;
   } catch (error) {
     console.log(error);

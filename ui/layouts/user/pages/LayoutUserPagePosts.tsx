@@ -11,15 +11,19 @@ import { autoRetry } from "../../../../app/helpers/MainHelpers";
 import { transitionPullV } from "../../../../app/helpers/UiTransitionHelpers";
 import {
   routeHistoryAtom,
-  scrollToTop
+  scrollToTop,
 } from "../../../../app/hooks/RouteChangeHook";
 import { useRoutedModalHook } from "../../../../app/hooks/RoutedModalHook";
 import {
   ArticleListModelByUser,
   serviceArticleDelete,
-  serviceArticleGetByUser
+  serviceArticleGetByUser,
 } from "../../../../app/services/ArticleService";
-import { MainNetworkResponse, netEmpty, netLoading } from "../../../../base/data/Main";
+import {
+  MainNetworkResponse,
+  netEmpty,
+  netLoading,
+} from "../../../../base/data/Main";
 import Button from "../../../components/common/Button";
 import Container from "../../../components/common/Container";
 import InputText from "../../../components/input/InputText";
@@ -74,7 +78,7 @@ function LayoutUserPagePosts() {
     // console.log("param", offset);
     // console.log("articleData", articleData?.offset);
     if (!user) return;
-    if(init) setResp(netLoading("Loading articles..."));
+    if (init) setResp(netLoading("Loading articles..."));
     const articleByUser = await autoRetry(
       async () =>
         await serviceArticleGetByUser({
@@ -239,23 +243,49 @@ function LayoutUserPagePosts() {
             </div>
           </div>
         )}
-
+        {/* loading */}
         {!articles.length && resp?.status === "loading" && (
           <LoadingIndicator text={`Loading articles`} spinner />
         )}
-        {resp?.status === "empty" && (
-          <div className={`w-full`}>
-            <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
-              <span className="sm:text-xl">
-                No articles found, write your first article and let the world
-                know!
-              </span>
-              <Link href={"/write"} passHref>
-                <a className="btn --btn-resp btn-outline">Write Article</a>
-              </Link>
+        {/* user has no posts */}
+        {resp?.status === "empty" &&
+          !articleData?.keyword &&
+          !articleData?.articles.length && (
+            <div className={`w-full`}>
+              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                <span className="sm:text-xl">
+                  No articles found, write your first article and let the world
+                  know!
+                </span>
+                <Link href={"/write"} passHref>
+                  <a className="btn --btn-resp btn-outline">Write Article</a>
+                </Link>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        {/* no matching results */}
+        {resp?.status === "empty" &&
+          !!articleData?.keyword &&
+          articleData?.articles.length === 0 && (
+            <div className={`w-full`}>
+              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
+                <span className="sm:text-xl">
+                  No articles found, with keyword{" "}
+                  <span className="font-bold">`{articleData?.keyword}`</span>
+                  <br />
+                  Try to use a different keyword.
+                </span>
+
+                <button
+                  className="btn --btn-resp btn-outline"
+                  onClick={() => search("")}
+                >
+                  Reset search
+                </button>
+              </div>
+            </div>
+          )}
+
         {resp?.status === "error" && (
           <div className={`w-full`}>
             <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
@@ -319,28 +349,6 @@ function LayoutUserPagePosts() {
             })}
           </InfiniteLoader>
         )}
-
-        {resp?.status !== "loading" &&
-          articleDataInit?.totalArticle &&
-          !articles.length && (
-            <div className={`w-full`}>
-              <div className="w-full flex flex-col gap-2 sm:gap-4 items-center text-center p-2 sm:p-4">
-                <span className="sm:text-xl">
-                  No articles found, with keyword{" "}
-                  <span className="font-bold">`{articleData?.keyword}`</span>
-                  <br />
-                  Try to use a different keyword.
-                </span>
-
-                <button
-                  className="btn --btn-resp btn-outline"
-                  onClick={() => search("")}
-                >
-                  Reset search
-                </button>
-              </div>
-            </div>
-          )}
 
         {/* pagination */}
       </Container>
