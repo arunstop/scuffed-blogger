@@ -8,6 +8,7 @@
 - Advanced React.js
 - Advanced Typescript usage in React.js/Next.js
 - Implementing clear architecture in Next.js codebase
+- Implementing Trunk based development workflow
 - Implementing content-driven Server Side Rendering (SSR) with Next.js
 - Integrating advanced Tailwind css implementation with Next.js codebase
 - Integrating and optimizing advanced Tailwind css x DaisyUI workflow
