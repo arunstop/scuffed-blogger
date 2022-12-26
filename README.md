@@ -28,10 +28,10 @@
 ## Screenshots if you fancy :
 | - | - |
 | --- | --- |
-| <p align="center"><b>Home screen</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/1.png" alt="Home screen"></p> | <p align="center"><b>List View</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/2.png" alt="List View"></p> |
-| <p align="center"><b>Card View</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/3.png" alt="Card View"></p> | <p align="center"><b>Tiles View</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/4.png" alt="Tiles View"></p> |
-| <p align="center"><b>Country profile details</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/5.png" alt="Country profile details"></p> | <p align="center"><b>Map of the country</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/6.png" alt="Map of the country"></p> |
-| <p align="center"><b>Related Countries</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/7.png" alt="Related Countries"></p> | <p align="center"><b>Search modal</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/8.png" alt="Search modal"></p> |
+| <p align="center"><b>Auth Page</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/1.png" alt="Auth Page"></p> | <p align="center"><b>Setup Profile</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/2.png" alt="Setup Profile"></p> |
+| <p align="center"><b>Home Page</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/3.png" alt="Home Page"></p> | <p align="center"><b>Article Page</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/4.png" alt="Article Page"></p> |
+| <p align="center"><b>Comment Section</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/5.png" alt="Comment Section"></p> | <p align="center"><b>My Posts Page</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/6.png" alt="My Posts Page"></p> |
+| <p align="center"><b>Write Article Page</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/7.png" alt="Write Article Page"></p> | <p align="center"><b>User Page</b><br/><img src="https://raw.githubusercontent.com/arunstop/scuffed-blogger/main/public/screenshots/8.png" alt="User Page"></p> |
 
 
 ---
